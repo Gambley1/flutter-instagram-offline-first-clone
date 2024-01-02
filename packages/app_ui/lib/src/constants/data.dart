@@ -1,0 +1,98 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:flutter/material.dart';
+import 'package:shared/shared.dart';
+
+/// Navigation bar items
+List<NavBarItem> mainNavigationBarItems({
+  required String homeLabel,
+  required String searchLabel,
+  required String createMediaLabel,
+  required String reelsLabel,
+  required String userProfileLabel,
+}) =>
+    <NavBarItem>[
+      NavBarItem(icon: Icons.home_filled, label: homeLabel),
+      NavBarItem(icon: Icons.search, label: searchLabel),
+      NavBarItem(icon: Icons.add_box_outlined, label: createMediaLabel),
+      NavBarItem(icon: Icons.movie_outlined, label: reelsLabel),
+      NavBarItem(icon: Icons.person, label: userProfileLabel),
+    ];
+
+class NavBarItem {
+  final String? label;
+  final IconData icon;
+
+  NavBarItem({
+    required this.icon,
+    this.label,
+  });
+
+  String? get tooltip => label;
+}
+
+class GradientColor {
+  const GradientColor({required this.hex, this.opacity});
+
+  final String hex;
+  final double? opacity;
+}
+
+enum PremiumGradient {
+  fl0(
+    colors: [
+      GradientColor(hex: '842CD7'),
+      GradientColor(hex: '21F5F1', opacity: .8),
+    ],
+    stops: [0, 1],
+  ),
+  telegram(
+    colors: [
+      GradientColor(hex: '6C93FF'),
+      GradientColor(hex: '976FFF'),
+      GradientColor(hex: 'DF69D1'),
+    ],
+    stops: [0, .5, 1],
+  );
+
+  const PremiumGradient({
+    required this.colors,
+    required this.stops,
+  });
+
+  final List<GradientColor> colors;
+  final List<double> stops;
+}
+
+List<String> get commentEmojies =>
+    ['❤', '🙌', '🔥', '👏🏻', '😢', '😍', '😮', '😂'];
+
+List<ModalOption> createMedialModalOptions({
+  required String reelLabel,
+  required String postLabel,
+  required String storyLabel,
+  required ValueSetter<String> goTo,
+}) =>
+    <ModalOption>[
+      ModalOption(name: reelLabel, icon: Icons.video_collection_outlined),
+      ModalOption(
+        name: postLabel,
+        icon: Icons.outbox_outlined,
+        onTap: () => goTo('create_post'),
+      ),
+      ModalOption(
+        name: storyLabel,
+        icon: Icons.cameraswitch_outlined,
+      ),
+    ];
+
+List<ModalOption> subscriberModalOptions({
+  required String cancelSubscriptionLabel,
+  required VoidCallback cancelSubscription,
+  ValueSetter<String>? goTo,
+}) =>
+    <ModalOption>[
+      ModalOption(
+        name: cancelSubscriptionLabel,
+        onTap: cancelSubscription,
+      ),
+    ];

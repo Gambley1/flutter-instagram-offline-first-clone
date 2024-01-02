@@ -1,0 +1,235 @@
+{
+    "@@locale": "en",
+    "feedAppBarTitle": "Feed",
+    "@feedAppBarTitle": {
+        "description": "Text shown in the Feed screen in the AppBar"
+    },
+    "homeNavBarItemLabel": "Home",
+    "@homeNavBarItemLabel": {
+        "description": "Home navigation bar item tooltip"
+    },
+    "searchNavBarItemLabel": "Search",
+    "@searchNavBarItemLabel": {
+        "description": "Search navigation bar item tooltip"
+    },
+    "createMediaNavBarItemLabel": "Create media",
+    "@createMediaNavBarItemLabel": {
+        "description": "Create media navigation bar item tooltip"
+    },
+    "reelsNavBarItemLabel": "Reels",
+    "@reelsNavBarItemLabel": {
+        "description": "Reels navigation bar item tooltip"
+    },
+    "profileNavBarItemLabel": "Profile",
+    "@profileNavBarItemLabel": {
+        "description": "Profile navigation bar item tooltip"
+    },
+    "likesText": "Likes",
+    "@likesText":{
+        "description": "Text displaying statis Likes text"
+    },
+    "likesCountText": "{count, plural, =1{{count} like} other{{count} likes}}",
+    "@likesCountText": {
+        "description": "Text shown in post footer section that display count of likes",
+        "placeholders": {
+            "count": {
+              "type": "int",
+              "example": "1" 
+            }
+        }
+    },
+    "likesCountTextShort": "{count}",
+    "@likesCountTextShort": {
+        "description": "Text shown in post footer section that display short count of likes",
+        "placeholders": {
+            "count": {
+              "type": "int",
+              "example": "1" 
+            }
+        }
+    },
+    "seeAllComments": "View all {count} comments",
+    "@seeAllComments":{
+        "description": "Text shown under the post caption",
+        "placeholders": {
+            "count": {
+              "type": "int",
+              "example": "1" 
+            }
+        }
+    },
+    "yourStoryLabel": "Your story",
+    "@yourStoryLabel":{
+        "description": "Text shown under the first storie in stories list view marked as 'your story'"
+    },
+    "postsText": "Posts",
+    "@postsText": {
+        "description": "Text displaying static Posts text"
+    },
+    "followersText": "Followers",
+    "@followersText": {
+        "description": "Text displaying static Followers text"
+    },
+    "followingsText": "Followings",
+    "@followingsText": {
+        "description": "Text displaying static Followings text"
+    },
+    "postsCount": "{count, plural, =1{Post} other{Posts}}",
+    "@postsCount": {
+        "description": "Text describing the count of posts",
+        "placeholders": {
+            "count": {
+              "type": "int",
+              "example": "1" 
+            }
+        }
+    },
+    "allUserPostsAppBarTitle": "Posts",
+    "@allUserPostsAppBarTitle":{
+        "description": "Text shown in app bar in user's all posts screen"
+    },
+    "followersCount": "{count, plural, =1{Follower} other{Followers}}",
+    "@followersCount": {
+        "description": "Text describing the count of posts",
+        "placeholders": {
+            "count": {
+              "type": "int",
+              "example": "1" 
+            }
+        }
+    },
+    "followingsCount": "{count, plural, =1{Following} other{Followings}}",
+    "@followingsCount": {
+        "description": "Text describing the count of user followings",
+        "placeholders": {
+            "count": {
+              "type": "int",
+              "example": "1" 
+            }
+        }
+    },
+    "editProfileText": "Edit profile",
+    "@editProfileText": {
+        "description": "Text shown in account view to edit profile"
+    },
+    "shareProfileText": "Share profile",
+    "@shareProfileText": {
+        "description": "Text shown in account view to share profile"
+    },
+    "addStoryText": "New",
+    "@addStoryText": {
+        "description": "Text shown in account view to add new story"
+    },
+    "sponsoredPostText": "Sponsored",
+    "@sponsoredPostText": {
+        "description": "Text shown on sponsored post indicating that the post is sponsored by author"
+    },
+    "visitSponsoredPostAuthorProfileText": "Visit Instagram Profile",
+    "@visitSponsoredPostAuthorProfileText": {
+        "description": "Text shown on sponsored post telling that this action will navigate user to author profile"
+    },
+    "learnMoreAboutUserPromoText": "Learn more",
+    "@learnMoreAboutUserPromoText": {
+        "description": "Text shown in a floating action promo in user profile when was navigated from sponsored post"
+    },
+    "visitUserPromoWebsiteText": "Go to website",
+    "@visitUserPromoWebsiteText": {
+        "description": "Text shown in a floating action promo in user profile when was navigated from sponsored post"
+    },
+    "cancelFollowingText": "Unfollow",
+    "@cancelFollowingText": {
+        "description": "Text shown in modal bottom sheet to cancel current following to user"
+    },
+    "haveSeenAllRecentPosts": "You're all caught up",
+    "@haveSeenAllRecentPosts": {
+        "description": "Header text shown in divider block when user have seen all recent posts"
+    },
+    "haveSeenAllRecentPostsInPast3Days": "You've seen all new posts from the past 3 days.",
+    "@haveSeenAllRecentPostsInPast3Days": {
+        "description": "Body text shown in divider block when user have seen all recent posts in past 3 days"
+    },
+    "suggestedForYouText": "Suggested for you",
+    "@suggestedForYouText": {
+        "description": "Text shown in a suggested section block."
+    },
+    "secondsAgo": "{seconds, plural, =1{1 second ago} other{{seconds} seconds ago}}",
+    "@secondsAgo": {
+        "description": "Represents a text of seconds ago",
+        "placeholders": {
+            "seconds": {
+              "type": "int",
+              "example": "1" 
+            }
+        }
+    },
+    "minutesAgo": "{minutes, plural, =1{1 minute ago} other{{minutes} minutes ago}}",
+    "@minutesAgo": {
+        "description": "Represents a text of minutes ago",
+        "placeholders": {
+            "minutes": {
+              "type": "int",
+              "example": "1" 
+            }
+        }
+    },
+    "hoursAgo": "{hours, plural, =1{1 hour ago} other{{hours} hours ago}}",
+    "@hoursAgo": {
+        "description": "Represents a text of hours ago",
+        "placeholders": {
+            "hours": {
+              "type": "int",
+              "example": "1" 
+            }
+        }
+    },
+    "daysAgo": "{days, plural, =1{1 day ago} other{{days} days ago}}",
+    "@daysAgo": {
+        "description": "Represents a text of days ago",
+        "placeholders": {
+            "days": {
+              "type": "int",
+              "example": "1" 
+            }
+        }
+    },
+    "weeksAgo": "{weeks, plural, =1{1 week ago} other{{weeks} weeks ago}}",
+    "@weeksAgo": {
+        "description": "Represents a text of weeks ago",
+        "placeholders": {
+            "weeks": {
+              "type": "int",
+              "example": "1" 
+            }
+        }
+    },
+    "monthsAgo": "{months, plural, =1{1 month ago} other{{months} months ago}}",
+    "@monthsAgo": {
+        "description": "Represents a text of months ago",
+        "placeholders": {
+            "months": {
+              "type": "int",
+              "example": "1" 
+            }
+        }
+    },
+    "yearsAgo": "{years, plural, =1{1 year ago} other{{years} years ago}}",
+    "@yearsAgo": {
+        "description": "Represents a text of years ago",
+        "placeholders": {
+            "years": {
+              "type": "int",
+              "example": "1" 
+            }
+        }
+    },
+    "networkError": "A network error has occured.\nCheck your connection and try again.",
+    "@networkError": {
+        "description": "Text displayed when a network error occurs.",
+        "type": "String"
+    },
+    "networkErrorButton": "Try Again",
+    "@networkErrorButton": {
+        "description": "Text displayed on the refresh button when a network error occurs.",
+        "type": "String"
+    }
+}
