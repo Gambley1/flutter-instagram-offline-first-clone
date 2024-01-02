@@ -1,0 +1,214 @@
+{
+    "@@locale": "ru",
+    "feedAppBarTitle": "Просмотр ленты",
+    "@feedAppBarTitle": {
+        "description": "Текст для заголовка страницы Просмотр ленты"
+    },
+    "homeNavBarItemLabel": "Лента",
+    "@homeNavBarItemLabel": {
+        "description": "Подсказка при зажатии иконки дом на нижней навигационной панели"
+    },
+    "searchNavBarItemLabel": "Поиск",
+    "@searchNavBarItemLabel": {
+        "description": "Подсказка при зажатии иконки поиск на нижней навигационной панели"
+    },
+    "createMediaNavBarItemLabel": "Создать медиа",
+    "@createMediaNavBarItemLabel": {
+        "description": "Подсказка при зажатии иконки плюс на нижней навигационной панели"
+    },
+    "reelsNavBarItemLabel": "Рилс",
+    "@reelsNavBarItemLabel": {
+        "description": "Подсказка при зажатии иконки файла на нижней навигационной панели"
+    },
+    "profileNavBarItemLabel": "Профиль",
+    "@profileNavBarItemLabel": {
+        "description": "Подсказка при зажатии иконки профиля на нижней навигационной панели"
+    },
+    "likesText": "Нравится",
+    "seeAllComments": "Смотреть все коментарии ({count})",
+    "@seeAllComments":{
+        "description": "Текст который показывает кол-во коментариев под данным постом",
+        "placeholders": {
+            "count": {
+              "type": "int",
+              "example": "1" 
+            }
+        }
+    },
+    "likesCountText": "Нравится: {count}",
+    "@likesCountText": {
+        "description": "Текст который показывает кол-во лайков у данного поста",
+        "placeholders": {
+            "count": {
+              "type": "int",
+              "example": "1" 
+            }
+        }
+    },
+    "likesCountTextShort": "{count}",
+    "@likesCountTextShort": {
+        "description": "TТекст который показывает кол-во лайков у данного поста в коротком формате",
+        "placeholders": {
+            "count": {
+              "type": "int",
+              "example": "1" 
+            }
+        }
+    },
+    "yourStoryLabel": "Твоя история",
+    "@yourStoryLabel":{
+        "description": "Текст на главной странице под твоей историей"
+    },
+    "postsText": "Публикаций",
+    "allUserPostsAppBarTitle": "Публикации",
+    "@allUserPostsAppBarTitle":{
+        "description": "Текст для заголовка страницы со всеми публикациями пользователя"
+    },
+    "followersText": "Подписчики",
+    "followingsText": "Подписки",
+    "postsCount": "{count, plural, =1{Публикация} few{Публикации} other{Публикаций}}",
+    "@postsCount": {
+        "description": "Текст показыващий кол-во публикаций пользователя",
+        "placeholders": {
+            "count": {
+              "type": "int",
+              "example": "1" 
+            }
+        }
+    },
+    "followersCount": "{count, plural, =1{Подписчик} few{Подписчика} other{Подписчиков}}",
+    "@followersCount": {
+        "description": "Текст показывающий кол-во подписчиков пользователя",
+        "placeholders": {
+            "count": {
+              "type": "int",
+              "example": "1" 
+            }
+        }
+    },
+    "editProfileText": "Редактировать профиль",
+    "shareProfileText": "Поделиться профилем",
+    "addStoryText": "Добавить",
+    "followingsCount": "{count, plural, =1{Подписка} few{Подписки} other{Подписок}}",
+    "@followingsCount": {
+        "description": "Текст показывающий кол-во подписок пользователя",
+        "placeholders": {
+            "count": {
+              "type": "int",
+              "example": "1" 
+            }
+        }
+    },
+    "sponsoredPostText": "Реклама",
+    "@sponsoredPostText": {
+        "description": "Текст показывает что данный пост был продвинут автором как рекламный"
+    },
+    "visitSponsoredPostAuthorProfileText": "Открыть профиль Instagram",
+    "@visitSponsoredPostAuthorProfileText": {
+        "description": "Текст показанный на рекламном посте который сподвигает пользователя перейти на профиль автора"
+    },
+    "learnMoreAboutUserPromoText": "Узнать больше",
+    "@learnMoreAboutUserPromoText": {
+        "description": "Текст показанный на промо банере на странице автора"
+    },
+    "visitUserPromoWebsiteText": "Посетить сайт",
+    "@visitUserPromoWebsiteText": {
+        "description": "Текст показанный на промо банере на странице автора"
+    },
+    "cancelFollowingText": "Отменить подписку",
+    "@cancelFollowingText": {
+        "description": "Текст об отмене подписки"
+    },
+    "haveSeenAllRecentPosts": "Вы посмотрели все обновления",
+    "@haveSeenAllRecentPosts": {
+        "description": "Header text shown in divider block when user have seen all recent posts"
+    },
+    "haveSeenAllRecentPostsInPast3Days": "Вы посмотрели все новые публикации за последние 3 дн.",
+    "@haveSeenAllRecentPostsInPast3Days": {
+        "description": "Body text shown in divider block when user have seen all recent posts in past 3 days"
+    },
+    "suggestedForYouText": "Рекомендуемые публикации",
+    "@suggestedForYouText": {
+        "description": "Текст, отображаемый в предлагаемом блоке раздела."
+    },
+    "secondsAgo": "{seconds, plural, =1{{seconds} секунду назад} few{{seconds} секунды назад} other{{seconds} секунд назад}}",
+    "@secondsAgo": {
+        "description": "Секунд назад",
+        "placeholders": {
+            "seconds": {
+              "type": "int",
+              "example": "1" 
+            }
+        }
+    },
+    "minutesAgo": "{minutes, plural, =1{{minutes} минуту назад} few{{minutes} минуты назад} other{{minutes} минут назад}}",
+    "@minutesAgo": {
+        "description": "Минут назад",
+        "placeholders": {
+            "minutes": {
+              "type": "int",
+              "example": "1" 
+            }
+        }
+    },
+    "hoursAgo": "{hours, plural, =1{{hours} час назад} few{{hours} часа назад} other{{hours} часов назад}}",
+    "@hoursAgo": {
+        "description": "Часов назад",
+        "placeholders": {
+            "hours": {
+              "type": "int",
+              "example": "1" 
+            }
+        }
+    },
+    "daysAgo": "{days, plural, =1{{days} день назад} few{{days} дня назад} other{{days} дней назад}}",
+    "@daysAgo": {
+        "description": "Дней назад",
+        "placeholders": {
+            "days": {
+              "type": "int",
+              "example": "1" 
+            }
+        }
+    },
+    "weeksAgo": "{weeks, plural, =1{{weeks} неделю назад} few{{weeks} недели назад} other{{weeks} недель назад}}",
+    "@weeksAgo": {
+        "description": "Недель назад",
+        "placeholders": {
+            "weeks": {
+              "type": "int",
+              "example": "1" 
+            }
+        }
+    },
+    "monthsAgo": "{months, plural, =1{{months} месяц назад} few{{months} месяца назад} other{{months} месяцев назад}}",
+    "@monthsAgo": {
+        "description": "Месяцев назад",
+        "placeholders": {
+            "months": {
+              "type": "int",
+              "example": "1" 
+            }
+        }
+    },
+    "yearsAgo": "{years, plural, =1{{years} год назад} few{{years} года назад} other{{years} лет назад}}",
+    "@yearsAgo": {
+        "description": "Лет назад",
+        "placeholders": {
+            "years": {
+              "type": "int",
+              "example": "1" 
+            }
+        }
+    },
+    "networkError": "Произошла сетевая ошибка.\nПроверьте подключение и повторите попытку.",
+    "@networkError": {
+        "description": "Текст, отображаемый при возникновении сетевой ошибки.",
+        "type": "String"
+    },
+    "networkErrorButton": "Попробуйте ещё раз",
+    "@networkErrorButton": {
+        "description": "Текст, отображаемый на кнопке обновления при возникновении сетевой ошибки.",
+        "type": "String"
+    }
+}

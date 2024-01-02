@@ -1,0 +1,35 @@
+name: instagram_blocks_ui
+description: A Flutter package that contains UI components for Instagram blocks.
+version: 0.1.0+1
+publish_to: none
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.10.0"
+
+dependencies:
+  app_ui:
+    path: ../app_ui
+  powersync_repository:
+    path: ../powersync_repository
+  flutter:
+    sdk: flutter
+  shared:
+    path: ../shared
+  cached_network_image: ^3.3.0
+  carousel_slider: ^4.2.1
+  sliver_tools: ^0.2.12
+  scrollable_positioned_list: ^0.3.8
+  smooth_page_indicator: ^1.1.0
+  flutter_animate: ^4.2.0+1
+  sprung: ^3.0.1
+  insta_blocks:
+    path: ../insta_blocks
+  pinch_zoom_release_unzoom: ^1.0.1
+  url_launcher: ^6.2.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  mocktail: ^1.0.0
+  very_good_analysis: ^5.1.0

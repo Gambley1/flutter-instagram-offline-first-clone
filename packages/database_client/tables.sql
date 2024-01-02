@@ -1,0 +1,491 @@
+-- Set up Storage!
+insert into storage.buckets (id, name)
+  values ('avatars', 'avatars');
+
+-- Set up access controls for storage.
+create policy "Avatar images are publicly accessible." on storage.objects
+  for select using (bucket_id = 'avatars');
+
+create policy "Anyone can upload an avatar." on storage.objects
+  for insert with check (bucket_id = 'avatars');
+
+create policy "Anyone can update their own avatar." on storage.objects
+  for update using (auth.uid() = owner) with check (bucket_id = 'avatars');
+
+create policy "Anyone can delete their own avatar." on storage.objects for delete using (
+  bucket_id = 'avatars'
+  and auth.uid ()::text = (storage.foldername (name)) [1]
+);
+
+create policy "Anyone can update their own avatar." on storage.objects
+for update
+  to authenticated using (
+    bucket_id = 'avatars'
+    and auth.uid ()::text = (storage.foldername (name)) [1]
+  );
+
+insert into storage.buckets (id, name)
+  values ('posts', 'posts')
+
+create policy "Only authenticated user can see posts media." on storage.objects for
+select
+  to authenticated using (bucket_id = 'posts');
+
+create policy "Only authenticated can upload posts media." on storage.objects for insert
+ to authenticated
+   with
+      check (
+        bucket_id = 'posts'
+        );
+
+create policy "Only authenticated can delete posts media." on storage.objects for delete
+ to authenticated 
+  using (
+    bucket_id = 'posts'
+  );
+
+create policy "Only authenticated can update posts media." on storage.objects
+for update
+  to authenticated using (
+    bucket_id = 'posts'
+  );
+
+create function clear_posts_objects () returns trigger as $$
+begin
+  delete from storage.objects where bucket_id = 'posts';
+  return null;
+end;
+$$ language plpgsql;
+
+create trigger clear_posts_trigger
+after
+truncate on public.posts for each statement
+execute function clear_posts_objects ();
+
+create table
+  public.profiles (
+    id uuid not null,
+    full_name text not null,
+    email text not null,
+    username text not null,
+    avatar_url text null,
+    constraint profiles_pkey primary key (id),
+    constraint profiles_email_key unique (email),
+    constraint profiles_id_fkey foreign key (id) references auth.users (id) on update cascade on delete cascade
+  ) tablespace pg_default;
+
+alter table profiles enable row level security;
+
+create policy "Public profiles are viewable by everyone." on profiles
+  for select using (true);
+
+create policy "Users can insert their own profile." on profiles
+  for insert with check (auth.uid() = id);
+
+create policy "Users can update own profile." on profiles
+  for update using (auth.uid() = id);
+
+create type media_type as enum('photo', 'video');
+
+create table
+  public.posts (
+    id uuid not null,
+    user_id uuid not null,
+    caption text not null,
+    type media_type not null,
+    media_url text null,
+    created_at timestamp with time zone not null default now(),
+    updated_at timestamp with time zone null,
+    images_url text null,
+    constraint posts_pkey primary key (id),
+    constraint posts_user_id_fkey foreign key (user_id) references public.profiles (id) on update cascade on delete cascade
+  ) tablespace pg_default;
+
+alter table posts enable row level security;
+
+create policy "Allow to see posts for everybody" on public.posts for select using (true);
+
+create policy "Allow upload post only to authenticated user" on public.posts
+ for insert to authenticated with check (true);
+
+create policy "Allow update post only to authenticated user" on public.posts for update to authenticated
+with
+  check (
+    auth.uid() = user_id
+  );
+
+create policy "Allow delete post only to authenticated user" on public.posts for delete to authenticated
+using (
+    auth.uid() = user_id
+  );
+
+create table
+  public.likes (
+    id uuid not null default gen_random_uuid (),
+    post_id uuid null,
+    user_id uuid not null,
+    comment_id uuid null,
+    constraint likes_pkey primary key (id),
+    constraint likes_comment_id_key unique (user_id, comment_id),
+    constraint likes_post_id_key unique (user_id, post_id),
+    constraint likes_comment_id_fkey foreign key (comment_id) references comments (id) on update cascade on delete cascade,
+    constraint likes_post_id_fkey foreign key (post_id) references posts (id) on update cascade on delete cascade,
+    constraint likes_user_id_fkey foreign key (user_id) references profiles (id) on update cascade on delete cascade,
+    constraint like_has_either_comment_or_post check (
+      (
+        (
+          (comment_id is not null)
+          and (post_id is null)
+        )
+        or (
+          (comment_id is null)
+          and (post_id is not null)
+        )
+      )
+    )
+  ) tablespace pg_default;
+
+alter table likes enable row level security;
+
+create policy "Everyone can see posts likes" on public.likes for select using (true);
+
+create policy "Only authenticated can upload likes" on public.likes for insert to authenticated with check (true);
+
+create policy "Only authenticated can update likes" on public.likes for update to authenticated
+with
+  check (
+    auth.uid() = user_id
+  );
+
+create policy "Only authentiaceted can delete likes" on public.likes for delete to authenticated
+using (
+    auth.uid() = user_id
+  );
+
+create table
+  public.comments (
+    id uuid not null,
+    post_id uuid not null,
+    user_id uuid not null,
+    content text not null,
+    created_at timestamp with time zone not null default now(),
+    replied_to_comment_id uuid null,
+    constraint comments_pkey primary key (id),
+    constraint comments_post_id_fkey foreign key (post_id) references posts (id) on update cascade on delete cascade,
+    constraint comments_replied_to_comment_id_fkey foreign key (replied_to_comment_id) references comments (id) on update cascade on delete cascade,
+    constraint comments_user_id_fkey foreign key (user_id) references profiles (id) on update cascade on delete cascade
+  ) tablespace pg_default;
+
+alter table comments enable row level security;
+
+create policy "Everyone can see posts comments" on public.comments for select using (true);
+
+create policy "Only authenticated can upload comments" on public.comments for insert to authenticated with check (true);
+
+create policy "Only authenticated can update comments" on public.comments for update to authenticated
+with
+  check (
+    true
+  );
+
+create policy "Only authentiaceted can delete comments" on public.comments for delete to authenticated
+using (
+    true
+  );
+
+CREATE TABLE subscriptions (
+  id uuid not null,
+  subscriber_id uuid not null,
+  subscribed_to_id uuid not null,
+  constraint subscriptions_pkey primary key (id),
+  constraint subscriptions_subscriber_id_fkey foreign key (subscriber_id) references auth.users (id) on update cascade on delete cascade,
+  constraint subscriptions_subcribed_to_fkey foreign key (subscribed_to_id) references auth.users (id) on update cascade on delete cascade
+);
+
+alter table comments enable row level security;
+
+create policy "Every user can see other users subscribers count." on public.subscriptions
+  for select 
+    using (
+      true
+    );
+
+create policy "Only authenticated users can subscribe to other users." on public.subscriptions
+ for insert to authenticated 
+    with check (
+      auth.uid() = subscriber_id
+      );
+
+create policy "Only authentiaceted users can unsubscribe from other users." on public.subscriptions 
+  for delete to authenticated
+    using (
+      auth.uid() = subscriber_id
+    );
+
+create type conversation_type as enum('one-on-one', 'group');
+
+create table conversations (
+    id uuid not null default gen_random_uuid(),
+    type conversation_type not null,
+    name text not null,
+    created_at timestamp with time zone not null default now(),
+    updated_at timestamp with time zone not null default now(),
+    constraint conversations_pkey primary key (id)
+);
+
+alter table conversations enable row level security;
+
+create policy "Everybody can see conversations they participate in." on public.conversations
+  for select using (true);
+
+create policy "Only authenticated users can create conversations with other users." on public.conversations
+ for insert to authenticated;
+
+create policy "Only authentiaceted users can delete conversations they participate in." on public.conversations 
+  for delete to authenticated;
+
+create type message_type as enum('text', 'image', 'video', 'voice');
+
+create table
+  messages (
+    id uuid not null default gen_random_uuid (),
+    conversation_id uuid not null,
+    from_id uuid not null,
+    type public.message_type not null,
+    message text not null,
+    reply_message_id uuid null,
+    created_at timestamp with time zone not null default (now() at time zone 'utc'::text),
+    updated_at timestamp with time zone not null default (now() at time zone 'utc'::text),
+    is_read integer not null default 0,
+    is_deleted integer not null default 0,
+    is_edited integer not null default 0,
+    reply_message_username text null,
+    reply_message_attachment_url text null,
+    shared_post_id uuid null,
+    constraint messages_pkey primary key (id),
+    constraint check_participant foreign key (from_id, conversation_id) references participants (user_id, conversation_id) on update cascade on delete cascade,
+    constraint messages_conversation_id_fkey foreign key (conversation_id) references conversations (id) on update cascade on delete cascade,
+    constraint messages_reply_message_id_fkey foreign key (reply_message_id) references messages (id) on delete set null,
+    constraint messages_shared_post_id_fkey foreign key (shared_post_id) references posts (id) on update cascade on delete set null,
+    constraint messages_user_id_fkey foreign key (from_id) references profiles (id) on update cascade on delete cascade
+  ) tablespace pg_default;
+
+alter table participants
+add constraint unique_participant unique (user_id, conversation_id);
+
+alter table messages enable row level security;
+
+create policy "Everybody can see messages in the conversation." on public.messages
+  for select using (true);
+
+create policy "Only authenticated users can create message in the conversations with other users." 
+  on public.messages
+    for insert to authenticated with check (auth.uid() = from_id);
+
+create policy "Only authentiaceted users can delete their own messages in the conversations they participate in." 
+  on public.messages 
+    for delete to authenticated using (auth.uid() = from_id);
+
+create type attachment_type as enum('image', 'file', 'video', 'giphy', 'audio', 'url_preview');
+
+create table
+  public.attachments (
+    id uuid not null default gen_random_uuid (),
+    message_id uuid not null,
+    title text null,
+    text text null,
+    title_link text null,
+    image_url text null,
+    thumb_url text null,
+    author_name text null,
+    author_link text null,
+    asset_url text null,
+    og_scrape_url text null,
+    type attachment_type not null,
+    constraint attachments_pkey primary key (id),
+    constraint attachments_message_id_fkey foreign key (message_id) references messages (id) on update cascade on delete cascade
+  ) tablespace pg_default;
+
+alter table attachments enable row level security;
+
+create policy "Everybody can see their messages' attachments." on public.attachments
+  for select using (true);
+
+create policy "Only authenticated users can add attachments." 
+  on public.attachments
+    for insert to authenticated with check (true);
+
+create policy "Only owners can remove attachments." 
+  on public.attachments 
+    for delete to authenticated using (true);
+
+create table participants (
+    id uuid not null,
+    user_id uuid not null,
+    conversation_id uuid not null,
+    constraint participants_pkey primary key (id),
+    constraint participants_user_id_fkey foreign key (user_id) references profiles (id) on update cascade on delete cascade,
+    constraint participants_conversation_id_fkey foreign key (conversation_id) references conversations (id) on update cascade on delete cascade
+);
+
+alter table participants enable row level security;
+
+create policy "Everybody can see their participations with conversations." on public.participants
+  for select using (true);
+
+create policy "Only authenticated users can participate in conversations." 
+  on public.participants
+    for insert to authenticated with check (true);
+
+create policy "Only authentiaceted users can remove participation in conversations." 
+  on public.participants 
+    for delete to authenticated using (auth.uid() = user_id);
+
+create or replace function delete_storage_object(bucket text, object text, out status int, out content text)
+ returns record
+ language 'plpgsql'
+ security definer
+ as $$
+ declare
+   project_url text := '<PROJECT_URL>';
+   service_role_key text := '<SERVICE_ROLE_KEY>'; -- full access needed
+   url text := project_url||'/storage/v1/object/sign/'||bucket||'/'||object;
+ begin
+   select
+       into status, content
+            result.status::int, result.content::text
+       FROM extensions.http((
+     'DELETE',
+     url,
+     ARRAY[extensions.http_header('authorization','Bearer '||service_role_key)],
+     NULL,
+     NULL)::extensions.http_request) as result;
+ end;
+ $$;
+
+ create or replace function delete_avatar(avatar_url text, out status int, out content text)
+ returns record
+ language 'plpgsql'
+ security definer
+ as $$
+ begin
+   select
+       into status, content
+            result.status, result.content
+       from public.delete_storage_object('avatars', avatar_url) as result;
+ end;
+ $$;
+
+ create or replace function delete_old_avatar()
+ returns trigger
+ language 'plpgsql'
+ security definer
+ as $$
+ declare
+   status int;
+   content text;
+   avatar_name text;
+ begin
+   if coalesce(old.avatar_url, '') <> ''
+       and (tg_op = 'DELETE' or (old.avatar_url <> coalesce(new.avatar_url, ''))) then
+     -- extract avatar name
+     avatar_name := old.avatar_url;
+     select
+       into status, content
+       result.status, result.content
+       from public.delete_avatar(avatar_name) as result;
+     if status <> 200 then
+       raise warning 'Could not delete avatar: % %', status, content;
+     end if;
+   end if;
+   if tg_op = 'DELETE' then
+     return old;
+   end if;
+   return new;
+ end;
+ $$;
+
+ create trigger before_profile_changes
+   before update of avatar_url or delete on public.profiles
+   for each row execute function public.delete_old_avatar();
+
+ create or replace function delete_old_profile()
+ returns trigger
+ language 'plpgsql'
+ security definer
+ as $$
+ begin
+   delete from public.profiles where id = old.id;
+   return old;
+ end;
+ $$;
+
+ create trigger before_delete_user
+   before delete on auth.users
+   for each row execute function public.delete_old_profile();
+
+-- Update user
+UPDATE profiles
+      SET 
+        full_name = coalesce(?, full_name),
+        email = coalesce(?, email),
+        username = coalesce(?, username),
+        avatar_url = coalesce(?, avatar_url)
+      WHERE id = ?
+      RETURNING *
+
+create or replace function public.handle_new_user()
+returns trigger
+language plpgsql
+security definer set search_path = public
+as $$
+begin
+  insert into public.profiles (id, full_name, email, username, avatar_url, push_token)
+  values (
+    new.id, 
+    new.raw_user_meta_data->>'full_name', 
+    new.email,
+    new.raw_user_meta_data->>'username', 
+    new.raw_user_meta_data->>'avatar_url',
+    new.raw_user_meta_data->>'push_token'
+    );
+  return new;
+end;
+$$;
+
+create trigger on_auth_user_created
+  after insert on auth.users
+  for each row execute procedure public.handle_new_user();
+
+create or replace function public.handle_update_user() 
+returns trigger
+language plpgsql
+security definer set search_path = public
+as $$
+begin
+  update public.profiles
+  set full_name = coalesce(new.raw_user_meta_data->>'full_name', old.full_name),
+      email = coalesce(new.email, old.email),
+      username = coalesce(new.raw_user_meta_data->>'username', old.username),
+      avatar_url = coalesce(new.raw_user_meta_data->>'avatar_url', old.avatar_url),
+      push_token = coalesce(new.raw_user_meta_data->>'push_token', old.push_token)
+  where id = new.id;
+end;
+$$;
+
+create trigger on_auth_user_updated
+after
+update on auth.users for each row
+execute procedure public.handle_update_user();
+
+create
+or replace function handle_delete_post_media() returns trigger as $$
+BEGIN
+  DELETE FROM storage.objects WHERE bucket_id = 'posts' AND (storage.foldername (name))[1] = OLD.id::text;
+  RETURN OLD;
+END;
+$$ language plpgsql;
+
+create trigger on_post_deleted
+after delete on posts for each row
+execute function handle_delete_post_media();
