@@ -3,6 +3,9 @@
 *.log
 *.pyc
 *.swp
+.atom/
+.idea/
+.vscode/
 .DS_Store
 .atom/
 .buildlog/
@@ -21,6 +24,14 @@ migrate_working_dir/
 .project
 .settings/
 .vscode/*
+
+# Files and directories created by pub
+.dart_tool/
+.packages
+pubspec.lock
+
+# Localization
+l10n_error.json
 
 # packages file containing multi-root paths
 .packages.generated
