@@ -16,6 +16,10 @@ void main() {
         expect(EnvDev.powersyncUrl, isNotNull);
         print(EnvDev.powersyncUrl);
       });
+      test('fcm server key not null', () {
+        expect(EnvDev.fcmServerKey, isNotNull);
+        print(EnvDev.fcmServerKey);
+      });
     });
     group('Prod', () {
       test('supabase url not null', () {
@@ -29,6 +33,10 @@ void main() {
       test('powersync url not null', () {
         expect(EnvProd.powersyncUrl, isNotNull);
         print(EnvProd.powersyncUrl);
+      });
+      test('fcm server key not null', () {
+        expect(EnvProd.fcmServerKey, isNotNull);
+        print(EnvProd.fcmServerKey);
       });
     });
   });

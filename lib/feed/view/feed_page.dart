@@ -243,15 +243,19 @@ class FeedBody extends StatelessWidget {
         likesText: context.l10n.likesCountText,
         commentsText: context.l10n.seeAllComments,
         onPressed: (action) => _onFeedItemAction(context, action),
-        onPostShareTap: (postId) async {
-          final userId = await context.pushNamed('search_users') as String?;
-          if (userId == null) return;
+        onPostShareTap: (postId, author) async {
+          final receiverId =
+              await context.pushNamed('search_users', extra: true) as String?;
+          if (receiverId == null) return;
+          final receiver =
+              User.fromRow(jsonDecode(receiverId) as Map<String, dynamic>);
           await Future(
             () => context.read<FeedBloc>().add(
                   FeedPostShareRequested(
                     postId: postId,
-                    senderUserId: user.id,
-                    recipientUserId: userId,
+                    sender: user,
+                    receiver: receiver,
+                    postAuthor: author,
                     message: Message(id: UidGenerator.v4()),
                   ),
                 ),
@@ -284,15 +288,19 @@ class FeedBody extends StatelessWidget {
         onPressed: (action) => _onFeedItemAction(context, action),
         commentsCount: bloc.commentsCountOf(block.id),
         sponsoredText: context.l10n.sponsoredPostText,
-        onPostShareTap: (postId) async {
-          final userId = await context.pushNamed('search_users') as String?;
-          if (userId == null) return;
+        onPostShareTap: (postId, author) async {
+          final receiverId =
+              await context.pushNamed('search_users', extra: true) as String?;
+          if (receiverId == null) return;
+          final receiver =
+              User.fromRow(jsonDecode(receiverId) as Map<String, dynamic>);
           await Future(
             () => context.read<FeedBloc>().add(
                   FeedPostShareRequested(
                     postId: postId,
-                    senderUserId: user.id,
-                    recipientUserId: userId,
+                    sender: user,
+                    receiver: receiver,
+                    postAuthor: author,
                     message: Message(id: UidGenerator.v4()),
                   ),
                 ),

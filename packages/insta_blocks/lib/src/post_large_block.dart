@@ -1,4 +1,5 @@
 import 'package:insta_blocks/insta_blocks.dart';
+import 'package:insta_blocks/src/models/post_author_converter.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'post_large_block.g.dart';
@@ -17,10 +18,10 @@ class PostLargeBlock extends PostBlock {
     required super.imagesUrl,
     required super.caption,
     super.action,
-    super.type = PostBlock.identifier,
+    super.type = PostLargeBlock.identifier,
   });
 
-  /// Converts a `Map<String, dynamic>` into a [PostBlock] instance.
+  /// Converts a `Map<String, dynamic>` into a [PostLargeBlock] instance.
   factory PostLargeBlock.fromJson(Map<String, dynamic> json) =>
       _$PostLargeBlockFromJson(json);
 

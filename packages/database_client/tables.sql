@@ -69,9 +69,16 @@ create table
     email text not null,
     username text not null,
     avatar_url text null,
+    push_token text null,
     constraint profiles_pkey primary key (id),
     constraint profiles_email_key unique (email),
-    constraint profiles_id_fkey foreign key (id) references auth.users (id) on update cascade on delete cascade
+    constraint profiles_id_fkey foreign key (id) references auth.users (id) on update cascade on delete cascade,
+    constraint username_length check (
+      (
+        (char_length(username) >= 3)
+        and (char_length(username) <= 16)
+      )
+    )
   ) tablespace pg_default;
 
 alter table profiles enable row level security;
@@ -464,12 +471,13 @@ security definer set search_path = public
 as $$
 begin
   update public.profiles
-  set full_name = coalesce(new.raw_user_meta_data->>'full_name', old.full_name),
-      email = coalesce(new.email, old.email),
-      username = coalesce(new.raw_user_meta_data->>'username', old.username),
-      avatar_url = coalesce(new.raw_user_meta_data->>'avatar_url', old.avatar_url),
-      push_token = coalesce(new.raw_user_meta_data->>'push_token', old.push_token)
+  set full_name = new.raw_user_meta_data->>'full_name',
+      email = new.email,
+      username = new.raw_user_meta_data->>'username',
+      avatar_url = new.raw_user_meta_data->>'avatar_url',
+      push_token = new.raw_user_meta_data->>'push_token'
   where id = new.id;
+  return new;
 end;
 $$;
 

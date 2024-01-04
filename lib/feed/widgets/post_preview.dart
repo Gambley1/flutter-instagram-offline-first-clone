@@ -8,7 +8,6 @@ import 'package:flutter_instagram_offline_first_clone/comments/view/view.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/feed.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:go_router/go_router.dart';
-import 'package:insta_blocks/insta_blocks.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:posts_repository/posts_repository.dart';
 import 'package:shared/shared.dart';
@@ -177,16 +176,22 @@ class _PostPreviewDetailsState extends State<PostPreviewDetails> {
               likesText: context.l10n.likesCountText,
               commentsText: context.l10n.seeAllComments,
               onPressed: (action) => _onFeedItemAction(context, action),
-              onPostShareTap: (postId) async {
-                final userId =
-                    await context.pushNamed('search_users') as String?;
-                if (userId == null) return;
+              onPostShareTap: (postId, author) async {
+                final receiverId = await context.pushNamed(
+                  'search_users',
+                  extra: true,
+                ) as String?;
+                if (receiverId == null) return;
+                final receiver = User.fromRow(
+                  jsonDecode(receiverId) as Map<String, dynamic>,
+                );
                 await Future(
                   () => context.read<FeedBloc>().add(
                         FeedPostShareRequested(
                           postId: postId,
-                          senderUserId: user.id,
-                          recipientUserId: userId,
+                          sender: user,
+                          receiver: receiver,
+                          postAuthor: author,
                           message: Message(id: UidGenerator.v4()),
                         ),
                       ),

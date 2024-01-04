@@ -1,8 +1,14 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:powersync_repository/powersync_repository.dart';
 import 'package:shared/shared.dart';
+
+typedef UserProfilePlaceholderBuilder = Widget Function(
+  BuildContext context,
+  String url,
+);
 
 class UserProfileAvatar extends StatelessWidget {
   const UserProfileAvatar({
@@ -22,6 +28,8 @@ class UserProfileAvatar extends StatelessWidget {
     this.withAddButton = false,
     this.enableBorder = true,
     this.enableUnactiveBorder = false,
+    this.withShimmerPlaceholder = false,
+    this.placeholderBuilder,
   });
 
   final bool hasStories;
@@ -31,6 +39,7 @@ class UserProfileAvatar extends StatelessWidget {
   final double? radius;
   final bool isLarge;
   final bool isImagePicker;
+  final bool withShimmerPlaceholder;
   final ValueSetter<String?>? onTap;
   final VoidCallback? onLongPress;
   final ValueSetter<String>? onImagePick;
@@ -39,6 +48,18 @@ class UserProfileAvatar extends StatelessWidget {
   final bool withAddButton;
   final bool enableBorder;
   final bool enableUnactiveBorder;
+  final UserProfilePlaceholderBuilder? placeholderBuilder;
+
+  static Widget _defaultPlaceholder({
+    required BuildContext context,
+    required double radius,
+  }) =>
+      CircleAvatar(
+        backgroundColor: context.customReversedAdaptiveColor(
+          light: Colors.white60,
+        ),
+        radius: radius,
+      );
 
   static const _gradientBorderDecoration = BoxDecoration(
     shape: BoxShape.circle,
@@ -118,6 +139,15 @@ class UserProfileAvatar extends StatelessWidget {
 
     late Widget avatar;
 
+    Widget placeholder(BuildContext context, String url) =>
+        withShimmerPlaceholder
+            ? ShimmerPlaceholder(radius: radius)
+            : placeholderBuilder?.call(context, url) ??
+                _defaultPlaceholder(
+                  context: context,
+                  radius: radius,
+                );
+
     avatar = Container(
       height: radius * 2 + 12,
       width: radius * 2 + 12,
@@ -145,12 +175,7 @@ class UserProfileAvatar extends StatelessWidget {
                       ),
                       radius: radius,
                     ),
-                    placeholder: (context, url) => CircleAvatar(
-                      backgroundColor: context.customReversedAdaptiveColor(
-                        light: Colors.white60,
-                      ),
-                      radius: radius,
-                    ),
+                    placeholder: placeholder,
                     imageBuilder: (context, imageProvider) => CircleAvatar(
                       radius: radius,
                       backgroundImage: imageProvider,

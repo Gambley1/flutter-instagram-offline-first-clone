@@ -57,6 +57,7 @@ class DefaultFirebaseOptions {
     storageBucket: 'flutter-instagram-clone-4cf14.appspot.com',
   );
 
+
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyAmIC6KC-eSAvfpB8ZPEVYJbrhia3e2rkA',
     appId: '1:252024091655:ios:dde00d065ec430e51e26a2',

@@ -8,7 +8,9 @@ import 'package:shared/shared.dart';
 import 'package:user_repository/user_repository.dart';
 
 class SearchUsers extends StatefulWidget {
-  const SearchUsers({super.key});
+  const SearchUsers({this.returnUser = false, super.key});
+
+  final bool returnUser;
 
   @override
   State<SearchUsers> createState() => _SearchUsersState();
@@ -56,7 +58,8 @@ class _SearchUsersState extends State<SearchUsers> {
           final user = _users[index];
           return ListTile(
             contentPadding: EdgeInsets.zero,
-            onTap: () => context.pop(user.id),
+            onTap: () =>
+                context.pop(widget.returnUser ? user.toJson() : user.id),
             leading:
                 UserProfileAvatar(avatarUrl: user.avatarUrl, isLarge: false),
             title: Text(user.fullName!),

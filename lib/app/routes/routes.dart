@@ -16,7 +16,6 @@ import 'package:flutter_instagram_offline_first_clone/reels/reels.dart';
 import 'package:flutter_instagram_offline_first_clone/search/search.dart';
 import 'package:flutter_instagram_offline_first_clone/user_profile/user_profile.dart';
 import 'package:go_router/go_router.dart';
-import 'package:insta_blocks/insta_blocks.dart';
 import 'package:posts_repository/posts_repository.dart';
 import 'package:shared/shared.dart' hide FeedPage;
 import 'package:user_repository/user_repository.dart';
@@ -201,9 +200,11 @@ GoRouter router(AppBloc appBloc) => GoRouter(
           name: 'search_users',
           parentNavigatorKey: _rootNavigatorKey,
           pageBuilder: (context, state) {
+            final returnUser = state.extra as bool?;
+
             return CustomTransitionPage(
               fullscreenDialog: true,
-              child: const SearchUsers(),
+              child: SearchUsers(returnUser: returnUser ?? false),
               transitionsBuilder:
                   (context, animation, secondaryAnimation, child) {
                 return SharedAxisTransition(

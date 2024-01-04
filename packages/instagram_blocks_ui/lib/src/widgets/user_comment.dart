@@ -63,6 +63,7 @@ class UserComment extends StatelessWidget {
         radius: !isReplied ? null : 16,
         avatarUrl: comment.author.avatarUrl,
         onTap: (_) => onUserProfileAvatarTap,
+        withShimmerPlaceholder: true,
       ),
       title: StreamBuilder<bool>(
         stream: isLikedByOwner,

@@ -46,7 +46,7 @@ class _ChatViewState extends State<ChatView> {
   final _scrollController = ScrollController();
   final _focusNode = FocusNode();
 
-  Future<String?> onMessageTap(
+  Future<MessageAction?> onMessageTap(
     TapUpDetails details,
     String messageId, {
     required bool isMine,
@@ -55,7 +55,7 @@ class _ChatViewState extends State<ChatView> {
     final box = context.findRenderObject()! as RenderBox;
     final localOffset = box.globalToLocal(details.globalPosition);
 
-    return showMenu<String>(
+    return showMenu<MessageAction>(
       context: context,
       position: RelativeRect.fromLTRB(
         localOffset.dx,
@@ -63,9 +63,9 @@ class _ChatViewState extends State<ChatView> {
         localOffset.dx,
         localOffset.dy,
       ),
-      items: <PopupMenuEntry<String>>[
+      items: <PopupMenuEntry<MessageAction>>[
         const PopupMenuItem(
-          value: 'reply',
+          value: MessageAction.reply,
           child: ListTile(
             contentPadding: EdgeInsets.zero,
             leading: Icon(Icons.reply_rounded),
@@ -75,7 +75,7 @@ class _ChatViewState extends State<ChatView> {
         if (isMine) ...[
           if (!hasSharedPost)
             const PopupMenuItem(
-              value: 'edit',
+              value: MessageAction.edit,
               child: ListTile(
                 contentPadding: EdgeInsets.zero,
                 leading: Icon(Icons.edit_outlined),
@@ -83,7 +83,7 @@ class _ChatViewState extends State<ChatView> {
               ),
             ),
           const PopupMenuItem(
-            value: 'delete',
+            value: MessageAction.delete,
             child: ListTile(
               contentPadding: EdgeInsets.zero,
               leading: Icon(Icons.delete_outlined),
@@ -155,6 +155,9 @@ class _ChatViewState extends State<ChatView> {
                   child: defaultMessageWidget.copyWith(
                     onReplyTap: reply,
                     onEditTap: _edit,
+                    onDeleteTap: (message) => context
+                        .read<ChatBloc>()
+                        .add(ChatMessageDeleteRequested(message.id)),
                   ),
                 );
               },
@@ -164,6 +167,7 @@ class _ChatViewState extends State<ChatView> {
             focusNode: _focusNode,
             scrollController: _scrollController,
             messageInputController: _messageInputController,
+            chat: widget.chat,
           ),
         ],
       ),
@@ -181,7 +185,7 @@ class ChatMessagesListView extends StatefulWidget {
   });
 
   final List<Message> messages;
-  final MessageTapCallback<String> onMessageTap;
+  final MessageTapCallback<MessageAction> onMessageTap;
   final MessageBuilder? messageBuilder;
   final ScrollController scrollController;
 
@@ -516,7 +520,7 @@ class ChatBackground extends StatelessWidget {
       child: ShaderMask(
         shaderCallback: (bounds) {
           return const LinearGradient(
-            begin: FractionalOffset.topCenter,  
+            begin: FractionalOffset.topCenter,
             end: FractionalOffset.bottomCenter,
             colors: [
               ui.Color.fromARGB(255, 119, 69, 121),

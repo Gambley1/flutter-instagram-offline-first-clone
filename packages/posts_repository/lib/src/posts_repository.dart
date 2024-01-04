@@ -1,5 +1,6 @@
 import 'package:database_client/database_client.dart';
 import 'package:shared/shared.dart';
+import 'package:user_repository/user_repository.dart';
 
 /// {@template posts_repository}
 /// A package that manages posts flow.
@@ -102,15 +103,17 @@ class PostsRepository implements PostsBaseRepository {
   @override
   Future<void> sharePost({
     required String id,
-    required String senderUserId,
+    required User sender,
+    required User receiver,
     required Message message,
-    String? recipientUserId,
+    PostAuthor? postAuthor,
   }) =>
       _client.sharePost(
         id: id,
-        senderUserId: senderUserId,
+        sender: sender,
         message: message,
-        recipientUserId: recipientUserId,
+        receiver: receiver,
+        postAuthor: postAuthor,
       );
 
   @override

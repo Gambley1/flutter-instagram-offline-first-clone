@@ -14,6 +14,8 @@ dependencies:
     sdk: flutter
   shared:
     path: ../shared
+  user_repository:
+    path: ../user_repository
 
 dev_dependencies:
   flutter_test:

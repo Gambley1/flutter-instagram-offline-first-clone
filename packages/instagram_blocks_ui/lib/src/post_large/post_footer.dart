@@ -42,7 +42,7 @@ class PostFooter extends StatelessWidget {
   final List<String> imagesUrl;
   final VoidCallback onUserProfileAvatarTap;
   final ValueSetter<bool> onCommentsTap;
-  final ValueSetter<String> onPostShareTap;
+  final void Function (String, PostAuthor) onPostShareTap;
   final String publishedAt;
 
   @override
@@ -86,7 +86,7 @@ class PostFooter extends StatelessWidget {
                   ),
                   const SizedBox(width: 14),
                   Tappable(
-                    onTap: () => onPostShareTap(block.id),
+                    onTap: () => onPostShareTap(block.id, block.author),
                     animationEffect: TappableAnimationEffect.scale,
                     child: const Icon(
                       Icons.near_me_outlined,

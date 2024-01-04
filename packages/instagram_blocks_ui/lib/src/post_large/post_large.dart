@@ -67,7 +67,7 @@ class PostLarge extends StatelessWidget {
 
   final ValueSetter<bool> onCommentsTap;
 
-  final ValueSetter<String> onPostShareTap;
+  final void Function (String, PostAuthor) onPostShareTap;
 
   final String? sponsoredText;
 

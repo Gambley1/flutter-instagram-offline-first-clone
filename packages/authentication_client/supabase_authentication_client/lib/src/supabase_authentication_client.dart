@@ -2,7 +2,6 @@ import 'package:authentication_client/authentication_client.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:powersync_repository/powersync_repository.dart';
-import 'package:shared/shared.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 import 'package:token_storage/token_storage.dart';
 
@@ -268,6 +267,7 @@ extension on supabase.User {
       fullName: userMetadata?['full_name'] as String?,
       username: userMetadata?['username'] as String?,
       avatarUrl: userMetadata?['avatar_url'] as String?,
+      pushToken: userMetadata?['push_token'] as String?,
       isNewUser: createdAt == lastSignInAt,
     );
   }

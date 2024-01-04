@@ -14,11 +14,11 @@ export 'src/widgets/widgets.dart'
         ImagesCarousel,
         PostSponsored,
         PromoFloatingAction,
+        ShimmerPlaceholder,
         StoryAvatar,
         SubscribeButton,
         SwipeDirection,
         Swipeable,
         TimeAgo,
         TwoRotatingArc,
-        UserComment,
-        UserProfileStatistic;
+        UserComment;

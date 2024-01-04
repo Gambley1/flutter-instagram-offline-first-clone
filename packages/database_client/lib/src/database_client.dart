@@ -1,3 +1,9 @@
+import 'dart:convert';
+import 'dart:io';
+import 'dart:isolate';
+
+import 'package:dio/dio.dart';
+import 'package:env/env.dart';
 import 'package:powersync_repository/powersync_repository.dart';
 import 'package:shared/shared.dart';
 import 'package:user_repository/user_repository.dart';
@@ -152,24 +158,29 @@ abstract class PostsBaseRepository {
   /// Delete the comment by associated [id].
   Future<void> deleteComment({required String id});
 
-  /// Shares the post with the user identified by [recipientUserId].
+  /// Shares the post with the user identified by [receiver].
   Future<void> sharePost({
     required String id,
-    required String senderUserId,
+    required User sender,
+    required User receiver,
     required Message message,
-    String? recipientUserId,
+    PostAuthor? postAuthor,
   });
 }
 
 abstract class ChatsBaseRepository {
   Stream<List<ChatInbox>> chatsOf({required String userId});
 
+  Future<ChatInbox> getChat({required String chatId, required String userId});
+
   Stream<List<Message>> messagesOf({required String chatId});
 
   Future<void> sendMessage({
     required String chatId,
-    required String senderId,
+    required User sender,
+    required User receiver,
     required Message message,
+    PostAuthor? postAuthor,
   });
 
   Future<void> deleteMessage({required String messageId});
@@ -205,7 +216,7 @@ abstract class Client extends _Repository
 /// {@endtemplate}
 class DatabaseClient extends Client {
   /// {@macro database_client}
-  const DatabaseClient(super.powerSyncRepository);
+  DatabaseClient(super.powerSyncRepository);
 
   @override
   String? get currentUserId =>
@@ -639,9 +650,10 @@ WHERE id = ?
   @override
   Future<void> sharePost({
     required String id,
-    required String senderUserId,
+    required User sender,
+    required User receiver,
     required Message message,
-    String? recipientUserId,
+    PostAuthor? postAuthor,
   }) async {
     final exists = await _powerSyncRepository.db().execute(
       '''
@@ -650,26 +662,27 @@ SELECT 1 FROM posts WHERE id = ?
       [id],
     );
     if (exists.isEmpty) return;
-    if (recipientUserId == null) return;
     final conversation = await _powerSyncRepository.db().execute(
       '''
 SELECT conversation_id
-  FROM Participants
+  FROM participants
 WHERE user_id = ?
   AND conversation_id IN (
       SELECT conversation_id
-      FROM Participants
+      FROM participants
       WHERE user_id = ?
     );
 ''',
-      [senderUserId, recipientUserId],
+      [sender.id, receiver.id],
     );
     if (conversation.isNotEmpty) {
       final chatId = conversation.first['conversation_id'] as String;
       await sendMessage(
         chatId: chatId,
-        senderId: senderUserId,
+        sender: sender,
+        receiver: receiver,
         message: message.copyWith(sharedPostId: id),
+        postAuthor: postAuthor,
       );
       return;
     }
@@ -690,7 +703,7 @@ insert into
   values
   (?, ?, ?)
   ''',
-      [UidGenerator.v4(), senderUserId, newChatId],
+      [UidGenerator.v4(), sender.id, newChatId],
     );
     final addParticipant2 = _powerSyncRepository.db().execute(
       '''
@@ -699,15 +712,17 @@ insert into
   values
   (?, ?, ?)
   ''',
-      [UidGenerator.v4(), recipientUserId, newChatId],
+      [UidGenerator.v4(), receiver.id, newChatId],
     );
     await createdConversation
         .whenComplete(() => Future.wait([addParticipant1, addParticipant2]));
 
     await sendMessage(
       chatId: newChatId,
-      senderId: senderUserId,
+      sender: sender,
+      receiver: receiver,
       message: message.copyWith(sharedPostId: id),
+      postAuthor: postAuthor,
     );
   }
 
@@ -743,7 +758,7 @@ ORDER BY created_at ASC
     String? pushToken,
   }) =>
       _powerSyncRepository.updateUser({
-        if (fullName != null) 'fulll_name': fullName,
+        if (fullName != null) 'full_name': fullName,
         if (email != null) 'email': email,
         if (username != null) 'username': username,
         if (avatarUrl != null) 'avatar_url': avatarUrl,
@@ -776,6 +791,39 @@ where
 ''',
         parameters: [userId],
       ).map((event) => event.map(ChatInbox.fromRow).toList(growable: false));
+
+  @override
+  Future<ChatInbox> getChat({
+    required String chatId,
+    required String userId,
+  }) async {
+    final row = await _powerSyncRepository.db().get(
+      '''
+select
+  c.id,
+  c.type,
+  c.name,
+  p2.id as participant_id,
+  p2.full_name as participant_name,
+  p2.email as participant_email,
+  p2.username as participant_username,
+  p2.avatar_url as participant_avatar_url,
+  p2.push_token as participant_push_token
+from
+  conversations c
+  join participants pt on c.id = pt.conversation_id
+  join profiles p on pt.user_id = p.id
+  join participants pt2 on c.id = pt2.conversation_id
+  join profiles p2 on pt2.user_id = p2.id
+where
+  pt.user_id = ?1
+  and pt2.user_id != ?1
+  and c.id = ?2
+''',
+      [userId, chatId],
+    );
+    return ChatInbox.fromRow(row);
+  }
 
   @override
   Stream<List<Message>> messagesOf({required String chatId}) =>
@@ -936,8 +984,10 @@ WHERE
   @override
   Future<void> sendMessage({
     required String chatId,
-    required String senderId,
+    required User sender,
+    required User receiver,
     required Message message,
+    PostAuthor? postAuthor,
   }) =>
       _powerSyncRepository.db().writeTransaction((sqlContext) async {
         await sqlContext.execute(
@@ -954,7 +1004,7 @@ values
           [
             message.id,
             chatId,
-            senderId,
+            sender.id,
             message.type.value,
             message.message,
             message.replyMessageId,
@@ -994,7 +1044,76 @@ values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
               )
               .toList(),
         );
+
+        try {
+          final receivePort = ReceivePort();
+
+          await Isolate.spawn(sendBackgroundNotification, [
+            receivePort.sendPort,
+            receiver.pushToken,
+            sender,
+            message,
+            postAuthor,
+            chatId,
+          ]);
+        } catch (error) {
+          logE('Error send notification: $error');
+        }
       });
+
+  /// Sends notification in a background isolate.
+  static Future<void> sendBackgroundNotification(List<dynamic> args) async {
+    await sendNotification(
+      sendToPushToken: args[1] as String,
+      sender: args[2] as User,
+      message: args[3] as Message,
+      postAuthor: args[4] as PostAuthor?,
+      chatId: args[5] as String,
+    );
+    Isolate.exit(args[0] as SendPort, args);
+  }
+
+  /// Sends notification using Google APIs to user.
+  static Future<void> sendNotification({
+    required String sendToPushToken,
+    String? chatId,
+    User? sender,
+    Message? message,
+    PostAuthor? postAuthor,
+  }) async {
+    final notificationBody =
+        (message?.message == null || (message?.message.trim().isEmpty ?? true))
+            ? 'Sent post ${postAuthor?.username}'
+            : message?.message;
+
+    final data = {
+      'to': sendToPushToken,
+      'content_available': true,
+      'priority': 10,
+      'notification': {
+        'title': sender?.username,
+        'body': notificationBody,
+        'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+      },
+      'data': {
+        if (chatId != null) 'chat_id': chatId,
+      },
+    };
+
+    final headers = {
+      HttpHeaders.contentTypeHeader: 'application/json',
+      HttpHeaders.authorizationHeader: 'key=${EnvProd.fcmServerKey}',
+    };
+
+    final res = await Dio().post<String>(
+      'https://fcm.googleapis.com/fcm/send',
+      data: jsonEncode(data),
+      options: Options(headers: headers),
+    );
+    logI(
+      'Response: $res, \n status code: ${res.statusCode}',
+    );
+  }
 
   @override
   Future<void> editMessage({

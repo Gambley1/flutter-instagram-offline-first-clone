@@ -18,6 +18,7 @@ class Post {
     required this.isOwner,
     required this.avatarUrl,
     required this.username,
+    required this.fullName,
     this.updatedAt,
     this.subscribed,
     this.wasSubscribed,
@@ -32,6 +33,7 @@ class Post {
     final isSubscribed = subscribed == 1 || isOwner;
     final wasSubscribed = isSubscribed;
     final username = row['username'] as String?;
+    final fullName = row['full_name'] as String?;
     final avatarUrl = row['avatar_url'] as String?;
 
     return Post(
@@ -51,6 +53,7 @@ class Post {
       wasSubscribed: wasSubscribed,
       avatarUrl: avatarUrl ?? '',
       username: username ?? '',
+      fullName: fullName ?? '',
     );
   }
 
@@ -67,11 +70,17 @@ class Post {
   final bool? wasSubscribed;
   final String avatarUrl;
   final String username;
+  final String fullName;
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'id': id,
-      'author': author,
+      'author': {
+        'id': author,
+        'username': username,
+        'full_name': fullName,
+        'avatar_url': avatarUrl,
+      },
       'caption': caption,
       'type': type,
       'mediaUrl': mediaUrl,
