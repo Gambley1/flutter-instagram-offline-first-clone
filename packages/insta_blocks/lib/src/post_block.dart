@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:insta_blocks/insta_blocks.dart';
 import 'package:insta_blocks/src/block_action.dart';
+import 'package:insta_blocks/src/models/models.dart';
 
 /// {@template post_block}
 /// An abstract block which represents a post block.

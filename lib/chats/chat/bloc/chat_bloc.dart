@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:shared/shared.dart';
+import 'package:user_repository/user_repository.dart';
 
 part 'chat_bloc.g.dart';
 part 'chat_event.dart';
@@ -47,7 +48,8 @@ class ChatBloc extends HydratedBloc<ChatEvent, ChatState> {
     try {
       await _chatsRepository.sendMessage(
         chatId: _chatId,
-        senderId: event.senderId,
+        sender: event.sender,
+        receiver: event.receiver,
         message: event.message,
       );
     } catch (error, stackTrace) {

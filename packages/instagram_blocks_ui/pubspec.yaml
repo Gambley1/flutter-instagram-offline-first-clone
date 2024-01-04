@@ -27,6 +27,7 @@ dependencies:
     path: ../insta_blocks
   pinch_zoom_release_unzoom: ^1.0.1
   url_launcher: ^6.2.1
+  shimmer: ^3.0.0
 
 dev_dependencies:
   flutter_test:

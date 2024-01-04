@@ -1,5 +1,6 @@
 import 'package:database_client/database_client.dart';
 import 'package:shared/shared.dart';
+import 'package:user_repository/user_repository.dart';
 
 /// {@template chats_repository}
 /// A repository that manages the chats data data flow.
@@ -13,6 +14,10 @@ class ChatsRepository implements ChatsBaseRepository {
   @override
   Stream<List<ChatInbox>> chatsOf({required String userId}) =>
       _client.chatsOf(userId: userId);
+
+  @override
+  Future<ChatInbox> getChat({required String chatId, required String userId}) =>
+      _client.getChat(chatId: chatId, userId: userId);
 
   @override
   Stream<List<Message>> messagesOf({required String chatId}) =>
@@ -42,16 +47,23 @@ class ChatsRepository implements ChatsBaseRepository {
   @override
   Future<void> sendMessage({
     required String chatId,
-    required String senderId,
+    required User sender,
+    required User receiver,
     required Message message,
+    PostAuthor? postAuthor,
   }) =>
       _client.sendMessage(
         chatId: chatId,
-        senderId: senderId,
+        sender: sender,
+        receiver: receiver,
         message: message,
+        postAuthor: postAuthor,
       );
 
   @override
-  Future<void> editMessage({required Message oldMessage, required Message newMessage}) =>
+  Future<void> editMessage({
+    required Message oldMessage,
+    required Message newMessage,
+  }) =>
       _client.editMessage(oldMessage: oldMessage, newMessage: newMessage);
 }

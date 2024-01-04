@@ -127,6 +127,7 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
         username: event.username,
         avatarUrl: event.avatarUrl,
         fullName: event.fullName,
+        pushToken: event.pushToken,
       );
 
   Future<void> _onPostsFetch(

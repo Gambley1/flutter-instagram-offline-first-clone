@@ -8,6 +8,9 @@ environment:
   flutter: ">=3.10.0"
 
 dependencies:
+  dio: ^5.4.0
+  env:
+    path: ../env
   flutter:
     sdk: flutter
   jiffy: ^6.2.1

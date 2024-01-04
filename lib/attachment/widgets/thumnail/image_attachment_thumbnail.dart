@@ -8,6 +8,7 @@ import 'package:cached_memory_image/cached_memory_image.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_instagram_offline_first_clone/attachment/widgets/thumnail/thumbnail.dart';
+import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:shared/shared.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -224,27 +225,7 @@ class LocalImageAttachment extends StatelessWidget {
         cacheWidth: width?.toInt(),
         fit: fit,
         errorBuilder: errorBuilder,
-        placeholder: Builder(
-          builder: (context) {
-            final image = Assets.images.placeholder.image(
-              width: width,
-              height: height,
-              fit: BoxFit.cover,
-            );
-
-            return Shimmer.fromColors(
-              baseColor: context.customReversedAdaptiveColor(
-                dark: const Color(0xff2d2f2f),
-                light: Colors.white.withOpacity(.4),
-              ),
-              highlightColor: context.customReversedAdaptiveColor(
-                dark: const Color(0xff13151b),
-                light: const Color.fromARGB(255, 181, 190, 226),
-              ),
-              child: image,
-            );
-          },
-        ),
+        placeholder: ShimmerPlaceholder(height: height, width: width,),
       );
     }
 

@@ -11,6 +11,8 @@ dependencies:
   firebase_messaging: ^14.7.9
   flutter:
     sdk: flutter
+  shared:
+    path: ../../shared
 
 dev_dependencies:
   flutter_test:

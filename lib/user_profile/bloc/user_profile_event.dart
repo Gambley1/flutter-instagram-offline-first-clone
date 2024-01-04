@@ -29,12 +29,14 @@ final class UserProfileUpdateRequested extends UserProfileEvent {
     this.email,
     this.username,
     this.avatarUrl,
+    this.pushToken,
   });
 
   final String? fullName;
   final String? email;
   final String? username;
   final String? avatarUrl;
+  final String? pushToken;
 }
 
 final class UserProfilePostsRequested extends UserProfileEvent {

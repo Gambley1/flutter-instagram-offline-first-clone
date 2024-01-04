@@ -329,6 +329,7 @@ class _CommentTextFieldState extends State<CommentTextField> {
               isLarge: false,
               onTap: (_) {},
               avatarUrl: user.avatarUrl,
+              withShimmerPlaceholder: true,
             ),
             subtitle: AppTextField(
               textController: _commentTextController,

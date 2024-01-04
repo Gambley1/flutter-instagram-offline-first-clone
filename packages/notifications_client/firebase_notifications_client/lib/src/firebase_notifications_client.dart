@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 /// {@template firebase_notifications_client}
@@ -10,6 +12,8 @@ class FirebaseNotificationsClient {
   }) : _firebaseMessaging = firebaseMessaging;
 
   final FirebaseMessaging _firebaseMessaging;
+
+  Stream<String> onTokenRefresh() => _firebaseMessaging.onTokenRefresh;
 
   /// Requests the permission to send the Firebase Cloud Notifications.
   Future<void> requestPermission() => _firebaseMessaging.requestPermission();

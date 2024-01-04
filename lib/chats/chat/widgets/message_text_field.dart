@@ -6,14 +6,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/bloc/app_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/chats/chat/bloc/chat_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/chats/chat/widgets/message_input_controller.dart';
+import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:ogp_data_extract/ogp_data_extract.dart';
 import 'package:shared/shared.dart';
-import 'package:shimmer/shimmer.dart';
 
 class ChatMessageTextField extends StatelessWidget {
   const ChatMessageTextField({
     required this.scrollController,
     required this.focusNode,
+    required this.chat,
     this.messageInputController,
     this.restorationId,
     super.key,
@@ -23,6 +24,7 @@ class ChatMessageTextField extends StatelessWidget {
   final FocusNode focusNode;
   final ScrollController scrollController;
   final String? restorationId;
+  final ChatInbox chat;
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +40,7 @@ class ChatMessageTextField extends StatelessWidget {
                   messageInputController: messageInputController,
                   focusNode: focusNode,
                   scrollController: scrollController,
+                  chat: chat,
                 ),
               ),
             ],
@@ -52,6 +55,7 @@ class ChatMessageTextFieldInput extends StatefulWidget {
   const ChatMessageTextFieldInput({
     required this.focusNode,
     required this.scrollController,
+    required this.chat,
     this.messageInputController,
     this.restorationId,
     super.key,
@@ -61,6 +65,7 @@ class ChatMessageTextFieldInput extends StatefulWidget {
   final FocusNode focusNode;
   final ScrollController scrollController;
   final String? restorationId;
+  final ChatInbox chat;
 
   @override
   State<ChatMessageTextFieldInput> createState() =>
@@ -160,7 +165,8 @@ class _ChatMessageTextFieldInputState extends State<ChatMessageTextFieldInput>
         context.read<ChatBloc>().add(
               ChatSendMessageRequested(
                 message: message,
-                senderId: user.id,
+                receiver: widget.chat.participant,
+                sender: user,
               ),
             );
       }
@@ -468,19 +474,11 @@ class ReplyMessagePreview extends StatelessWidget {
                 ? null
                 : CachedNetworkImage(
                     imageUrl: replyingMessage.replyMessageAttachmentUrl!,
-                    placeholder: (context, __) {
-                      final image = Assets.images.placeholder.image(
-                        width: 52,
-                        height: 52,
-                        fit: BoxFit.cover,
-                      );
-
-                      return Shimmer.fromColors(
-                        baseColor: const Color(0xff2d2f2f),
-                        highlightColor: const Color(0xff13151b),
-                        child: image,
-                      );
-                    },
+                    placeholder: (_, __) => const ShimmerPlaceholder(
+                      height: 52,
+                      width: 52,
+                      withAdaptiveColors: false,
+                    ),
                     errorWidget: (context, url, error) =>
                         Assets.images.placeholder.image(
                       width: 52,

@@ -4,7 +4,6 @@ import 'dart:math';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:insta_blocks/insta_blocks.dart';
 import 'package:posts_repository/posts_repository.dart';
 import 'package:shared/shared.dart';
 import 'package:user_repository/user_repository.dart';
@@ -283,9 +282,10 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
   ) =>
       _postsRepository.sharePost(
         id: event.postId,
-        senderUserId: event.senderUserId,
-        recipientUserId: event.recipientUserId,
+        sender: event.sender,
+        receiver: event.receiver,
         message: event.message,
+        postAuthor: event.postAuthor,
       );
 
   Future<PostBlock?> getPostBy(String id) async {

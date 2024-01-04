@@ -132,8 +132,9 @@ const schema = Schema([
   Table(
     'stories',
     [
-      Column.text('content'),
       Column.text('user_id'),
+      Column.text('content_type'),
+      Column.text('content_url'),
     ],
     indexes: [Index('user', [IndexedColumn('user_id')])],
   ),

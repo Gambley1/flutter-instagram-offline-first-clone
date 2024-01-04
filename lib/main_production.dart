@@ -4,7 +4,6 @@ import 'package:firebase_notifications_client/firebase_notifications_client.dart
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/bootstrap.dart';
 import 'package:posts_repository/posts_repository.dart';
-import 'package:shared/shared.dart';
 import 'package:supabase_authentication_client/supabase_authentication_client.dart';
 import 'package:token_storage/token_storage.dart';
 import 'package:user_repository/user_repository.dart';

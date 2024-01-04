@@ -16,9 +16,7 @@ import 'package:flutter_instagram_offline_first_clone/chats/chat/widgets/text_bu
 import 'package:go_router/go_router.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:intl/intl.dart';
-import 'package:selectable/selectable.dart';
 import 'package:shared/shared.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 typedef MessageTapCallback<T> = Future<T?> Function(
@@ -39,30 +37,34 @@ class MessageBubble extends StatefulWidget {
   const MessageBubble({
     required this.message,
     required this.onMessageTap,
-    this.borderRadius,
     this.onEditTap,
     this.onReplyTap,
+    this.onDeleteTap,
+    this.borderRadius,
     super.key,
   });
 
   final ValueSetter<Message>? onReplyTap;
   final ValueSetter<Message>? onEditTap;
+  final ValueSetter<Message>? onDeleteTap;
   final Message message;
   final BorderRadiusGeometry Function(bool)? borderRadius;
-  final MessageTapCallback<String> onMessageTap;
+  final MessageTapCallback<MessageAction> onMessageTap;
 
   MessageBubble copyWith({
     ValueSetter<Message>? onReplyTap,
     ValueSetter<Message>? onEditTap,
+    ValueSetter<Message>? onDeleteTap,
     Message? message,
     BorderRadiusGeometry Function(bool)? borderRadius,
-    MessageTapCallback<String>? onMessageTap,
+    MessageTapCallback<MessageAction>? onMessageTap,
   }) =>
       MessageBubble(
         message: message ?? this.message,
         onMessageTap: onMessageTap ?? this.onMessageTap,
         onReplyTap: onReplyTap ?? this.onReplyTap,
         onEditTap: onEditTap ?? this.onEditTap,
+        onDeleteTap: onDeleteTap ?? this.onDeleteTap,
         borderRadius: borderRadius ?? this.borderRadius,
       );
 
@@ -106,6 +108,12 @@ class _MessageBubbleState extends State<MessageBubble> {
       child: Tappable(
         animationEffect: TappableAnimationEffect.none,
         onTapUp: (details) async {
+          late final onDeleteTap = context.confirmAction(
+            fn: () => widget.onDeleteTap?.call(message),
+            noText: 'Cancel',
+            title: 'Delete this message?',
+            yesText: 'Delete',
+          );
           final option = await widget.onMessageTap.call(
             details,
             message.id,
@@ -113,40 +121,20 @@ class _MessageBubbleState extends State<MessageBubble> {
             hasSharedPost: message.sharedPost != null,
           );
           if (option == null) return;
-          if (option == 'edit') {
-            widget.onEditTap?.call(message);
-          }
-          if (option == 'reply') {
-            widget.onReplyTap?.call(message);
-          }
-          if (option == 'delete') {
-            await Future(
-              () => context.confirmAction(
-                fn: () => context
-                    .read<ChatBloc>()
-                    .add(ChatMessageDeleteRequested(message.id)),
-                noText: 'Cancel',
-                title: 'Delete this message?',
-                yesText: 'Delete',
-              ),
-            );
-          }
+          void action() => switch (option) {
+                MessageAction.delete => onDeleteTap,
+                MessageAction.edit => widget.onEditTap?.call(message),
+                MessageAction.reply => widget.onReplyTap?.call(message),
+              };
+          action();
         },
         child: FractionallySizedBox(
           alignment: messageAlignment,
           widthFactor: 0.9,
-          child: Selectable(
-            selectWordOnDoubleTap: true,
-            popupMenuItems: const [
-              SelectableMenuItem(type: SelectableMenuItemType.copy),
-              SelectableMenuItem(type: SelectableMenuItemType.define),
-            ],
-            child: Container(
-              alignment: messageAlignment,
-              padding: const EdgeInsets.symmetric(
-                // vertical: AppSpacing.xs,
-                horizontal: AppSpacing.md,
-              ),
+          child: Align(
+            alignment: messageAlignment,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
               child: ClipRRect(
                 borderRadius: widget.borderRadius?.call(isMine) ??
                     const BorderRadius.all(Radius.circular(22)),
@@ -599,6 +587,9 @@ class RepliedMessageBubble extends StatelessWidget {
 
     final accentColor = isMine ? Colors.white : const Color(0xff337eff);
 
+    const imageHeight = 46.0;
+    const imageWidth = 46.0;
+
     return Tappable(
       onTap: () {},
       animationEffect: TappableAnimationEffect.scale,
@@ -620,21 +611,13 @@ class RepliedMessageBubble extends StatelessWidget {
               ? null
               : CachedNetworkImage(
                   imageUrl: replyMessageAttachmentUrl,
-                  memCacheHeight: 46,
-                  memCacheWidth: 46,
-                  placeholder: (context, __) {
-                    final image = Assets.images.placeholder.image(
-                      width: 46,
-                      height: 46,
-                      fit: BoxFit.cover,
-                    );
-
-                    return Shimmer.fromColors(
-                      baseColor: const Color(0xff2d2f2f),
-                      highlightColor: const Color(0xff13151b),
-                      child: image,
-                    );
-                  },
+                  memCacheHeight: imageHeight.toInt(),
+                  memCacheWidth: imageWidth.toInt(),
+                  placeholder: (_, __) => const ShimmerPlaceholder(
+                    height: imageHeight,
+                    width: imageWidth,
+                    withAdaptiveColors: false,
+                  ),
                   errorWidget: (context, url, error) =>
                       Assets.images.placeholder.image(
                     width: 46,

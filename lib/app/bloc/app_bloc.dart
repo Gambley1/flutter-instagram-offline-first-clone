@@ -37,6 +37,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
 
   StreamSubscription<AuthState>? _authStateChangesSubscription;
   StreamSubscription<User>? _userSubscription;
+  StreamSubscription<String>? _pushTokenSubscription;
 
   Future<List<User>> searchUsers({
     required String? query,
@@ -74,6 +75,16 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   }
 
   Future<void> _onAppOpened(AppOpened event, Emitter<AppState> emit) async {
+    await _notificationsClient.requestPermission();
+
+    final newPushToken = await _notificationsClient.getToken();
+    await _userRepository.updateUser(pushToken: newPushToken);
+
+    _pushTokenSubscription =
+        _notificationsClient.onTokenRefresh().listen((pushToken) async {
+      await _userRepository.updateUser(pushToken: pushToken);
+    });
+
     _authStateChangesSubscription =
         _userRepository.authStateChanges().listen((authState) async {
       final event = authState.event;
@@ -104,10 +115,6 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     Emitter<AppState> emit,
   ) async {
     emit(state.copyWith(status: AppStatus.authenticated));
-    // await _notificationsClient.requestPermission();
-
-    // final pushToken = await _notificationsClient.getToken();
-    // await _userRepository.updateUser(pushToken: pushToken);
   }
 
   Future<void> _onAppUnauthenticate(
@@ -115,7 +122,6 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     Emitter<AppState> emit,
   ) async {
     emit(const AppState.unauthenticated());
-    // await _userRepository.updateUser(pushToken: '');
   }
 
   Future<void> _onAppLogoutRequested(
@@ -128,6 +134,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   Future<void> close() {
     _userSubscription?.cancel();
     _authStateChangesSubscription?.cancel();
+    _pushTokenSubscription?.cancel();
     return super.close();
   }
 }

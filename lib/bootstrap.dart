@@ -32,6 +32,13 @@ class AppBlocObserver extends BlocObserver {
   }
 }
 
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  logD('Handling a background message: ${message.toMap()}');
+}
+
 Future<void> bootstrap(
   AppBuilder builder, {
   required bool isDev,
@@ -61,7 +68,12 @@ Future<void> bootstrap(
       final powerSyncRepository = PowerSyncRepository(isDev: isDev);
       await powerSyncRepository.initialize();
 
-      runApp(await builder(powerSyncRepository, FirebaseMessaging.instance));
+      final firebaseMessaging = FirebaseMessaging.instance;
+      FirebaseMessaging.onBackgroundMessage(
+        _firebaseMessagingBackgroundHandler,
+      );
+
+      runApp(await builder(powerSyncRepository, firebaseMessaging));
     },
     (error, stack) {
       logE(error.toString(), stackTrace: stack);

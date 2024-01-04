@@ -1,6 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:equatable/equatable.dart';
-import 'package:insta_blocks/insta_blocks.dart';
 import 'package:shared/shared.dart';
 
 /// The type of the message.
@@ -18,6 +17,16 @@ enum MessageType {
   voice('voice');
 
   const MessageType(this.value);
+
+  final String value;
+}
+
+enum MessageAction {
+  edit('edit'),
+  reply('reply'),
+  delete('delete');
+
+  const MessageAction(this.value);
 
   final String value;
 }

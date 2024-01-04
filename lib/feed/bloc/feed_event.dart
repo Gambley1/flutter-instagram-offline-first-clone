@@ -58,13 +58,15 @@ final class FeedPostIsLikedSubscribeRequested extends FeedEvent {
 final class FeedPostShareRequested extends FeedEvent {
   const FeedPostShareRequested({
     required this.postId,
-    required this.senderUserId,
+    required this.sender,
     required this.message,
-    this.recipientUserId,
+    required this.receiver,
+    this.postAuthor,
   });
 
   final String postId;
-  final String senderUserId;
-  final String? recipientUserId;
+  final User sender;
+  final User receiver;
+  final PostAuthor? postAuthor;
   final Message message;
 }

@@ -1,4 +1,5 @@
 import 'package:insta_blocks/insta_blocks.dart';
+import 'package:insta_blocks/src/models/models.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'post_sponsored_block.g.dart';

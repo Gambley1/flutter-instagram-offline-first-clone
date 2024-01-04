@@ -9,10 +9,10 @@ import 'package:flutter_instagram_offline_first_clone/feed/feed.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:flutter_instagram_offline_first_clone/user_profile/user_profile.dart';
 import 'package:go_router/go_router.dart';
-import 'package:insta_blocks/insta_blocks.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:shared/shared.dart';
+import 'package:user_repository/user_repository.dart';
 
 class UserProfilePosts extends StatefulWidget {
   const UserProfilePosts({
@@ -140,16 +140,22 @@ class _UserProfilePostsState extends State<UserProfilePosts> {
                   context: context,
                   showFullSized: showFullSized,
                 ),
-                onPostShareTap: (postId) async {
-                  final userId =
-                      await context.pushNamed('search_users') as String?;
-                  if (userId == null) return;
+                onPostShareTap: (postId, author) async {
+                  final receiverId = await context.pushNamed(
+                    'search_users',
+                    extra: true,
+                  ) as String?;
+                  if (receiverId == null) return;
+                  final receiver = User.fromRow(
+                    jsonDecode(receiverId) as Map<String, dynamic>,
+                  );
                   await Future(
                     () => context.read<FeedBloc>().add(
                           FeedPostShareRequested(
                             postId: postId,
-                            senderUserId: user.id,
-                            recipientUserId: userId,
+                            sender: user,
+                            receiver: receiver,
+                            postAuthor: author,
                             message: Message(id: UidGenerator.v4()),
                           ),
                         ),

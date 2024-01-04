@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:insta_blocks/insta_blocks.dart';
+import 'package:insta_blocks/src/models/post_author_converter.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'post_small_block.g.dart';

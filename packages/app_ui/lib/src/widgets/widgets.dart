@@ -5,7 +5,6 @@ export 'app_divider.dart';
 export 'app_loading_progress.dart';
 export 'app_logo.dart';
 export 'app_scaffold.dart';
-export 'app_shimmer_loading.dart';
 export 'app_snackbar.dart';
 export 'app_text_field.dart';
 export 'empty_page.dart';

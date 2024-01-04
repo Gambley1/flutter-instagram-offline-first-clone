@@ -60,7 +60,7 @@ class PostsListView extends StatelessWidget {
   final Stream<int> Function(String) likesCount;
   final Stream<int> Function(String) commentsCountOf;
   final ValueSetter<BlockAction> onPressed;
-  final ValueSetter<String> onPostShareTap;
+  final void Function(String, PostAuthor) onPostShareTap;
 
   @override
   Widget build(BuildContext context) {
@@ -170,7 +170,7 @@ class _PostsItemController extends StatefulWidget {
   final bool enableFollowButton;
   final CommentsTapCallback onCommentsTap;
   final ValueSetter<BlockAction> onPressed;
-  final ValueSetter<String> onPostShareTap;
+  final void Function(String, PostAuthor) onPostShareTap;
 
   @override
   State<_PostsItemController> createState() => _PostsItemControllerState();

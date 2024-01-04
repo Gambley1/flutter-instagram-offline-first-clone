@@ -17,7 +17,7 @@ PostLargeBlock _$PostLargeBlockFromJson(Map<String, dynamic> json) =>
           id: $checkedConvert('id', (v) => v as String),
           author: $checkedConvert(
               'author',
-              (v) => const PostAuthorConverter()
+              (v) => PostAuthorConverter()
                   .fromJson(v as Map<String, dynamic>)),
           publishedAt: $checkedConvert(
               'published_at', (v) => DateTime.parse(v as String)),
@@ -30,7 +30,7 @@ PostLargeBlock _$PostLargeBlockFromJson(Map<String, dynamic> json) =>
               (v) => const BlockActionConverter()
                   .fromJson(v as Map<String, dynamic>?)),
           type: $checkedConvert(
-              'type', (v) => v as String? ?? PostBlock.identifier),
+              'type', (v) => v as String? ?? PostLargeBlock.identifier),
         );
         return val;
       },

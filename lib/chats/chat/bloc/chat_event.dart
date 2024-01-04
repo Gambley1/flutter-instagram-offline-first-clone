@@ -13,11 +13,13 @@ final class ChatMessagesSubscriptionRequested extends ChatEvent {
 
 final class ChatSendMessageRequested extends ChatEvent {
   const ChatSendMessageRequested({
-    required this.senderId,
+    required this.sender,
+    required this.receiver,
     required this.message,
   });
 
-  final String senderId;
+  final User sender;
+  final User receiver;
   final Message message;
 }
 
@@ -34,8 +36,10 @@ final class ChatMessageSeen extends ChatEvent {
 }
 
 final class ChatMessageEditRequested extends ChatEvent {
-  const ChatMessageEditRequested(
-      {required this.newMessage, required this.oldMessage,});
+  const ChatMessageEditRequested({
+    required this.newMessage,
+    required this.oldMessage,
+  });
 
   final Message oldMessage;
   final Message newMessage;

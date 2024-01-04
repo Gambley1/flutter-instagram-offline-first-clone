@@ -261,6 +261,7 @@ class SignupCubit extends Cubit<SignupState> {
   void _errorFormatter(Object e, StackTrace stackTrace) {
     logE(e.toString());
     addError(e, stackTrace);
+
     SignupSubmissionStatus submissionStatus() {
       return SignupSubmissionStatus.error;
     }
