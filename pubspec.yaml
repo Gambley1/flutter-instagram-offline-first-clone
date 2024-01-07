@@ -63,7 +63,7 @@ dependencies:
   url_launcher: ^6.2.2
   async: ^2.11.0
   shimmer: ^3.0.0
-  cached_network_image: ^3.3.0
+  cached_network_image: ^3.3.1
   ogp_data_extract: ^0.1.4
   selectable: ^0.3.0
   carousel_slider: ^4.2.1
