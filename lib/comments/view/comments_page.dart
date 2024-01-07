@@ -6,7 +6,8 @@ import 'package:flutter_instagram_offline_first_clone/comments/bloc/comments_blo
 import 'package:flutter_instagram_offline_first_clone/comments/controller/comments_controller.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/feed.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
-import 'package:insta_blocks/insta_blocks.dart';
+import 'package:flutter_instagram_offline_first_clone/stories/stories.dart';
+import 'package:go_router/go_router.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:posts_repository/posts_repository.dart';
 import 'package:shared/shared.dart';
@@ -171,7 +172,21 @@ class CommentsListView extends StatelessWidget {
                       comment: comment,
                       post: post,
                       currentUserId: user.id,
-                      onUserProfileAvatarTap: () {},
+                      onAvatarTap: () {
+                        context
+                          ..pop()
+                          ..pushNamed(
+                            'user_profile',
+                            pathParameters: {'user_id': comment.author.id},
+                          );
+                      },
+                      avatarBuilder: (context, author, onAvatarTap, radius) =>
+                          UserStoriesAvatar(
+                        author: author,
+                        onAvatarTap: onAvatarTap,
+                        radius: radius,
+                        enableUnactiveBorder: false,
+                      ),
                       onReplyButtonTap: (username) =>
                           context.read<CommentsController>().setReplyingTo(
                                 commentId: comment.id,
@@ -239,7 +254,8 @@ class _CommentTextFieldState extends State<CommentTextField> {
   void initState() {
     super.initState();
     _commentTextController = TextEditingController();
-    context.read<CommentsController>().init(_commentTextController);
+    context.read<CommentsController>().commentTextController =
+        _commentTextController;
 
     _focusNode = context.read<CommentsController>().commentFocusNode;
     _focusNode.addListener(() {
@@ -406,7 +422,14 @@ class RepliedComments extends StatelessWidget {
                             commentId: c.repliedToCommentId!,
                             username: username,
                           ),
-                  onUserProfileAvatarTap: () {},
+                  onAvatarTap: () {
+                    context
+                      ..pop()
+                      ..pushNamed(
+                        'user_profile',
+                        pathParameters: {'user_id': comment.author.id},
+                      );
+                  },
                   isReplied: true,
                   isLiked: bloc.isLiked(
                     commentId: c.id,
@@ -436,6 +459,13 @@ class RepliedComments extends StatelessWidget {
                   likesCount: bloc.likesOf(c.id),
                   likesText: (count) => context.l10n.likesCountTextShort(count),
                   publishedAt: c.createdAt.timeAgoShort(context),
+                  avatarBuilder: (context, author, onAvatarTap, radius) =>
+                      UserStoriesAvatar(
+                    author: author,
+                    radius: radius,
+                    onAvatarTap: onAvatarTap,
+                    enableUnactiveBorder: false,
+                  ),
                 ),
               )
               .toList(),

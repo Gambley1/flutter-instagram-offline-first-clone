@@ -39,7 +39,7 @@ class ChatInbox extends Equatable {
       'id': id,
       'last_message': lastMessage,
       'unread_messages_count': unreadMessagesCount,
-      'participant': participant.toMap(),
+      'participant': participant.toJson(),
     };
   }
 
@@ -56,10 +56,10 @@ class ChatInbox extends Equatable {
 
   factory ChatInbox.fromMap(Map<String, dynamic> map) {
     return ChatInbox(
-      id: map['id'] as String,  
+      id: map['id'] as String,
       lastMessage: map['last_message'] as String?,
       unreadMessagesCount: map['unread_messages_count'] as int? ?? 0,
-      participant: User.fromRow(map['participant'] as Map<String, dynamic>),
+      participant: User.fromJson(map['participant'] as Map<String, dynamic>),
     );
   }
 

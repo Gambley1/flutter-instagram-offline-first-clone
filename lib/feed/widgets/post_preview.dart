@@ -175,14 +175,14 @@ class _PostPreviewDetailsState extends State<PostPreviewDetails> {
               commentsCount: bloc.commentsCountOf(block!.id),
               likesText: context.l10n.likesCountText,
               commentsText: context.l10n.seeAllComments,
-              onPressed: (action) => _onFeedItemAction(context, action),
+              onPressed: (action, _) => _onFeedItemAction(context, action),
               onPostShareTap: (postId, author) async {
                 final receiverId = await context.pushNamed(
                   'search_users',
                   extra: true,
                 ) as String?;
                 if (receiverId == null) return;
-                final receiver = User.fromRow(
+                final receiver = User.fromJson(
                   jsonDecode(receiverId) as Map<String, dynamic>,
                 );
                 await Future(

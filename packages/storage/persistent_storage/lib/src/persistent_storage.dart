@@ -17,7 +17,7 @@ class PersistentStorage implements Storage {
   ///
   /// Throws a [StorageException] if the read fails.
   @override
-  Future<String?> read({required String key}) async {
+  String? read({required String key}) {
     try {
       return _sharedPreferences.getString(key);
     } catch (error, stackTrace) {

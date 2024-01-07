@@ -1,10 +1,10 @@
 import 'package:flutter/widgets.dart';
 import 'package:insta_blocks/insta_blocks.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
-import 'package:instagram_blocks_ui/src/block_actiond_callback.dart';
 import 'package:instagram_blocks_ui/src/comments_count.dart';
 import 'package:instagram_blocks_ui/src/like_button.dart';
 import 'package:instagram_blocks_ui/src/likes_count.dart';
+import 'package:instagram_blocks_ui/src/post_large/post_header.dart';
 
 class PostSponsored extends StatelessWidget {
   const PostSponsored({
@@ -27,6 +27,7 @@ class PostSponsored extends StatelessWidget {
     required this.onPostShareTap,
     required this.onPressed,
     required this.sponsoredText,
+    this.postAuthorAvatarBuilder,
     super.key,
   });
 
@@ -64,9 +65,11 @@ class PostSponsored extends StatelessWidget {
 
   final void Function(String, PostAuthor) onPostShareTap;
 
-  final BlockActionCallback onPressed;
+  final void Function(BlockAction action, String? avatarUrl) onPressed;
 
   final String sponsoredText;
+
+  final AvatarBuilder? postAuthorAvatarBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -90,6 +93,7 @@ class PostSponsored extends StatelessWidget {
       likesText: likesText,
       commentsText: commentsText,
       sponsoredText: sponsoredText,
+      postAuthorAvatarBuilder: postAuthorAvatarBuilder,
     );
   }
 }

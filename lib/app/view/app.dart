@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:posts_repository/posts_repository.dart';
+import 'package:stories_repository/stories_repository.dart';
 import 'package:user_repository/user_repository.dart';
 
 /// Key to access the [AppSnackbarState] from the [BuildContext].
@@ -19,6 +20,7 @@ class App extends StatelessWidget {
     required this.userRepository,
     required this.postsRepository,
     required this.chatsRepository,
+    required this.storiesRepository,
     required this.notificationsClient,
     required this.user,
     super.key,
@@ -27,6 +29,7 @@ class App extends StatelessWidget {
   final UserRepository userRepository;
   final PostsRepository postsRepository;
   final ChatsRepository chatsRepository;
+  final StoriesRepository storiesRepository;
   final FirebaseNotificationsClient notificationsClient;
   final User user;
 
@@ -37,6 +40,7 @@ class App extends StatelessWidget {
         RepositoryProvider.value(value: userRepository),
         RepositoryProvider.value(value: postsRepository),
         RepositoryProvider.value(value: chatsRepository),
+        RepositoryProvider.value(value: storiesRepository),
         RepositoryProvider.value(value: notificationsClient),
       ],
       child: BlocProvider(

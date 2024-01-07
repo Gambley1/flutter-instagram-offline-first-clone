@@ -1,11 +1,19 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:insta_blocks/insta_blocks.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:instagram_blocks_ui/src/like_button.dart';
 import 'package:instagram_blocks_ui/src/likes_count.dart';
+import 'package:instagram_blocks_ui/src/post_large/post_header.dart';
 import 'package:shared/shared.dart';
+import 'package:user_repository/user_repository.dart';
+
+typedef CommentUserAvatarBuilder = Widget Function(
+  BuildContext context,
+  User author,
+  OnAvatarTapCallback onAvatarTap,
+  double? radius,
+);
 
 class UserComment extends StatelessWidget {
   const UserComment({
@@ -13,7 +21,7 @@ class UserComment extends StatelessWidget {
     required this.post,
     required this.currentUserId,
     required this.isReplied,
-    required this.onUserProfileAvatarTap,
+    required this.onAvatarTap,
     required this.isLiked,
     required this.isLikedByOwner,
     required this.onLikeComment,
@@ -23,6 +31,7 @@ class UserComment extends StatelessWidget {
     required this.onCommentDelete,
     required this.showDeleteCommentConfirm,
     this.onReplyButtonTap,
+    this.avatarBuilder,
     super.key,
   });
 
@@ -35,36 +44,42 @@ class UserComment extends StatelessWidget {
   final Stream<int> likesCount;
   final LikesText likesText;
   final LikeCallback onLikeComment;
-  final VoidCallback onUserProfileAvatarTap;
+  final VoidCallback onAvatarTap;
   final ValueSetter<String>? onReplyButtonTap;
   final ValueSetter<String> onCommentDelete;
   final Future<bool?> Function() showDeleteCommentConfirm;
   final String publishedAt;
+  final CommentUserAvatarBuilder? avatarBuilder;
 
   @override
   Widget build(BuildContext context) {
-    final canDeltePost =
+    final canDeletePost =
         post.author.id == currentUserId || comment.author.id == currentUserId;
     return ListTile(
       contentPadding:
           EdgeInsetsDirectional.only(end: 12, start: isReplied ? 62 : 0),
       titleAlignment: ListTileTitleAlignment.titleHeight,
       isThreeLine: true,
-      onLongPress: !canDeltePost
-          ? () {}
+      onLongPress: !canDeletePost
+          ? null
           : () async {
               final isConfirmed = await showDeleteCommentConfirm();
-              logI('Is confirmed: $isConfirmed');
               if (isConfirmed == null || !isConfirmed) return;
               onCommentDelete(comment.id);
             },
-      leading: UserProfileAvatar(
-        isLarge: false,
-        radius: !isReplied ? null : 16,
-        avatarUrl: comment.author.avatarUrl,
-        onTap: (_) => onUserProfileAvatarTap,
-        withShimmerPlaceholder: true,
-      ),
+      leading: avatarBuilder?.call(
+            context,
+            comment.author.toUser,
+            (_) => onAvatarTap,
+            !isReplied ? null : 16,
+          ) ??
+          UserProfileAvatar(
+            isLarge: false,
+            radius: !isReplied ? null : 16,
+            avatarUrl: comment.author.avatarUrl,
+            onTap: (_) => onAvatarTap,
+            withShimmerPlaceholder: true,
+          ),
       title: StreamBuilder<bool>(
         stream: isLikedByOwner,
         builder: (context, snapshot) {
@@ -73,7 +88,7 @@ class UserComment extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Tappable(
-                onTap: onUserProfileAvatarTap,
+                onTap: onAvatarTap,
                 animationEffect: TappableAnimationEffect.none,
                 child: Text(
                   '${comment.author.username} ',

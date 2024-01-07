@@ -29,12 +29,16 @@ dependencies:
     path: packages/insta_blocks
   instagram_blocks_ui:
     path: packages/instagram_blocks_ui
+  persistent_storage:
+    path: packages/storage/persistent_storage
   posts_repository:
     path: packages/posts_repository
   powersync_repository:
     path: packages/powersync_repository
   shared:
     path: packages/shared
+  stories_repository:
+    path: packages/stories_repository
   supabase_authentication_client:
     path: packages/authentication_client/supabase_authentication_client
   token_storage:
@@ -68,6 +72,8 @@ dependencies:
   firebase_notifications_client:
     path: packages/notifications_client/firebase_notifications_client
   firebase_messaging: ^14.7.9
+  fast_immutable_collections: ^9.2.0
+  story_view: ^0.16.0
   
 dev_dependencies:
   bloc_test: ^9.1.4

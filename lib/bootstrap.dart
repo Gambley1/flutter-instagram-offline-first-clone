@@ -8,12 +8,14 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_instagram_offline_first_clone/firebase_options_prod.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:persistent_storage/persistent_storage.dart';
 import 'package:powersync_repository/powersync_repository.dart';
 import 'package:shared/shared.dart';
 
 typedef AppBuilder = FutureOr<Widget> Function(
   PowerSyncRepository,
   FirebaseMessaging,
+  SharedPreferences,
 );
 
 class AppBlocObserver extends BlocObserver {
@@ -73,7 +75,15 @@ Future<void> bootstrap(
         _firebaseMessagingBackgroundHandler,
       );
 
-      runApp(await builder(powerSyncRepository, firebaseMessaging));
+      final sharedPreferences = await SharedPreferences.getInstance();
+
+      runApp(
+        await builder(
+          powerSyncRepository,
+          firebaseMessaging,
+          sharedPreferences,
+        ),
+      );
     },
     (error, stack) {
       logE(error.toString(), stackTrace: stack);

@@ -9,7 +9,7 @@ import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/chats/chat/bloc/chat_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/chats/chat/widgets/message_input_controller.dart';
 import 'package:flutter_instagram_offline_first_clone/chats/chat/widgets/widgets.dart';
-import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
+import 'package:flutter_instagram_offline_first_clone/stories/stories.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:shared/shared.dart';
 import 'package:user_repository/user_repository.dart';
@@ -557,9 +557,10 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
         contentPadding: EdgeInsets.zero,
         title: Text(participant.username ?? participant.fullName ?? ''),
         subtitle: const Text('online'),
-        leading: UserProfileAvatar(
-          isLarge: false,
-          avatarUrl: participant.avatarUrl,
+        leading: UserStoriesAvatar(
+          author: participant,
+          enableUnactiveBorder: false,
+          radius: 19,
         ),
       ),
       bottom: const PreferredSize(
@@ -570,7 +571,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => const Size.fromHeight(60);
 }
 
 class ScrollToBottomButton extends StatelessWidget {

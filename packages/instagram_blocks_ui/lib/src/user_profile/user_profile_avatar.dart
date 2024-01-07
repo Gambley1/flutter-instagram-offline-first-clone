@@ -12,8 +12,7 @@ typedef UserProfilePlaceholderBuilder = Widget Function(
 
 class UserProfileAvatar extends StatelessWidget {
   const UserProfileAvatar({
-    this.hasStories = false,
-    this.hasUnseenStories,
+    this.stories = const [],
     this.userId,
     super.key,
     this.avatarUrl,
@@ -30,10 +29,10 @@ class UserProfileAvatar extends StatelessWidget {
     this.enableUnactiveBorder = false,
     this.withShimmerPlaceholder = false,
     this.placeholderBuilder,
+    this.showStories = false,
   });
 
-  final bool hasStories;
-  final bool? hasUnseenStories;
+  final List<Story> stories;
   final String? userId;
   final String? avatarUrl;
   final double? radius;
@@ -49,6 +48,7 @@ class UserProfileAvatar extends StatelessWidget {
   final bool enableBorder;
   final bool enableUnactiveBorder;
   final UserProfilePlaceholderBuilder? placeholderBuilder;
+  final bool showStories;
 
   static Widget _defaultPlaceholder({
     required BuildContext context,
@@ -90,7 +90,7 @@ class UserProfileAvatar extends StatelessWidget {
   static final _greyBorderDecoration = BoxDecoration(
     shape: BoxShape.circle,
     border: Border.fromBorderSide(
-      BorderSide(width: 0.2, color: Colors.grey.shade500),
+      BorderSide(color: Colors.grey.shade800),
     ),
   );
 
@@ -119,22 +119,17 @@ class UserProfileAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final radius = (this.radius) ?? (isLarge ? 42.0 : 22.0);
+    final hasStories = stories.isNotEmpty;
 
     BoxDecoration? border() {
       if (avatarUrl == null || (avatarUrl!.isEmpty)) return null;
-      if (!enableBorder) return null;
-      if (!hasStories && !enableUnactiveBorder) return null;
-      if (!enableUnactiveBorder && !hasStories) return null;
-      if (enableUnactiveBorder && !hasStories) return null;
-      if (hasUnseenStories ?? false) {
-        return _gradientBorderDecoration;
-      }
-      if (hasUnseenStories != null &&
-          hasUnseenStories! == false &&
-          hasStories) {
+      if (!hasStories) return null;
+      if (!enableUnactiveBorder && !showStories) return null;
+      if (showStories && hasStories) return _gradientBorderDecoration;
+      if (enableUnactiveBorder && !showStories && hasStories) {
         return _greyBorderDecoration;
       }
-      return _greyBorderDecoration;
+      return null;
     }
 
     late Widget avatar;

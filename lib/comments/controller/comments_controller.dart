@@ -4,11 +4,8 @@ class CommentsController {
   final isCommentReplyingTo = ValueNotifier<bool>(false);
   final _commentReplyingToUsername = ValueNotifier<String?>(null);
   final _commentReplyingToCommentId = ValueNotifier<String?>(null);
-  late TextEditingController _commentTextController;
+  late TextEditingController commentTextController;
   final commentFocusNode = FocusNode();
-
-  void init(TextEditingController controller) =>
-      _commentTextController = controller;
 
   bool get isReplying => isCommentReplyingTo.value;
   set isReplying(bool value) => isCommentReplyingTo.value = value;
@@ -25,7 +22,7 @@ class CommentsController {
     clearReplying();
     final commentText = '@$username ';
     final newSelectionPosition = TextPosition(offset: commentText.length);
-    _commentTextController
+    commentTextController
       ..text = commentText
       ..selection = TextSelection.fromPosition(newSelectionPosition);
 
@@ -40,12 +37,12 @@ class CommentsController {
     isReplying = false;
     commentReplyingToUsername = null;
     commentReplyingToCommentId = null;
-    _commentTextController.clear();
+    commentTextController.clear();
     commentFocusNode.unfocus();
   }
 
   void dispose() {
     isCommentReplyingTo.dispose();
-    _commentTextController.dispose();
+    commentTextController.dispose();
   }
 }

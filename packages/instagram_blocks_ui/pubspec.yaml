@@ -10,6 +10,8 @@ environment:
 dependencies:
   app_ui:
     path: ../app_ui
+  user_repository:
+    path: ../user_repository
   powersync_repository:
     path: ../powersync_repository
   flutter:

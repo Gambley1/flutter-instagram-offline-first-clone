@@ -3,18 +3,26 @@ import 'package:flutter/material.dart';
 import 'package:insta_blocks/insta_blocks.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 
+typedef OnAvatarTapCallback = void Function(String? avatarUrl);
+
+typedef AvatarBuilder = Widget Function(
+  BuildContext context,
+  PostAuthor author,
+  OnAvatarTapCallback onAvatarTap,
+);
+
 class PostHeader extends StatelessWidget {
   const PostHeader({
     required this.author,
     required this.isOwner,
     required this.isFollowed,
     required this.wasFollowed,
-    required this.hasStories,
     required this.avatarOnTap,
     required this.follow,
     required this.enableFollowButton,
     required this.isSponsored,
     this.sponsoredText,
+    this.postAuthorAvatarBuilder,
     super.key,
   });
 
@@ -26,9 +34,7 @@ class PostHeader extends StatelessWidget {
 
   final bool wasFollowed;
 
-  final bool hasStories;
-
-  final VoidCallback avatarOnTap;
+  final OnAvatarTapCallback avatarOnTap;
 
   final VoidCallback follow;
 
@@ -37,6 +43,8 @@ class PostHeader extends StatelessWidget {
   final bool isSponsored;
 
   final String? sponsoredText;
+
+  final AvatarBuilder? postAuthorAvatarBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -64,19 +72,22 @@ class PostHeader extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Tappable(
-            onTap: avatarOnTap,
+            onTap: () => avatarOnTap.call(author.avatarUrl),
             animationEffect: TappableAnimationEffect.none,
             child: Row(
               children: [
-                UserProfileAvatar(
-                  hasStories: hasStories,
-                  hasUnseenStories: false,
-                  userId: author.id,
-                  isLarge: false,
-                  avatarUrl: author.avatarUrl,
-                  onTap: (_) => avatarOnTap.call(),
-                  scaleStrength: ScaleStrength.xxs,
-                ),
+                postAuthorAvatarBuilder?.call(
+                      context,
+                      author,
+                      avatarOnTap,
+                    ) ??
+                    UserProfileAvatar(
+                      userId: author.id,
+                      isLarge: false,
+                      avatarUrl: author.avatarUrl,
+                      onTap: avatarOnTap,
+                      scaleStrength: ScaleStrength.xxs,
+                    ),
                 const SizedBox(width: 8),
                 if (isSponsored)
                   Column(

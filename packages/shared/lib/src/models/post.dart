@@ -27,10 +27,10 @@ class Post {
   factory Post.fromRow(
     Map<String, dynamic> row, {
     required String author,
-    int? subscribed,
+    int? followed,
   }) {
     final isOwner = row['user_id'] == author;
-    final isSubscribed = subscribed == 1 || isOwner;
+    final isSubscribed = followed == 1 || isOwner;
     final wasSubscribed = isSubscribed;
     final username = row['username'] as String?;
     final fullName = row['full_name'] as String?;
