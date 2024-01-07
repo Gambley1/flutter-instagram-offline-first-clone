@@ -1,6 +1,6 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_instagram_offline_first_clone/chats/chat/widgets/parse_attachements.dart';
+import 'package:flutter_instagram_offline_first_clone/chats/chat/widgets/parse_attachments.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:shared/shared.dart';
 import 'package:user_repository/user_repository.dart';

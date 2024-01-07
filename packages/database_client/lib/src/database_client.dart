@@ -22,7 +22,7 @@ abstract class UserBaseRepository {
   /// Checks whether the user exists by the provided id.
   Future<bool> isUserExists({required String id});
 
-  /// Updates current user p with provided data.
+  /// Updates currently authenticated database user's metadata.
   Future<void> updateUser({
     String? fullName,
     String? email,
@@ -31,41 +31,47 @@ abstract class UserBaseRepository {
     String? pushToken,
   });
 
-  /// Subscribe to user by provided [followToId]. [followerId] is the id
+  /// Follows to the user by provided [followToId]. [followerId] is the id
   /// of currently authenticated user.
   Future<void> follow({
     required String followerId,
     required String followToId,
   });
 
-  /// Check if the user identified by [subscriberId] is subscribed to
+  /// Check if the user identified by [followerId] is followed to
   /// the user identified by [userId].
   Future<bool> isFollowed({
-    required String subscriberId,
+    required String followerId,
     required String userId,
   });
 
-  /// Returns realtime stream of subscription status of the user identified by
+  /// Returns realtime stream of followings status of the user identified by
   /// [followerId] to the user identified by [userId].
   Stream<bool> followingStatus({
     required String followerId,
     required String userId,
   });
 
-  /// Returns subscribers count of the user identified by [userId].
+  /// Returns followings count of the user identified by [userId].
   Stream<int> followersCountOf({required String userId});
 
-  /// Returns count of subscriptions of the user identified by [userId].
+  /// Returns count of followings of the user identified by [userId].
   Stream<int> followingsCountOf({required String userId});
 
-  /// Returns a list of Profiles of subscribers of the user identified by
-  /// [userId].
+  /// Returns a list of followers of the user identified by [userId].
   Future<List<User>> getFollowers({required String userId});
 
-  /// Returns a list of Profiles of subscriptions of the user identified by
-  /// [userId].
+  /// Returns a list of followings of the user identified by [userId].
   Future<List<User>> getFollowings({required String userId});
 
+  /// Broadcasts a list of followers of the user identified by [userId].
+  Stream<List<User>> streamFollowers({required String userId});
+
+  /// Broadcasts a list of followings of the user identified by [userId].
+  Stream<List<User>> streamFollowings({required String userId});
+
+  /// Looks up into a database a returns users associated with the provided
+  /// [query].
   Future<List<User>> searchUsers({
     required String userId,
     required int limit,
@@ -127,7 +133,7 @@ abstract class PostsBaseRepository {
   /// [currentUserId].
   ///
   /// There is an optional parameters [userId] which if provided also checks
-  /// whether the currently authenticated user by [currentUserId] is subscribed
+  /// whether the currently authenticated user by [currentUserId] is followed
   /// to the user identified by [userId].
   Stream<List<Post>> postsOf({
     required String currentUserId,
@@ -168,13 +174,19 @@ abstract class PostsBaseRepository {
   });
 }
 
+/// Abstract base class for a chats repository.
 abstract class ChatsBaseRepository {
+  /// Returns a stream of real-time chats of the user identified by [userId].
   Stream<List<ChatInbox>> chatsOf({required String userId});
 
+  /// Returns a chat conversation with provided [chatId] and [userId].
   Future<ChatInbox> getChat({required String chatId, required String userId});
 
+  /// Returns a stream of real-time messages of the chat identified by [chatId].
   Stream<List<Message>> messagesOf({required String chatId});
 
+  /// Creates and send message with provided data. After sending the message
+  /// the notification is sent to the user, identified by [receiver]'s `id`.
   Future<void> sendMessage({
     required String chatId,
     required User sender,
@@ -183,30 +195,65 @@ abstract class ChatsBaseRepository {
     PostAuthor? postAuthor,
   });
 
+  /// Deletes the message with provided [messageId].
   Future<void> deleteMessage({required String messageId});
 
+  /// Deletes the chat with provided [chatId] and participant from the chat,
+  /// identified by [userId].
   Future<void> deleteChat({required String chatId, required String userId});
 
+  /// Creates a new chat with provided [userId] and [participantId].
   Future<void> createChat({
     required String userId,
     required String participantId,
   });
 
+  /// Marks the message as read by [messageId].
   Future<void> readMessage({
     required String messageId,
   });
 
+  /// Edits the message with provided [oldMessage] and [newMessage].
   Future<void> editMessage({
     required Message oldMessage,
     required Message newMessage,
   });
 }
 
+/// The abstract base class for a stories repository.
+abstract class StoriesBaseRepository {
+  /// {@macro stories_base_repository}
+  const StoriesBaseRepository();
+
+  /// Returns the [Story] identified by [id].
+  Future<Story> getStory({required String id});
+
+  /// Broadcasts the stream of the stories from the database.
+  Stream<List<Story>> getStories({
+    required String userId,
+    bool includeAuthor = true,
+  });
+
+  /// Creates the [Story] with the provided data.
+  Future<void> createStory({
+    required User author,
+    required StoryContentType contentType,
+    required String contentUrl,
+  });
+
+  /// Deletes the [Story] identified by [id].
+  Future<void> deleteStory({required String id});
+}
+
 /// Abstract base class for database client that extends `Repository` and
 /// implements [UserBaseRepository] and [PostsBaseRepository].
 /// Contains a constructor to initialize the `powerSyncRepository`.
 abstract class Client extends _Repository
-    implements UserBaseRepository, PostsBaseRepository, ChatsBaseRepository {
+    implements
+        UserBaseRepository,
+        PostsBaseRepository,
+        ChatsBaseRepository,
+        StoriesBaseRepository {
   /// {@macro client}
   const Client(super.powerSyncRepository);
 }
@@ -319,14 +366,14 @@ ORDER BY created_at DESC
       final posts = <Post>[];
 
       for (final row in event) {
-        final isSubscribed = await isFollowed(
-          subscriberId: currentUserId,
+        final followed = await isFollowed(
+          followerId: currentUserId,
           userId: row['user_id'] as String,
         );
         final post = Post.fromRow(
           row,
           author: currentUserId,
-          subscribed: isSubscribed.toInt,
+          followed: followed.toInt,
         );
         posts.add(post);
       }
@@ -360,14 +407,14 @@ ORDER BY created_at DESC LIMIT ?1 OFFSET ?2
     final posts = <Post>[];
 
     for (final row in result) {
-      final isSubscribed = await isFollowed(
-        subscriberId: currentUserId!,
+      final followed = await isFollowed(
+        followerId: currentUserId!,
         userId: row['user_id'] as String,
       );
       final post = Post.fromRow(
         row,
         author: currentUserId!,
-        subscribed: isSubscribed.toInt,
+        followed: followed.toInt,
       );
       posts.add(post);
     }
@@ -478,8 +525,7 @@ WHERE posts.id = ?
     required String followerId,
     required String followToId,
   }) async {
-    final exists =
-        await isFollowed(subscriberId: followerId, userId: followToId);
+    final exists = await isFollowed(followerId: followerId, userId: followToId);
     if (!exists) {
       await _powerSyncRepository.db().execute(
         '''
@@ -511,56 +557,92 @@ WHERE posts.id = ?
 
   @override
   Future<List<User>> getFollowers({required String userId}) async {
-    final subscribersId = await _powerSyncRepository.db().getAll(
+    final followersId = await _powerSyncRepository.db().getAll(
       'SELECT subscriber_id FROM subscriptions WHERE subscribed_to_id = ? ',
       [userId],
     );
-    if (subscribersId.isEmpty) return [];
+    if (followersId.isEmpty) return [];
 
-    final subscribers = <User>[];
-    for (final subscriberId in subscribersId) {
+    final followers = <User>[];
+    for (final followerId in followersId) {
       final result = await _powerSyncRepository.db().execute(
         'SELECT * FROM profiles WHERE id = ?',
-        [subscriberId['subscriber_id']],
+        [followerId['subscriber_id']],
       );
       if (result.isEmpty) continue;
-      final subscriber = User.fromRow(result.first);
-      subscribers.add(subscriber);
+      final follower = User.fromJson(result.first);
+      followers.add(follower);
     }
-    return subscribers;
+    return followers;
+  }
+
+  @override
+  Stream<List<User>> streamFollowers({required String userId}) async* {
+    final followersId = _powerSyncRepository.db().watch(
+      'SELECT subscriber_id FROM subscriptions WHERE subscribed_to_id = ? ',
+      parameters: [userId],
+    );
+    if (await followersId.isEmpty) yield [];
+    await for (final followerId in followersId) {
+      yield* _powerSyncRepository
+          .db()
+          .watch(
+            'SELECT * FROM profiles WHERE id = ?',
+            parameters:
+                followerId.map((element) => element['subscriber_id']).toList(),
+          )
+          .map((event) => event.map(User.fromJson).toList());
+    }
   }
 
   @override
   Future<List<User>> getFollowings({required String userId}) async {
-    final subscribedToUsersId = await _powerSyncRepository.db().getAll(
+    final followingsUserId = await _powerSyncRepository.db().getAll(
       'SELECT subscribed_to_id FROM subscriptions WHERE subscriber_id = ? ',
       [userId],
     );
-    if (subscribedToUsersId.isEmpty) return [];
+    if (followingsUserId.isEmpty) return [];
 
-    final subscribedToUsers = <User>[];
-    for (final subscribedToUserId in subscribedToUsersId) {
+    final followings = <User>[];
+    for (final followingsUserId in followingsUserId) {
       final result = await _powerSyncRepository.db().execute(
         'SELECT * FROM profiles WHERE id = ?',
-        [subscribedToUserId['subscribed_to_id']],
+        [followingsUserId['subscribed_to_id']],
       );
       if (result.isEmpty) continue;
-      final subscribedToUser = User.fromRow(result.first);
-      subscribedToUsers.add(subscribedToUser);
+      final following = User.fromJson(result.first);
+      followings.add(following);
     }
-    return subscribedToUsers;
+    return followings;
+  }
+
+  @override
+  Stream<List<User>> streamFollowings({required String userId}) async* {
+    final followingsUserId = _powerSyncRepository.db().watch(
+      'SELECT subscribed_to_id FROM subscriptions WHERE subscriber_id = ? ',
+      parameters: [userId],
+    ).asBroadcastStream();
+    if (await followingsUserId.isEmpty) yield [];
+    await for (final result in followingsUserId) {
+      for (final row in result) {
+        yield* _powerSyncRepository.db().watch(
+          'SELECT * FROM profiles WHERE id = ?',
+          parameters: [row['subscribed_to_id']],
+        ).map((event) => event.map(User.fromJson).toList());
+      }
+    }
   }
 
   @override
   Future<bool> isFollowed({
-    required String subscriberId,
+    required String followerId,
     required String userId,
   }) async {
     final result = await _powerSyncRepository.db().execute(
       '''
     SELECT 1 FROM subscriptions WHERE subscriber_id = ? AND subscribed_to_id = ?
     ''',
-      [subscriberId, userId],
+      [followerId, userId],
     );
     return result.isNotEmpty;
   }
@@ -1093,7 +1175,7 @@ values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       'notification': {
         'title': sender?.username,
         'body': notificationBody,
-        'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+        'click`_action': 'FLUTTER_NOTIFICATION_CLICK',
       },
       'data': {
         if (chatId != null) 'chat_id': chatId,
@@ -1242,7 +1324,65 @@ LIMIT ?2 OFFSET ?3
       [userId, limit, offset],
     );
 
-    final users = result.map(User.fromRow).toList();
+    final users = result.map(User.fromJson).toList();
     return users;
+  }
+
+  @override
+  Future<void> createStory({
+    required User author,
+    required StoryContentType contentType,
+    required String contentUrl,
+  }) =>
+      _powerSyncRepository.db().execute(
+        '''
+insert into stories (id, user_id, content_type, content_url, created_at, expires_at)
+values (?, ?, ?, ?, ?, ?)
+''',
+        [
+          UidGenerator.v4(),
+          author.id,
+          contentType.toJson(),
+          contentUrl,
+          DateTime.now().toIso8601String(),
+          DateTime.now().add(const Duration(days: 1)).toIso8601String(),
+        ],
+      );
+
+  @override
+  Future<void> deleteStory({required String id}) =>
+      _powerSyncRepository.db().execute(
+        '''
+DELETE FROM stories WHERE id = ?
+''',
+        [id],
+      );
+
+  @override
+  Stream<List<Story>> getStories({
+    required String userId,
+    bool includeAuthor = true,
+  }) =>
+      _powerSyncRepository.db().watch(
+        '''
+SELECT 
+  s.*${includeAuthor ? ', p.id as user_id, p.username, p.full_name, p.avatar_url' : ''}
+FROM stories s
+  LEFT JOIN profiles p ON s.user_id = p.id
+WHERE user_id = ? AND expires_at > current_timestamp
+''',
+        parameters: [userId],
+      ).map((event) => event.map(Story.fromJson).toList(growable: false));
+
+  @override
+  Future<Story> getStory({required String id}) async {
+    final row = await _powerSyncRepository.db().execute(
+      '''
+SELECT * FROM stories WHERE id = ?
+''',
+      [id],
+    );
+    if (row.isEmpty) return Story.empty;
+    return Story.fromJson(row.first);
   }
 }

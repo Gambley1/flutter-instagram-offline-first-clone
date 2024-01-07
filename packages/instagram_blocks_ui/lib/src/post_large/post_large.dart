@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:insta_blocks/insta_blocks.dart';
-import 'package:instagram_blocks_ui/src/block_actiond_callback.dart';
 import 'package:instagram_blocks_ui/src/carousel_indicator_controller.dart';
 import 'package:instagram_blocks_ui/src/comments_count.dart';
 import 'package:instagram_blocks_ui/src/like_button.dart';
@@ -30,6 +29,7 @@ class PostLarge extends StatelessWidget {
     required this.commentsText,
     required this.onPressed,
     this.sponsoredText,
+    this.postAuthorAvatarBuilder,
     super.key,
   });
 
@@ -63,13 +63,15 @@ class PostLarge extends StatelessWidget {
 
   final bool enableFollowButton;
 
-  final BlockActionCallback onPressed;
+  final void Function(BlockAction action, String? avatarUrl) onPressed;
 
   final ValueSetter<bool> onCommentsTap;
 
-  final void Function (String, PostAuthor) onPostShareTap;
+  final void Function(String, PostAuthor) onPostShareTap;
 
   final String? sponsoredText;
+
+  final AvatarBuilder? postAuthorAvatarBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -83,13 +85,13 @@ class PostLarge extends StatelessWidget {
           author: block.author,
           isSponsored: isSponsored,
           isOwner: isOwner,
-          hasStories: hasStories,
           isFollowed: isFollowed,
           follow: follow,
           wasFollowed: wasFollowed,
-          avatarOnTap: () => onPressed(block.action!),
+          avatarOnTap: (avatarUrl) => onPressed(block.action!, avatarUrl),
           enableFollowButton: enableFollowButton,
           sponsoredText: sponsoredText,
+          postAuthorAvatarBuilder: postAuthorAvatarBuilder,
         ),
         PostMedia(
           isLiked: isLiked,
@@ -106,7 +108,8 @@ class PostLarge extends StatelessWidget {
           publishedAt: publishedAt,
           likesCount: likesCount,
           commentsCount: commentsCount,
-          onUserProfileAvatarTap: () => onPressed(block.action!),
+          onUserProfileAvatarTap: (avatarUrl) =>
+              onPressed(block.action!, avatarUrl),
           onCommentsTap: onCommentsTap,
           onPostShareTap: onPostShareTap,
           likesText: likesText,

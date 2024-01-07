@@ -9,4 +9,5 @@ export 'og_attachment.dart';
 export 'post.dart';
 export 'posts_page.dart';
 export 'schema.dart';
+export 'story.dart';
 export 'submission_status_message.dart';

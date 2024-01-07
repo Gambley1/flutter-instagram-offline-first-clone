@@ -2,9 +2,9 @@ import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
-import 'package:flutter_instagram_offline_first_clone/chats/bloc/chats_bloc.dart';
+import 'package:flutter_instagram_offline_first_clone/chats/chats.dart';
+import 'package:flutter_instagram_offline_first_clone/stories/stories.dart';
 import 'package:go_router/go_router.dart';
-import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:shared/shared.dart';
 
 class ChatInboxTile extends StatelessWidget {
@@ -33,9 +33,9 @@ class ChatInboxTile extends StatelessWidget {
         yesText: 'Delete',
         title: 'Are you sure to delete this conversation?',
       ),
-      leading: UserProfileAvatar(
-        avatarUrl: participant.avatarUrl,
-        isLarge: false,
+      leading: UserStoriesAvatar(
+        author: participant,
+        enableUnactiveBorder: false,
       ),
       title: Text(participant.fullName ?? participant.username ?? ''),
       subtitle: Text(chat.lastMessage ?? 'No last messages'),

@@ -5,16 +5,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/chats/chats.dart';
-import 'package:flutter_instagram_offline_first_clone/comments/view/comments_page.dart';
+import 'package:flutter_instagram_offline_first_clone/comments/comments.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/feed.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:flutter_instagram_offline_first_clone/network_error/network_error.dart';
+import 'package:flutter_instagram_offline_first_clone/stories/stories.dart';
 import 'package:flutter_instagram_offline_first_clone/user_profile/user_profile.dart';
 import 'package:go_router/go_router.dart';
-import 'package:insta_blocks/insta_blocks.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:posts_repository/posts_repository.dart';
 import 'package:shared/shared.dart';
+import 'package:stories_repository/stories_repository.dart';
 import 'package:user_repository/user_repository.dart';
 
 class FeedPage extends StatefulWidget {
@@ -33,6 +34,9 @@ class _FeedPageState extends State<FeedPage> {
   void initState() {
     super.initState();
     _controller = PageController(initialPage: widget.initialPage);
+    context
+        .read<UserProfileBloc>()
+        .add(const UserProfileFetchFollowingsRequested());
   }
 
   @override
@@ -43,11 +47,25 @@ class _FeedPageState extends State<FeedPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => FeedBloc(
-        userRepository: context.read<UserRepository>(),
-        postsRepository: context.read<PostsRepository>(),
-      )..add(const FeedPageRequested(page: 0)),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => FeedBloc(
+            userRepository: context.read<UserRepository>(),
+            postsRepository: context.read<PostsRepository>(),
+          )..add(const FeedPageRequested(page: 0)),
+        ),
+        BlocProvider(
+          create: (context) => StoriesBloc(
+            storiesRepository: context.read<StoriesRepository>(),
+            userRepository: context.read<UserRepository>(),
+          )..add(
+              StoriesFetchUserFollowingsStories(
+                context.read<AppBloc>().state.user.id,
+              ),
+            ),
+        ),
+      ],
       child: PageView(
         controller: _controller,
         allowImplicitScrolling: true,
@@ -130,8 +148,16 @@ class FeedBody extends StatelessWidget {
     final user = context.select((AppBloc bloc) => bloc.state.user);
 
     return RefreshIndicator.adaptive(
-      onRefresh: () async =>
-          context.read<FeedBloc>().add(const FeedRefreshRequested()),
+      onRefresh: () async => Future.wait([
+        Future(
+          () => context.read<FeedBloc>().add(const FeedRefreshRequested()),
+        ),
+        Future(
+          () => context
+              .read<StoriesBloc>()
+              .add(StoriesFetchUserFollowingsStories(user.id)),
+        ),
+      ]),
       child: CustomScrollView(
         slivers: [
           SliverOverlapInjector(
@@ -242,13 +268,13 @@ class FeedBody extends StatelessWidget {
         commentsCount: bloc.commentsCountOf(block.id),
         likesText: context.l10n.likesCountText,
         commentsText: context.l10n.seeAllComments,
-        onPressed: (action) => _onFeedItemAction(context, action),
+        onPressed: (action, _) => _onFeedItemAction(context, action),
         onPostShareTap: (postId, author) async {
           final receiverId =
               await context.pushNamed('search_users', extra: true) as String?;
           if (receiverId == null) return;
           final receiver =
-              User.fromRow(jsonDecode(receiverId) as Map<String, dynamic>);
+              User.fromJson(jsonDecode(receiverId) as Map<String, dynamic>);
           await Future(
             () => context.read<FeedBloc>().add(
                   FeedPostShareRequested(
@@ -259,6 +285,13 @@ class FeedBody extends StatelessWidget {
                     message: Message(id: UidGenerator.v4()),
                   ),
                 ),
+          );
+        },
+        postAuthorAvatarBuilder: (context, author, onAvatarTap) {
+          return UserStoriesAvatar(
+            author: author.toUser,
+            onAvatarTap: onAvatarTap,
+            enableUnactiveBorder: false,
           );
         },
       );
@@ -285,7 +318,7 @@ class FeedBody extends StatelessWidget {
         ),
         likesText: context.l10n.likesCountText,
         commentsText: context.l10n.seeAllComments,
-        onPressed: (action) => _onFeedItemAction(context, action),
+        onPressed: (action, _) => _onFeedItemAction(context, action),
         commentsCount: bloc.commentsCountOf(block.id),
         sponsoredText: context.l10n.sponsoredPostText,
         onPostShareTap: (postId, author) async {
@@ -293,7 +326,7 @@ class FeedBody extends StatelessWidget {
               await context.pushNamed('search_users', extra: true) as String?;
           if (receiverId == null) return;
           final receiver =
-              User.fromRow(jsonDecode(receiverId) as Map<String, dynamic>);
+              User.fromJson(jsonDecode(receiverId) as Map<String, dynamic>);
           await Future(
             () => context.read<FeedBloc>().add(
                   FeedPostShareRequested(
@@ -304,6 +337,13 @@ class FeedBody extends StatelessWidget {
                     message: Message(id: UidGenerator.v4()),
                   ),
                 ),
+          );
+        },
+        postAuthorAvatarBuilder: (context, author, onAvatarTap) {
+          return UserStoriesAvatar(
+            author: author.toUser,
+            onAvatarTap: onAvatarTap,
+            enableUnactiveBorder: false,
           );
         },
       );

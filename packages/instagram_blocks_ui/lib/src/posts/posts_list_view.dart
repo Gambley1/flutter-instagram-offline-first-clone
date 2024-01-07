@@ -59,7 +59,7 @@ class PostsListView extends StatelessWidget {
   final CommentsTapCallback onCommentsTap;
   final Stream<int> Function(String) likesCount;
   final Stream<int> Function(String) commentsCountOf;
-  final ValueSetter<BlockAction> onPressed;
+  final void Function(BlockAction action, String? avatarUrl) onPressed;
   final void Function(String, PostAuthor) onPostShareTap;
 
   @override
@@ -169,7 +169,7 @@ class _PostsItemController extends StatefulWidget {
   final int index;
   final bool enableFollowButton;
   final CommentsTapCallback onCommentsTap;
-  final ValueSetter<BlockAction> onPressed;
+  final void Function(BlockAction action, String? avatarUrl) onPressed;
   final void Function(String, PostAuthor) onPostShareTap;
 
   @override

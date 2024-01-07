@@ -348,6 +348,49 @@ create policy "Only authentiaceted users can remove participation in conversatio
   on public.participants 
     for delete to authenticated using (auth.uid() = user_id);
 
+create table stories (
+  id uuid not null default gen_random_uuid(),
+  user_id uuid not null,
+  content_type story_content_type not null,
+  content_url text not null,
+  duration integer null,
+  created_at timestamp with time zone not null default (now() at time zone 'utc'::text),
+  expires_at timestamp with time zone not null default ((now() at time zone 'utc'::text) + '1 day'::interval),
+  constraint stories_pkey primary key (id),
+  constraint stories_user_id_fkey foreign key (user_id) references users(user_id) on update cascade on delete cascade,
+  constraint check_story_content_type_and_duration check (
+      (
+        (
+          (content_type = 'image'::story_content_type)
+          and (duration is not null)
+        )
+        or (
+          (content_type = 'video'::story_content_type)
+          and (duration is null)
+        )
+      )
+    )
+);
+
+create type story_content_type as enum('image', 'video');
+
+alter table stories enable row level security;
+
+create policy "Everybody can see each others stories." on public.stories
+  for select using (true);
+
+create policy "Only authenticated users can add stories."
+  on public.stories
+    for insert to authenticated with check (true);
+
+create policy "Only owners can remove stories."
+  on public.stories
+    for delete to authenticated using (auth.uid() = user_id);
+  
+create policy "Only owners can update stories."
+  on public.stories
+    for update to authenticated using (auth.uid() = user_id);
+
 create or replace function delete_storage_object(bucket text, object text, out status int, out content text)
  returns record
  language 'plpgsql'

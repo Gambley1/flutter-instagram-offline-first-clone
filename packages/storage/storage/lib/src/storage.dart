@@ -1,3 +1,5 @@
+import 'dart:async';
+
 /// {@template storage_exception}
 /// Exception thrown if a storage operation fails.
 /// {@endtemplate}
@@ -14,7 +16,7 @@ abstract class Storage {
   /// Returns value for the provided [key].
   /// Read returns `null` if no value is found for the given [key].
   /// * Throws a [StorageException] if the read fails.
-  Future<String?> read({required String key});
+  FutureOr<String?> read({required String key});
 
   /// Writes the provided [key], [value] pair asynchronously.
   /// * Throws a [StorageException] if the write fails.

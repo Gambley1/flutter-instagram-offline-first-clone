@@ -75,14 +75,21 @@ final class UserProfileDeletePostRequested extends _PostEvent {
   const UserProfileDeletePostRequested(super.postId);
 }
 
-final class UserProfileFollowersRequested extends UserProfileEvent {
-  const UserProfileFollowersRequested({this.userId});
+final class UserProfileFetchFollowersRequested extends UserProfileEvent {
+  const UserProfileFetchFollowersRequested({this.userId});
 
   final String? userId;
 }
 
-final class UserProfileFollowingsRequested extends UserProfileEvent {
-  const UserProfileFollowingsRequested({this.userId});
+final class UserProfileFetchFollowingsRequested extends UserProfileEvent {
+  const UserProfileFetchFollowingsRequested({this.userId});
+
+  final String? userId;
+}
+
+final class UserProfileFollowingsSubscriptionRequested
+    extends UserProfileEvent {
+  const UserProfileFollowingsSubscriptionRequested({this.userId});
 
   final String? userId;
 }

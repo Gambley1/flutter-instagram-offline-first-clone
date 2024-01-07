@@ -227,10 +227,10 @@ class UserRepository implements UserBaseRepository {
 
   @override
   Future<bool> isFollowed({
-    required String subscriberId,
+    required String followerId,
     required String userId,
   }) =>
-      _client.isFollowed(subscriberId: subscriberId, userId: userId);
+      _client.isFollowed(followerId: followerId, userId: userId);
 
   @override
   Stream<bool> followingStatus({
@@ -268,4 +268,12 @@ class UserRepository implements UserBaseRepository {
         offset: offset,
         query: query,
       );
+
+  @override
+  Stream<List<User>> streamFollowers({required String userId}) =>
+      _client.streamFollowers(userId: userId);
+
+  @override
+  Stream<List<User>> streamFollowings({required String userId}) =>
+      _client.streamFollowings(userId: userId);
 }

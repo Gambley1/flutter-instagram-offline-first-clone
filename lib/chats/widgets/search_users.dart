@@ -2,8 +2,8 @@ import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
+import 'package:flutter_instagram_offline_first_clone/stories/view/view.dart';
 import 'package:go_router/go_router.dart';
-import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:shared/shared.dart';
 import 'package:user_repository/user_repository.dart';
 
@@ -60,8 +60,7 @@ class _SearchUsersState extends State<SearchUsers> {
             contentPadding: EdgeInsets.zero,
             onTap: () =>
                 context.pop(widget.returnUser ? user.toJson() : user.id),
-            leading:
-                UserProfileAvatar(avatarUrl: user.avatarUrl, isLarge: false),
+            leading: UserStoriesAvatar(author: user),
             title: Text(user.fullName!),
           );
         },

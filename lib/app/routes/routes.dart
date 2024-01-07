@@ -14,6 +14,7 @@ import 'package:flutter_instagram_offline_first_clone/feed/widgets/post_preview.
 import 'package:flutter_instagram_offline_first_clone/home/home.dart';
 import 'package:flutter_instagram_offline_first_clone/reels/reels.dart';
 import 'package:flutter_instagram_offline_first_clone/search/search.dart';
+import 'package:flutter_instagram_offline_first_clone/stories/view/stories_page.dart';
 import 'package:flutter_instagram_offline_first_clone/user_profile/user_profile.dart';
 import 'package:go_router/go_router.dart';
 import 'package:posts_repository/posts_repository.dart';
@@ -116,8 +117,8 @@ GoRouter router(AppBloc appBloc) => GoRouter(
                   postsRepository: context.read<PostsRepository>(),
                   userId: userId(),
                 )
-                  ..add(const UserProfileFollowersRequested())
-                  ..add(const UserProfileFollowingsRequested()),
+                  ..add(const UserProfileFetchFollowersRequested())
+                  ..add(const UserProfileFetchFollowingsRequested()),
                 child: UserProfileStatistics(tabIndex: tabIndex),
               ),
               transitionsBuilder:
@@ -232,6 +233,28 @@ GoRouter router(AppBloc appBloc) => GoRouter(
                   animation: animation,
                   secondaryAnimation: secondaryAnimation,
                   transitionType: SharedAxisTransitionType.vertical,
+                  child: child,
+                );
+              },
+            );
+          },
+        ),
+        GoRoute(
+          path: '/stories/view',
+          name: 'view_stories',
+          parentNavigatorKey: _rootNavigatorKey,
+          pageBuilder: (context, state) {
+            final author = state.extra! as User;
+            final stories = fromListJson(state.uri.queryParameters['stories']!);
+
+            return CustomTransitionPage(
+              child: StoriesView(stories: stories, author: author),
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                return SharedAxisTransition(
+                  animation: animation,
+                  secondaryAnimation: secondaryAnimation,
+                  transitionType: SharedAxisTransitionType.scaled,
                   child: child,
                 );
               },

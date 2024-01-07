@@ -1,0 +1,23 @@
+name: stories_repository
+description: A repository that manages stories data flow.
+version: 0.1.0+1
+publish_to: none
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  user_repository:
+    path: ../user_repository
+  database_client:
+    path: ../database_client
+  shared:
+    path: ../shared
+  storage:
+    path: ../storage/storage
+  rxdart: ^0.27.7
+
+dev_dependencies:
+  mocktail: ^1.0.0
+  test: ^1.19.2
+  very_good_analysis: ^5.1.0

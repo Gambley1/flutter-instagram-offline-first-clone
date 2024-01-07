@@ -1,7 +1,9 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_instagram_offline_first_clone/app/bloc/app_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
+import 'package:flutter_instagram_offline_first_clone/stories/stories.dart';
 import 'package:flutter_instagram_offline_first_clone/user_profile/user_profile.dart';
 import 'package:go_router/go_router.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
@@ -34,7 +36,8 @@ class UserProfileHeader extends StatelessWidget {
 
     final bloc = context.read<UserProfileBloc>();
     final isOwner = context.select((UserProfileBloc b) => b.isOwner);
-    final user = context.select((UserProfileBloc b) => b.state.user);
+    // final user = context.select((UserProfileBloc b) => b.state.user);
+    final user = context.select((AppBloc bloc) => bloc.state.user);
 
     return SliverPadding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
@@ -43,22 +46,19 @@ class UserProfileHeader extends StatelessWidget {
           children: [
             Row(
               children: [
-                UserProfileAvatar(
+                UserStoriesAvatar(
+                  author: user,
                   isImagePicker: isOwner,
-                  onTap: (imageUrl) {
+                  onAvatarTap: (imageUrl) {
                     if (imageUrl == null) return;
                     context.showImagePreview(imageUrl);
                   },
-                  userId: user.id,
-                  avatarUrl: user.avatarUrl,
-                  hasStories: true,
-                  hasUnseenStories: true,
-                  enableUnactiveBorder: true,
-                  onLongPress: () {},
-                  scaleStrength: ScaleStrength.xxs,
+                  isLarge: true,
+                  animationEffect: TappableAnimationEffect.scale,
                   onImagePick: (imageUrl) => bloc.add(
                     UserProfileUpdateRequested(avatarUrl: imageUrl),
                   ),
+                  showWhenSeen: true,
                 ),
                 const SizedBox(width: 12),
                 UserProfileListStatistics(

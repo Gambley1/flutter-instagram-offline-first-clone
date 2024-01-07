@@ -11,6 +11,7 @@ import 'package:instagram_blocks_ui/src/comments_count.dart';
 import 'package:instagram_blocks_ui/src/like_button.dart';
 import 'package:instagram_blocks_ui/src/likes_count.dart';
 import 'package:instagram_blocks_ui/src/post_large/post_caption.dart';
+import 'package:instagram_blocks_ui/src/post_large/post_header.dart';
 
 class PostFooter extends StatelessWidget {
   const PostFooter({
@@ -40,9 +41,9 @@ class PostFooter extends StatelessWidget {
   final CommentsText commentsText;
   // final String sponsoredText;
   final List<String> imagesUrl;
-  final VoidCallback onUserProfileAvatarTap;
+  final OnAvatarTapCallback onUserProfileAvatarTap;
   final ValueSetter<bool> onCommentsTap;
-  final void Function (String, PostAuthor) onPostShareTap;
+  final void Function(String, PostAuthor) onPostShareTap;
   final String publishedAt;
 
   @override
@@ -56,7 +57,7 @@ class PostFooter extends StatelessWidget {
         if (isSponsored)
           SponsoredPostAction(
             imageUrl: block.imagesUrl.first,
-            onTap: onUserProfileAvatarTap,
+            onTap: () => onUserProfileAvatarTap.call(author.avatarUrl),
           ),
         const AppDivider(padding: 12),
         const SizedBox(height: 8),
@@ -131,7 +132,8 @@ class PostFooter extends StatelessWidget {
               PostCaption(
                 username: author.username,
                 caption: block.caption,
-                onUserProfileAvatarTap: onUserProfileAvatarTap,
+                onUserProfileAvatarTap: () =>
+                    onUserProfileAvatarTap.call(author.avatarUrl),
               ),
               RepaintBoundary(
                 child: CommentsCount(

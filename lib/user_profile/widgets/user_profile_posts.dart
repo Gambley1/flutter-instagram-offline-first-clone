@@ -133,7 +133,7 @@ class _UserProfilePostsState extends State<UserProfilePosts> {
                 scrollOffsetListener: _scrollOffsetListener,
                 index: widget.index,
                 isOwner: userBloc.isOwnerOfPostBy,
-                onPressed: (action) => _onFeedItemAction(context, action),
+                onPressed: (action, _) => _onFeedItemAction(context, action),
                 onCommentsTap: (block, showFullSized) => _onCommentsTap(
                   post: block,
                   bloc: feedBloc,
@@ -146,7 +146,7 @@ class _UserProfilePostsState extends State<UserProfilePosts> {
                     extra: true,
                   ) as String?;
                   if (receiverId == null) return;
-                  final receiver = User.fromRow(
+                  final receiver = User.fromJson(
                     jsonDecode(receiverId) as Map<String, dynamic>,
                   );
                   await Future(

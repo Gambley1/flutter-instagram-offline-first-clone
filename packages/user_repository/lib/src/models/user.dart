@@ -1,8 +1,5 @@
-// ignore_for_file: avoid_dynamic_calls
-
-import 'dart:convert';
-
 import 'package:authentication_client/authentication_client.dart';
+import 'package:shared/shared.dart';
 
 /// {@template user}
 /// User model represents the current user.
@@ -33,14 +30,14 @@ class User extends AuthenticationUser {
         isNewUser: authenticationUser.isNewUser,
       );
 
-  /// Converts a `Map<String, dynamic>` row to a [User] instance.
-  factory User.fromRow(Map<String, dynamic> row) => User(
-        email: row['email'] as String?,
-        id: row['id'] as String,
-        username: row['username'] as String?,
-        fullName: row['full_name'] as String?,
-        avatarUrl: row['avatar_url'] as String?,
-        pushToken: row['push_token'] as String?,
+  /// Converts a `Map<String, dynamic>` json to a [User] instance.
+  factory User.fromJson(Map<String, dynamic> json) => User(
+        id: json['user_id'] as String? ?? json['id'] as String,
+        email: json['email'] as String?,
+        username: json['username'] as String?,
+        fullName: json['full_name'] as String?,
+        avatarUrl: json['avatar_url'] as String?,
+        pushToken: json['push_token'] as String?,
         isNewUser: false,
       );
 
@@ -62,18 +59,25 @@ class User extends AuthenticationUser {
   static const User anonymous = User(id: '');
 
   /// Converts current [User] instance to a `Map<String, dynamic>`.
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toJson() {
     return <String, dynamic>{
-      'email': email,
+      if (email != null) 'email': email,
       'id': id,
-      'username': username,
-      'full_name': fullName,
-      'avatar_url': avatarUrl,
-      'push_token': pushToken,
+      if (username != null) 'username': username,
+      if (fullName != null) 'full_name': fullName,
+      if (avatarUrl != null) 'avatar_url': avatarUrl,
+      if (pushToken != null) 'push_token': pushToken,
       'is_new_user': isNewUser,
     };
   }
+}
 
-  /// Converts current [User] instance to a `JSON` string.
-  String toJson() => json.encode(toMap());
+/// Extension that converts [PostAuthor] into [User] instance.
+extension UserX on PostAuthor {
+  /// Converts a [PostAuthor] into a [User] instance.
+  User get toUser => User(
+        id: id,
+        avatarUrl: avatarUrl,
+        username: username,
+      );
 }

@@ -10,9 +10,7 @@ import 'package:flutter/rendering.dart' hide Selectable;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/attachment/widgets/thumnail/thumbnail.dart';
-import 'package:flutter_instagram_offline_first_clone/chats/chat/bloc/chat_bloc.dart';
-import 'package:flutter_instagram_offline_first_clone/chats/chat/widgets/parse_attachements.dart';
-import 'package:flutter_instagram_offline_first_clone/chats/chat/widgets/text_bubble.dart';
+import 'package:flutter_instagram_offline_first_clone/chats/chat/chat.dart';
 import 'package:go_router/go_router.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:intl/intl.dart';
@@ -319,7 +317,10 @@ class MessageBubbleContent extends StatelessWidget {
               : Stack(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.all(AppSpacing.md),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.md,
+                        vertical: AppSpacing.sm,
+                      ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
