@@ -49,7 +49,7 @@ dependencies:
   infinite_scroll_pagination: ^4.0.0
   sliver_tools: ^0.2.12
   scrollable_positioned_list: ^0.3.8
-  flutter_animate: ^4.2.0+1
+  flutter_animate: ^4.4.0
   sprung: ^3.0.1
   visibility_detector: ^0.4.0+2
   lottie: ^2.7.0
