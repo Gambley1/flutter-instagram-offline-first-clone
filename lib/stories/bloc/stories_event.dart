@@ -17,7 +17,8 @@ final class StoriesFetchUserFollowingsStories extends StoriesEvent {
 }
 
 final class StoriesStorySeen extends StoriesEvent {
-  const StoriesStorySeen(this.story);
+  const StoriesStorySeen(this.story, this.userId);
 
   final Story story;
+  final String userId;
 }

@@ -1,0 +1,19 @@
+name: firebase_config
+description: A library that communicates with the Firebase remote config.
+version: 0.1.0+1
+publish_to: none
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.10.0"
+
+dependencies:
+  firebase_remote_config: ^4.3.8
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  mocktail: ^1.0.0
+  very_good_analysis: ^5.1.0

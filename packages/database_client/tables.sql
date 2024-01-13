@@ -1,4 +1,4 @@
--- Set up Storage!
+-- Set up storage for avatars!
 insert into storage.buckets (id, name)
   values ('avatars', 'avatars');
 
@@ -24,6 +24,7 @@ for update
     and auth.uid ()::text = (storage.foldername (name)) [1]
   );
 
+-- Set up storage for posts.
 insert into storage.buckets (id, name)
   values ('posts', 'posts')
 
@@ -50,7 +51,7 @@ for update
     bucket_id = 'posts'
   );
 
-create function clear_posts_objects () returns trigger as $$
+create or replace function clear_posts_objects () returns trigger as $$
 begin
   delete from storage.objects where bucket_id = 'posts';
   return null;
@@ -61,6 +62,67 @@ create trigger clear_posts_trigger
 after
 truncate on public.posts for each statement
 execute function clear_posts_objects ();
+
+create or replace function handle_delete_post_media () returns trigger as $$
+BEGIN
+  DELETE FROM storage.objects WHERE bucket_id = 'posts' AND (storage.foldername (name))[1] = OLD.id::text;
+  RETURN OLD;
+END;
+$$ language plpgsql;
+
+create trigger on_post_deleted
+after delete on posts for each row
+execute function handle_delete_post_media();
+
+-- Set up storage for stories!
+insert into storage.buckets (id, name)
+  values ('stories', 'stories')
+
+create policy "Only authenticated user can see stories media." on storage.objects for
+select
+  to authenticated using (bucket_id = 'stories');
+
+create policy "Only authenticated can upload stories media." on storage.objects for insert
+ to authenticated
+   with
+      check (
+        bucket_id = 'stories'
+        );
+
+create policy "Only authenticated can delete stories media." on storage.objects for delete
+ to authenticated 
+  using (
+    bucket_id = 'stories'
+  );
+
+create policy "Only authenticated can update stories media." on storage.objects
+for update
+  to authenticated using (
+    bucket_id = 'stories'
+  );
+
+create or replace function clear_stories_objects () returns trigger as $$
+begin
+  delete from storage.objects where bucket_id = 'stories';
+  return null;
+end;
+$$ language plpgsql;
+
+create trigger clear_stories_trigger
+after
+truncate on public.stories for each statement
+execute function clear_stories_objects ();
+
+create or replace function handle_delete_story_media () returns trigger as $$
+BEGIN
+  DELETE FROM storage.objects WHERE bucket_id = 'stories' AND (storage.foldername (name))[1] = OLD.id::text;
+  RETURN OLD;
+END;
+$$ language plpgsql;
+
+create trigger on_story_deleted
+after delete on stories for each row
+execute function handle_delete_story_media();
 
 create table
   public.profiles (
@@ -528,15 +590,3 @@ create trigger on_auth_user_updated
 after
 update on auth.users for each row
 execute procedure public.handle_update_user();
-
-create
-or replace function handle_delete_post_media() returns trigger as $$
-BEGIN
-  DELETE FROM storage.objects WHERE bucket_id = 'posts' AND (storage.foldername (name))[1] = OLD.id::text;
-  RETURN OLD;
-END;
-$$ language plpgsql;
-
-create trigger on_post_deleted
-after delete on posts for each row
-execute function handle_delete_post_media();

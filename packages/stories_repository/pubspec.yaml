@@ -16,6 +16,8 @@ dependencies:
   storage:
     path: ../storage/storage
   rxdart: ^0.27.7
+  equatable: ^2.0.5
+  collection: ^1.17.2
 
 dev_dependencies:
   mocktail: ^1.0.0

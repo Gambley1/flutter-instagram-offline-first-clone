@@ -16,7 +16,8 @@ extension OriginalSizeX on Attachment {
   /// Otherwise, returns null.
   Size? get originalSize {
     // Return null if the attachment is not an image or giffy.
-    if (type != AttachmentType.image.value && type != AttachmentType.giphy.value) {
+    if (type != AttachmentType.image.value &&
+        type != AttachmentType.giphy.value) {
       return null;
     }
 

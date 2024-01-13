@@ -32,8 +32,9 @@ class StoriesBloc extends Bloc<StoriesEvent, StoriesState> {
     final stories = <User, List<Story>>{};
     for (final following in followings) {
       try {
-        final userStories =
-            await _storiesRepository.mergedStories(userId: following.id).first;
+        final userStories = await _storiesRepository
+            .mergedStories(authorId: following.id, userId: event.userId)
+            .first;
         if (state.users.map((e) => e.id).contains(following.id) &&
             userStories.isEmpty) {
           emit(state.copyWith(users: [...state.users]..remove(following)));
@@ -61,5 +62,6 @@ class StoriesBloc extends Bloc<StoriesEvent, StoriesState> {
     StoriesStorySeen event,
     Emitter<StoriesState> emit,
   ) =>
-      _storiesRepository.setUserStorySeen(story: event.story);
+      _storiesRepository.setUserStorySeen(
+          story: event.story, userId: event.userId);
 }

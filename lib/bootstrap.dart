@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:firebase_config/firebase_config.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -16,6 +17,7 @@ typedef AppBuilder = FutureOr<Widget> Function(
   PowerSyncRepository,
   FirebaseMessaging,
   SharedPreferences,
+  FirebaseConfig,
 );
 
 class AppBlocObserver extends BlocObserver {
@@ -77,11 +79,18 @@ Future<void> bootstrap(
 
       final sharedPreferences = await SharedPreferences.getInstance();
 
+      final firebaseRemoteConfig = FirebaseRemoteConfig.instance;
+      final remoteConfig =
+          FirebaseConfig(firebaseRemoteConfig: firebaseRemoteConfig);
+
+      await remoteConfig.init();
+
       runApp(
         await builder(
           powerSyncRepository,
           firebaseMessaging,
           sharedPreferences,
+          remoteConfig,
         ),
       );
     },

@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:animations/animations.dart';
 import 'package:app_ui/app_ui.dart';
+import 'package:firebase_config/firebase_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
@@ -19,6 +20,7 @@ import 'package:flutter_instagram_offline_first_clone/user_profile/user_profile.
 import 'package:go_router/go_router.dart';
 import 'package:posts_repository/posts_repository.dart';
 import 'package:shared/shared.dart' hide FeedPage;
+import 'package:stories_editor/stories_editor.dart';
 import 'package:user_repository/user_repository.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
@@ -154,6 +156,7 @@ GoRouter router(AppBloc appBloc) => GoRouter(
                     create: (context) => FeedBloc(
                       postsRepository: context.read<PostsRepository>(),
                       userRepository: context.read<UserRepository>(),
+                      remoteConfig: context.read<FirebaseConfig>(),
                     ),
                   ),
                 ],
@@ -248,7 +251,31 @@ GoRouter router(AppBloc appBloc) => GoRouter(
             final stories = fromListJson(state.uri.queryParameters['stories']!);
 
             return CustomTransitionPage(
-              child: StoriesView(stories: stories, author: author),
+              child: StoriesPage(stories: stories, author: author),
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                return SharedAxisTransition(
+                  animation: animation,
+                  secondaryAnimation: secondaryAnimation,
+                  transitionType: SharedAxisTransitionType.scaled,
+                  child: child,
+                );
+              },
+            );
+          },
+        ),
+        GoRoute(
+          path: '/stories/create',
+          name: 'create_stories',
+          parentNavigatorKey: _rootNavigatorKey,
+          pageBuilder: (context, state) {
+            final onDone = state.extra as dynamic Function(String)?;
+
+            return CustomTransitionPage(
+              child: StoriesEditor(
+                onDone: onDone,
+                galleryThumbnailQuality: 900,
+              ),
               transitionsBuilder:
                   (context, animation, secondaryAnimation, child) {
                 return SharedAxisTransition(

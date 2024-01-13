@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:firebase_config/firebase_config.dart';
 import 'package:flutter/material.dart';
 import 'package:posts_repository/posts_repository.dart';
 import 'package:shared/shared.dart';
@@ -15,8 +17,10 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
   FeedBloc({
     required PostsRepository postsRepository,
     required UserRepository userRepository,
+    required FirebaseConfig remoteConfig,
   })  : _postsRepository = postsRepository,
         _userRepository = userRepository,
+        _remoteConfig = remoteConfig,
         super(const FeedState.initial()) {
     on<FeedPageRequested>(_onPageRequested);
     on<FeedRefreshRequested>(_onRefreshRequested);
@@ -29,6 +33,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
   final PostsRepository _postsRepository;
   final UserRepository _userRepository;
+  final FirebaseConfig _remoteConfig;
 
   String get _currentUserId => _userRepository.currentUserId!;
 
@@ -56,77 +61,6 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
   Stream<int> commentsCountOf(String postId) =>
       _postsRepository.commentsAmountOf(postId: postId);
 
-  static final _mySponsoredBlocks = <InstaBlock>[
-    PostSponsoredBlock(
-      id: 'b6faca71-061c-4f05-93f0-d164baacca3d',
-      author: const PostAuthor.confirmed(),
-      publishedAt: DateTime(2023, 11, 09),
-      imageUrl:
-          'https://blog.nursing.com/hs-fs/hubfs/visual%20nursing%20app.webp?width=1080&height=1080&name=visual%20nursing%20app.webp',
-      caption: 'Hello world, this is a sponsored block #1',
-      action: const NavigateToSponsoredPostAuthorProfileAction(
-        authorId: '67c36f68-3b92-4e11-89e9-cd7a22f3c37b',
-        promoPreviewImageUrl:
-            'https://instagram.fala5-2.fna.fbcdn.net/v/t51.2885-19/349043288_799972341566680_146016102643359969_n.jpg?stp=dst-jpg_s320x320&_nc_ht=instagram.fala5-2.fna.fbcdn.net&_nc_cat=104&_nc_ohc=sEVHyymBefkAX9i3zYg&edm=AOQ1c0wBAAAA&ccb=7-5&oh=00_AfBiQuXJ5iIIVb8qP-_RfY8a6gADNgP_PLsQEhqdhM8DRA&oe=6552BA94&_nc_sid=8b3546',
-        promoUrl: 'https://www.instagram.com/zulu_em/',
-      ),
-      imagesUrl: [
-        'https://blog.nursing.com/hs-fs/hubfs/visual%20nursing%20app.webp?width=1080&height=1080&name=visual%20nursing%20app.webp',
-      ],
-    ),
-    PostSponsoredBlock(
-      id: '0bcf4fa1-2a58-4809-b07b-5654e32e6fc2',
-      author: const PostAuthor.confirmed(),
-      publishedAt: DateTime(2023, 11, 09),
-      imageUrl:
-          'https://images.squarespace-cdn.com/content/v1/54222358e4b0ef23d87a996b/1659992618857-S3ZIJIAT0V659W9HFTEF/3.png',
-      caption: 'Hello world, this is a sponsored block #2',
-      action: const NavigateToSponsoredPostAuthorProfileAction(
-        authorId: '67c36f68-3b92-4e11-89e9-cd7a22f3c37b',
-        promoPreviewImageUrl:
-            'https://instagram.fala5-2.fna.fbcdn.net/v/t51.2885-19/349043288_799972341566680_146016102643359969_n.jpg?stp=dst-jpg_s320x320&_nc_ht=instagram.fala5-2.fna.fbcdn.net&_nc_cat=104&_nc_ohc=sEVHyymBefkAX9i3zYg&edm=AOQ1c0wBAAAA&ccb=7-5&oh=00_AfBiQuXJ5iIIVb8qP-_RfY8a6gADNgP_PLsQEhqdhM8DRA&oe=6552BA94&_nc_sid=8b3546',
-        promoUrl: 'https://www.instagram.com/zulu_em/',
-      ),
-      imagesUrl: [
-        'https://images.squarespace-cdn.com/content/v1/54222358e4b0ef23d87a996b/1659992618857-S3ZIJIAT0V659W9HFTEF/3.png',
-      ],
-    ),
-    PostSponsoredBlock(
-      id: '4071ae1f-7e64-43d7-9763-4ced3b84dcfc',
-      author: const PostAuthor.confirmed(),
-      publishedAt: DateTime(2023, 11, 09),
-      imageUrl:
-          'https://global.discourse-cdn.com/business7/uploads/adalo/original/2X/b/bc2fa4e8174f0b997c0a0f4167fe6895ae3092c4.jpeg',
-      caption: 'Hello world, this is a sponsored block #3',
-      action: const NavigateToSponsoredPostAuthorProfileAction(
-        authorId: '67c36f68-3b92-4e11-89e9-cd7a22f3c37b',
-        promoPreviewImageUrl:
-            'https://instagram.fala5-2.fna.fbcdn.net/v/t51.2885-19/349043288_799972341566680_146016102643359969_n.jpg?stp=dst-jpg_s320x320&_nc_ht=instagram.fala5-2.fna.fbcdn.net&_nc_cat=104&_nc_ohc=sEVHyymBefkAX9i3zYg&edm=AOQ1c0wBAAAA&ccb=7-5&oh=00_AfBiQuXJ5iIIVb8qP-_RfY8a6gADNgP_PLsQEhqdhM8DRA&oe=6552BA94&_nc_sid=8b3546',
-        promoUrl: 'https://www.instagram.com/zulu_em/',
-      ),
-      imagesUrl: [
-        'https://global.discourse-cdn.com/business7/uploads/adalo/original/2X/b/bc2fa4e8174f0b997c0a0f4167fe6895ae3092c4.jpeg',
-      ],
-    ),
-    PostSponsoredBlock(
-      id: '4f6a8b3f-07f6-4b33-a9fe-2420f750fe31',
-      author: const PostAuthor.confirmed(),
-      publishedAt: DateTime(2023, 11, 09),
-      imageUrl:
-          'https://images.squarespace-cdn.com/content/v1/54222358e4b0ef23d87a996b/1659992618857-S3ZIJIAT0V659W9HFTEF/3.png',
-      caption: 'Hello world, this is a sponsored block #4',
-      action: const NavigateToSponsoredPostAuthorProfileAction(
-        authorId: '67c36f68-3b92-4e11-89e9-cd7a22f3c37b',
-        promoPreviewImageUrl:
-            'https://instagram.fala5-2.fna.fbcdn.net/v/t51.2885-19/349043288_799972341566680_146016102643359969_n.jpg?stp=dst-jpg_s320x320&_nc_ht=instagram.fala5-2.fna.fbcdn.net&_nc_cat=104&_nc_ohc=sEVHyymBefkAX9i3zYg&edm=AOQ1c0wBAAAA&ccb=7-5&oh=00_AfBiQuXJ5iIIVb8qP-_RfY8a6gADNgP_PLsQEhqdhM8DRA&oe=6552BA94&_nc_sid=8b3546',
-        promoUrl: 'https://www.instagram.com/zulu_em/',
-      ),
-      imagesUrl: [
-        'https://images.squarespace-cdn.com/content/v1/54222358e4b0ef23d87a996b/1659992618857-S3ZIJIAT0V659W9HFTEF/3.png',
-      ],
-    ),
-  ];
-
   List<InstaBlock> insertSponsoredBlocks({
     required bool hasMore,
     required List<InstaBlock> blocks,
@@ -135,7 +69,10 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
   }) {
     final random = Random();
 
-    final sponsored = sponsoredBlocks ?? _mySponsoredBlocks;
+    final sponsored = sponsoredBlocks ??
+        List<Map<String, dynamic>>.from(
+          jsonDecode(_remoteConfig.getRemoteData('sponsored_blocks')) as List,
+        ).map(InstaBlock.fromJson).toList();
     var tempBlocks = [...blocks];
     var tempDataLength = tempBlocks.length;
 

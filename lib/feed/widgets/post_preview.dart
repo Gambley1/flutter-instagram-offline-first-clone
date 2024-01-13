@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:app_ui/app_ui.dart';
+import 'package:firebase_config/firebase_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/bloc/app_bloc.dart';
@@ -27,6 +28,7 @@ class PostPreviewPage extends StatelessWidget {
       create: (context) => FeedBloc(
         postsRepository: context.read<PostsRepository>(),
         userRepository: context.read<UserRepository>(),
+        remoteConfig: context.read<FirebaseConfig>(),
       ),
       child: AppScaffold(
         appBar: const PostPreviewAppBar(),

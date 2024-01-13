@@ -66,11 +66,13 @@ enum PremiumGradient {
 List<String> get commentEmojies =>
     ['❤', '🙌', '🔥', '👏🏻', '😢', '😍', '😮', '😂'];
 
-List<ModalOption> createMedialModalOptions({
+List<ModalOption> createMediaModalOptions({
   required String reelLabel,
   required String postLabel,
   required String storyLabel,
-  required ValueSetter<String> goTo,
+  required void Function(String route, {Object? extra}) goTo,
+  required bool enableStory,
+  Object? storyExtra,
 }) =>
     <ModalOption>[
       ModalOption(name: reelLabel, icon: Icons.video_collection_outlined),
@@ -79,10 +81,12 @@ List<ModalOption> createMedialModalOptions({
         icon: Icons.outbox_outlined,
         onTap: () => goTo('create_post'),
       ),
-      ModalOption(
-        name: storyLabel,
-        icon: Icons.cameraswitch_outlined,
-      ),
+      if (enableStory)
+        ModalOption(
+          name: storyLabel,
+          icon: Icons.cameraswitch_outlined,
+          onTap: () => goTo('create_stories', extra: storyExtra),
+        ),
     ];
 
 List<ModalOption> subscriberModalOptions({

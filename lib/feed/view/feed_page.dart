@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:app_ui/app_ui.dart';
+import 'package:firebase_config/firebase_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
@@ -53,6 +54,7 @@ class _FeedPageState extends State<FeedPage> {
           create: (context) => FeedBloc(
             userRepository: context.read<UserRepository>(),
             postsRepository: context.read<PostsRepository>(),
+            remoteConfig: context.read<FirebaseConfig>(),
           )..add(const FeedPageRequested(page: 0)),
         ),
         BlocProvider(
