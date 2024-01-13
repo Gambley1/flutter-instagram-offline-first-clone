@@ -60,7 +60,7 @@ dependencies:
   json_annotation: ^4.8.1
   path_provider: ^2.1.1
   flutter_portal: ^1.1.4
-  collection: ^1.17.2
+  collection: ^1.18.0
   flutter_markdown: ^0.6.18+2
   url_launcher: ^6.2.2
   async: ^2.11.0
