@@ -1,17 +1,28 @@
 import 'package:app_ui/app_ui.dart';
+import 'package:firebase_config/firebase_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_instagram_offline_first_clone/app/bloc/app_bloc.dart';
+import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
+import 'package:flutter_instagram_offline_first_clone/stories/create_stories/create_stories.dart';
 import 'package:flutter_instagram_offline_first_clone/stories/stories.dart';
+import 'package:go_router/go_router.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
+import 'package:shared/shared.dart';
+import 'package:stories_repository/stories_repository.dart';
 
 class StoriesCarousel extends StatelessWidget {
   const StoriesCarousel({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const StoriesListView();
+    return BlocProvider(
+      create: (context) => CreateStoriesBloc(
+        storiesRepository: context.read<StoriesRepository>(),
+        remoteConfig: context.read<FirebaseConfig>(),
+      )..add(const CreateStoriesFeatureAvaiableSubscriptionRequested()),
+      child: const StoriesListView(),
+    );
   }
 }
 
@@ -24,6 +35,8 @@ class StoriesListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final canCreateStory =
+        context.select((CreateStoriesBloc bloc) => bloc.state.isAvailable);
     final user = context.select((AppBloc bloc) => bloc.state.user);
 
     return SliverPadding(
@@ -51,7 +64,36 @@ class StoriesListView extends StatelessWidget {
                       username:
                           following?.username ?? following?.fullName ?? '',
                       myStoryLabel: context.l10n.yourStoryLabel,
-                      onTap: (_) {},
+                      onTap: (_) {
+                        if (!canCreateStory) return;
+                        context.pushNamed(
+                          'create_stories',
+                          extra: (String path) {
+                            context.read<CreateStoriesBloc>().add(
+                                  CreateStoriesStoryCreateRequested(
+                                    author: user,
+                                    contentType: StoryContentType.image,
+                                    filePath: path,
+                                    onError: (_, __) => openSnackbar(
+                                      const SnackbarMessage.error(
+                                        title: 'Something went wrong!',
+                                        description: 'Failed to create story',
+                                      ),
+                                    ),
+                                    onLoading: () => openSnackbar(
+                                      const SnackbarMessage.loading(),
+                                    ),
+                                    onStoryCreated: () => openSnackbar(
+                                      const SnackbarMessage.success(
+                                        title: 'Successfully created story!',
+                                      ),
+                                    ),
+                                  ),
+                                );
+                            context.pop();
+                          },
+                        );
+                      },
                       onLongPress: isMine ? null : () {},
                       avatarBuilder:
                           (context, author, onAvatarTap, isMine, onLongPress) {
@@ -63,6 +105,7 @@ class StoriesListView extends StatelessWidget {
                           onLongPress: onLongPress,
                           animationEffect: TappableAnimationEffect.scale,
                           showWhenSeen: true,
+                          onAddButtonTap: () => onAvatarTap(''),
                         );
                       },
                     ),

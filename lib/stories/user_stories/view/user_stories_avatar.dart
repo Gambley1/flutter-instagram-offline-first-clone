@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_instagram_offline_first_clone/app/bloc/app_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/stories/user_stories/user_stories.dart';
 import 'package:go_router/go_router.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
@@ -27,6 +28,7 @@ class UserStoriesAvatar extends StatelessWidget {
     this.radius,
     this.scaleStrength = ScaleStrength.xxs,
     this.onImagePick,
+    this.onAddButtonTap,
     super.key,
   });
 
@@ -44,14 +46,16 @@ class UserStoriesAvatar extends StatelessWidget {
   final ScaleStrength scaleStrength;
   final double? radius;
   final ValueSetter<String>? onImagePick;
+  final VoidCallback? onAddButtonTap;
 
   @override
   Widget build(BuildContext context) {
+    final user = context.select((AppBloc bloc) => bloc.state.user);
     return BlocProvider(
       create: (context) => UserStoriesBloc(
         author: author,
         storiesRepository: context.read<StoriesRepository>(),
-      )..add(const UserStoriesSubscriptionRequested()),
+      )..add(UserStoriesSubscriptionRequested(user.id)),
       child: ProfileAvatar(
         author: author,
         onAvatarTap: onAvatarTap,
@@ -65,6 +69,7 @@ class UserStoriesAvatar extends StatelessWidget {
         enableUnactiveBorder: enableUnactiveBorder,
         withShimmerPlaceholder: withShimmerPlaceholder,
         onLongPress: onLongPress,
+        onAddButtonTap: onAddButtonTap,
         radius: radius,
         scaleStrength: scaleStrength,
       ),
@@ -88,6 +93,7 @@ class ProfileAvatar extends StatelessWidget {
     required this.onLongPress,
     required this.radius,
     required this.onImagePick,
+    required this.onAddButtonTap,
     super.key,
   });
 
@@ -105,6 +111,7 @@ class ProfileAvatar extends StatelessWidget {
   final double? radius;
   final ScaleStrength scaleStrength;
   final ValueSetter<String>? onImagePick;
+  final VoidCallback? onAddButtonTap;
 
   @override
   Widget build(BuildContext context) {
@@ -127,25 +134,23 @@ class ProfileAvatar extends StatelessWidget {
       scaleStrength: scaleStrength,
       enableUnactiveBorder: enableUnactiveBorder,
       withShimmerPlaceholder: withShimmerPlaceholder,
+      onAddButtonTap: onAddButtonTap,
       onTap: (avatarUrl) {
-        if (this.showStories ?? true && (showWhenSeen ?? false)) {
-          context.pushNamed(
-            'view_stories',
-            queryParameters: {
-              'stories': json.encode(stories.map((e) => e.toJson()).toList()),
-            },
-            extra: author,
-          );
+        if (this.showStories ?? true && stories.isNotEmpty) {
+          if (showStories || (!showStories && (showWhenSeen ?? false))) {
+            context.pushNamed(
+              'view_stories',
+              queryParameters: {
+                'stories': json.encode(stories.map((e) => e.toJson()).toList()),
+              },
+              extra: author,
+            );
+          } else {
+            onAvatarTap?.call(avatarUrl);
+          }
         } else {
           onAvatarTap?.call(avatarUrl);
         }
-        // if (this.showStories ?? showStories) {
-        //   for (final story in stories.whereNot((story) => story.seen)) {
-        //     context
-        //         .read<UserStoriesBloc>()
-        //         .add(UserStoriesStorySeenRequested(story));
-        //   }
-        // }
       },
     );
   }

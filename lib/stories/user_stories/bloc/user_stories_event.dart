@@ -8,16 +8,19 @@ sealed class UserStoriesEvent extends Equatable {
 }
 
 final class UserStoriesSubscriptionRequested extends UserStoriesEvent {
-  const UserStoriesSubscriptionRequested();
+  const UserStoriesSubscriptionRequested(this.userId);
+
+  final String userId;
 }
 
 final class UserStoriesStorySeenRequested extends UserStoriesEvent {
-  const UserStoriesStorySeenRequested(this.story);
+  const UserStoriesStorySeenRequested(this.story, this.userId);
 
   final Story story;
+  final String userId;
 
   @override
-  List<Object> get props => [story];
+  List<Object> get props => [story, userId];
 }
 
 final class UserStoriesStoryDeleteRequested extends UserStoriesEvent {

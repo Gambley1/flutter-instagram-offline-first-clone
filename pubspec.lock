@@ -17,6 +17,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.3.16"
+  align_positioned:
+    dependency: transitive
+    description:
+      name: align_positioned
+      sha256: eca633a4f1a070b6fd1a013272b91bfebc986325c3de6fd575691c0697e70fb3
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.0"
   analyzer:
     dependency: transitive
     description:
@@ -25,6 +33,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.13.0"
+  animated_text_kit:
+    dependency: transitive
+    description:
+      name: animated_text_kit
+      sha256: "37392a5376c9a1a503b02463c38bc0342ef814ddbb8f9977bc90f2a84b22fa92"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.2.2"
   animations:
     dependency: "direct main"
     description:
@@ -436,6 +452,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.9.3+1"
+  firebase_config:
+    dependency: "direct main"
+    description:
+      path: "packages/remote_config/firebase_config"
+      relative: true
+    source: path
+    version: "0.1.0+1"
   firebase_core:
     dependency: "direct main"
     description:
@@ -491,6 +514,30 @@ packages:
       relative: true
     source: path
     version: "0.1.0+1"
+  firebase_remote_config:
+    dependency: transitive
+    description:
+      name: firebase_remote_config
+      sha256: "60fc92273d1db338a6fad1839c42dedc4ad64f812043acad0cbb200702f5c9ce"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.3.8"
+  firebase_remote_config_platform_interface:
+    dependency: transitive
+    description:
+      name: firebase_remote_config_platform_interface
+      sha256: "41813ef8dfbc40ef7a59a73f9e5acef2608dbcb2933241b6c03d52e90677040f"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.4.16"
+  firebase_remote_config_web:
+    dependency: transitive
+    description:
+      name: firebase_remote_config_web
+      sha256: "089e92f333c2fb2c05c640c80fecea9d1e06dada0ba85efe34a580987ef94a0a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.4.16"
   fixnum:
     dependency: transitive
     description:
@@ -621,6 +668,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.4"
+  flutter_screenutil:
+    dependency: transitive
+    description:
+      name: flutter_screenutil
+      sha256: "8cf100b8e4973dc570b6415a2090b0bfaa8756ad333db46939efc3e774ee100d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.9.0"
   flutter_staggered_grid_view:
     dependency: transitive
     description:
@@ -647,6 +702,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  fluttertoast:
+    dependency: transitive
+    description:
+      name: fluttertoast
+      sha256: dfdde255317af381bfc1c486ed968d5a43a2ded9c931e87cbecd88767d6a71c1
+      url: "https://pub.dev"
+    source: hosted
+    version: "8.2.4"
   form_fields:
     dependency: "direct main"
     description:
@@ -694,6 +757,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.3.2"
+  gallery_media_picker:
+    dependency: transitive
+    description:
+      name: gallery_media_picker
+      sha256: "85054c3829f4c28e8ddfe75c132ae020576d102bf477eae221f2d953872e551e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.0"
   glob:
     dependency: transitive
     description:
@@ -706,10 +777,10 @@ packages:
     dependency: "direct main"
     description:
       name: go_router
-      sha256: a206cc4621a644531a2e05e7774616ab4d9d85eab1f3b0e255f3102937fccab1
+      sha256: "3b40e751eaaa855179b416974d59d29669e750d2e50fcdb2b37f1cb0ca8c803a"
       url: "https://pub.dev"
     source: hosted
-    version: "12.0.0"
+    version: "13.0.1"
   google_identity_services_web:
     dependency: transitive
     description:
@@ -846,6 +917,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "9.1.3"
+  image:
+    dependency: transitive
+    description:
+      name: image
+      sha256: "8e9d133755c3e84c73288363e6343157c383a0c6c56fc51afcc5d4d7180306d6"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.3.0"
+  image_gallery_saver:
+    dependency: transitive
+    description:
+      name: image_gallery_saver
+      sha256: "0aba74216a4d9b0561510cb968015d56b701ba1bd94aace26aacdd8ae5761816"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.3"
   image_picker:
     dependency: transitive
     description:
@@ -1060,6 +1147,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.5.0"
+  matrix4_transform:
+    dependency: transitive
+    description:
+      name: matrix4_transform
+      sha256: "6ddeaa2c0e1f5c3f3a197f552377570b3e54fa0b8bf48507728a216fc0fd78a6"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.1"
   meta:
     dependency: transitive
     description:
@@ -1116,6 +1211,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.1.4"
+  oktoast:
+    dependency: transitive
+    description:
+      name: oktoast
+      sha256: f1366c5c793ddfb8f55bc6fc3e45db43c45debf173b765fb4c5ec096cbdeb84a
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.4.0"
   package_config:
     dependency: transitive
     description:
@@ -1196,6 +1299,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.0+1"
+  perfect_freehand:
+    dependency: transitive
+    description:
+      name: perfect_freehand
+      sha256: "77bfdd5efb223d120de5cc18c5d6e0b36a835e920521cfe67e281960bad44c9b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.4"
   persistent_storage:
     dependency: "direct main"
     description:
@@ -1219,6 +1330,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.7.2"
+  photo_view:
+    dependency: transitive
+    description:
+      name: photo_view
+      sha256: "8036802a00bae2a78fc197af8a158e3e2f7b500561ed23b4c458107685e645bb"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.14.0"
   pigeon:
     dependency: transitive
     description:
@@ -1636,6 +1755,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.5.4"
+  stories_editor:
+    dependency: "direct main"
+    description:
+      path: "packages/stories_editor"
+      relative: true
+    source: path
+    version: "0.2.2"
   stories_repository:
     dependency: "direct main"
     description:

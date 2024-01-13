@@ -36,7 +36,10 @@ class UserStoriesBloc extends HydratedBloc<UserStoriesEvent, UserStoriesState> {
   ) async {
     emit(state.copyWith(author: _author));
     await emit.forEach(
-      _storiesRepository.mergedStories(userId: _author.id),
+      _storiesRepository.mergedStories(
+        authorId: _author.id,
+        userId: event.userId,
+      ),
       onData: (stories) => state.copyWith(
         stories: stories,
         showStories: stories.any((e) => !e.seen),
@@ -48,7 +51,10 @@ class UserStoriesBloc extends HydratedBloc<UserStoriesEvent, UserStoriesState> {
     UserStoriesStorySeenRequested event,
     Emitter<UserStoriesState> emit,
   ) =>
-      _storiesRepository.setUserStorySeen(story: event.story);
+      _storiesRepository.setUserStorySeen(
+        story: event.story,
+        userId: event.userId,
+      );
 
   Future<void> _onUserStoriesStoryDeleteRequested(
     UserStoriesStoryDeleteRequested event,

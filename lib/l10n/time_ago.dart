@@ -75,7 +75,7 @@ extension TimeAgo on DateTime {
     timeago.setLocaleMessages('ru_short', timeago.RuShortMessages());
     timeago.setLocaleMessages('en_custom_short', EnCustomShortMessages());
 
-    final languageCode = Localizations.localeOf(context).languageCode;
+    final languageCode = Localizations.maybeLocaleOf(context)?.languageCode;
     final locale = languageCode == 'en' ? 'en_custom_short' : 'ru_short';
 
     return timeago.format(this, locale: locale);

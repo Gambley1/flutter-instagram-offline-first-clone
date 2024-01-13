@@ -73,7 +73,7 @@ extension DialogExtension on BuildContext {
                   child: Container(
                     alignment: Alignment.center,
                     child: TextButton(
-                      onPressed: () => Navigator.of(context).pop(true),
+                      onPressed: () => pop(true),
                       child: Text(
                         okText,
                         style: context.bodyLarge?.copyWith(
@@ -105,7 +105,6 @@ extension DialogExtension on BuildContext {
       showDialog<T>(
         context: this,
         barrierDismissible: barrierDismissible,
-        
         builder: builder ??
             (context) {
               return AlertDialog.adaptive(
@@ -126,6 +125,7 @@ extension DialogExtension on BuildContext {
   Future<T?> showBottomModal<T>({
     Widget Function(BuildContext context)? builder,
     String? title,
+    Color? titleColor,
     Widget? content,
     Color? backgroundColor,
     Color? barrierColor,
@@ -164,11 +164,13 @@ extension DialogExtension on BuildContext {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(
-                      title!,
-                      style: context.titleLarge,
-                    ),
-                    const Divider(),
+                    if (title != null) ...[
+                      Text(
+                        title,
+                        style: context.titleLarge?.copyWith(color: titleColor),
+                      ),
+                      const Divider(),
+                    ],
                     content!,
                   ],
                 ),
@@ -193,7 +195,10 @@ extension DialogExtension on BuildContext {
                     animationEffect: TappableAnimationEffect.none,
                     onTap: () => pop<ModalOption>(option),
                     child: ListTile(
-                      title: Text(option.name),
+                      title: Text(
+                        option.name,
+                        style: bodyLarge?.copyWith(color: option.nameColor),
+                      ),
                       leading: option.icon == null ? null : Icon(option.icon),
                     ),
                   ),
@@ -238,11 +243,15 @@ extension DialogExtension on BuildContext {
     required String noText,
     required String yesText,
     required String title,
+    ValueSetter<BuildContext>? noAction,
+    ValueSetter<BuildContext>? yesAction,
   }) async {
     final isConfimred = await showConfirmationDialog(
       noText: noText,
       yesText: yesText,
       title: title,
+      noAction: noAction,
+      yesAction: yesAction,
     );
     if (isConfimred == null || !isConfimred) return;
     await Future(() => fn.call());
@@ -255,8 +264,8 @@ extension DialogExtension on BuildContext {
     required String yesText,
     String? title,
     String? subtitle,
-    VoidCallback? noAction,
-    VoidCallback? yesAction,
+    ValueSetter<BuildContext>? noAction,
+    ValueSetter<BuildContext>? yesAction,
     TextStyle? noTextStyle,
     TextStyle? yesTextStyle,
     bool distractiveAction = true,
@@ -275,7 +284,8 @@ extension DialogExtension on BuildContext {
         actions: theme.platform == TargetPlatform.android
             ? [
                 TextButton(
-                  onPressed: () => noAction ?? pop(false),
+                  onPressed: () =>
+                      noAction == null ? pop(false) : noAction.call(this),
                   child: Text(
                     noText,
                     style: noTextStyle ??
@@ -285,7 +295,8 @@ extension DialogExtension on BuildContext {
                   ),
                 ),
                 TextButton(
-                  onPressed: () => yesAction ?? pop(true),
+                  onPressed: () =>
+                      yesAction == null ? pop(true) : yesAction.call(this),
                   child: Text(
                     yesText,
                     style: yesTextStyle ??
@@ -299,7 +310,9 @@ extension DialogExtension on BuildContext {
                 AppButton(
                   isDialogButton: true,
                   isDefaultAction: true,
-                  onPressed: () => noAction ?? (canPop() ? pop(false) : null),
+                  onPressed: () => noAction == null
+                      ? (canPop() ? pop(false) : null)
+                      : noAction.call(this),
                   text: noText,
                   textStyle: noTextStyle ??
                       textTheme.bodyMedium?.copyWith(
@@ -309,7 +322,9 @@ extension DialogExtension on BuildContext {
                 AppButton(
                   isDialogButton: true,
                   isDestructiveAction: true,
-                  onPressed: () => yesAction ?? (canPop() ? pop(true) : null),
+                  onPressed: () => yesAction == null
+                      ? (canPop() ? pop(true) : null)
+                      : yesAction.call(this),
                   text: yesText,
                   textStyle: yesTextStyle ??
                       textTheme.bodyMedium?.copyWith(

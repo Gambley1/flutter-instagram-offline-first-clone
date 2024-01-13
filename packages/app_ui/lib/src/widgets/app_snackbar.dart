@@ -8,10 +8,12 @@ import 'package:pausable_timer/pausable_timer.dart';
 /// Snackbar message to be displayed.
 class SnackbarMessage {
   /// {@macro snackbar_message}
-  SnackbarMessage({
+  const SnackbarMessage({
     this.title = '',
     this.description,
     this.icon,
+    this.iconSize,
+    this.iconColor,
     this.timeout = const Duration(milliseconds: 3500),
     this.onTap,
     this.isError = false,
@@ -19,8 +21,39 @@ class SnackbarMessage {
     this.shakeOffset = 10,
     this.undismissable = false,
     this.dismissWhen,
-    this.loading = false,
+    this.isLoading = false,
+    this.backgroundColor,
   });
+
+  /// {@macro snackbar_message_success}
+  const SnackbarMessage.success({
+    String title = '',
+    String? description,
+  }) : this(
+          title: title,
+          description: description,
+          icon: Icons.done,
+          backgroundColor: const Color.fromARGB(255, 41, 166, 64),
+        );
+
+  /// {@macro snackbar_message_error}
+  const SnackbarMessage.loading({String title = 'Loading...'})
+      : this(
+          title: title,
+          isLoading: true,
+        );
+
+  /// {@macro snackbar_message_error}
+  const SnackbarMessage.error({
+    String title = '',
+    String? description,
+  }) : this(
+          title: title,
+          description: description,
+          icon: Icons.cancel_rounded,
+          backgroundColor: const Color.fromARGB(255, 228, 71, 71),
+          isError: true,
+        );
 
   /// Snackbar title.
   final String title;
@@ -30,6 +63,12 @@ class SnackbarMessage {
 
   /// Snackbar icon.
   final IconData? icon;
+
+  /// The size of the icon.
+  final double? iconSize;
+
+  /// The color of the icon.
+  final Color? iconColor;
 
   /// Snackbar duration before it disappears.
   final Duration timeout;
@@ -53,7 +92,10 @@ class SnackbarMessage {
   final FutureOr<bool>? dismissWhen;
 
   /// Returns true if the snackbar is loading.
-  final bool loading;
+  final bool isLoading;
+
+  /// The background color of the snackbar message.
+  final Color? backgroundColor;
 }
 
 /// {@template app_snackbar}
@@ -305,7 +347,8 @@ class AppSnackbarState extends State<AppSnackbar>
                     },
                     borderRadius: 13,
                     // color: context.theme.colorScheme.secondaryContainer,
-                    color: Colors.blue.shade500,
+                    color:
+                        currentMessage?.backgroundColor ?? Colors.blue.shade500,
                     // color: appStateSettings['materialYou']
                     //     ? dynamicPastel(
                     //         context,
@@ -333,13 +376,14 @@ class AppSnackbarState extends State<AppSnackbar>
                                   padding: const EdgeInsets.only(right: 10),
                                   child: Icon(
                                     currentMessage?.icon,
-                                    size: 28,
+                                    size: currentMessage?.iconSize ?? 28,
+                                    color: currentMessage?.iconColor,
                                   ),
                                 ),
-                              if (currentMessage?.loading == null)
+                              if (currentMessage?.isLoading == null)
                                 const SizedBox.shrink()
-                              else if (currentMessage?.loading != null &&
-                                  currentMessage!.loading == true)
+                              else if (currentMessage?.isLoading != null &&
+                                  currentMessage!.isLoading == true)
                                 const Padding(
                                   padding: EdgeInsets.only(right: 10),
                                   child: SizedBox(

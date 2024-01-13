@@ -1,5 +1,6 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:chats_repository/chats_repository.dart';
+import 'package:firebase_config/firebase_config.dart';
 import 'package:firebase_notifications_client/firebase_notifications_client.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,6 +23,7 @@ class App extends StatelessWidget {
     required this.chatsRepository,
     required this.storiesRepository,
     required this.notificationsClient,
+    required this.remoteConfig,
     required this.user,
     super.key,
   });
@@ -31,6 +33,7 @@ class App extends StatelessWidget {
   final ChatsRepository chatsRepository;
   final StoriesRepository storiesRepository;
   final FirebaseNotificationsClient notificationsClient;
+  final FirebaseConfig remoteConfig;
   final User user;
 
   @override
@@ -42,6 +45,7 @@ class App extends StatelessWidget {
         RepositoryProvider.value(value: chatsRepository),
         RepositoryProvider.value(value: storiesRepository),
         RepositoryProvider.value(value: notificationsClient),
+        RepositoryProvider.value(value: remoteConfig),
       ],
       child: BlocProvider(
         create: (context) => AppBloc(

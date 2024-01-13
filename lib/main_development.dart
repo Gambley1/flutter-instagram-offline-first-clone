@@ -12,7 +12,12 @@ import 'package:user_repository/user_repository.dart';
 
 void main() {
   bootstrap(
-    (powerSyncRepository, firebaseMessaging, sharedPreferences) async {
+    (
+      powerSyncRepository,
+      firebaseMessaging,
+      sharedPreferences,
+      remoteConfig,
+    ) async {
       final notificationsClient =
           FirebaseNotificationsClient(firebaseMessaging: firebaseMessaging);
 
@@ -48,6 +53,7 @@ void main() {
         chatsRepository: chatsRepository,
         storiesRepository: storiesRepository,
         notificationsClient: notificationsClient,
+        remoteConfig: remoteConfig,
         user: await userRepository.user.first,
       );
     },

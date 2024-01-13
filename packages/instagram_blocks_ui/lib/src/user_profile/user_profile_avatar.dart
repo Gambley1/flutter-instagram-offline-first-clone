@@ -30,6 +30,7 @@ class UserProfileAvatar extends StatelessWidget {
     this.withShimmerPlaceholder = false,
     this.placeholderBuilder,
     this.showStories = false,
+    this.onAddButtonTap,
   });
 
   final List<Story> stories;
@@ -41,6 +42,7 @@ class UserProfileAvatar extends StatelessWidget {
   final bool withShimmerPlaceholder;
   final ValueSetter<String?>? onTap;
   final VoidCallback? onLongPress;
+  final VoidCallback? onAddButtonTap;
   final ValueSetter<String>? onImagePick;
   final TappableAnimationEffect animationEffect;
   final ScaleStrength scaleStrength;
@@ -185,20 +187,24 @@ class UserProfileAvatar extends StatelessWidget {
       final plusCircularIcon = Positioned(
         bottom: 0,
         right: 0,
-        child: Container(
-          width: isLarge ? 32 : 18,
-          height: isLarge ? 32 : 18,
-          decoration: BoxDecoration(
-            color: Colors.blue,
-            shape: BoxShape.circle,
-            border: Border.all(
-              width: isLarge ? 3 : 2,
-              color: context.reversedAdaptiveColor,
+        child: Tappable(
+          onTap: onAddButtonTap,
+          animationEffect: TappableAnimationEffect.scale,
+          child: Container(
+            width: isLarge ? 32 : 18,
+            height: isLarge ? 32 : 18,
+            decoration: BoxDecoration(
+              color: Colors.blue,
+              shape: BoxShape.circle,
+              border: Border.all(
+                width: isLarge ? 3 : 2,
+                color: context.reversedAdaptiveColor,
+              ),
             ),
-          ),
-          child: Icon(
-            Icons.add,
-            size: isLarge ? 20 : 12,
+            child: Icon(
+              Icons.add,
+              size: isLarge ? 20 : 12,
+            ),
           ),
         ),
       );

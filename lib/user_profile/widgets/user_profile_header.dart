@@ -1,12 +1,14 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_instagram_offline_first_clone/app/bloc/app_bloc.dart';
+import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
+import 'package:flutter_instagram_offline_first_clone/stories/create_stories/create_stories.dart';
 import 'package:flutter_instagram_offline_first_clone/stories/stories.dart';
 import 'package:flutter_instagram_offline_first_clone/user_profile/user_profile.dart';
 import 'package:go_router/go_router.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
+import 'package:shared/shared.dart';
 
 class UserProfileHeader extends StatelessWidget {
   const UserProfileHeader({
@@ -34,10 +36,11 @@ class UserProfileHeader extends StatelessWidget {
           },
         );
 
-    final bloc = context.read<UserProfileBloc>();
     final isOwner = context.select((UserProfileBloc b) => b.isOwner);
     // final user = context.select((UserProfileBloc b) => b.state.user);
     final user = context.select((AppBloc bloc) => bloc.state.user);
+    final canCreateStories =
+        context.select((CreateStoriesBloc bloc) => bloc.state.isAvailable);
 
     return SliverPadding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
@@ -48,16 +51,42 @@ class UserProfileHeader extends StatelessWidget {
               children: [
                 UserStoriesAvatar(
                   author: user,
-                  isImagePicker: isOwner,
                   onAvatarTap: (imageUrl) {
                     if (imageUrl == null) return;
-                    context.showImagePreview(imageUrl);
+                    if (!isOwner) context.showImagePreview(imageUrl);
+                    if (isOwner) {
+                      if (!canCreateStories) return;
+                      context.pushNamed(
+                        'create_stories',
+                        extra: (String path) {
+                          context.read<CreateStoriesBloc>().add(
+                                CreateStoriesStoryCreateRequested(
+                                  author: user,
+                                  contentType: StoryContentType.image,
+                                  filePath: path,
+                                  onError: (_, __) => openSnackbar(
+                                    const SnackbarMessage.error(
+                                      title: 'Something went wrong!',
+                                      description: 'Failed to create story',
+                                    ),
+                                  ),
+                                  onLoading: () => openSnackbar(
+                                    const SnackbarMessage.loading(),
+                                  ),
+                                  onStoryCreated: () => openSnackbar(
+                                    const SnackbarMessage.success(
+                                      title: 'Successfully created story!',
+                                    ),
+                                  ),
+                                ),
+                              );
+                          context.pop();
+                        },
+                      );
+                    }
                   },
                   isLarge: true,
                   animationEffect: TappableAnimationEffect.scale,
-                  onImagePick: (imageUrl) => bloc.add(
-                    UserProfileUpdateRequested(avatarUrl: imageUrl),
-                  ),
                   showWhenSeen: true,
                 ),
                 const SizedBox(width: 12),

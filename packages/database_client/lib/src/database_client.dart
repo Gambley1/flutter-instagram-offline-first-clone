@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:isolate';
+import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:env/env.dart';
@@ -239,10 +240,19 @@ abstract class StoriesBaseRepository {
     required User author,
     required StoryContentType contentType,
     required String contentUrl,
+    String? id,
+    int? duration,
   });
 
   /// Deletes the [Story] identified by [id].
   Future<void> deleteStory({required String id});
+
+  /// Uploads the story media into the Supabase storage.
+  Future<String> uploadStoryMedia({
+    required String storyId,
+    required File imageFile,
+    required Uint8List imageBytes,
+  });
 }
 
 /// Abstract base class for database client that extends `Repository` and
@@ -1175,7 +1185,7 @@ values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       'notification': {
         'title': sender?.username,
         'body': notificationBody,
-        'click`_action': 'FLUTTER_NOTIFICATION_CLICK',
+        'click_action': 'FLUTTER_NOTIFICATION_CLICK',
       },
       'data': {
         if (chatId != null) 'chat_id': chatId,
@@ -1333,17 +1343,20 @@ LIMIT ?2 OFFSET ?3
     required User author,
     required StoryContentType contentType,
     required String contentUrl,
+    String? id,
+    int? duration,
   }) =>
       _powerSyncRepository.db().execute(
         '''
-insert into stories (id, user_id, content_type, content_url, created_at, expires_at)
-values (?, ?, ?, ?, ?, ?)
+insert into stories (id, user_id, content_type, content_url, duration, created_at, expires_at)
+values (?, ?, ?, ?, ?, ?, ?)
 ''',
         [
-          UidGenerator.v4(),
+          id ?? UidGenerator.v4(),
           author.id,
           contentType.toJson(),
           contentUrl,
+          duration,
           DateTime.now().toIso8601String(),
           DateTime.now().add(const Duration(days: 1)).toIso8601String(),
         ],
@@ -1368,7 +1381,7 @@ DELETE FROM stories WHERE id = ?
 SELECT 
   s.*${includeAuthor ? ', p.id as user_id, p.username, p.full_name, p.avatar_url' : ''}
 FROM stories s
-  LEFT JOIN profiles p ON s.user_id = p.id
+  ${includeAuthor ? 'LEFT JOIN profiles p ON s.user_id = p.id' : ''}
 WHERE user_id = ? AND expires_at > current_timestamp
 ''',
         parameters: [userId],
@@ -1384,5 +1397,25 @@ SELECT * FROM stories WHERE id = ?
     );
     if (row.isEmpty) return Story.empty;
     return Story.fromJson(row.first);
+  }
+
+  @override
+  Future<String> uploadStoryMedia({
+    required String storyId,
+    required File imageFile,
+    required Uint8List imageBytes,
+  }) async {
+    final stories = Supabase.instance.client.storage.from('stories');
+    final imageExtension = imageFile.path.split('.').last.toLowerCase();
+    final imagePath = '$storyId/image';
+
+    await stories.uploadBinary(
+          imagePath,
+          imageBytes,
+          fileOptions: FileOptions(
+            contentType: 'image/$imageExtension',
+          ),
+        );
+    return stories.getPublicUrl(imagePath);
   }
 }
