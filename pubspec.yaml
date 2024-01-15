@@ -62,7 +62,7 @@ dependencies:
   flutter_portal: ^1.1.4
   collection: ^1.17.2
   flutter_markdown: ^0.6.18+2
-  url_launcher: ^6.2.2
+  url_launcher: ^6.2.3
   async: ^2.11.0
   shimmer: ^3.0.0
   cached_network_image: ^3.3.0
