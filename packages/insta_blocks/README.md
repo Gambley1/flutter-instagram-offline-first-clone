@@ -10,8 +10,6 @@ Reusable Instagram Blocks for Flutter Instagram offline-first clone Application.
 
 **❗ In order to start using Instagram Blocks you must have the [Flutter SDK][flutter_install_link] installed on your machine.**
 
-Install via `flutter pub add`:
-
 ---
 
 ## Continuous Integration 🤖

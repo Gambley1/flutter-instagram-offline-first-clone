@@ -10,12 +10,6 @@ A package that manages connection to the PowerSync cloud service and database.
 
 **❗ In order to start using PowerSync Repository you must have the [Flutter SDK][flutter_install_link] installed on your machine.**
 
-Install via `flutter pub add`:
-
-```sh
-dart pub add powersync_repository
-```
-
 ---
 
 ## Continuous Integration 🤖
