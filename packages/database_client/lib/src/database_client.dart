@@ -1358,8 +1358,11 @@ values (?, ?, ?, ?, ?, ?, ?)
           contentType.toJson(),
           contentUrl,
           duration,
-          DateTime.now().toIso8601String(),
-          DateTime.now().add(const Duration(days: 1)).toIso8601String(),
+          DateTime.now().toLocal().toIso8601String(),
+          DateTime.now()
+              .add(const Duration(days: 1))
+              .toLocal()
+              .toIso8601String(),
         ],
       );
 
@@ -1411,12 +1414,12 @@ SELECT * FROM stories WHERE id = ?
     final imagePath = '$storyId/image';
 
     await stories.uploadBinary(
-          imagePath,
-          imageBytes,
-          fileOptions: FileOptions(
-            contentType: 'image/$imageExtension',
-          ),
-        );
+      imagePath,
+      imageBytes,
+      fileOptions: FileOptions(
+        contentType: 'image/$imageExtension',
+      ),
+    );
     return stories.getPublicUrl(imagePath);
   }
 }
