@@ -7,6 +7,7 @@ part 'feed.g.dart';
 
 /// {@template feed}
 /// A representation of Instagram feed.
+/// {@endtemplate}
 @JsonSerializable()
 class Feed extends Equatable {
   /// {@macro feed}

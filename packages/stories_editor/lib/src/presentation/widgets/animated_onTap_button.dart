@@ -11,14 +11,14 @@ class AnimatedOnTapButton extends StatefulWidget {
   final Function()? onLongPress;
 
   const AnimatedOnTapButton({
-    Key? key,
+    super.key,
     required this.onTap,
     required this.child,
     this.onLongPress,
-  }) : super(key: key);
+  });
 
   @override
-  _AnimatedOnTapButtonState createState() => _AnimatedOnTapButtonState();
+  State<AnimatedOnTapButton> createState() => _AnimatedOnTapButtonState();
 }
 
 class _AnimatedOnTapButtonState extends State<AnimatedOnTapButton>

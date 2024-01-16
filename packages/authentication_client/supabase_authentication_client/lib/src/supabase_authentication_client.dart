@@ -65,7 +65,8 @@ class SupabaseAuthenticationClient implements AuthenticationClient {
   @override
   Future<void> logInWithApple() async {
     try {
-      await _powerSyncRepository.supabase.auth.signInWithApple();
+      await _powerSyncRepository.supabase.auth
+          .signInWithOAuth(OAuthProvider.apple);
     } catch (error, stackTrace) {
       Error.throwWithStackTrace(LogInWithAppleFailure(error), stackTrace);
     }
@@ -95,7 +96,7 @@ class SupabaseAuthenticationClient implements AuthenticationClient {
       }
 
       await _powerSyncRepository.supabase.auth.signInWithIdToken(
-        provider: Provider.google,
+        provider: OAuthProvider.google,
         accessToken: accessToken,
         idToken: idToken,
       );

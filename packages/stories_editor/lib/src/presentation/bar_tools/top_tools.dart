@@ -14,11 +14,10 @@ import 'package:stories_editor/src/presentation/widgets/tool_button.dart';
 class TopTools extends StatefulWidget {
   final GlobalKey contentKey;
   final BuildContext context;
-  const TopTools({Key? key, required this.contentKey, required this.context})
-      : super(key: key);
+  const TopTools({super.key, required this.contentKey, required this.context});
 
   @override
-  _TopToolsState createState() => _TopToolsState();
+  State<TopTools> createState() => _TopToolsState();
 }
 
 class _TopToolsState extends State<TopTools> {
@@ -37,19 +36,17 @@ class _TopToolsState extends State<TopTools> {
               children: [
                 /// close button
                 ToolButton(
+                    backGroundColor: Colors.black12,
+                    onTap: () => exitDialog(
+                          context: widget.context,
+                          contentKey: widget.contentKey,
+                        ).then((exit) {
+                          if (exit) context.pop();
+                        }),
                     child: const Icon(
                       Icons.close,
                       color: Colors.white,
-                    ),
-                    backGroundColor: Colors.black12,
-                    onTap: () async {
-                      var res = await exitDialog(
-                          context: widget.context,
-                          contentKey: widget.contentKey);
-                      if (res) {
-                        context.pop();
-                      }
-                    }),
+                    )),
                 if (controlNotifier.mediaPath.isEmpty)
                   _selectColor(
                       controlProvider: controlNotifier,
@@ -70,12 +67,6 @@ class _TopToolsState extends State<TopTools> {
                         }
                       }),
                 ToolButton(
-                    child: const ImageIcon(
-                      AssetImage('assets/icons/download.png',
-                          package: 'stories_editor'),
-                      color: Colors.white,
-                      size: 20,
-                    ),
                     backGroundColor: Colors.black12,
                     onTap: () async {
                       if (paintingNotifier.lines.isNotEmpty ||
@@ -90,19 +81,25 @@ class _TopToolsState extends State<TopTools> {
                           Fluttertoast.showToast(msg: 'Error');
                         }
                       }
-                    }),
+                    },
+                    child: const ImageIcon(
+                      AssetImage('assets/icons/download.png',
+                          package: 'stories_editor'),
+                      color: Colors.white,
+                      size: 20,
+                    )),
                 ToolButton(
+                    backGroundColor: Colors.black12,
+                    onTap: () {
+                      controlNotifier.isPainting = true;
+                      //createLinePainting(context: context);
+                    },
                     child: const ImageIcon(
                       AssetImage('assets/icons/draw.png',
                           package: 'stories_editor'),
                       color: Colors.white,
                       size: 20,
-                    ),
-                    backGroundColor: Colors.black12,
-                    onTap: () {
-                      controlNotifier.isPainting = true;
-                      //createLinePainting(context: context);
-                    }),
+                    )),
                 // ToolButton(
                 //   child: ImageIcon(
                 //     const AssetImage('assets/icons/photo_filter.png',
@@ -115,15 +112,15 @@ class _TopToolsState extends State<TopTools> {
                 //   !controlNotifier.isPhotoFilter,
                 // ),
                 ToolButton(
+                  backGroundColor: Colors.black12,
+                  onTap: () => controlNotifier.isTextEditing =
+                      !controlNotifier.isTextEditing,
                   child: const ImageIcon(
                     AssetImage('assets/icons/text.png',
                         package: 'stories_editor'),
                     color: Colors.white,
                     size: 20,
                   ),
-                  backGroundColor: Colors.black12,
-                  onTap: () => controlNotifier.isTextEditing =
-                      !controlNotifier.isTextEditing,
                 ),
               ],
             ),

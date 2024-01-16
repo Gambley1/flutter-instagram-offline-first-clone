@@ -1012,7 +1012,8 @@ insert into
 //       [chatId],
 //     ))['participants_count'] as int;
 //     if (participants >= 1) {
-//       final isParticipantInConversation = await _powerSyncRepository.db().get(
+//       final isParticipantInConversation = await _powerSyncRepository.db()
+// .get(
 //         '''
 // select
 //   *

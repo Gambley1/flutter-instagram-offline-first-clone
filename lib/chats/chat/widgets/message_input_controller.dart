@@ -251,44 +251,7 @@ class MessageInputController extends ValueNotifier<Message> {
     _ogAttachment = null;
   }
 
-  /// Returns the list of mentioned users in the message.
-  // List<User> get mentionedUsers => message.mentionedUsers;
-
-  /// Sets the mentioned users.
-  // set mentionedUsers(List<User> users) {
-  // message = message.copyWith(mentionedUsers: users);
-  // }
-
-  /// Adds a user to the list of mentioned users.
-  // void addMentionedUser(User user) {
-  // mentionedUsers = [...mentionedUsers, user];
-  // }
-
-  /// Removes the specified [user] from the mentioned users list.
-  // void removeMentionedUser(User user) {
-  // mentionedUsers = [...mentionedUsers]..remove(user);
-  // }
-
-  /// Removes the mentioned user with the given [userId].
-  // void removeMentionedUserById(String userId) {
-  // mentionedUsers = [...mentionedUsers]..removeWhere((it) => it.id == userId);
-  // }
-
-  /// Removes all mentioned users from the message.
-  // void clearMentionedUsers() {
-  // mentionedUsers = [];
-  // }
-
   /// Sets the [message], to empty.
-  ///
-  /// After calling this function, [text], [attachments] and [mentionedUsers]
-  /// will all be empty.
-  ///
-  /// Calling this will notify all the listeners of this
-  /// [MessageInputController] that they need to update
-  /// (calls [notifyListeners]). For this reason,
-  /// this method should only be called between frames, e.g. in response to user
-  /// actions, not during the build, layout, or paint phases.
   void clear() {
     message = Message.empty;
   }

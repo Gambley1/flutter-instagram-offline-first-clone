@@ -1,3 +1,5 @@
+// ignore_for_file: public_member_api_docs
+
 class SubmissionStatusMessage {
   const SubmissionStatusMessage({
     required this.title,

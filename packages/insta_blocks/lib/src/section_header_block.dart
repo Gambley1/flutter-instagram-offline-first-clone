@@ -39,4 +39,3 @@ class SectionHeaderBlock with EquatableMixin implements InstaBlock {
   @override
   List<Object?> get props => [title, action, type];
 }
-

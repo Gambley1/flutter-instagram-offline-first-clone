@@ -56,7 +56,7 @@ class _CountNumberState extends State<CountNumber> {
     if (lazyFirstRender && widget.initialCount == widget.count) {
       lazyFirstRender = false;
       return widget.textBuilder(
-        double.parse((widget.count).toStringAsFixed(widget.decimals)),
+        double.parse(widget.count.toStringAsFixed(widget.decimals)),
       );
     }
 
@@ -65,7 +65,7 @@ class _CountNumberState extends State<CountNumber> {
         begin: (double.parse(previousAmount.toStringAsFixed(widget.decimals)) *
                 pow(10, widget.decimals))
             .round(),
-        end: (double.parse((widget.count).toStringAsFixed(widget.decimals)) *
+        end: (double.parse(widget.count.toStringAsFixed(widget.decimals)) *
                 pow(10, widget.decimals))
             .round(),
       ),

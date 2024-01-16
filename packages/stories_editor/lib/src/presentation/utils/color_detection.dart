@@ -1,9 +1,10 @@
 import 'dart:async';
+import 'dart:ui' as ui;
+
+import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:image/image.dart' as img;
-import 'package:flutter/material.dart';
-import 'dart:ui' as ui;
 
 class ColorDetection {
   final GlobalKey? currentKey;

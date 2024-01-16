@@ -1,3 +1,5 @@
+// ignore_for_file: public_member_api_docs
+
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:shared/shared.dart';
@@ -78,10 +80,9 @@ class ApplLoadingIndeterminate extends StatefulWidget {
 class AppLoadingIndeterminateState extends State<ApplLoadingIndeterminate> {
   bool visible = false;
   double opacity = 0;
-  // Set the timeout for loading indicator
   final _debouncer = Debouncer(milliseconds: 5000);
 
-  void setVisibility(bool visible, {double? opacity}) {
+  void setVisibility({required bool visible, double? opacity}) {
     setState(() {
       this.visible = visible;
       this.opacity = visible == false ? 1 : opacity ?? 1;

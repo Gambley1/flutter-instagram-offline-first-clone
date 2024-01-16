@@ -1,4 +1,4 @@
-// ignore_for_file: must_be_immutable
+// ignore_for_file: must_be_immutable, deprecated_member_use
 library stories_editor;
 
 import 'package:flutter/material.dart';
@@ -46,7 +46,7 @@ class StoriesEditor extends StatefulWidget {
   final int? galleryThumbnailQuality;
 
   const StoriesEditor({
-    Key? key,
+    super.key,
     required this.onDone,
     this.middleBottomWidget,
     this.colorList,
@@ -57,10 +57,10 @@ class StoriesEditor extends StatefulWidget {
     this.onDoneButtonStyle,
     this.editorBackgroundColor,
     this.galleryThumbnailQuality,
-  }) : super(key: key);
+  });
 
   @override
-  _StoriesEditorState createState() => _StoriesEditorState();
+  State<StoriesEditor> createState() => _StoriesEditorState();
 }
 
 class _StoriesEditorState extends State<StoriesEditor> {

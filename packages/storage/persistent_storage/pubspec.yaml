@@ -10,12 +10,12 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  shared_preferences: ^2.2.2
   storage:
     path: ../storage
-  shared_preferences: ^2.2.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  mocktail: ^1.0.0
+  mocktail: ^1.0.2
   very_good_analysis: ^5.1.0

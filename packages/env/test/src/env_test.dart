@@ -1,3 +1,4 @@
+import 'dart:developer' as developer;
 import 'package:env/env.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -6,37 +7,37 @@ void main() {
     group('Dev', () {
       test('supabase url not null', () {
         expect(EnvDev.supabaseUrl, isNotNull);
-        print(EnvDev.supabaseUrl);
+        developer.log(EnvDev.supabaseUrl);
       });
       test('supabase anon url not null', () {
         expect(EnvDev.supabaseAnonKey, isNotNull);
-        print(EnvDev.supabaseAnonKey);
+        developer.log(EnvDev.supabaseAnonKey);
       });
       test('powersync url not null', () {
         expect(EnvDev.powersyncUrl, isNotNull);
-        print(EnvDev.powersyncUrl);
+        developer.log(EnvDev.powersyncUrl);
       });
       test('fcm server key not null', () {
         expect(EnvDev.fcmServerKey, isNotNull);
-        print(EnvDev.fcmServerKey);
+        developer.log(EnvDev.fcmServerKey);
       });
     });
     group('Prod', () {
       test('supabase url not null', () {
         expect(EnvProd.supabaseUrl, isNotNull);
-        print(EnvProd.supabaseUrl);
+        developer.log(EnvProd.supabaseUrl);
       });
       test('supabase anon url not null', () {
         expect(EnvProd.supabaseAnonKey, isNotNull);
-        print(EnvProd.supabaseAnonKey);
+        developer.log(EnvProd.supabaseAnonKey);
       });
       test('powersync url not null', () {
         expect(EnvProd.powersyncUrl, isNotNull);
-        print(EnvProd.powersyncUrl);
+        developer.log(EnvProd.powersyncUrl);
       });
       test('fcm server key not null', () {
         expect(EnvProd.fcmServerKey, isNotNull);
-        print(EnvProd.fcmServerKey);
+        developer.log(EnvProd.fcmServerKey);
       });
     });
   });

@@ -128,8 +128,8 @@ class _ChatMessageTextFieldInputState extends State<ChatMessageTextFieldInput>
 
     // Update _focusNode
     if (widget.focusNode != oldWidget.focusNode) {
-      (oldWidget.focusNode).removeListener(_focusNodeListener);
-      (widget.focusNode).addListener(_focusNodeListener);
+      oldWidget.focusNode.removeListener(_focusNodeListener);
+      widget.focusNode.addListener(_focusNodeListener);
     }
   }
 
@@ -256,7 +256,9 @@ class _ChatMessageTextFieldInputState extends State<ChatMessageTextFieldInput>
 
           // final channel = StreamChannel.of(context).channel;
           // if (value.isNotEmpty &&
-          //     channel.ownCapabilities.contains(PermissionType.sendTypingEvents)) {
+          //     channel.ownCapabilities.contains(PermissionType.sendTypingEvent
+          // s
+          //)) {
           //   // Notify the server that the user started typing.
           //   channel
           //       .keyStroke(_effectiveController.message.parentId)
@@ -271,7 +273,8 @@ class _ChatMessageTextFieldInputState extends State<ChatMessageTextFieldInput>
           // if (widget.showCommandsButton) actionsLength += 1;
           // if (!widget.disableAttachments) actionsLength += 1;
 
-          // setState(() => _actionsShrunk = value.isNotEmpty && actionsLength > 1);
+          // setState(() => _actionsShrunk = value.isNotEmpty && actionsLength 
+          //> 1);
 
           _checkContainsUrl(value, context);
         },

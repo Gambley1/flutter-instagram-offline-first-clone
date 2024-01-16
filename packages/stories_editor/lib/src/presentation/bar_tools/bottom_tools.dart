@@ -15,13 +15,13 @@ class BottomTools extends StatelessWidget {
 
   /// editor background color
   final Color? editorBackgroundColor;
-  const BottomTools(
-      {Key? key,
-      required this.contentKey,
-      required this.onDone,
-      this.onDoneButtonStyle,
-      this.editorBackgroundColor})
-      : super(key: key);
+  const BottomTools({
+    super.key,
+    required this.contentKey,
+    required this.onDone,
+    this.onDoneButtonStyle,
+    this.editorBackgroundColor,
+  });
 
   @override
   Widget build(BuildContext context) {

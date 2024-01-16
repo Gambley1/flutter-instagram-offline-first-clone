@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_positional_boolean_parameters
+
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,7 +12,7 @@ class AppScaffold extends StatelessWidget {
   const AppScaffold({
     required this.body,
     super.key,
-    this.onWillPop,
+    this.onPopInvoked,
     this.safeArea = true,
     this.top = true,
     this.bottom = true,
@@ -30,7 +32,7 @@ class AppScaffold extends StatelessWidget {
   });
 
   /// Will pop callback. If null, will pop the navigator.
-  final Future<bool> Function()? onWillPop;
+  final void Function(bool)? onPopInvoked;
 
   /// If true, will wrap the [body] with [SafeArea].
   final bool safeArea;
@@ -104,7 +106,7 @@ class AppScaffold extends StatelessWidget {
           appBar: appBar,
           drawer: drawer,
           bottomSheet: bottomSheet,
-          onWillPop: onWillPop,
+          onPopInvoked: onPopInvoked,
           extendBody: extendBody,
           extendBodyBehindAppBar: extendBodyBehindAppBar,
         ),
@@ -124,7 +126,7 @@ class AppScaffold extends StatelessWidget {
       appBar: appBar,
       drawer: drawer,
       bottomSheet: bottomSheet,
-      onWillPop: onWillPop,
+      onPopInvoked: onPopInvoked,
       extendBody: extendBody,
       extendBodyBehindAppBar: extendBodyBehindAppBar,
     );
@@ -150,7 +152,7 @@ class _MaterialScaffold extends StatelessWidget {
     this.appBar,
     this.drawer,
     this.bottomSheet,
-    this.onWillPop,
+    this.onPopInvoked,
   });
 
   final bool top;
@@ -179,7 +181,7 @@ class _MaterialScaffold extends StatelessWidget {
 
   final Widget? bottomSheet;
 
-  final Future<bool> Function()? onWillPop;
+  final void Function(bool)? onPopInvoked;
 
   final bool extendBody;
 
@@ -206,21 +208,21 @@ class _MaterialScaffold extends StatelessWidget {
       appBar: appBar,
       drawer: drawer,
       bottomSheet: bottomSheet,
-    ).onWillPop(onWillPop).withAdaptiveTheme(context);
+    ).popScope(onPopInvoked).withAdaptiveSystemTheme(context);
   }
 }
 
-/// Will pop scope extension that wraps widget with [WillPopScope].
+/// Will pop scope extension that wraps widget with [PopScope].
 extension WillPopScopeX on Widget {
-  /// Wraps widget with [WillPopScope].
-  Widget onWillPop(Future<bool> Function()? onWillPop) =>
-      WillPopScope(onWillPop: onWillPop, child: this);
+  /// Wraps widget with [PopScope].
+  Widget popScope(void Function(bool)? onPopInvoked) =>
+      PopScope(onPopInvoked: onPopInvoked, child: this);
 }
 
 /// Extension used to respectively change the `systemNavigationBar` theme.
 extension SystemNavigationBarTheme on Widget {
   /// Overrides default [SystemUiOverlayStyle] with adaptive values.
-  Widget withAdaptiveTheme(BuildContext context) =>
+  Widget withAdaptiveSystemTheme(BuildContext context) =>
       AnnotatedRegion<SystemUiOverlayStyle>(
         value: context.theme.platform == TargetPlatform.android
             ? context.isLight

@@ -1,7 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:persistent_storage/persistent_storage.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storage/storage.dart';
 
 class MockSharedPreferences extends Mock implements SharedPreferences {}
@@ -27,7 +26,7 @@ void main() {
           'returns value '
           'when SharedPreferences.getString returns successfully', () async {
         when(() => sharedPreferences.getString(any())).thenReturn(mockValue);
-        final actualValue = await persistentStorage.read(key: mockKey);
+        final actualValue = persistentStorage.read(key: mockKey);
         expect(actualValue, mockValue);
       });
 
@@ -35,7 +34,7 @@ void main() {
           'returns null '
           'when sharedPreferences.getString returns null', () async {
         when(() => sharedPreferences.getString(any())).thenReturn(null);
-        final actualValue = await persistentStorage.read(key: mockKey);
+        final actualValue = persistentStorage.read(key: mockKey);
         expect(actualValue, isNull);
       });
 

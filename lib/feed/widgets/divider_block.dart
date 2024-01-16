@@ -71,7 +71,7 @@ class _DividerBlockState extends State<DividerBlock>
                   Lottie.asset(
                     'assets/animations/checked-animation.json',
                     fit: BoxFit.cover,
-                    frameRate: FrameRate(64),
+                    frameRate: const FrameRate(64),
                     package: 'app_ui',
                     controller: _controller,
                     onLoaded: (composition) {

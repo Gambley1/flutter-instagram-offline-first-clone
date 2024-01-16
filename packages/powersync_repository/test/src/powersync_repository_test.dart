@@ -7,7 +7,7 @@ import 'package:powersync_repository/powersync_repository.dart';
 void main() {
   group('PowersyncRepository', () {
     late PowerSyncRepository powerSyncRepository;
-    const isDev = false;
+    const isDev = true;
 
     setUpAll(() {
       WidgetsFlutterBinding.ensureInitialized();

@@ -1,3 +1,5 @@
+// ignore_for_file: parameter_assignments
+
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';

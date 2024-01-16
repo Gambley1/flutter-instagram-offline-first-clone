@@ -1,0 +1,21 @@
+name: gallery_media_picker
+description: Gallery Media Picker has the same concept as image_picker but with a more attractive interface to choose an image or video from the device gallery, whether it is Android or iOS.
+version: 0.1.0
+homepage: https://github.com/camilo1498/gallery_media_picker
+
+environment:
+  sdk: ">=2.19.6 <3.0.0"
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  photo_manager: ^3.0.0-dev.5
+  oktoast: ^3.4.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.1
+
+flutter:

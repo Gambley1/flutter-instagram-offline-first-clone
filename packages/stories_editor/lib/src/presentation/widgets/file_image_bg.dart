@@ -1,18 +1,21 @@
+import 'dart:async';
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'dart:async';
-
 import 'package:stories_editor/src/presentation/utils/color_detection.dart';
 
 class FileImageBG extends StatefulWidget {
   final File? filePath;
   final void Function(Color color1, Color color2) generatedGradient;
-  const FileImageBG(
-      {Key? key, required this.filePath, required this.generatedGradient})
-      : super(key: key);
+  const FileImageBG({
+    super.key,
+    required this.filePath,
+    required this.generatedGradient,
+  });
+  
   @override
-  _FileImageBGState createState() => _FileImageBGState();
+  State<FileImageBG> createState() => _FileImageBGState();
 }
 
 class _FileImageBGState extends State<FileImageBG> {
@@ -45,7 +48,7 @@ class _FileImageBGState extends State<FileImageBG> {
             Offset(imageKey.currentState!.context.size!.width / 2.03, 530));
         color1 = cd1;
         color2 = cd12;
-        if(mounted) setState(() {});
+        if (mounted) setState(() {});
         widget.generatedGradient(color1, color2);
         callback.cancel();
         stateController.close();

@@ -7,10 +7,9 @@ import 'package:powersync_repository/powersync_repository.dart';
 void main() {
   group('DatabaseClient', () {
     late PowerSyncRepository powerSyncRepository;
-    const isDev = false;
 
     setUpAll(() {
-      powerSyncRepository = PowerSyncRepository(isDev: isDev);
+      powerSyncRepository = PowerSyncRepository();
     });
     test('can be instantiated', () {
       expect(

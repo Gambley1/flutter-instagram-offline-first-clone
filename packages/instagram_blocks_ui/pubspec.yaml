@@ -10,29 +10,29 @@ environment:
 dependencies:
   app_ui:
     path: ../app_ui
-  user_repository:
-    path: ../user_repository
-  powersync_repository:
-    path: ../powersync_repository
+  cached_network_image: ^3.3.1
+  carousel_slider: ^4.2.1
   flutter:
     sdk: flutter
-  shared:
-    path: ../shared
-  cached_network_image: ^3.3.0
-  carousel_slider: ^4.2.1
-  sliver_tools: ^0.2.12
-  scrollable_positioned_list: ^0.3.8
-  smooth_page_indicator: ^1.1.0
-  flutter_animate: ^4.2.0+1
-  sprung: ^3.0.1
+  flutter_animate: ^4.4.0
   insta_blocks:
     path: ../insta_blocks
   pinch_zoom_release_unzoom: ^1.0.1
-  url_launcher: ^6.2.1
+  powersync_repository:
+    path: ../powersync_repository
+  scrollable_positioned_list: ^0.3.8
+  shared:
+    path: ../shared
   shimmer: ^3.0.0
+  sliver_tools: ^0.2.12
+  smooth_page_indicator: ^1.1.0
+  sprung: ^3.0.1
+  url_launcher: ^6.2.3
+  user_repository:
+    path: ../user_repository
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  mocktail: ^1.0.0
+  mocktail: ^1.0.2
   very_good_analysis: ^5.1.0

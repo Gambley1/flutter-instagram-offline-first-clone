@@ -1,9 +1,7 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
-import 'package:flutter_instagram_offline_first_clone/attachment/view/view.dart';
-import 'package:flutter_instagram_offline_first_clone/attachment/widgets/attachment_package.dart';
-import 'package:flutter_instagram_offline_first_clone/attachment/widgets/builder/builder.dart';
+import 'package:flutter_instagram_offline_first_clone/attachments/attachments.dart';
 import 'package:shared/shared.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -89,7 +87,8 @@ class ParseAttachments extends StatelessWidget {
         //           ),
         //           onReplyMessage: onReplyTap,
         //           onShowMessage: onShowMessage,
-        //           attachmentActionsModalBuilder: attachmentActionsModalBuilder,
+        //           attachmentActionsModalBuilder: attachmentActionsModalBuilde
+        // r,
         //         ),
         //       );
         //     },
@@ -115,28 +114,6 @@ class ParseAttachments extends StatelessWidget {
   }
 }
 
-extension on Message {
-  List<AttachmentPackage> toAttachmentPackage({
-    bool Function(Attachment)? filter,
-  }) {
-    // Create a copy of the attachments list.
-    var attachments = [...this.attachments];
-    if (filter != null) {
-      attachments = [...attachments.where(filter)];
-    }
-
-    // Create a list of StreamAttachmentPackage from the attachments list.
-    return [
-      ...attachments.map((it) {
-        return AttachmentPackage(
-          attachment: it,
-          message: this,
-        );
-      }),
-    ];
-  }
-}
-
 Future<void> launchURL(BuildContext context, String url) async {
   try {
     await launchUrl(
@@ -145,7 +122,7 @@ Future<void> launchURL(BuildContext context, String url) async {
     );
   } catch (e) {
     openSnackbar(
-      SnackbarMessage(
+      const SnackbarMessage(
         title: 'Failed to open the url.',
         icon: Icons.sms_failed_outlined,
       ),

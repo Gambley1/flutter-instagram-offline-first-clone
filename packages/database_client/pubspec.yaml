@@ -13,7 +13,7 @@ dependencies:
     path: ../env
   flutter:
     sdk: flutter
-  jiffy: ^6.2.1
+  jiffy: ">=6.2.1 <6.2.2"
   powersync_repository:
     path: ../powersync_repository
   shared:
@@ -24,5 +24,5 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  mocktail: ^1.0.0
+  mocktail: ^1.0.2
   very_good_analysis: ^5.1.0

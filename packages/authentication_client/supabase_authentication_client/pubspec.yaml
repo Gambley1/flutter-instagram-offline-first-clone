@@ -10,19 +10,19 @@ environment:
 dependencies:
   authentication_client:
     path: ../authentication_client
-  shared:
-    path: ../../shared
   flutter:
     sdk: flutter
+  google_sign_in: ^6.2.1
   powersync_repository:
     path: ../../powersync_repository
+  shared:
+    path: ../../shared
+  supabase_flutter: ^2.2.0
   token_storage:
     path: ../token_storage
-  supabase_flutter: ^1.10.25
-  google_sign_in: ^6.1.6
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  mocktail: ^1.0.0
+  mocktail: ^1.0.2
   very_good_analysis: ^5.1.0
