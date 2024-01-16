@@ -29,7 +29,7 @@ import 'package:gallery_media_picker/gallery_media_picker.dart';
 
 ## Getting started
 
-1) update kotlin version to `1.6.0` and `classpath 'com.android.tools.build:gradle:7.0.4'` in your `build.gradle`
+1) update kotlin version to `1.6.0` in your `build.gradle`
 2) in `android` set the `minSdkVersion` to `25` in your `build.gradle`
 3)
 #### Android
@@ -94,7 +94,7 @@ Scaffold(
             appBarHeight: , /// (type double)
             imageBackgroundColor: , /// (type Color)
             gridPadding: /// (type EdgeInset)
-            gridViewControlle:, /// (type ScrollController)
+            gridViewController:, /// (type ScrollController)
             gridViewPhysics: /// (type ScrollPhysics)
             selectedBackgroundColor: /// (type Color)
             selectedCheckColor: , /// (type Color)
