@@ -36,8 +36,7 @@ class _LoginFormState extends State<LoginForm> {
         if (state.status.isError) {
           openSnackbar(
             SnackbarMessage(
-              title: 
-                  loginSubmissionStatusMessage[state.status]!.title,
+              title: loginSubmissionStatusMessage[state.status]!.title,
               icon: Icons.error_outline,
               isError: true,
             ),

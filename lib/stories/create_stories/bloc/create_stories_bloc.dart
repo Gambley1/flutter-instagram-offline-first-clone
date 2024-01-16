@@ -86,7 +86,7 @@ class CreateStoriesBloc extends Bloc<CreateStoriesEvent, CreateStoriesState> {
   ) async {
     try {
       await _storiesRepository.deleteStory(id: event.id);
-      
+
       event.onStoryDeleted?.call();
     } catch (error, stackTrace) {
       addError(error, stackTrace);
