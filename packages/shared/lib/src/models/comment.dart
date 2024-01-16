@@ -7,7 +7,7 @@ import 'package:meta/meta.dart';
 
 /// {@template comment}
 /// Comment model class representing a comment on a post.
-/// {@endtemplate comment}
+/// {@endtemplate}
 @immutable
 class Comment extends Equatable {
   /// {@macro comment}

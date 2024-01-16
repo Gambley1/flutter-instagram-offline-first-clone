@@ -63,5 +63,7 @@ class StoriesBloc extends Bloc<StoriesEvent, StoriesState> {
     Emitter<StoriesState> emit,
   ) =>
       _storiesRepository.setUserStorySeen(
-          story: event.story, userId: event.userId);
+        story: event.story,
+        userId: event.userId,
+      );
 }

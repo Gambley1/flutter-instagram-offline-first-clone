@@ -6,9 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
-import 'package:flutter_instagram_offline_first_clone/chats/chat/bloc/chat_bloc.dart';
-import 'package:flutter_instagram_offline_first_clone/chats/chat/widgets/message_input_controller.dart';
-import 'package:flutter_instagram_offline_first_clone/chats/chat/widgets/widgets.dart';
+import 'package:flutter_instagram_offline_first_clone/chats/chat/chat.dart';
 import 'package:flutter_instagram_offline_first_clone/stories/stories.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:shared/shared.dart';
@@ -449,12 +447,14 @@ class _ChatMessagesListViewState extends State<ChatMessagesListView> {
         //                     : const Radius.circular(22),
         //             bottomLeft: isMine
         //                 ? const Radius.circular(22)
-        //                 : (isPreviusUserSame && !hasTimeDifferenceWithPrevious)
+        //                 : (isPreviusUserSame && !hasTimeDifferenceWithPreviou
+        // s)
         //                     ? const Radius.circular(4)
         //                     : Radius.zero,
         //             bottomRight: !isMine
         //                 ? const Radius.circular(22)
-        //                 : (isPreviusUserSame && !hasTimeDifferenceWithPrevious)
+        //                 : (isPreviusUserSame && !hasTimeDifferenceWithPreviou
+        // s)
         //                     ? const Radius.circular(4)
         //                     : Radius.zero,
         //           ),

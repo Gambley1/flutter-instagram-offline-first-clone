@@ -1,3 +1,4 @@
+/// Whether matches the given type [T].
 extension MatchesTypeExtension<T> on T? {
   /// Returns true if the value is null or matches the given [value]
   /// otherwise returns false.

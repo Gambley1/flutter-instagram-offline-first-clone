@@ -1,14 +1,21 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 
+/// {@template app_divider}
+/// The divider widget. Displays a horizontal line.
+/// {@endtemplate}
 class AppDivider extends StatelessWidget {
+  /// {@macro app_divider}
   const AppDivider({
     super.key,
     this.padding,
     this.withText = false,
   });
 
+  /// The optional padding for the divider.
   final double? padding;
+
+  /// Whether the divider should divide with text, e.g `OR`.
   final bool withText;
 
   @override
@@ -62,14 +69,21 @@ class AppDivider extends StatelessWidget {
   }
 }
 
+/// {@template app_sliver_divider}
+/// The sliver divider widget. Displays a horizontal line.
+/// {@endtemplate}
 class AppSliverDivider extends StatelessWidget {
+  /// {@macro app_sliver_divider}
   const AppSliverDivider({
     super.key,
     this.padding,
     this.withText = false,
   });
 
+  /// The optional padding of the divider.
   final double? padding;
+
+  /// Whether should be displayed with dividing text.
   final bool withText;
 
   @override

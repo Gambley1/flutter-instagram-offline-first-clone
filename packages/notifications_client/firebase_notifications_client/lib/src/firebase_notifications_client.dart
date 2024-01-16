@@ -13,6 +13,7 @@ class FirebaseNotificationsClient {
 
   final FirebaseMessaging _firebaseMessaging;
 
+  /// Broadcasts changes on [FirebaseMessaging] token.
   Stream<String> onTokenRefresh() => _firebaseMessaging.onTokenRefresh;
 
   /// Requests the permission to send the Firebase Cloud Notifications.

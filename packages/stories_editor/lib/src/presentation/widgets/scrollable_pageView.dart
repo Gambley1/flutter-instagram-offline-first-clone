@@ -10,16 +10,17 @@ class ScrollablePageView extends StatefulWidget {
   final bool scrollPhysics;
   PageController pageController;
   ScrollController gridController;
-  ScrollablePageView(
-      {Key? key,
-      required this.mainView,
-      required this.gallery,
-      required this.scrollPhysics,
-      required this.pageController,
-      required this.gridController})
-      : super(key: key);
+  ScrollablePageView({
+    super.key,
+    required this.mainView,
+    required this.gallery,
+    required this.scrollPhysics,
+    required this.pageController,
+    required this.gridController,
+  });
+  
   @override
-  _ScrollablePageViewState createState() => _ScrollablePageViewState();
+  State<ScrollablePageView> createState() => _ScrollablePageViewState();
 }
 
 class _ScrollablePageViewState extends State<ScrollablePageView> {

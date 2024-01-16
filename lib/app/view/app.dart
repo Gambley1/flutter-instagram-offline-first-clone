@@ -77,7 +77,7 @@ void showCurrentlyUnavailableFeature({
   bool undismissable = false,
 }) =>
     openSnackbar(
-      SnackbarMessage(
+      const SnackbarMessage.error(
         title: 'Feature is not avaliable!',
         description:
             'We are trying our best to implement it as fast as possible.',

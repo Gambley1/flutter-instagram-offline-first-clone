@@ -6,7 +6,7 @@ import 'package:stories_editor/src/domain/providers/notifiers/painting_notifier.
 import 'package:stories_editor/src/domain/providers/notifiers/text_editing_notifier.dart';
 
 class SizeSliderWidget extends StatefulWidget {
-  const SizeSliderWidget({Key? key}) : super(key: key);
+  const SizeSliderWidget({super.key});
 
   @override
   State<SizeSliderWidget> createState() => _SizeSliderWidgetState();

@@ -4,6 +4,7 @@ part 'env.prod.g.dart';
 
 /// {@template env}
 /// Prod Environment variables. Used to access environment variables in the app.
+/// {@endtemplate}
 @Envied(path: '.env.prod', obfuscate: true)
 abstract class EnvProd {
   /// Supabase url secret.

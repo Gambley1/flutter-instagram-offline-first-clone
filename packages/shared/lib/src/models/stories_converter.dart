@@ -3,6 +3,7 @@ import 'package:shared/src/models/story.dart';
 
 /// {@template stories_converter}
 /// The converter for list of [Story].
+/// {@endtemplate}
 class StoriesConverter
     extends JsonConverter<List<Story>, List<Map<String, dynamic>>> {
   /// {@macro stories_converter}

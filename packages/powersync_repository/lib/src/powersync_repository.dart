@@ -119,13 +119,15 @@ class SupabaseConnector extends PowerSyncBackendConnector {
         /// discard the (rest of the) transaction.
         ///
         /// Note that these errors typically indicate a bug in the application.
-        /// If protecting against data loss is important, save the failing records
+        /// If protecting against data loss is important, save the failing
+        /// records
         /// elsewhere instead of discarding, and/or notify the user.
         shared.logE('Data upload error - discarding $lastOp', error: e);
         await transaction.complete();
       } else {
-        // Error may be retryable - e.g. network error or temporary server error.
-        // Throwing an error here causes this call to be retried after a delay.
+        /// Error may be retryable - e.g. network error or temporary server
+        /// error. Throwing an error here causes this call to be retried after
+        /// a delay.
         rethrow;
       }
     }
@@ -133,13 +135,17 @@ class SupabaseConnector extends PowerSyncBackendConnector {
 }
 
 /// {@template powersync_repository}
-/// A package that manages connection to the PowerSync cloud service and database.
+/// A package that manages connection to the PowerSync cloud service and
+/// database.
 /// {@endtemplate}
 class PowerSyncRepository {
   /// {@macro power_sync_repository}
   factory PowerSyncRepository({bool isDev = false}) {
-    return _instance(isDev);
+    return PowerSyncRepository._instance(isDev);
   }
+
+  factory PowerSyncRepository._instance(bool isDev) =>
+      PowerSyncRepository._(isDev: isDev);
 
   /// {@macro power_sync_repository}
   PowerSyncRepository._({
@@ -148,9 +154,6 @@ class PowerSyncRepository {
 
   /// Wether environemnt should be dev.
   final bool isDev;
-
-  static PowerSyncRepository _instance(bool isDev) =>
-      PowerSyncRepository._(isDev: isDev);
 
   bool _isInitialized = false;
   bool _offlineMode = false;
@@ -176,6 +179,7 @@ class PowerSyncRepository {
     return _db;
   }
 
+  /// The [Supabase] client instance.
   late final supabase = Supabase.instance.client;
 
   /// Whether user is logger in.
@@ -198,7 +202,6 @@ class PowerSyncRepository {
     await Supabase.initialize(
       url: isDev ? EnvDev.supabaseUrl : EnvProd.supabaseUrl,
       anonKey: isDev ? EnvDev.supabaseAnonKey : EnvProd.supabaseAnonKey,
-      authFlowType: AuthFlowType.pkce,
     );
   }
 
@@ -254,9 +257,12 @@ class PowerSyncRepository {
     }
   }
 
+  /// Broadcasts the [Supabase] auth state changes, whenever user signs/logs in,
+  /// logs out, or when refresh token refreshes.
   Stream<AuthState> authStateChanges() =>
       Supabase.instance.client.auth.onAuthStateChange.asBroadcastStream();
 
+  /// Updates the user app metadata.
   Future<void> updateUser(Object? data) =>
       Supabase.instance.client.auth.updateUser(UserAttributes(data: data));
 

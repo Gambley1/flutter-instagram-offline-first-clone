@@ -2,6 +2,7 @@ name: stories_editor
 description: This is a package created in the style of the instagram story creator, with which you can create images with images, texts, stickers (Gifs), finger drawing.
 version: 0.2.2
 homepage: https://github.com/camilo1498/stories_editor
+publish_to: none
 
 environment:
   sdk: '>=2.18.2 <3.0.0'
@@ -11,10 +12,10 @@ dependencies:
     sdk: flutter
 
   # state management
-  provider: ^6.0.4
+  provider: ^6.1.1
   # image
   image: ^3.0.2
-  path_provider: ^2.0.11
+  path_provider: ^2.1.2
   photo_view: ^0.14.0
   # with this ref fix `Looking up a deactivated widget's ancestor is unsafe`.
   #photo_view:
@@ -23,24 +24,25 @@ dependencies:
   #    ref: 8156907eecfa812b181a5a729d790f6d399f311b
   image_gallery_saver: ^2.0.3
   #own packages
-  gallery_media_picker: ^0.1.0
+  gallery_media_picker:
+    path: ../gallery_media_picker
 
   # painting
   perfect_freehand: ^1.0.4
   # positioning
-  align_positioned: ^3.0.0
+  align_positioned: ^4.0.0
   #message
-  fluttertoast: ^8.1.1
+  fluttertoast: ^8.2.4
 
   animated_text_kit: ^4.2.2
 
-  flutter_screenutil: ^5.6.0
+  flutter_screenutil: ^5.9.0
   go_router: ^13.0.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^1.0.0
+  flutter_lints: ^3.0.1
 
 
 flutter:

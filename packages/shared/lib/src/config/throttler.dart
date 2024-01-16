@@ -2,16 +2,22 @@ import 'dart:async';
 
 import 'package:flutter/widgets.dart' show VoidCallback;
 
-// A simple class for throttling functions execution
+/// {@template throttles}
+/// A simple class for throttling functions execution
+/// {@endtemplate}
 class Throttler {
-  Throttler({this.milliseconds = kDefaultDelay});
+  /// {@macro throttler}
+  Throttler({this.milliseconds = _kDefaultDelay});
 
+  static const _kDefaultDelay = 300;
+
+  /// The delay in milliseconds.
   final int milliseconds;
 
+  /// The timer of the throttler.
   Timer? timer;
 
-  static const kDefaultDelay = 300;
-
+  /// Runs the [action] after [milliseconds] delay.
   void run(VoidCallback action) {
     if (timer?.isActive ?? false) return;
 
@@ -20,6 +26,7 @@ class Throttler {
     timer = Timer(Duration(milliseconds: milliseconds), () {});
   }
 
+  /// Disposes the timer.
   void dispose() {
     timer?.cancel();
   }

@@ -7,7 +7,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
-import 'package:flutter_instagram_offline_first_clone/attachment/widgets/thumnail/thumbnail.dart';
+import 'package:flutter_instagram_offline_first_clone/attachments/attachments.dart';
 import 'package:flutter_instagram_offline_first_clone/user_profile/user_profile.dart';
 import 'package:go_router/go_router.dart';
 import 'package:posts_repository/posts_repository.dart';
@@ -54,9 +54,10 @@ class _CreatePostViewState extends State<CreatePostView> {
     final user = context.select((AppBloc b) => b.state.user);
     return AppScaffold(
       releaseFocus: true,
-      onWillPop: () {
-        if (_busy) return Future.value(false);
-        return Future.value(true);
+      onPopInvoked: (didPop) {
+        if (didPop) return;
+        if (_busy) return;
+        context.pop();
       },
       appBar: AppBar(
         scrolledUnderElevation: 0,
@@ -217,7 +218,7 @@ class _CreatePostViewState extends State<CreatePostView> {
                             _captionController.clear();
                           }
                           openSnackbar(
-                            SnackbarMessage(
+                            const SnackbarMessage(
                               icon: Icons.done,
                               title: 'Successfully created post!',
                             ),

@@ -3,12 +3,13 @@ import 'package:http_parser/http_parser.dart';
 import 'package:mime/mime.dart';
 import 'package:shared/shared.dart';
 
+/// Extensions on [String].
 extension StringExtension on String {
   /// Returns the capitalized string
   String get capitalize =>
       isNotEmpty ? '${this[0].toUpperCase()}${substring(1).toLowerCase()}' : '';
 
-  /// Get websiteName from [hostName]
+  /// Get websiteName from `hostName`.
   String? get getWebsiteName {
     switch (toLowerCase()) {
       case 'reddit':
@@ -81,7 +82,6 @@ extension StringExtension on String {
   // Returns a resized imageUrl with the given [width], [height], [resize]
   /// and [crop] if it is from Stream CDN or Dashboard.
   String getResizedImageUrl({
-    // TODO: Are these sizes optimal? Consider web/desktop
     double width = 400,
     double height = 400,
     String /*clip|crop|scale|fill*/ resize = 'clip',

@@ -5,7 +5,8 @@ import 'package:stories_editor/src/presentation/widgets/tool_button.dart';
 
 class TopTextTools extends StatelessWidget {
   final void Function() onDone;
-  const TopTextTools({Key? key, required this.onDone}) : super(key: key);
+  
+  const TopTextTools({super.key, required this.onDone});
 
   @override
   Widget build(BuildContext context) {

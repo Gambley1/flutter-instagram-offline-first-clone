@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
@@ -96,13 +98,13 @@ Future<bool> exitDialog({
                   /// save and exit
                   AnimatedOnTapButton(
                     onTap: () async {
-                      final _paintingProvider =
+                      final paintingProvider =
                           Provider.of<PaintingNotifier>(context, listen: false);
-                      final _widgetProvider =
+                      final widgetProvider =
                           Provider.of<DraggableWidgetNotifier>(context,
                               listen: false);
-                      if (_paintingProvider.lines.isNotEmpty ||
-                          _widgetProvider.draggableWidget.isNotEmpty) {
+                      if (paintingProvider.lines.isNotEmpty ||
+                          widgetProvider.draggableWidget.isNotEmpty) {
                         /// save image
                         var response = await takePicture(
                             contentKey: contentKey,
@@ -160,19 +162,19 @@ Future<bool> exitDialog({
 }
 
 void _resetDefaults({required BuildContext context}) {
-  final _paintingProvider =
+  final paintingProvider =
       Provider.of<PaintingNotifier>(context, listen: false);
-  final _widgetProvider =
+  final widgetProvider =
       Provider.of<DraggableWidgetNotifier>(context, listen: false);
-  final _controlProvider = Provider.of<ControlNotifier>(context, listen: false);
-  final _editingProvider =
+  final controlProvider = Provider.of<ControlNotifier>(context, listen: false);
+  final editingProvider =
       Provider.of<TextEditingNotifier>(context, listen: false);
-  _paintingProvider.lines.clear();
-  _widgetProvider.draggableWidget.clear();
-  _widgetProvider.setDefaults();
-  _paintingProvider.resetDefaults();
-  _editingProvider.setDefaults();
-  _controlProvider.mediaPath = '';
+  paintingProvider.lines.clear();
+  widgetProvider.draggableWidget.clear();
+  widgetProvider.setDefaults();
+  paintingProvider.resetDefaults();
+  editingProvider.setDefaults();
+  controlProvider.mediaPath = '';
 }
 
 void _dispose({required BuildContext context, required String message}) {

@@ -1,4 +1,4 @@
-// ignore_for_file: must_be_immutable
+// ignore_for_file: must_be_immutable, deprecated_member_use
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +21,7 @@ import 'package:stories_editor/src/presentation/draggable_items/delete_item.dart
 import 'package:stories_editor/src/presentation/draggable_items/draggable_widget.dart';
 import 'package:stories_editor/src/presentation/painting_view/painting.dart';
 import 'package:stories_editor/src/presentation/painting_view/widgets/sketcher.dart';
-import 'package:stories_editor/src/presentation/text_editor_view/TextEditor.dart';
+import 'package:stories_editor/src/presentation/text_editor_view/text_editor.dart';
 import 'package:stories_editor/src/presentation/utils/constants/app_enums.dart';
 import 'package:stories_editor/src/presentation/utils/modal_sheets.dart';
 import 'package:stories_editor/src/presentation/widgets/animated_onTap_button.dart';
@@ -58,7 +58,7 @@ class MainView extends StatefulWidget {
   /// editor custom color palette list
   List<Color>? colorList;
   MainView(
-      {Key? key,
+      {super.key,
       required this.onDone,
       this.middleBottomWidget,
       this.colorList,
@@ -68,11 +68,10 @@ class MainView extends StatefulWidget {
       this.onBackPress,
       this.onDoneButtonStyle,
       this.editorBackgroundColor,
-      this.galleryThumbnailQuality})
-      : super(key: key);
+      this.galleryThumbnailQuality});
 
   @override
-  _MainViewState createState() => _MainViewState();
+  State<MainView> createState() => _MainViewState();
 }
 
 class _MainViewState extends State<MainView> {
@@ -95,19 +94,19 @@ class _MainViewState extends State<MainView> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      var _control = Provider.of<ControlNotifier>(context, listen: false);
+      var control = Provider.of<ControlNotifier>(context, listen: false);
 
       /// initialize control variable provider
-      _control.middleBottomWidget = widget.middleBottomWidget;
-      _control.isCustomFontList = widget.isCustomFontList ?? false;
+      control.middleBottomWidget = widget.middleBottomWidget;
+      control.isCustomFontList = widget.isCustomFontList ?? false;
       if (widget.gradientColors != null) {
-        _control.gradientColors = widget.gradientColors;
+        control.gradientColors = widget.gradientColors;
       }
       if (widget.fontFamilyList != null) {
-        _control.fontList = widget.fontFamilyList;
+        control.fontList = widget.fontFamilyList;
       }
       if (widget.colorList != null) {
-        _control.colorList = widget.colorList;
+        control.colorList = widget.colorList;
       }
     });
     super.initState();
@@ -195,11 +194,11 @@ class _MainViewState extends State<MainView> {
                                             /// in this case photo view works as a main background container to manage
                                             /// the gestures of all movable items.
                                             PhotoView.customChild(
-                                              child: Container(),
                                               backgroundDecoration:
                                                   const BoxDecoration(
                                                       color:
                                                           Colors.transparent),
+                                              child: Container(),
                                             ),
 
                                             ///list items
@@ -499,7 +498,7 @@ class _MainViewState extends State<MainView> {
 
   /// delete item widget with offset position
   void _deleteItemOnCoordinates(EditableItem item, PointerUpEvent details) {
-    var _itemProvider =
+    var itemProvider =
         Provider.of<DraggableWidgetNotifier>(context, listen: false)
             .draggableWidget;
     _inAction = false;
@@ -510,7 +509,7 @@ class _MainViewState extends State<MainView> {
         item.position.dx <= 0.2.w) {
       if (mounted) {
         setState(() {
-          _itemProvider.removeAt(_itemProvider.indexOf(item));
+          itemProvider.removeAt(itemProvider.indexOf(item));
           HapticFeedback.heavyImpact();
         });
       }

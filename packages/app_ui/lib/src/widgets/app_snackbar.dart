@@ -47,10 +47,11 @@ class SnackbarMessage {
   const SnackbarMessage.error({
     String title = '',
     String? description,
+    IconData? icon,
   }) : this(
           title: title,
           description: description,
-          icon: Icons.cancel_rounded,
+          icon: icon ?? Icons.cancel_rounded,
           backgroundColor: const Color.fromARGB(255, 228, 71, 71),
           isError: true,
         );
@@ -329,9 +330,11 @@ class AppSnackbarState extends State<AppSnackbar>
                   decoration: BoxDecoration(
                     boxShadow: [
                       BoxShadow(
-                        // color: Theme.of(context).brightness == Brightness.light
+                        // color: Theme.of(context).brightness == Brightness.
+                        // light
                         //     ? getColor(context, 'shadowColorLight')
-                        //     : getColor(context, 'shadowColor').withOpacity(0.1),
+                        //     : getColor(context, 'shadowColor').withOpacity(0.
+                        // 1),
                         color: Colors.black.withOpacity(.1),
                         blurRadius: 15,
                         spreadRadius: 2,

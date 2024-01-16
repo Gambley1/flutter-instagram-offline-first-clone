@@ -7,85 +7,85 @@ environment:
   sdk: ">=3.1.0 <4.0.0"
 
 dependencies:
-  animations: ^2.0.8
+  animations: ^2.0.11
   app_ui:
     path: packages/app_ui
+  async: ^2.11.0
   bloc: ^8.1.2
+  cached_memory_image: ^1.5.0
+  cached_network_image: ^3.3.1
+  carousel_slider: ^4.2.1
   chats_repository:
     path: packages/chats_repository
+  collection: ^1.18.0
   database_client:
     path: packages/database_client
+  equatable: ^2.0.5
+  fast_immutable_collections: ^9.2.0
   firebase_config:
     path: packages/remote_config/firebase_config
-  form_fields:
-    path: packages/form_fields
+  firebase_core: ^2.24.2
+  firebase_messaging: ^14.7.10
+  firebase_notifications_client:
+    path: packages/notifications_client/firebase_notifications_client
   flex_color_scheme: ^7.3.1
   flutter:
     sdk: flutter
+  flutter_animate: ^4.4.0
   flutter_bloc: ^8.1.3
   flutter_localizations:
     sdk: flutter
+  flutter_markdown: ^0.6.18+3
+  flutter_portal: ^1.1.4
+  form_fields:
+    path: packages/form_fields
   go_router: ^13.0.1
-  intl: ^0.18.0
+  hydrated_bloc: ^9.1.3
+  infinite_scroll_pagination: ^4.0.0
   insta_blocks:
     path: packages/insta_blocks
   instagram_blocks_ui:
     path: packages/instagram_blocks_ui
+  intl: ">=0.18.0 <0.19.0"
+  json_annotation: ^4.8.1
+  lottie: ^3.0.0
+  ogp_data_extract: ^0.1.4
+  path_provider: ^2.1.2
   persistent_storage:
     path: packages/storage/persistent_storage
   posts_repository:
     path: packages/posts_repository
   powersync_repository:
     path: packages/powersync_repository
+  scrollable_positioned_list: ^0.3.8
+  selectable: ^0.3.0
   shared:
     path: packages/shared
-  stories_repository:
-    path: packages/stories_repository
-  supabase_authentication_client:
-    path: packages/authentication_client/supabase_authentication_client
-  token_storage:
-    path: packages/authentication_client/token_storage
-  user_repository:
-    path: packages/user_repository
-  equatable: ^2.0.5
-  infinite_scroll_pagination: ^4.0.0
-  sliver_tools: ^0.2.12
-  scrollable_positioned_list: ^0.3.8
-  flutter_animate: ^4.2.0+1
-  sprung: ^3.0.1
-  visibility_detector: ^0.4.0+2
-  lottie: ^2.7.0
-  timeago: ^3.6.0
-  hydrated_bloc: ^9.1.3
-  json_annotation: ^4.8.1
-  path_provider: ^2.1.1
-  flutter_portal: ^1.1.4
-  collection: ^1.17.2
-  flutter_markdown: ^0.6.18+2
-  url_launcher: ^6.2.2
-  async: ^2.11.0
   shimmer: ^3.0.0
-  cached_network_image: ^3.3.0
-  ogp_data_extract: ^0.1.4
-  selectable: ^0.3.0
-  carousel_slider: ^4.2.1
-  cached_memory_image: ^1.5.0
-  firebase_core: ^2.24.2
-  firebase_notifications_client:
-    path: packages/notifications_client/firebase_notifications_client
-  firebase_messaging: ^14.7.9
-  fast_immutable_collections: ^9.2.0
-  story_view: ^0.16.0
+  sliver_tools: ^0.2.12
+  sprung: ^3.0.1
   stories_editor:
     path: packages/stories_editor
-  
+  stories_repository:
+    path: packages/stories_repository
+  story_view: ^0.16.0
+  supabase_authentication_client:
+    path: packages/authentication_client/supabase_authentication_client
+  timeago: ^3.6.0
+  token_storage:
+    path: packages/authentication_client/token_storage
+  url_launcher: ^6.2.3
+  user_repository:
+    path: packages/user_repository
+  visibility_detector: ^0.4.0+2
+
 dev_dependencies:
-  bloc_test: ^9.1.4
-  build_runner: ^2.4.7
+  bloc_test: ^9.1.5
+  build_runner: ^2.4.8
   flutter_test:
     sdk: flutter
   json_serializable: ^6.7.1
-  mocktail: ^1.0.0
+  mocktail: ^1.0.2
   very_good_analysis: ^5.1.0
 
 flutter:

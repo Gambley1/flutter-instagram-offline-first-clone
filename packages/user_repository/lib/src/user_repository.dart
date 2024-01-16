@@ -146,6 +146,7 @@ class UserRepository implements UserBaseRepository {
     }
   }
 
+  /// Logins in with the provided [password].
   Future<void> logInWithPassword({
     required String password,
     String? email,
@@ -166,6 +167,7 @@ class UserRepository implements UserBaseRepository {
     }
   }
 
+  /// Signup with the provided [password].
   Future<void> signUpWithPassword({
     required String password,
     required String fullName,

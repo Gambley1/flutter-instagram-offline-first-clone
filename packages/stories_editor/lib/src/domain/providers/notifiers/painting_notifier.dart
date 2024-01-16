@@ -62,13 +62,13 @@ class PaintingNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  set linesStreamController(StreamController<List<PaintingModel>> _stream) {
-    _linesStreamController = _stream;
+  set linesStreamController(StreamController<List<PaintingModel>> stream) {
+    _linesStreamController = stream;
     notifyListeners();
   }
 
-  set currentLineStreamController(StreamController<PaintingModel> _stream) {
-    _currentLineStreamController = _stream;
+  set currentLineStreamController(StreamController<PaintingModel> stream) {
+    _currentLineStreamController = stream;
     notifyListeners();
   }
 

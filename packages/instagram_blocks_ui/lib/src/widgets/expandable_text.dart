@@ -1,3 +1,5 @@
+// ignore_for_file: cascade_invocations
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -40,7 +42,7 @@ class ExpandableTextState extends State<ExpandableText> {
         final textPainter = TextPainter(
           text: link,
           textDirection: TextDirection
-              .rtl, //better to pass this from master widget if ltr and rtl both supported
+              .rtl, 
           maxLines: widget.trimLines,
           ellipsis: '...',
         );

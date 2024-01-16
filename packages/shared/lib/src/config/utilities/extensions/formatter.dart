@@ -17,6 +17,9 @@
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 
+/// {@template formatter}
+/// A class that contains a number of formatters.
+/// {@endtemplate}
 class Formatters {
   /// {@macro formatters}
   Formatters({
@@ -36,12 +39,20 @@ class Formatters {
               Localizations.localeOf(context).languageCode,
             );
 
+  /// The [NumberFormat] formatter.
   final NumberFormat formatter;
+
+  /// The [NumberFormat] currency formatter.
   final NumberFormat currency;
+
+  /// The [DateFormat] date formatter.
   final DateFormat date;
 }
 
-Formatters _formatters(BuildContext context, {DateFormat Function(String locale)? dateFormat}) =>
+Formatters _formatters(
+  BuildContext context, {
+  DateFormat Function(String locale)? dateFormat,
+}) =>
     Formatters(context: context, dateFormat: dateFormat);
 
 /// Extension for parsing [String] to [num].
@@ -118,7 +129,10 @@ extension ClearValue on String {
 /// Extension for formatting [DateTime] to [String].
 extension DateFormatter on DateTime {
   /// Formats [DateTime] to [String].
-  String format(BuildContext context, {DateFormat Function(String locale)? dateFormat}) =>
+  String format(
+    BuildContext context, {
+    DateFormat Function(String locale)? dateFormat,
+  }) =>
       _formatters(context, dateFormat: dateFormat).date.format(this);
 }
 
@@ -135,7 +149,9 @@ extension CompactFormatter on num {
   }
 }
 
+/// Extension for converting [String] to snake case.
 extension ConvertToSnakeCase on String {
+  /// Converts [String] to snake case.
   String get convertToSnakeCase {
     final output = StringBuffer();
     final length = this.length;

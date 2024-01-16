@@ -11,7 +11,7 @@ import 'package:user_repository/user_repository.dart';
 
 part 'signup_state.dart';
 
-/// {@start template signup_cubit}
+/// {@template signup_cubit}
 /// Cubit for signup state management. It is used to change signup state from
 /// initial to in progress, success or error. It also validates email, password,
 /// name, surname and phone number fields.

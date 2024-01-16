@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_positional_boolean_parameters, deprecated_member_use
+// ignore_for_file: avoid_positional_boolean_parameters
 
 import 'dart:math' as math;
 import 'dart:ui' as ui;
@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart' hide Selectable;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
-import 'package:flutter_instagram_offline_first_clone/attachment/widgets/thumnail/thumbnail.dart';
+import 'package:flutter_instagram_offline_first_clone/attachments/widgets/thumnail/thumbnail.dart';
 import 'package:flutter_instagram_offline_first_clone/chats/chat/chat.dart';
 import 'package:go_router/go_router.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
@@ -408,6 +408,7 @@ class MessageStatuses extends StatelessWidget {
         if (isMine) ...[
           if (message.isRead)
             Assets.icons.check.svg(
+              // ignore: deprecated_member_use_from_same_package
               color: Colors.white,
               height: 20,
               width: 20,
@@ -499,9 +500,7 @@ class RenderTextMessageWidget extends RenderBox
   void performLayout() {
     size = _performLayout(constraints: constraints, dry: false);
 
-    final childParentData = child!.parentData! as BoxParentData;
-
-    childParentData.offset = Offset(
+    (child!.parentData! as BoxParentData).offset = Offset(
       size.width - child!.size.width,
       size.height - child!.size.height / _kOffset,
     );

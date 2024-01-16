@@ -1,3 +1,5 @@
+// ignore_for_file: public_member_api_docs
+
 import 'dart:ui';
 
 import 'package:app_ui/app_ui.dart';
@@ -56,7 +58,8 @@ class Tappable extends StatelessWidget {
     // if (context.theme.platform == TargetPlatform.iOS) {
     //   return FadedButton(
     //     onTap: onTap,
-    //     borderRadius: customBorderRadius ?? BorderRadius.circular(borderRadius),
+    //     borderRadius: customBorderRadius ?? BorderRadius.circular(borderRadiu
+    // s),
     //     color: color ?? Theme.of(context).canvasColor,
     //     onLongPress: onLongPress != null
     //         ? () {
@@ -73,12 +76,14 @@ class Tappable extends StatelessWidget {
     // final tappable = Material(
     //   color: color ?? Theme.of(context).canvasColor,
     //   type: type,
-    //   borderRadius: customBorderRadius ?? BorderRadius.circular(borderRadius),
+    //   borderRadius: customBorderRadius ?? BorderRadius.circular(borderRadius
+    // ),
     //   child: InkWell(
     //     splashFactory: kIsWeb
     //         ? InkRipple.splashFactory
     //         : InkSparkle.constantTurbulenceSeedSplashFactory,
-    //     borderRadius: customBorderRadius ?? BorderRadius.circular(borderRadius),
+    //     borderRadius: customBorderRadius ?? BorderRadius.circular(borderRadiu
+    // s),
     //     onTap: onTap,
     //     onHighlightChanged: onHighlightChanged,
     //     onLongPress: onLongPress,

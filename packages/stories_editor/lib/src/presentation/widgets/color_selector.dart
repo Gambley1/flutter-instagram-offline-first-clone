@@ -7,7 +7,7 @@ import 'package:stories_editor/src/domain/providers/notifiers/text_editing_notif
 import 'package:stories_editor/src/presentation/widgets/animated_onTap_button.dart';
 
 class ColorSelector extends StatelessWidget {
-  const ColorSelector({Key? key}) : super(key: key);
+  const ColorSelector({super.key});
 
   @override
   Widget build(BuildContext context) {

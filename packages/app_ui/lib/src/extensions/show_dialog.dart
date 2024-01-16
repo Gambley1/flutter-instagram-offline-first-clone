@@ -10,6 +10,7 @@ import 'package:shared/shared.dart';
 /// `content` and `actions`.
 /// {@endtemplate}
 extension DialogExtension on BuildContext {
+  /// Shows the bottom sheet with the confirmation of the `action`.
   Future<bool?> showConfirmationBottomSheet({
     required String title,
     required String okText,
@@ -122,6 +123,7 @@ extension DialogExtension on BuildContext {
             },
       );
 
+  /// Shows bottom modal.
   Future<T?> showBottomModal<T>({
     Widget Function(BuildContext context)? builder,
     String? title,
@@ -178,6 +180,7 @@ extension DialogExtension on BuildContext {
             },
       );
 
+  /// Shows bottom modal with a `list` of [ModalOption]s
   Future<ModalOption?> showListOptionsModal({
     required List<ModalOption> options,
     String? title,
@@ -238,6 +241,8 @@ extension DialogExtension on BuildContext {
         },
       );
 
+  /// Shows the confirmation dialog and upon confirmation executes provided
+  /// [fn].
   Future<void> confirmAction({
     required FutureOr<void> Function() fn,
     required String noText,

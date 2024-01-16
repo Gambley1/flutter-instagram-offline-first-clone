@@ -1,9 +1,11 @@
+// ignore_for_file: deprecated_member_use_from_same_package
+
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 
 /// {@template app_logo}
 /// The Application logo that display large Instagram text in a svg format.
-/// {@template}
+/// {@endtemplate}
 class AppLogo extends StatelessWidget {
   /// {@macro app_log}
   const AppLogo({

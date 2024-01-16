@@ -6,16 +6,16 @@ import 'package:stories_editor/src/domain/providers/notifiers/text_editing_notif
 import 'package:stories_editor/src/presentation/widgets/animated_onTap_button.dart';
 
 class FontSelector extends StatelessWidget {
-  const FontSelector({Key? key}) : super(key: key);
+  const FontSelector({super.key});
 
   @override
   Widget build(BuildContext context) {
-    var _size = MediaQuery.of(context).size;
+    var size = MediaQuery.of(context).size;
     return Consumer2<TextEditingNotifier, ControlNotifier>(
       builder: (context, editorNotifier, controlNotifier, child) {
         return Container(
-          height: _size.width * 0.1,
-          width: _size.width,
+          height: size.width * 0.1,
+          width: size.width,
           alignment: Alignment.center,
           child: PageView.builder(
             controller: editorNotifier.fontFamilyController,
@@ -34,8 +34,8 @@ class FontSelector extends StatelessWidget {
                   editorNotifier.fontFamilyController.jumpToPage(index);
                 },
                 child: Container(
-                  height: _size.width * 0.1,
-                  width: _size.width * 0.1,
+                  height: size.width * 0.1,
+                  width: size.width * 0.1,
                   alignment: Alignment.center,
                   margin: const EdgeInsets.all(2),
                   decoration: BoxDecoration(

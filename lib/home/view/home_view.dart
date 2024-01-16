@@ -39,7 +39,8 @@ class _HomeViewState extends State<HomeView> {
       if (user.isAnonymous) return;
       // final chat = await context
       //     .read<ChatsRepository>()
-      //     .getChat(chatId: message.data['chat_id']! as String, userId: user.id);
+      //     .getChat(chatId: message.data['chat_id']! as String, userId: user.
+      // id);
       // await router(context.read<AppBloc>()).pushNamed(
       // 'chat',
       // pathParameters: {'chat_id': message.data['chat_id']! as String},
