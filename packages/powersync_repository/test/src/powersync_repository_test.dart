@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:powersync_repository/powersync_repository.dart';
 
 void main() {
-  group('PowersyncRepository', () {
+  group('PowerSyncRepository', () {
     late PowerSyncRepository powerSyncRepository;
     const isDev = true;
 

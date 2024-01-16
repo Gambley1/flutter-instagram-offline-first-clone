@@ -5,7 +5,7 @@
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A complete offline-first Instagram Flutter clone with Supabase and Powersync.",
+    "description": "A complete offline-first Instagram Flutter clone with Supabase and PowerSync.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
