@@ -1,5 +1,5 @@
 
-## I won't be giving support or any update for a while beacuse i don't have time to spend in this project.
+## I won't be giving support or any update for a while because i don't have time to spend in this project.
 
 ## Flutter version 3.3.6
 
@@ -7,14 +7,12 @@
 if you want to make a ull request you must be using the new "main" branch, the problems with gallery, overflow design were solved and the function to create Gif / mp4 was removed due to performance issues.
 
 # flutter stories editor
-This is a package created in the style of the instagram story creator, with which you can create images with images, texts, stickers (Gifs), finger drawing. They can be exported as an image to the gallery or shared directly to social networks.
+This is a package created in the style of the instagram story creator, with which you can create images with images, texts, finger drawing. They can be exported as an image to the gallery or shared directly to social networks.
 
 ## Features
 [✔️] Draggable image
 
 [✔️] Draggable text
-
-[✔️] Draggable Gif/Sticker (giphy API)
 
 [✔️] Gradient container background
 
@@ -82,8 +80,7 @@ import 'package:stories_editor/stories_editor.dart';
 
 ```dart
 StoriesEditor(
-    giphyKey: '[YOUR GIPHY API KEY]', /// (String) required param
-    onDone: (String uri){
+    onDone: (String ur){
       /// uri is the local path of final render Uint8List
       /// here your code
     },
@@ -146,7 +143,6 @@ class _ExampleState extends State<Example> {
           child: ElevatedButton(
             onPressed: (){
               Navigator.push(context, MaterialPageRoute(builder: (context) => StoriesEditor(
-                giphyKey: '[HERE YOUR API KEY]',
                 onDone: (uri){
                   debugPrint(uri);
                   Share.shareFiles([uri]);
@@ -200,15 +196,6 @@ Exit Dialog
 <p float="left"> 
 <img src="https://github.com/camilo1498/stories_editor/blob/main/stories%20editor%20screenshots/5.jpg" width="130" height="250">
 </p>  
-
-
-Custom Gif Picker made with a [fork](https://github.com/camilo1498/giphy_picker) of [Giphy_picker](https://pub.dev/packages/giphy_picker) package
-<p float="left"> 
-<img src="https://github.com/camilo1498/stories_editor/blob/main/stories%20editor%20screenshots/7.jpg" width="130" height="250">
-<img src="https://github.com/camilo1498/stories_editor/blob/main/stories%20editor%20screenshots/8.jpg" width="130" height="250">
-<img src="https://github.com/camilo1498/stories_editor/blob/main/stories%20editor%20screenshots/9.jpg" width="130" height="250">
-</p>  
-
 
 Custom finger Drawing made with [perfect_freehand](https://pub.dev/packages/perfect_freehand) package
 <p float="left"> 
