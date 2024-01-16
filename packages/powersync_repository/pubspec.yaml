@@ -1,5 +1,5 @@
 name: powersync_repository
-description: A package that manages connection to the Powersync cloud service and database.
+description: A package that manages connection to the PowerSync cloud service and database.
 version: 0.1.0+1
 publish_to: none
 

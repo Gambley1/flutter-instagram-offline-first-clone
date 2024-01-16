@@ -134,7 +134,7 @@ class SupabaseConnector extends PowerSyncBackendConnector {
   }
 }
 
-/// {@template powersync_repository}
+/// {@template power_sync_repository}
 /// A package that manages connection to the PowerSync cloud service and
 /// database.
 /// {@endtemplate}

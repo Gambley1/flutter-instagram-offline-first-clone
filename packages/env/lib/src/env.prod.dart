@@ -15,7 +15,7 @@ abstract class EnvProd {
   @EnviedField(varName: 'SUPABASE_ANON_KEY', obfuscate: true)
   static String supabaseAnonKey = _EnvProd.supabaseAnonKey;
 
-  /// Powersync ulr secret.
+  /// PowerSync ulr secret.
   @EnviedField(varName: 'POWERSYNC_URL', obfuscate: true)
   static String powersyncUrl = _EnvProd.powersyncUrl;
 

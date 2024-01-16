@@ -1,4 +1,4 @@
-/// A package that manages connection to the Powersync cloud service and 
+/// A package that manages connection to the PowerSync cloud service and 
 /// database.
 library powersync_repository;
 
