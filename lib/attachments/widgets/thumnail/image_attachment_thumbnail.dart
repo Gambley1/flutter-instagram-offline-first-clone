@@ -225,7 +225,10 @@ class LocalImageAttachment extends StatelessWidget {
         cacheWidth: width?.toInt(),
         fit: fit,
         errorBuilder: errorBuilder,
-        placeholder: ShimmerPlaceholder(height: height, width: width,),
+        placeholder: ShimmerPlaceholder(
+          height: height,
+          width: width,
+        ),
       );
     }
 

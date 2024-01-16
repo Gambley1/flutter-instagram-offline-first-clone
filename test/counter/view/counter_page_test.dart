@@ -2,7 +2,6 @@ import 'package:flutter_test/flutter_test.dart';
 
 // class MockCounterCubit extends MockCubit<int> implements CounterCubit {}
 
-
 void main() {
   group('CounterPage', () {
     testWidgets('renders CounterView', (tester) async {

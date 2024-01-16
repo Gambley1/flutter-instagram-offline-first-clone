@@ -12,8 +12,7 @@ class ForgotPasswordButton extends StatelessWidget {
       onTap: showCurrentlyUnavailableFeature,
       child: Text(
         'Forgot password?',
-        style:
-            context.titleSmall?.copyWith(color: Colors.blue.shade500),
+        style: context.titleSmall?.copyWith(color: Colors.blue.shade500),
       ),
     );
   }

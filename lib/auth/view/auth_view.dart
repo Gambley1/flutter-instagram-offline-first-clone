@@ -15,7 +15,7 @@ class AuthView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final showLogin = context.select((AuthCubit b) => b.state);
-    
+
     return PageTransitionSwitcher(
       reverse: showLogin,
       transitionBuilder: (

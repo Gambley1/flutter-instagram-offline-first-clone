@@ -273,7 +273,7 @@ class _ChatMessageTextFieldInputState extends State<ChatMessageTextFieldInput>
           // if (widget.showCommandsButton) actionsLength += 1;
           // if (!widget.disableAttachments) actionsLength += 1;
 
-          // setState(() => _actionsShrunk = value.isNotEmpty && actionsLength 
+          // setState(() => _actionsShrunk = value.isNotEmpty && actionsLength
           //> 1);
 
           _checkContainsUrl(value, context);

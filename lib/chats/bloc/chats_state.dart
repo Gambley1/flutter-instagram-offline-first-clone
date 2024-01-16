@@ -15,7 +15,6 @@ class ChatsState extends Equatable {
   final ChatsStatus status;
   final List<ChatInbox> chats;
 
-
   @override
   List<Object> get props => [status, chats];
 
