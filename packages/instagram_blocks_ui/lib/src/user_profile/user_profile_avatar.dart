@@ -96,22 +96,24 @@ class UserProfileAvatar extends StatelessWidget {
     ),
   );
 
-  Future<void> _pickImage() async {
-    final imageFile = await PickImage.imageWithXImagePicker(
-      source: ImageSource.gallery,
-    );
+  Future<void> _pickImage(BuildContext context) async {
+    final imageFile =
+        await PickImage.pickImage(context, source: ImageSource.both);
     if (imageFile == null) return;
 
+    final selectedFile = imageFile.selectedFiles.firstOrNull;
+    if (selectedFile == null) return;
     final avatarsStorage = Supabase.instance.client.storage.from('avatars');
 
-    final bytes = await imageFile.readAsBytes();
-    final fileExt = imageFile.path.split('.').last;
+    final bytes = selectedFile.selectedByte;
+    final fileExt =
+        selectedFile.selectedFile.path.split('.').last.toLowerCase();
     final fileName = '${DateTime.now().toIso8601String()}.$fileExt';
     final filePath = fileName;
     await avatarsStorage.uploadBinary(
       filePath,
       bytes,
-      fileOptions: FileOptions(contentType: imageFile.mimeType),
+      fileOptions: FileOptions(contentType: 'image/$fileExt'),
     );
     final imageUrlResponse =
         await avatarsStorage.createSignedUrl(filePath, 60 * 60 * 24 * 365 * 10);
@@ -218,7 +220,7 @@ class UserProfileAvatar extends StatelessWidget {
 
     return Tappable(
       onTap: onTap == null ? null : () => onTap?.call(avatarUrl),
-      onLongPress: isImagePicker ? _pickImage : onLongPress,
+      onLongPress: isImagePicker ? () => _pickImage.call(context) : onLongPress,
       animationEffect: animationEffect,
       scaleStrength: scaleStrength,
       child: avatar,

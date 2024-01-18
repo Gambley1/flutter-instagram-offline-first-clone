@@ -10,16 +10,19 @@ environment:
 dependencies:
   app_ui:
     path: ../app_ui
+  blurhash: ^1.1.1
   dio: ^5.4.0
   equatable: ^2.0.5
-  file_picker: ^6.1.1
   flutter:
     sdk: flutter
   flutter_image_compress: ^2.1.0
   freezed_annotation: ^2.4.1
   http_parser: ^4.0.2
   image_picker: ^1.0.7
+  image_picker_plus:
+    path: ../image_picker_plus
   image_size_getter: ^2.1.2
+  # images_picker: ^1.2.11
   insta_assets_picker: ^2.2.1
   insta_blocks:
     path: ../insta_blocks
@@ -34,6 +37,7 @@ dependencies:
   user_repository:
     path: ../user_repository
   uuid: ^4.3.3
+  video_thumbnail: ^0.5.3
 
 dev_dependencies:
   build_runner: ^2.4.8

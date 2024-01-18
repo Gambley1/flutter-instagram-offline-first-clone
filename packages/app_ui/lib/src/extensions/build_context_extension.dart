@@ -25,7 +25,7 @@ extension BuildContextX on BuildContext {
   Color customAdaptiveColor({Color? light, Color? dark}) =>
       isDark ? (light ?? Colors.white) : (dark ?? Colors.black);
 
-  /// Defines a customisable reversed adaptive [Color]. If [light] or [dark] 
+  /// Defines a customisable reversed adaptive [Color]. If [light] or [dark]
   /// is not provided default reversed colors are used.
   Color customReversedAdaptiveColor({Color? light, Color? dark}) =>
       isDark ? (dark ?? Colors.black) : (light ?? Colors.white);
@@ -41,4 +41,13 @@ extension BuildContextX on BuildContext {
 
   /// Defines value of device current height based on [size].
   double get screenHeight => size.height;
+
+  /// Whether the current device is an `Android`.
+  bool get isAndroid => theme.platform == TargetPlatform.android;
+
+  /// Whether the current device is an `iOS`.
+  bool get isIOS => !isAndroid;
+
+  /// Whether the current device is a `mobile`.
+  bool get isMobile => isAndroid || isIOS;
 }

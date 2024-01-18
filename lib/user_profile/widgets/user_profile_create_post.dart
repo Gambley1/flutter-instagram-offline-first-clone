@@ -91,28 +91,53 @@ class _CreatePostViewState extends State<CreatePostView> {
                   onPressed: _busy
                       ? null
                       : () async {
-                          await PickImage.pickFiles(
+                          await PickImage.pickAssetsFromBoth(
                             context,
-                            closeOnComplete: true,
-                            onCompleted: (exportDetails) async {
-                              await for (final details in exportDetails) {
-                                final files = details.croppedFiles;
-                                final imagesFile = <File>[];
-                                final imagesBytes = <Uint8List>[];
-                                for (final file in files) {
-                                  imagesFile.add(file);
-
-                                  final bytes =
-                                      await PickImage.imageBytes(file: file);
-                                  imagesBytes.add(bytes);
-                                }
-                                setState(() {
-                                  _imagesFile = imagesFile;
-                                  _imagesBytes = imagesBytes;
-                                });
+                            onMediaPicked: (context, details) async {
+                              final imagesFile = <File>[];
+                              final imagesBytes = <Uint8List>[];
+                              for (final file in details.selectedFiles) {
+                                imagesFile.add(file.selectedFile);
+                                imagesBytes.add(file.selectedByte);
                               }
+                              setState(() {
+                                _imagesFile = imagesFile;
+                                _imagesBytes = imagesBytes;
+                              });
+                              context.pop();
                             },
+                            // await Navigator.of(context, rootNavigator: true)
+                            //     .push(
+                            //   MaterialPageRoute<dynamic>(
+                            //     builder: (context) => CreatePostPage(
+                            //       selectedFilesDetails: details,
+                            //     ),
+                            //     maintainState: false,
+                            //   ),
+                            // );
                           );
+                          // await PickImage.pickAssets(
+                          //   context,
+                          //   closeOnComplete: true,
+                          //   onCompleted: (exportDetails) async {
+                          //     await for (final details in exportDetails) {
+                          //       final files = details.croppedFiles;
+                          //       final imagesFile = <File>[];
+                          //       final imagesBytes = <Uint8List>[];
+                          //       for (final file in files) {
+                          //         imagesFile.add(file);
+
+                          //         final bytes =
+                          //             await PickImage.imageBytes(file: file);
+                          //         imagesBytes.add(bytes);
+                          //       }
+                          //       setState(() {
+                          //         _imagesFile = imagesFile;
+                          //         _imagesBytes = imagesBytes;
+                          //       });
+                          //     }
+                          //   },
+                          // );
                         },
                   style: ElevatedButton.styleFrom(
                     shape: const CircleBorder(),

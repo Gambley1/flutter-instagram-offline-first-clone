@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
@@ -9,12 +8,10 @@ import 'package:flutter_instagram_offline_first_clone/auth/components/signup/cub
 class SignupButton extends StatelessWidget {
   const SignupButton({
     super.key,
-    this.imageBytes,
-    this.file,
+    this.avatarFile,
   });
 
-  final Uint8List? imageBytes;
-  final File? file;
+  final File? avatarFile;
 
   @override
   Widget build(BuildContext context) {
@@ -36,10 +33,7 @@ class SignupButton extends StatelessWidget {
     }
     return AppButton.auth(
       'Sign up',
-      () => context.read<SignupCubit>().onSubmit(
-            imageBytes: imageBytes,
-            file: file,
-          ),
+      () => context.read<SignupCubit>().onSubmit(avatarFile: avatarFile),
       style: style,
       outlined: true,
     );
