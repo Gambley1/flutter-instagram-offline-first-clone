@@ -15,7 +15,7 @@ class SignupView extends StatefulWidget {
 
 class _SignupViewState extends State<SignupView> {
   Uint8List? _imageBytes;
-  File? _file;
+  File? _avatarFile;
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +54,7 @@ class _SignupViewState extends State<SignupView> {
                               onUpload: (imageBytes, file) {
                                 setState(() {
                                   _imageBytes = imageBytes;
-                                  _file = file;
+                                  _avatarFile = file;
                                 });
                               },
                             ),
@@ -64,8 +64,7 @@ class _SignupViewState extends State<SignupView> {
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 24),
                             child: SignupButton(
-                              imageBytes: _imageBytes,
-                              file: _file,
+                              avatarFile: _avatarFile,
                             ),
                           ),
                         ],

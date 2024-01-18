@@ -2,23 +2,35 @@
 
 import 'dart:io';
 
-import 'package:app_ui/app_ui.dart';
-import 'package:file_picker/file_picker.dart';
+import 'package:app_ui/app_ui.dart' hide AppTheme;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:image_picker_plus/image_picker_plus.dart';
 import 'package:insta_assets_picker/insta_assets_picker.dart';
-import 'package:shared/shared.dart';
+// import 'package:images_picker/images_picker.dart';
 
 class PickImage {
   /// {@macro image_picker}
   const PickImage._();
 
-  static final _imagePicker = ImagePicker();
+  static AppTheme _appTheme(BuildContext context) => AppTheme(
+        focusColor: Colors.white,
+        primaryColor: Colors.black,
+      );
 
-  static final _filePicker = FilePicker.platform;
+  static TabsTexts _tabsTexts(BuildContext context) => TabsTexts();
 
-  static Future<List<AssetEntity>?> pickFiles(
+  static SliverGridDelegateWithFixedCrossAxisCount _sliverGridDelegate() =>
+      const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 4,
+        crossAxisSpacing: 1.7,
+        mainAxisSpacing: 1.5,
+      );
+
+  static ImagePickerPlus _imagePickerPlus(BuildContext context) =>
+      ImagePickerPlus(context);
+
+  static Future<List<AssetEntity>?> pickAssets(
     BuildContext context, {
     required ValueSetter<Stream<InstaAssetsExportDetails>> onCompleted,
     int maxAssets = 10,
@@ -32,134 +44,77 @@ class PickImage {
         closeOnComplete: closeOnComplete,
       );
 
-  /// Pick image with image picker from `source` (Gallery or Camera).
-  static Future<XFile?> imageWithXImagePicker({
-    required ImageSource source,
-    double? maxHeight,
-    double? maxWidth,
-    bool requestFullMetaData = true,
-    bool compress = true,
+  static Future<void> pickAssetsFromBoth(
+    BuildContext context, {
+    required Future<void> Function(
+      BuildContext context,
+      SelectedImagesDetails,
+    ) onMediaPicked,
+    bool cropImage = true,
+    bool showPreview = true,
+    int maxSelection = 10,
+    bool multiSelection = true,
+  }) =>
+      _imagePickerPlus(context).pickBoth(
+        source: ImageSource.both,
+        multiSelection: multiSelection,
+        galleryDisplaySettings: GalleryDisplaySettings(
+          maximumSelection: maxSelection,
+          showImagePreview: showPreview,
+          cropImage: cropImage,
+          tabsTexts: _tabsTexts(context),
+          appTheme: _appTheme(context),
+          callbackFunction: (details) => onMediaPicked.call(context, details),
+        ),
+      );
+
+  static Future<SelectedImagesDetails?> pickImage(
+    BuildContext context, {
+    ImageSource source = ImageSource.gallery,
+    int maxSelection = 1,
+    bool cropImage = true,
+    bool multiImages = false,
+    bool showPreview = true,
+  }) =>
+      _imagePickerPlus(context).pickImage(
+        source: source,
+        multiImages: multiImages,
+        galleryDisplaySettings: GalleryDisplaySettings(
+          cropImage: cropImage,
+          maximumSelection: maxSelection,
+          showImagePreview: showPreview,
+          tabsTexts: _tabsTexts(context),
+          appTheme: _appTheme(context),
+          gridDelegate: _sliverGridDelegate(),
+        ),
+      );
+
+  static Future<void> pickVideo(
+    BuildContext context, {
+    required Future<void> Function(
+      BuildContext context,
+      SelectedImagesDetails,
+    ) onMediaPicked,
+    ImageSource source = ImageSource.both,
+    int maxSelection = 10,
+    bool cropImage = true,
+    bool multiImages = false,
+    bool showPreview = true,
   }) async {
-    final file = await _imagePicker.pickImage(
+    await _imagePickerPlus(context).pickVideo(
       source: source,
-      maxHeight: maxHeight,
-      maxWidth: maxWidth,
-      requestFullMetadata: requestFullMetaData,
+      galleryDisplaySettings: GalleryDisplaySettings(
+        showImagePreview: showPreview,
+        cropImage: cropImage,
+        maximumSelection: maxSelection,
+        tabsTexts: _tabsTexts(context),
+        appTheme: _appTheme(context),
+        callbackFunction: (details) => onMediaPicked.call(context, details),
+      ),
     );
-    if (file == null) return null;
-    final imageFile = File(file.path);
-    if (!compress) return file;
-    logD('Compressing image...');
-
-    final compressedImage = await compressFile(imageFile);
-    if (compressedImage == null) return file;
-    return compressedImage;
-  }
-
-  /// Pick image with image picker from `source` (Gallery or Camera).
-  static Future<File?> imageWithImagePicker({
-    required ImageSource source,
-    double? maxHeight,
-    double? maxWidth,
-    bool requestFullMetaData = true,
-    bool compress = true,
-  }) async {
-    final file = await _imagePicker.pickImage(
-      source: source,
-      maxHeight: maxHeight,
-      maxWidth: maxWidth,
-      requestFullMetadata: requestFullMetaData,
-    );
-    if (file == null) return null;
-    final imageFile = File(file.path);
-    if (!compress) return imageFile;
-    logD('Compressing image...');
-
-    final compressedImage = await compressFile(imageFile);
-    if (compressedImage == null) return imageFile;
-    return File(compressedImage.path);
-  }
-
-  /// Pick image with image picker from `source` (Gallery or Camera).
-  static Future<List<File>> multipleImagesWithImagePicker({
-    double? maxHeight,
-    double? maxWidth,
-    bool requestFullMetaData = true,
-    bool compress = false,
-  }) async {
-    final files = await _imagePicker.pickMultiImage(
-      maxHeight: maxHeight,
-      maxWidth: maxWidth,
-      requestFullMetadata: requestFullMetaData,
-    );
-    if (files.isEmpty) return <File>[];
-
-    final imagesFile = <File>[];
-    for (final file in files) {
-      final imageFile = File(file.path);
-      if (!compress) {
-        imagesFile.add(imageFile);
-        continue;
-      }
-      logD('Compressing image...');
-
-      final compressedImage = await compressFile(imageFile);
-      if (compressedImage == null) {
-        imagesFile.add(imageFile);
-        continue;
-      }
-      final compressedImageFile = File(compressedImage.path);
-
-      imagesFile.add(compressedImageFile);
-    }
-    return imagesFile;
-  }
-
-  /// Pick image from `source` (Gallery or Camera).
-  static Future<File?> imageWithFilePicker({
-    bool compress = true,
-  }) async {
-    final picker = await _filePicker.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['jpeg', 'jpg', 'png'],
-    );
-    if (picker == null || picker.files.isEmpty) return null;
-
-    final file = picker.files.first;
-    final imageFile = File(file.path!);
-    if (!compress) return imageFile;
-    logD('Compressing image...');
-
-    final compressedImage = await compressFile(imageFile);
-    if (compressedImage == null) return imageFile;
-    return File(compressedImage.path);
   }
 
   /// Reads image as bytes.
   static Future<Uint8List> imageBytes({required File file}) =>
       compute((file) => file.readAsBytes(), file);
-
-  /// Compresses file.
-  static Future<XFile?> compressFile(
-    File file, {
-    int quality = 5,
-  }) async {
-    final filePath = file.absolute.path;
-
-    // Create output file path
-    // eg:- "Volume/VM/abcd_out.jpeg"
-    final lastIndex = filePath.lastIndexOf(RegExp('.jp'));
-    if (lastIndex == -1) {
-      return null;
-    }
-    final splitted = filePath.substring(0, lastIndex);
-    final outPath = '${splitted}_out${filePath.substring(lastIndex)}';
-    final result = await FlutterImageCompress.compressAndGetFile(
-      file.absolute.path,
-      outPath,
-      quality: quality,
-    );
-
-    return result;
-  }
 }

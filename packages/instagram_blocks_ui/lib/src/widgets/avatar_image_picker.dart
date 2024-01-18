@@ -25,20 +25,22 @@ class AvatarImagePicker extends StatelessWidget {
   final double placeholderSize;
   final bool withPlaceholder;
 
-  Future<void> _pickImage() async {
-    final file = await PickImage.imageWithImagePicker(
-      source: ImageSource.gallery,
-      compress: compress,
+  Future<void> _pickImage(BuildContext context) async {
+    final file = await PickImage.pickImage(
+      context,
+      source: ImageSource.both,
     );
     if (file == null) return;
-    final imageBytes = await PickImage.imageBytes(file: file);
-    onUpload?.call(imageBytes, file);
+
+    final selectedFile = file.selectedFiles.firstOrNull;
+    if (selectedFile == null) return;
+    onUpload?.call(selectedFile.selectedByte, selectedFile.selectedFile);
   }
 
   @override
   Widget build(BuildContext context) {
     return Tappable(
-      onTap: _pickImage,
+      onTap: () => _pickImage.call(context),
       child: Stack(
         children: [
           CircleAvatar(

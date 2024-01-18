@@ -33,12 +33,12 @@ class ColorDetection {
     double px = localPosition.dx;
     double py = localPosition.dy;
 
-    //int pixel32 = photo!.getPixelSafe(px.toInt(), py.toInt());
-    int pixel32 = photo!.getPixelSafe(px.toInt(), py.toInt());
-    int hex = abgrToArgb(pixel32);
+    final pixel32 =
+        photo!.getPixelSafe(px.toInt(), py.toInt()).toList().cast<int>();
+    final hex = pixel32ToArgb(pixel32);
 
-    stateController!.add(Color(hex));
-    return Color(hex);
+    stateController!.add(Color(hex).withOpacity(.95));
+    return Color(hex).withOpacity(.95);
   }
 
   Future<void> loadSnapshotBytes() async {
@@ -58,9 +58,18 @@ class ColorDetection {
   }
 }
 
-// image lib uses uses KML color format, convert #AABBGGRR to regular #AARRGGBB
+// image lib uses KML color format, convert #AABBGGRR to regular #AARRGGBB
 int abgrToArgb(int argbColor) {
   int r = (argbColor >> 16) & 0xFF;
   int b = argbColor & 0xFF;
   return (argbColor & 0xFF00FF00) | (b << 16) | r;
+}
+
+int pixel32ToArgb(List<int> pixel) {
+  if (pixel.length != 4) {
+    throw ArgumentError('Pixel must have four components.');
+  }
+
+  // Shift and pack the channels into a single integer in ARGB format
+  return (pixel[3] << 24) | (pixel[0] << 16) | (pixel[1] << 8) | pixel[2];
 }

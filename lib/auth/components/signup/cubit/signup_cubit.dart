@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -191,8 +190,7 @@ class SignupCubit extends Cubit<SignupState> {
   /// Defines method to submit form. It is used to check if all inputs are valid
   /// and if so, it is used to signup user.
   Future<void> onSubmit({
-    Uint8List? imageBytes,
-    File? file,
+    File? avatarFile,
   }) async {
     final email = Email.validated(state.email.value);
     final password = Password.validated(state.password.value);
@@ -214,31 +212,27 @@ class SignupCubit extends Cubit<SignupState> {
     if (!isFormValid) return;
 
     try {
-      final imageFile = await PickImage.imageWithXImagePicker(
-        source: ImageSource.gallery,
-        maxHeight: 820,
-        maxWidth: 820,
-      );
-      final imageBytes =
-          await PickImage.imageBytes(file: File(imageFile!.path));
-      final avatarsStorage = Supabase.instance.client.storage.from('avatars');
+      String? imageUrlResponse;
+      if (avatarFile != null) {
+        final imageBytes =
+            await PickImage.imageBytes(file: File(avatarFile.path));
+        final avatarsStorage = Supabase.instance.client.storage.from('avatars');
 
-      final fileExt = imageFile.path.split('.').last;
-      final fileName = '${DateTime.now().toIso8601String()}.$fileExt';
-      final filePath = fileName;
-      await avatarsStorage.uploadBinary(
-        filePath,
-        imageBytes,
-        fileOptions: FileOptions(contentType: imageFile.mimeType),
-      );
-      final imageUrlResponse = await avatarsStorage.createSignedUrl(
-        filePath,
-        60 * 60 * 24 * 365 * 10,
-      );
+        final fileExt = avatarFile.path.split('.').last.toLowerCase();
+        final fileName = '${DateTime.now().toIso8601String()}.$fileExt';
+        final filePath = fileName;
+        await avatarsStorage.uploadBinary(
+          filePath,
+          imageBytes,
+          fileOptions: FileOptions(contentType: 'image/$fileExt'),
+        );
+        imageUrlResponse = await avatarsStorage.createSignedUrl(
+          filePath,
+          60 * 60 * 24 * 365 * 10,
+        );
+      }
 
       final pushToken = await _notificationsClient.getToken();
-
-      logD(pushToken);
 
       await _userRepository.signUpWithPassword(
         email: email.value,
