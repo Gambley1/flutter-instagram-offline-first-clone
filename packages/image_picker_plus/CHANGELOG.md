@@ -72,7 +72,7 @@
 ## 0.3.4
 * solve dropped frames issue in grid view when scrolling
 * solve the issue in grid view when the tap bar is moved
-* remove the unuseful package
+* remove the unnecessary package
 
 ## 0.3.3+1
 * reformat the code
