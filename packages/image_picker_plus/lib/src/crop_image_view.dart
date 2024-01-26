@@ -87,10 +87,9 @@ class _CropImageViewState extends State<CropImageView> {
     );
   }
 
-  Container showSelectedImage(BuildContext context, File selectedImageValue) {
+  Widget showSelectedImage(BuildContext context, File selectedImageValue) {
     double width = MediaQuery.of(context).size.width;
     return Container(
-      key: GlobalKey(debugLabel: "have image"),
       color: widget.whiteColor,
       height: 360,
       width: width,
@@ -115,7 +114,9 @@ class _CropImageViewState extends State<CropImageView> {
                     padding: const EdgeInsets.all(10.0),
                     child: GestureDetector(
                       onTap: () {
-                        if (multiSelectionModeValue) widget.clearMultiImages();
+                        if (multiSelectionModeValue) {
+                          widget.clearMultiImages();
+                        }
                         setState(() {
                           widget.multiSelectionMode.value =
                               !multiSelectionModeValue;

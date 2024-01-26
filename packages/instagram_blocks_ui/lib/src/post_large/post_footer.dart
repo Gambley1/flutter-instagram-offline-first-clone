@@ -1,6 +1,9 @@
 import 'dart:async';
 
 import 'package:app_ui/app_ui.dart';
+import 'package:avatar_stack/avatar_stack.dart';
+import 'package:avatar_stack/positions.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:insta_blocks/insta_blocks.dart';
@@ -12,6 +15,7 @@ import 'package:instagram_blocks_ui/src/like_button.dart';
 import 'package:instagram_blocks_ui/src/likes_count.dart';
 import 'package:instagram_blocks_ui/src/post_large/post_caption.dart';
 import 'package:instagram_blocks_ui/src/post_large/post_header.dart';
+import 'package:user_repository/user_repository.dart';
 
 class PostFooter extends StatelessWidget {
   const PostFooter({
@@ -27,7 +31,7 @@ class PostFooter extends StatelessWidget {
     required this.onPostShareTap,
     required this.likesText,
     required this.commentsText,
-    required this.publishedAt,
+    required this.createdAt,
     super.key,
   });
 
@@ -44,19 +48,34 @@ class PostFooter extends StatelessWidget {
   final OnAvatarTapCallback onUserProfileAvatarTap;
   final ValueSetter<bool> onCommentsTap;
   final void Function(String, PostAuthor) onPostShareTap;
-  final String publishedAt;
+  final String createdAt;
 
   @override
   Widget build(BuildContext context) {
     final isSponsored = block is PostSponsoredBlock;
     final author = block.author;
+    final likersInFollowings = block is! PostLargeBlock ||
+            (block as PostLargeBlock).likersInFollowings.isEmpty
+        ? <User>[]
+        : (block as PostLargeBlock)
+            .likersInFollowings
+            .where((e) => e.avatarUrl != null);
+    double avatarStackWidth() {
+      if (likersInFollowings.length case 1) {
+        return 36;
+      }
+      if (likersInFollowings.length case 2) {
+        return 57;
+      }
+      return 84;
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (isSponsored)
           SponsoredPostAction(
-            imageUrl: block.imagesUrl.first,
+            imageUrl: block.firstMedia?.url ?? '',
             onTap: () => onUserProfileAvatarTap.call(author.avatarUrl),
           ),
         const AppDivider(padding: 12),
@@ -122,12 +141,34 @@ class PostFooter extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              RepaintBoundary(
-                child: LikesCount(
-                  key: ValueKey(block.id),
-                  likesText: likesText,
-                  likesCount: likesCount,
-                ),
+              Row(
+                children: [
+                  if (likersInFollowings.isNotEmpty) ...[
+                    AvatarStack(
+                      height: 34,
+                      width: avatarStackWidth(),
+                      borderColor: Colors.black,
+                      borderWidth: 2,
+                      settings: RestrictedPositions(
+                        laying: StackLaying.first,
+                      ),
+                      avatars: [
+                        for (var i = 0; i < likersInFollowings.length; i++)
+                          CachedNetworkImageProvider(
+                            likersInFollowings.toList()[i].avatarUrl!,
+                          ),
+                      ],
+                    ),
+                    const SizedBox(width: AppSpacing.sm),
+                  ],
+                  RepaintBoundary(
+                    child: LikesCount(
+                      key: ValueKey(block.id),
+                      likesText: likesText,
+                      likesCount: likesCount,
+                    ),
+                  ),
+                ],
               ),
               PostCaption(
                 username: author.username,
@@ -142,7 +183,7 @@ class PostFooter extends StatelessWidget {
                   commentsText: commentsText,
                 ),
               ),
-              if (!isSponsored) TimeAgo(publishedAt: publishedAt),
+              if (!isSponsored) TimeAgo(createdAt: createdAt),
             ],
           ),
         ),

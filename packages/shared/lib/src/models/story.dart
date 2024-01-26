@@ -27,7 +27,7 @@ List<Story> fromListJson(String json) =>
         .toList();
 
 /// {@template story}
-/// The representation of the Instagram user story model.
+/// The representation of the Instagram user's `story` model.
 /// {@endtemplate}
 @immutable
 class Story extends Equatable {

@@ -139,21 +139,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
   }
 
   Future<void> createPost(BuildContext context) async {
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) => setState(() => _busy.value = false));
-    final selectedFile = firstSelectedByte.selectedFile;
-    Uint8List? convertedBytes;
-    if (!isImage) {
-      convertedBytes = await VideoThumbnailPlus.getVideoThumbnail(selectedFile);
-      final blurHash = convertedBytes != null
-          ? await BlurHashPlus.blurHashEncode(convertedBytes)
-          : '';
-    } else {
-      final byte = await selectedFile.readAsBytes();
-      final blurHash = await BlurHashPlus.blurHashEncode(byte);
-    }
-    if (!mounted) return;
-
     // context.read<UserProfileBloc>().add(
     //       UserProfilePostCreateRequested(
     //         postId: postId,

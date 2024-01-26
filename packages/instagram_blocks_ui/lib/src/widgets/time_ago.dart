@@ -2,14 +2,14 @@ import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 
 class TimeAgo extends StatelessWidget {
-  const TimeAgo({required this.publishedAt, super.key});
+  const TimeAgo({required this.createdAt, super.key});
 
-  final String publishedAt;
+  final String createdAt;
 
   @override
   Widget build(BuildContext context) {
     return Text(
-      publishedAt,
+      createdAt,
       style: context.bodyMedium?.copyWith(
         color: Colors.grey.shade500,
       ),

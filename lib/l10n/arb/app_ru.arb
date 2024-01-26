@@ -45,6 +45,19 @@
             }
         }
     },
+    "likedByText": "Нравится {userName} {count, plural, =1{} other{и {count} другим}}",
+    "@likedByText": {
+        "placeholders": {
+            "userName": {
+              "type": "String",
+              "example": "emil.zulufov" 
+            },
+            "count": {
+                "type": "int",
+                "example": "1" 
+            }
+        }
+    },
     "likesCountTextShort": "{count}",
     "@likesCountTextShort": {
         "description": "TТекст который показывает кол-во лайков у данного поста в коротком формате",

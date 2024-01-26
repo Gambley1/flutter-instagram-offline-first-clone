@@ -8,12 +8,14 @@ import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/chats/chats.dart';
 import 'package:flutter_instagram_offline_first_clone/comments/comments.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/feed.dart';
+import 'package:flutter_instagram_offline_first_clone/home/home.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:flutter_instagram_offline_first_clone/network_error/network_error.dart';
 import 'package:flutter_instagram_offline_first_clone/stories/stories.dart';
 import 'package:flutter_instagram_offline_first_clone/user_profile/user_profile.dart';
 import 'package:go_router/go_router.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
+import 'package:inview_notifier_list/inview_notifier_list.dart';
 import 'package:posts_repository/posts_repository.dart';
 import 'package:shared/shared.dart';
 import 'package:stories_repository/stories_repository.dart';
@@ -28,7 +30,7 @@ class FeedPage extends StatefulWidget {
   State<FeedPage> createState() => _FeedPageState();
 }
 
-class _FeedPageState extends State<FeedPage> {
+class _FeedPageState extends State<FeedPage> with RouteAware {
   late PageController _controller;
 
   @override
@@ -48,34 +50,41 @@ class _FeedPageState extends State<FeedPage> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) => FeedBloc(
-            userRepository: context.read<UserRepository>(),
-            postsRepository: context.read<PostsRepository>(),
-            remoteConfig: context.read<FirebaseConfig>(),
-          )..add(const FeedPageRequested(page: 0)),
-        ),
-        BlocProvider(
-          create: (context) => StoriesBloc(
-            storiesRepository: context.read<StoriesRepository>(),
-            userRepository: context.read<UserRepository>(),
-          )..add(
-              StoriesFetchUserFollowingsStories(
-                context.read<AppBloc>().state.user.id,
+    final videoPlayer = VideoPlayerProvider.of(context);
+
+    return AnimatedBuilder(
+      animation: videoPlayer.pageController,
+      builder: (context, child) {
+        return child!;
+      },
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => FeedBloc(
+              userRepository: context.read<UserRepository>(),
+              postsRepository: context.read<PostsRepository>(),
+              remoteConfig: context.read<FirebaseConfig>(),
+            )..add(const FeedPageRequested(page: 0)),
+          ),
+          BlocProvider(
+            create: (context) => StoriesBloc(
+              storiesRepository: context.read<StoriesRepository>(),
+              userRepository: context.read<UserRepository>(),
+            )..add(
+                StoriesFetchUserFollowingsStories(
+                  context.read<AppBloc>().state.user.id,
+                ),
               ),
-            ),
-        ),
-      ],
-      child: PageView(
-        controller: _controller,
-        allowImplicitScrolling: true,
-        children: const [
-          UserProfileCreatePost(),
-          FeedView(),
-          ChatsPage(),
+          ),
         ],
+        child: PageView(
+          controller: videoPlayer.pageController,
+          children: const [
+            UserProfileCreatePost(),
+            FeedView(),
+            ChatsPage(),
+          ],
+        ),
       ),
     );
   }
@@ -133,11 +142,16 @@ class _FeedViewState extends State<FeedView> {
   }
 }
 
-class FeedBody extends StatelessWidget {
+class FeedBody extends StatefulWidget {
   const FeedBody({required this.controller, super.key});
 
   final ScrollController controller;
 
+  @override
+  State<FeedBody> createState() => _FeedBodyState();
+}
+
+class _FeedBodyState extends State<FeedBody> {
   @override
   Widget build(BuildContext context) {
     final animationController = FeedPageController();
@@ -160,7 +174,12 @@ class FeedBody extends StatelessWidget {
               .add(StoriesFetchUserFollowingsStories(user.id)),
         ),
       ]),
-      child: CustomScrollView(
+      child: InViewNotifierCustomScrollView(
+        initialInViewIds: const ['0'],
+        isInViewPortCondition: (deltaTop, deltaBottom, vpHeight) {
+          return deltaTop < (0.5 * vpHeight) + 80.0 &&
+              deltaBottom > (0.5 * vpHeight) - 80.0;
+        },
         slivers: [
           SliverOverlapInjector(
             handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
@@ -251,12 +270,10 @@ class FeedBody extends StatelessWidget {
       return PostLarge(
         block: block,
         isOwner: bloc.isOwnerOfPostBy(block.author.id),
-        hasStories: false,
-        imagesUrl: block.imagesUrl,
         isLiked: bloc.isLiked(block.id),
         likePost: () => bloc.add(FeedLikePostRequested(block.id)),
         likesCount: bloc.likesCount(block.id),
-        publishedAt: block.publishedAt.timeAgo(context),
+        createdAt: block.createdAt.timeAgo(context),
         isFollowed: bloc.followingStatus(userId: block.author.id),
         wasFollowed: true,
         follow: () => bloc.add(FeedPostAuthorFollowRequested(block.author.id)),
@@ -272,11 +289,12 @@ class FeedBody extends StatelessWidget {
         commentsText: context.l10n.seeAllComments,
         onPressed: (action, _) => _onFeedItemAction(context, action),
         onPostShareTap: (postId, author) async {
-          final receiverId =
-              await context.pushNamed('search_users', extra: true) as String?;
+          final receiverId = await context.pushNamed(
+            'search_users',
+            extra: true,
+          ) as Map<String, dynamic>?;
           if (receiverId == null) return;
-          final receiver =
-              User.fromJson(jsonDecode(receiverId) as Map<String, dynamic>);
+          final receiver = User.fromJson(receiverId);
           await Future(
             () => context.read<FeedBloc>().add(
                   FeedPostShareRequested(
@@ -296,18 +314,43 @@ class FeedBody extends StatelessWidget {
             enableUnactiveBorder: false,
           );
         },
+        postIndex: index,
+        withInViewNotifier: true,
+        videoPlayerBuilder: (_, media, aspectRatio, isInView) {
+          final videoPlayer = VideoPlayerProvider.of(context).videoPlayerState;
+
+          return VideoPlayerNotifierWidget(
+            builder: (context, shouldPlay, child) {
+              final play = shouldPlay && isInView;
+              return ValueListenableBuilder(
+                valueListenable: videoPlayer.withSound,
+                builder: (context, withSound, child) {
+                  return VideoPlay(
+                    key: ValueKey(media.id),
+                    url: media.url,
+                    play: play,
+                    aspectRatio: aspectRatio,
+                    blurHash: media.blurHash,
+                    withSound: withSound,
+                    onSoundToggled: (enable) {
+                      videoPlayer.withSound.value = enable;
+                    },
+                  );
+                },
+              );
+            },
+          );
+        },
       );
     }
     if (block is PostSponsoredBlock) {
       return PostSponsored(
         block: block,
         isOwner: bloc.isOwnerOfPostBy(block.author.id),
-        hasStories: false,
-        imagesUrl: block.imagesUrl,
         isLiked: bloc.isLiked(block.id),
         likePost: () => bloc.add(FeedLikePostRequested(block.id)),
         likesCount: bloc.likesCount(block.id),
-        publishedAt: block.publishedAt.timeAgo(context),
+        createdAt: block.createdAt.timeAgo(context),
         isFollowed: bloc.followingStatus(userId: block.author.id),
         wasFollowed: true,
         follow: () => bloc.add(FeedPostAuthorFollowRequested(block.author.id)),
@@ -324,11 +367,12 @@ class FeedBody extends StatelessWidget {
         commentsCount: bloc.commentsCountOf(block.id),
         sponsoredText: context.l10n.sponsoredPostText,
         onPostShareTap: (postId, author) async {
-          final receiverId =
-              await context.pushNamed('search_users', extra: true) as String?;
+          final receiverId = await context.pushNamed(
+            'search_users',
+            extra: true,
+          ) as Map<String, dynamic>?;
           if (receiverId == null) return;
-          final receiver =
-              User.fromJson(jsonDecode(receiverId) as Map<String, dynamic>);
+          final receiver = User.fromJson(receiverId);
           await Future(
             () => context.read<FeedBloc>().add(
                   FeedPostShareRequested(
@@ -346,6 +390,33 @@ class FeedBody extends StatelessWidget {
             author: author.toUser,
             onAvatarTap: onAvatarTap,
             enableUnactiveBorder: false,
+          );
+        },
+        postIndex: index,
+        withInViewNotifier: true,
+        videoPlayerBuilder: (_, media, aspectRatio, isInView) {
+          final videoPlayer = VideoPlayerProvider.of(context).videoPlayerState;
+
+          return VideoPlayerNotifierWidget(
+            builder: (context, shouldPlay, child) {
+              final play = shouldPlay && isInView;
+              return ValueListenableBuilder(
+                valueListenable: videoPlayer.withSound,
+                builder: (context, withSound, child) {
+                  return VideoPlay(
+                    key: ValueKey(media.id),
+                    url: media.url,
+                    play: play,
+                    aspectRatio: aspectRatio,
+                    blurHash: media.blurHash,
+                    withSound: withSound,
+                    onSoundToggled: (enable) {
+                      videoPlayer.withSound.value = enable;
+                    },
+                  );
+                },
+              );
+            },
           );
         },
       );

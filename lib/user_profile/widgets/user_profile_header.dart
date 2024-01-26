@@ -51,6 +51,12 @@ class UserProfileHeader extends StatelessWidget {
               children: [
                 UserStoriesAvatar(
                   author: user,
+                  isImagePicker: true,
+                  onImagePick: (imageUrl) {
+                    context
+                        .read<UserProfileBloc>()
+                        .add(UserProfileUpdateRequested(avatarUrl: imageUrl));
+                  },
                   onAvatarTap: (imageUrl) {
                     if (imageUrl == null) return;
                     if (!isOwner) context.showImagePreview(imageUrl);
@@ -108,11 +114,15 @@ class UserProfileHeader extends StatelessWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (isOwner) ...[
-                  const Expanded(child: UserEditProfileButton()),
-                  const SizedBox(width: AppSpacing.md),
-                  const Expanded(child: UserEditProfileButton()),
-                ] else
+                if (isOwner)
+                  ...<Widget>[
+                    const Expanded(flex: 3, child: EditProfileButton()),
+                    const Expanded(flex: 3, child: ShareProfileButton()),
+                    const Expanded(child: ShowSuggestedPeopleButton()),
+                  ].separatedBy(
+                    const SizedBox(width: AppSpacing.sm),
+                  )
+                else
                   UserProfileSubscribeUserButton(userId: userId),
               ],
             ),
@@ -180,13 +190,13 @@ class UserProfileListStatistics extends StatelessWidget {
   }
 }
 
-class UserEditProfileButton extends StatelessWidget {
-  const UserEditProfileButton({super.key});
+class EditProfileButton extends StatelessWidget {
+  const EditProfileButton({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Tappable(
-      animationEffect: TappableAnimationEffect.none,
+      fadeStrength: FadeStrength.small,
       borderRadius: 6,
       color: context.customReversedAdaptiveColor(
         light: Colors.grey.shade300,
@@ -200,6 +210,68 @@ class UserEditProfileButton extends StatelessWidget {
           child: Text(
             context.l10n.editProfileText,
             style: context.labelLarge,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class ShareProfileButton extends StatelessWidget {
+  const ShareProfileButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Tappable(
+      fadeStrength: FadeStrength.small,
+      borderRadius: 6,
+      color: context.customReversedAdaptiveColor(
+        light: Colors.grey.shade300,
+        dark: const Color.fromARGB(255, 40, 37, 37).withOpacity(.9),
+      ),
+      onTap: () {},
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        child: Align(
+          alignment: Alignment.topCenter,
+          child: Text(
+            context.l10n.shareProfileText,
+            style: context.labelLarge,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class ShowSuggestedPeopleButton extends StatefulWidget {
+  const ShowSuggestedPeopleButton({super.key});
+
+  @override
+  State<ShowSuggestedPeopleButton> createState() =>
+      _ShowSuggestedPeopleButtonState();
+}
+
+class _ShowSuggestedPeopleButtonState extends State<ShowSuggestedPeopleButton> {
+  bool _showPeople = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Tappable(
+      fadeStrength: FadeStrength.small,
+      borderRadius: 6,
+      color: context.customReversedAdaptiveColor(
+        light: Colors.grey.shade300,
+        dark: const Color.fromARGB(255, 40, 37, 37).withOpacity(.9),
+      ),
+      onTap: () => setState(() => _showPeople = !_showPeople),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        child: Align(
+          alignment: Alignment.topCenter,
+          child: Icon(
+            _showPeople ? Icons.person_add_rounded : Icons.person_add_outlined,
+            size: 20,
           ),
         ),
       ),

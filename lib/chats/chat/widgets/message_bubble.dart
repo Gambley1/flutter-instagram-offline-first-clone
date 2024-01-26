@@ -1,3 +1,4 @@
+// ignore_for_file: deprecated_member_use_from_same_package
 // ignore_for_file: avoid_positional_boolean_parameters
 
 import 'dart:math' as math;
@@ -222,98 +223,246 @@ class MessageBubbleContent extends StatelessWidget {
               ),
             )
           : sharedPost != null
-              ? Stack(
-                  children: [
-                    Tappable(
-                      animationEffect: TappableAnimationEffect.none,
-                      onTap: () => context.pushNamed(
-                        'post_details',
-                        pathParameters: {'id': sharedPost.id},
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ListTile(
-                            horizontalTitleGap: 0,
-                            contentPadding: const EdgeInsets.symmetric(
-                              horizontal: AppSpacing.sm,
-                              vertical: AppSpacing.xs,
-                            ),
-                            leading: UserProfileAvatar(
-                              avatarUrl: sharedPost.author.avatarUrl,
-                              isLarge: false,
-                            ),
-                            title: Text(
-                              sharedPost.author.username,
-                              style: context.bodyLarge
-                                  ?.copyWith(fontWeight: AppFontWeight.bold),
-                            ),
+              ? sharedPost.isReel
+                  ? Stack(
+                      children: [
+                        Tappable(
+                          animationEffect: TappableAnimationEffect.none,
+                          onTap: () => context.pushNamed(
+                            'post_details',
+                            pathParameters: {'id': sharedPost.id},
                           ),
-                          AspectRatio(
-                            aspectRatio: 1,
-                            child: NetworkImageAttachment(
-                              url: sharedPost.imageUrl,
-                              fit: BoxFit.cover,
-                              errorBuilder: (
-                                context,
-                                error,
-                                stackTrace,
-                              ) {
-                                return ThumbnailError(
-                                  error: error,
-                                  stackTrace: stackTrace,
-                                  height: double.infinity,
-                                  width: double.infinity,
-                                  fit: BoxFit.cover,
-                                );
-                              },
-                            ),
-                          ),
-                          if (sharedPost.caption.trim().isNotEmpty)
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: AppSpacing.md,
-                                vertical: AppSpacing.sm,
-                              ),
-                              child: Text.rich(
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                textAlign: TextAlign.start,
-                                TextSpan(
-                                  children: [
-                                    TextSpan(
-                                      text: sharedPost.author.username,
-                                      style: context.titleMedium?.copyWith(
-                                        fontWeight: AppFontWeight.bold,
-                                      ),
-                                    ),
-                                    const WidgetSpan(
-                                      child: SizedBox(width: AppSpacing.xxs),
-                                    ),
-                                    TextSpan(
-                                      text: sharedPost.caption,
-                                      style: context.titleMedium,
-                                    ),
-                                  ],
+                          child: Stack(
+                            children: [
+                              AspectRatio(
+                                aspectRatio: 4 / 5,
+                                child: NetworkImageAttachment(
+                                  url: sharedPost.firstMediaUrl ?? '',
+                                  // fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return ThumbnailError(
+                                      error: error,
+                                      stackTrace: stackTrace,
+                                      height: double.infinity,
+                                      width: double.infinity,
+                                      fit: BoxFit.cover,
+                                    );
+                                  },
                                 ),
                               ),
-                            ),
-                        ],
-                      ),
-                    ),
-                    Positioned.fill(
-                      right: 12,
-                      bottom: 4,
-                      child: Align(
-                        alignment: Alignment.bottomRight,
-                        child: MessageStatuses(
-                          isEdited: isEdited,
-                          message: message,
+                              Positioned(
+                                top: 8,
+                                right: 8,
+                                child: Builder(
+                                  builder: (_) {
+                                    if (sharedPost.media.length > 1) {
+                                      return const Icon(
+                                        Icons.layers,
+                                        size: 36,
+                                        shadows: [
+                                          Shadow(
+                                            blurRadius: 2,
+                                          ),
+                                        ],
+                                      );
+                                    }
+                                    if (sharedPost.hasBothMediaTypes) {
+                                      return const SizedBox.shrink();
+                                    }
+                                    return const SizedBox.shrink();
+                                  },
+                                ),
+                              ),
+                              Positioned(
+                                top: 8,
+                                left: 8,
+                                right: 8,
+                                child: ListTile(
+                                  horizontalTitleGap: 0,
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: AppSpacing.sm,
+                                    vertical: AppSpacing.xs,
+                                  ),
+                                  leading: UserProfileAvatar(
+                                    avatarUrl: sharedPost.author.avatarUrl,
+                                    isLarge: false,
+                                  ),
+                                  title: Text(
+                                    sharedPost.author.username,
+                                    style: context.bodyLarge?.copyWith(
+                                      fontWeight: AppFontWeight.bold,
+                                    ),
+                                  ),
+                                  trailing: Container(
+                                    decoration: const BoxDecoration(
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black26,
+                                          blurRadius: 15,
+                                          offset: Offset(2, 2),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Assets.icons.instagramReel.svg(
+                                      height: 36,
+                                      width: 36,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ),
-                  ],
-                )
+                        Positioned.fill(
+                          right: 12,
+                          bottom: 4,
+                          child: Align(
+                            alignment: Alignment.bottomRight,
+                            child: MessageStatuses(
+                              isEdited: isEdited,
+                              message: message,
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  : Stack(
+                      children: [
+                        Tappable(
+                          animationEffect: TappableAnimationEffect.none,
+                          onTap: () => context.pushNamed(
+                            'post_details',
+                            pathParameters: {'id': sharedPost.id},
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ListTile(
+                                horizontalTitleGap: 0,
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: AppSpacing.sm,
+                                  vertical: AppSpacing.xs,
+                                ),
+                                leading: UserProfileAvatar(
+                                  avatarUrl: sharedPost.author.avatarUrl,
+                                  isLarge: false,
+                                ),
+                                title: Text(
+                                  sharedPost.author.username,
+                                  style: context.bodyLarge?.copyWith(
+                                    fontWeight: AppFontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              Stack(
+                                children: [
+                                  AspectRatio(
+                                    aspectRatio: 1,
+                                    child: NetworkImageAttachment(
+                                      url: sharedPost.firstMediaUrl ?? '',
+                                      fit: BoxFit.cover,
+                                      errorBuilder:
+                                          (context, error, stackTrace) {
+                                        return ThumbnailError(
+                                          error: error,
+                                          stackTrace: stackTrace,
+                                          height: double.infinity,
+                                          width: double.infinity,
+                                          fit: BoxFit.cover,
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                  Positioned(
+                                    top: 8,
+                                    right: 8,
+                                    child: Builder(
+                                      builder: (_) {
+                                        if (sharedPost.isReel) {
+                                          return Container(
+                                            decoration: const BoxDecoration(
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.black26,
+                                                  blurRadius: 15,
+                                                  offset: Offset(2, 2),
+                                                ),
+                                              ],
+                                            ),
+                                            child:
+                                                Assets.icons.instagramReel.svg(
+                                              height: 36,
+                                              width: 36,
+                                              color: Colors.white,
+                                            ),
+                                          );
+                                        }
+                                        if (sharedPost.media.length > 1) {
+                                          return const Icon(
+                                            Icons.layers,
+                                            size: 36,
+                                            shadows: [
+                                              Shadow(
+                                                blurRadius: 2,
+                                              ),
+                                            ],
+                                          );
+                                        }
+                                        if (sharedPost.hasBothMediaTypes) {
+                                          return const SizedBox.shrink();
+                                        }
+                                        return const SizedBox.shrink();
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              if (sharedPost.caption.trim().isNotEmpty)
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: AppSpacing.md,
+                                    vertical: AppSpacing.sm,
+                                  ),
+                                  child: Text.rich(
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    textAlign: TextAlign.start,
+                                    TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text: sharedPost.author.username,
+                                          style: context.bodyLarge?.copyWith(
+                                            fontWeight: AppFontWeight.bold,
+                                          ),
+                                        ),
+                                        const WidgetSpan(
+                                          child: SizedBox(width: AppSpacing.xs),
+                                        ),
+                                        TextSpan(
+                                          text: sharedPost.caption,
+                                          style: context.bodyLarge,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                        Positioned.fill(
+                          right: 12,
+                          bottom: 4,
+                          child: Align(
+                            alignment: Alignment.bottomRight,
+                            child: MessageStatuses(
+                              isEdited: isEdited,
+                              message: message,
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
               : Stack(
                   children: [
                     Padding(
@@ -396,19 +545,18 @@ class MessageStatuses extends StatelessWidget {
         if (isEdited)
           Text(
             'edited',
-            style: context.bodyMedium?.apply(color: Colors.white),
+            style: context.bodySmall?.apply(color: Colors.white),
           ),
         Text(
           message.createdAt.format(
             context,
             dateFormat: DateFormat.Hm,
           ),
-          style: context.bodyMedium?.apply(color: Colors.white),
+          style: context.bodySmall?.apply(color: Colors.white),
         ),
         if (isMine) ...[
           if (message.isRead)
             Assets.icons.check.svg(
-              // ignore: deprecated_member_use_from_same_package
               color: Colors.white,
               height: 20,
               width: 20,
@@ -471,7 +619,7 @@ class RenderTextMessageWidget extends RenderBox
 
   // With this constants you can modify the final result
   static const double _kOffset = 1.5;
-  static const double _kFactor = 20;
+  static const double _kFactor = .5;
 
   String get text => _text;
   set text(String value) {

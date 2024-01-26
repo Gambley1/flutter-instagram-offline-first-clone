@@ -1,6 +1,7 @@
 /// A Flutter package that contains UI components for Instagram blocks.
 library instagram_blocks_ui;
 
+export 'src/media_carousel_settings.dart';
 export 'src/post_large/index.dart';
 export 'src/post_small/index.dart';
 export 'src/posts/index.dart';
@@ -11,7 +12,7 @@ export 'src/widgets/widgets.dart'
         AnimatedVisibility,
         AvatarImagePicker,
         ExpandableText,
-        ImagesCarousel,
+        MediaCarousel,
         PostSponsored,
         PromoFloatingAction,
         ShimmerPlaceholder,
@@ -21,4 +22,5 @@ export 'src/widgets/widgets.dart'
         Swipeable,
         TimeAgo,
         TwoRotatingArc,
-        UserComment;
+        UserComment,
+        VideoPlay;

@@ -8,9 +8,9 @@ part 'unknown_block.g.dart';
 /// A block which represents an unknown type.
 /// {@endtemplate}
 @JsonSerializable()
-class UnknownBlock with EquatableMixin implements InstaBlock {
+class UnknownBlock extends InstaBlock with EquatableMixin {
   /// {@macro unknown_block}
-  const UnknownBlock({this.type = UnknownBlock.identifier});
+  UnknownBlock({super.type = UnknownBlock.identifier});
 
   /// Converts a `Map<String, dynamic>` into a [UnknownBlock] instance.
   factory UnknownBlock.fromJson(Map<String, dynamic> json) =>
@@ -18,9 +18,6 @@ class UnknownBlock with EquatableMixin implements InstaBlock {
 
   /// The unknown block type identifier.
   static const identifier = '__unknown__';
-
-  @override
-  final String type;
 
   @override
   Map<String, dynamic> toJson() => _$UnknownBlockToJson(this);

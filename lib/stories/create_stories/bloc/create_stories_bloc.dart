@@ -58,11 +58,13 @@ class CreateStoriesBloc extends Bloc<CreateStoriesEvent, CreateStoriesState> {
 
       final storyId = UidGenerator.v4();
       final storyImageFile = File(event.filePath);
-      final storyImageBytes = await PickImage.imageBytes(file: storyImageFile);
+      final compressed = await ImageCompress.compressFile(storyImageFile);
+      final compressedFile = File(compressed!.path);
+      final compressedBytes = await PickImage.imageBytes(file: compressedFile);
       final contentUrl = await _storiesRepository.uploadStoryMedia(
         storyId: storyId,
-        imageFile: storyImageFile,
-        imageBytes: storyImageBytes,
+        imageFile: compressedFile,
+        imageBytes: compressedBytes,
       );
 
       await _storiesRepository.createStory(

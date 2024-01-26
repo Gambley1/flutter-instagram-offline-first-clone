@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:insta_blocks/insta_blocks.dart';
 import 'package:insta_blocks/src/models/post_author_converter.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:shared/shared.dart';
 
 part 'post_small_block.g.dart';
 
@@ -15,9 +15,8 @@ class PostSmallBlock extends PostBlock {
   const PostSmallBlock({
     required super.id,
     required super.author,
-    required super.publishedAt,
-    required super.imageUrl,
-    required super.imagesUrl,
+    required super.createdAt,
+    required super.media,
     required super.caption,
     super.action,
     super.type = PostSmallBlock.identifier,
@@ -27,20 +26,22 @@ class PostSmallBlock extends PostBlock {
   factory PostSmallBlock.fromJson(Map<String, dynamic> json) =>
       _$PostSmallBlockFromJson(json);
 
-  /// Converts a [shared] `Map<String, dynamic>` into a [PostSmallBlock]
-  /// instance.
+  /// Converts a `Map<String, dynamic>` into a [PostSmallBlock] instance.
   factory PostSmallBlock.fromShared(Map<String, dynamic> shared) =>
       PostSmallBlock(
         id: shared['shared_post_id'] as String,
         author: PostAuthor.fromShared(shared),
-        publishedAt:
-            DateTime.parse(shared['shared_post_published_at'] as String),
-        imageUrl: shared['shared_post_image_url'] as String,
-        imagesUrl: shared['shared_post_images_url'] == null
+        createdAt: DateTime.parse(shared['shared_post_created_at'] as String),
+        media: shared['shared_post_media'] == null
             ? []
-            : (jsonDecode(shared['shared_post_images_url'] as String) as List)
-                .cast<String>(),
-        caption: shared['shared_post_caption'] as String,
+            : List<Media>.from(
+                (jsonDecode(shared['shared_post_media'] as String? ?? '')
+                            as List<dynamic>?)
+                        ?.map((e) => Media.fromJson(e as Map<String, dynamic>))
+                        .toList() ??
+                    [],
+              ).toList(),
+        caption: shared['shared_post_caption'] as String? ?? '',
       );
 
   /// The small post block type identifier.

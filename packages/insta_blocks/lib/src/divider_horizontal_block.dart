@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:insta_blocks/insta_blocks.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:shared/shared.dart';
 
 part 'divider_horizontal_block.g.dart';
 
@@ -8,10 +8,10 @@ part 'divider_horizontal_block.g.dart';
 /// A block which represents a divider horizontal.
 /// {@endtemplate}
 @JsonSerializable()
-class DividerHorizontalBlock with EquatableMixin implements InstaBlock {
+class DividerHorizontalBlock extends InstaBlock with EquatableMixin {
   /// {@macro divider_horizontal_block}
-  const DividerHorizontalBlock({
-    this.type = DividerHorizontalBlock.identifier,
+  DividerHorizontalBlock({
+    super.type = DividerHorizontalBlock.identifier,
   });
 
   /// Converts a `Map<String, dynamic>` into
@@ -21,9 +21,6 @@ class DividerHorizontalBlock with EquatableMixin implements InstaBlock {
 
   /// The divider horizontal block type identifier.
   static const identifier = '__divider_horizontal__';
-
-  @override
-  final String type;
 
   @override
   Map<String, dynamic> toJson() => _$DividerHorizontalBlockToJson(this);

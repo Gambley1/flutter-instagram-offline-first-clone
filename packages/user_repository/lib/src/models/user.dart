@@ -62,7 +62,7 @@ class User extends AuthenticationUser {
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
       if (email != null) 'email': email,
-      'id': id,
+      'user_id': id,
       if (username != null) 'username': username,
       if (fullName != null) 'full_name': fullName,
       if (avatarUrl != null) 'avatar_url': avatarUrl,

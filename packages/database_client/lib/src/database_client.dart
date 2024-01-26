@@ -86,6 +86,21 @@ abstract class PostsBaseRepository {
   /// Reads the associated post from the database by the [id].
   Future<Post?> getPostBy({required String id});
 
+  /// Fetches the profiles of users who liked post, idenitifed by [postId].
+  Future<List<User>> getPostLikers({
+    required String postId,
+    int limit = 30,
+    int offset = 0,
+  });
+
+  /// Fetches the profiles of users who liked the post, identified by [postId]
+  /// and who are in followings of the user identified by current user `id`.
+  Future<List<User>> getPostLikersInFollowings({
+    required String postId,
+    int limit = 3,
+    int offset = 0,
+  });
+
   /// Likes the post as user by [userId] by provided either post or comment
   /// [id].
   Future<void> like({
@@ -114,18 +129,27 @@ abstract class PostsBaseRepository {
     required int limit,
   });
 
+  /// Uploads the post [Media] to the server.
+  Future<void> uploadMedia({
+    required String id,
+    required String ownerId,
+    required String url,
+    required String type,
+    required String blurHash,
+    required String? firstFrame,
+  });
+
   /// Create a new post with provided details.
-  Future<Post> createPost({
+  Future<void> createPost({
     required String id,
     required String userId,
     required String caption,
-    required String type,
-    required String mediaUrl,
-    required String imagesUrl,
+    required String media,
   });
 
   /// Deletes the post with provided [id].
-  Future<void> deletePost({required String id});
+  /// Returns the optional `id` of the deleted post.
+  Future<String?> deletePost({required String id});
 
   /// Updates the post with provided [id] and optional parameters to update.
   Future<void> updatePost({required String id});
@@ -283,7 +307,7 @@ class DatabaseClient extends Client {
   Future<bool> isUserExists({required String id}) async {
     final user = await _powerSyncRepository.db().execute(
       '''
-SELECT * FROM profiles WHERE id = ?
+SELECT id FROM profiles WHERE id = ?
 ''',
       [id],
     );
@@ -292,34 +316,19 @@ SELECT * FROM profiles WHERE id = ?
   }
 
   @override
-  Future<Post> createPost({
+  Future<void> createPost({
     required String id,
     required String userId,
     required String caption,
-    required String type,
-    required String mediaUrl,
-    required String imagesUrl,
-  }) async {
-    final result = await _powerSyncRepository.db().execute(
-      '''
-    INSERT INTO posts(id, user_id, caption, type, media_url, created_at, images_url)
-    VALUES(?, ?, ?, ?, ?, datetime(), ?)
-    RETURNING *
+    required String media,
+  }) =>
+      _powerSyncRepository.db().execute(
+        '''
+    INSERT INTO posts(id, user_id, caption, media, created_at)
+    VALUES(?, ?, ?, ?, datetime())
     ''',
-      [
-        id,
-        userId,
-        caption,
-        type,
-        mediaUrl,
-        imagesUrl,
-      ],
-    );
-    return Post.fromRow(
-      result.first,
-      author: result.first['user_id'] as String,
-    );
-  }
+        [id, userId, caption, media],
+      );
 
   @override
   Stream<int> postsAmountOf({required String userId}) =>
@@ -339,6 +348,7 @@ SELECT * FROM profiles WHERE id = ?
         '''
 SELECT
   posts.*,
+  p.id as user_id,
   p.avatar_url as avatar_url,
   p.username as username
 FROM
@@ -350,12 +360,7 @@ ORDER BY created_at DESC
         parameters: [currentUserId],
       ).map(
         (event) => event
-            .map(
-              (row) => Post.fromRow(
-                row,
-                author: currentUserId,
-              ),
-            )
+            .map((row) => Post.fromJson(Map<String, dynamic>.from(row)))
             .toList(growable: false),
       );
     }
@@ -372,28 +377,84 @@ WHERE user_id = ?
 ORDER BY created_at DESC
       ''',
       parameters: [userId],
-    ).asyncMap((event) async {
-      final posts = <Post>[];
-
-      for (final row in event) {
-        final followed = await isFollowed(
-          followerId: currentUserId,
-          userId: row['user_id'] as String,
-        );
-        final post = Post.fromRow(
-          row,
-          author: currentUserId,
-          followed: followed.toInt,
-        );
-        posts.add(post);
-      }
-      return posts;
-    });
+    ).map(
+      (event) => event
+          .map((row) => Post.fromJson(Map<String, dynamic>.from(row)))
+          .toList(growable: false),
+    );
   }
 
   @override
-  Future<void> deletePost({required String id}) =>
-      _powerSyncRepository.db().execute('DELETE FROM posts WHERE id = ?', [id]);
+  Future<String?> deletePost({required String id}) async {
+    final result = await _powerSyncRepository
+        .db()
+        .execute('DELETE FROM posts WHERE id = ? RETURNING id', [id]);
+    if (result.isEmpty) return null;
+    return result.first['id'] as String;
+  }
+
+  // ignore: unused_element
+  Future<List<Media>> _getPostMedia({
+    required List<Map<String, dynamic>> mediaJsons,
+  }) async {
+    final media = <Media>[];
+    for (final mediaJson in mediaJsons) {
+      if (mediaJson['type'] == ImageMedia.identifier) {
+        final row = await _powerSyncRepository.db().getOptional(
+          '''
+SELECT * FROM images WHERE id = ?
+''',
+          [mediaJson['id']],
+        );
+        if (row == null) continue;
+        final imageMedia = ImageMedia.fromJson(row);
+        media.add(imageMedia);
+      }
+      if (mediaJson['type'] == VideoMedia.identifier) {
+        final row = await _powerSyncRepository.db().getOptional(
+          '''
+SELECT * FROM videos WHERE id = ?
+''',
+          [mediaJson['id']],
+        );
+        if (row == null) continue;
+        final videoMedia = VideoMedia.fromJson(row);
+        media.add(videoMedia);
+      }
+    }
+    return media;
+  }
+
+  @override
+  Future<void> uploadMedia({
+    required String id,
+    required String ownerId,
+    required String url,
+    required String type,
+    required String blurHash,
+    required String? firstFrame,
+  }) async {
+    if (type == ImageMedia.identifier) {
+      await _powerSyncRepository.db().execute(
+        '''
+INSERT INTO images(id, owner_id, url, blur_hash)
+VALUES(?1,?2,?3,?4)
+ON CONFLICT (id) DO UPDATE SET url = ?3, blur_hash = ?4, owner_id = ?2
+        ''',
+        [id, ownerId, url, blurHash],
+      );
+    }
+    if (type == VideoMedia.identifier) {
+      await _powerSyncRepository.db().execute(
+        '''
+INSERT INTO videos(id, owner_id, url, first_frame, blur_hash)
+VALUES(?1,?2,?3,?4,?5)
+ON CONFLICT (id) DO UPDATE SET url = ?3, blur_hash = ?5, owner_id = ?2, first_frame = ?4
+        ''',
+        [id, ownerId, url, firstFrame, blurHash],
+      );
+    }
+  }
 
   @override
   Future<List<Post>> getPage({
@@ -404,6 +465,7 @@ ORDER BY created_at DESC
       '''
 SELECT
   posts.*,
+  p.id as user_id,
   p.avatar_url as avatar_url,
   p.username as username
 FROM
@@ -417,15 +479,8 @@ ORDER BY created_at DESC LIMIT ?1 OFFSET ?2
     final posts = <Post>[];
 
     for (final row in result) {
-      final followed = await isFollowed(
-        followerId: currentUserId!,
-        userId: row['user_id'] as String,
-      );
-      final post = Post.fromRow(
-        row,
-        author: currentUserId!,
-        followed: followed.toInt,
-      );
+      final json = Map<String, dynamic>.from(row);
+      final post = Post.fromJson(json);
       posts.add(post);
     }
     return posts;
@@ -441,13 +496,21 @@ ORDER BY created_at DESC LIMIT ?1 OFFSET ?2
   @override
   Stream<int> likesOf({required String id, bool post = true}) {
     final statement = post ? 'post_id' : 'comment_id';
+    // return _powerSyncRepository.db().watch(
+    //   'SELECT COUNT(*) AS likes_count FROM likes '
+    //   'WHERE $statement = ? AND $statement IS NOT NULL',
+    //   parameters: [id],
+    // ).map(
+    //   (event) => event.map((element) => element['likes_count']).first as int,
+    // );
     return _powerSyncRepository.db().watch(
-      'SELECT COUNT(*) AS likes_count FROM likes '
-      'WHERE $statement = ? AND $statement IS NOT NULL',
+      '''
+SELECT COUNT(*) AS total_likes
+FROM likes
+WHERE $statement = ? AND $statement IS NOT NULL
+''',
       parameters: [id],
-    ).map(
-      (event) => event.map((element) => element['likes_count']).first as int,
-    );
+    ).map((result) => result.map((row) => row['total_likes']).first as int);
   }
 
   @override
@@ -471,10 +534,11 @@ ORDER BY created_at DESC LIMIT ?1 OFFSET ?2
 
   @override
   Future<Post?> getPostBy({required String id}) async {
-    final post = await _powerSyncRepository.db().execute(
+    final row = await _powerSyncRepository.db().getOptional(
       '''
 SELECT
   posts.*,
+  p.id as user_id,
   p.avatar_url as avatar_url,
   p.username as username
 FROM
@@ -484,8 +548,8 @@ WHERE posts.id = ?
   ''',
       [id],
     );
-    if (post.isEmpty) return null;
-    return Post.fromRow(post.first, author: currentUserId!);
+    if (row == null) return null;
+    return Post.fromJson(Map<String, dynamic>.from(row));
   }
 
   @override
@@ -939,9 +1003,8 @@ SELECT
   a.type as attachment_type,
   r.message as replied_message_message,
   p.caption as shared_post_caption,
-  p.created_at as shared_post_published_at,
-  p.media_url as shared_post_image_url,
-  p.images_url as shared_post_images_url,
+  p.created_at as shared_post_created_at,
+  p.media as shared_post_media,
   p_author.id as shared_post_author_id,
   p_author.username as shared_post_author_username,
   p_author.avatar_url as shared_post_author_avatar_url
@@ -957,7 +1020,9 @@ where
 order by created_at asc
 ''',
         parameters: [chatId],
-      ).map((event) => event.map(Message.fromRow).toList(growable: false));
+      ).map(
+        (event) => event.map(Message.fromRow).toList(growable: false),
+      );
 
   @override
   Future<void> createChat({
@@ -1325,7 +1390,7 @@ values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   }) async {
     final result = await _powerSyncRepository.db().getAll(
       '''
-SELECT *
+SELECT id, avatar_url, full_name
   FROM profiles
 WHERE id != ?1 
   AND username LIKE '%$query%'
@@ -1421,5 +1486,55 @@ SELECT * FROM stories WHERE id = ?
       ),
     );
     return stories.getPublicUrl(imagePath);
+  }
+
+  @override
+  Future<List<User>> getPostLikers({
+    required String postId,
+    int limit = 30,
+    int offset = 0,
+  }) async {
+    final result = await _powerSyncRepository.db().getAll(
+      '''
+SELECT up.id, up.username, up.avatar_url
+FROM profiles up
+INNER JOIN likes l ON up.id = l.user_id
+INNER JOIN posts p ON l.post_id = p.id
+WHERE p.post_id ?
+LIMIT ? OFFSET ?
+''',
+      [postId, limit, offset],
+    );
+    if (result.isEmpty) return [];
+    return result.map<User>(User.fromJson).toList();
+  }
+
+  @override
+  Future<List<User>> getPostLikersInFollowings({
+    required String postId,
+    int limit = 3,
+    int offset = 0,
+  }) async {
+    final result = await _powerSyncRepository.db().getAll(
+      '''
+SELECT up.id, up.avatar_url
+FROM profiles up
+WHERE up.id IN (
+    SELECT l.user_id
+    FROM likes l
+    WHERE l.post_id = ?
+    AND EXISTS (
+        SELECT *
+        FROM subscriptions f
+        WHERE f.subscriber_id = l.user_Id
+        AND f.subscribed_to_id = ?
+    )
+)
+LIMIT ? OFFSET ?
+''',
+      [postId, currentUserId, limit, offset],
+    );
+    if (result.isEmpty) return [];
+    return result.map(User.fromJson).toList();
   }
 }

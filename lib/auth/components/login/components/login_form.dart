@@ -35,10 +35,10 @@ class _LoginFormState extends State<LoginForm> {
       listener: (context, state) {
         if (state.status.isError) {
           openSnackbar(
-            SnackbarMessage(
+            SnackbarMessage.error(
               title: loginSubmissionStatusMessage[state.status]!.title,
-              icon: Icons.error_outline,
-              isError: true,
+              description:
+                  loginSubmissionStatusMessage[state.status]?.description,
             ),
             clearIfQueue: true,
           );

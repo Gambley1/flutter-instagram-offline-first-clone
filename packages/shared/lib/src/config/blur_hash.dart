@@ -6,7 +6,9 @@ import 'package:blurhash/blurhash.dart';
 /// A package that manages video thumbnail.
 /// {@endtemplate}
 class BlurHashPlus {
+  const BlurHashPlus._();
+
   /// Returns a [Uint8List] containing the thumbnail of the video.
-  static Future<String> blurHashEncode(Uint8List pixels) =>
-      BlurHash.encode(pixels, 4, 3);
+  static Future<String> blurHashEncode(Uint8List bytes) =>
+      BlurHash.encode(bytes, 4, 3);
 }

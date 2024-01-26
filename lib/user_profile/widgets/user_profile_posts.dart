@@ -7,9 +7,11 @@ import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/comments/view/view.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/feed.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
+import 'package:flutter_instagram_offline_first_clone/stories/user_stories/user_stories.dart';
 import 'package:flutter_instagram_offline_first_clone/user_profile/user_profile.dart';
 import 'package:go_router/go_router.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
+import 'package:inview_notifier_list/inview_notifier_list.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:shared/shared.dart';
 import 'package:user_repository/user_repository.dart';
@@ -18,6 +20,7 @@ class UserProfilePosts extends StatefulWidget {
   const UserProfilePosts({
     required this.userId,
     required this.index,
+    // required this.bloc,
     super.key,
   });
 
@@ -101,11 +104,16 @@ class _UserProfilePostsState extends State<UserProfilePosts> {
     final user = context.select((AppBloc bloc) => bloc.state.user);
 
     return AppScaffold(
-      body: CustomScrollView(
+      body: InViewNotifierCustomScrollView(
+        initialInViewIds: ['${widget.index}'],
+        isInViewPortCondition: (deltaTop, deltaBottom, vpHeight) {
+          return deltaTop < (0.5 * vpHeight) + 80.0 &&
+              deltaBottom > (0.5 * vpHeight) - 80.0;
+        },
         slivers: [
           UserProfilePostsAppBar(userId: widget.userId),
           StreamBuilder<List<PostBlock>>(
-            stream: context.read<UserProfileBloc>().userPosts(),
+            stream: context.read<UserProfileBloc>().userPosts(small: false),
             builder: (context, snapshot) {
               final blocks = snapshot.data;
 
@@ -126,7 +134,7 @@ class _UserProfilePostsState extends State<UserProfilePosts> {
                 likesText: context.l10n.likesCountText,
                 commentsText: context.l10n.seeAllComments,
                 commentsCountOf: feedBloc.commentsCountOf,
-                timeAgo: (publishedAt) => publishedAt.timeAgo(context),
+                timeAgo: (createdAt) => createdAt.timeAgo(context),
                 itemScrollController: _itemScrollController,
                 itemPositionsListener: _itemPositionsListener,
                 scrollOffsetController: _scrollOffsetController,
@@ -144,11 +152,9 @@ class _UserProfilePostsState extends State<UserProfilePosts> {
                   final receiverId = await context.pushNamed(
                     'search_users',
                     extra: true,
-                  ) as String?;
+                  ) as Map<String, dynamic>?;
                   if (receiverId == null) return;
-                  final receiver = User.fromJson(
-                    jsonDecode(receiverId) as Map<String, dynamic>,
-                  );
+                  final receiver = User.fromJson(receiverId);
                   await Future(
                     () => context.read<FeedBloc>().add(
                           FeedPostShareRequested(
@@ -159,6 +165,14 @@ class _UserProfilePostsState extends State<UserProfilePosts> {
                             message: Message(id: UidGenerator.v4()),
                           ),
                         ),
+                  );
+                },
+                withInViewNotifier: true,
+                postAuthorAvatarBuilder: (context, author, onAvatarTap) {
+                  return UserStoriesAvatar(
+                    author: author.toUser,
+                    onAvatarTap: onAvatarTap,
+                    enableUnactiveBorder: false,
                   );
                 },
               );
@@ -179,6 +193,7 @@ class UserProfilePostsAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final bloc = context.read<UserProfileBloc>();
     final isOwner = context.select<UserProfileBloc, bool>((b) => b.isOwner);
+
     return SliverAppBar(
       centerTitle: false,
       pinned: true,

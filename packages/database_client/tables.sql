@@ -156,16 +156,15 @@ create policy "Users can update own profile." on profiles
 
 create type media_type as enum('photo', 'video');
 
+-- Create Posts table
 create table
   public.posts (
     id uuid not null,
     user_id uuid not null,
-    caption text not null,
-    type media_type not null,
-    media_url text null,
+    caption text null,
+    media text null,
     created_at timestamp with time zone not null default now(),
     updated_at timestamp with time zone null,
-    images_url text null,
     constraint posts_pkey primary key (id),
     constraint posts_user_id_fkey foreign key (user_id) references public.profiles (id) on update cascade on delete cascade
   ) tablespace pg_default;
@@ -188,6 +187,67 @@ using (
     auth.uid() = user_id
   );
 
+-- Create Videos table
+create table
+  public.videos (
+    id uuid not null,
+    owner_id uuid not null,
+    url text not null,
+    first_frame_url text not null,
+    blur_hash text not null,
+    constraint videos_pkey primary key (id),
+    constraint videos_user_id_fkey foreign key (owner_id) references public.profiles (id) on update cascade on delete cascade
+  ) tablespace pg_default;
+
+alter table videos enable row level security;
+
+create policy "Allow to see videos for everybody" on public.videos for select using (true);
+
+create policy "Allow upload video only to authenticated user" on public.videos
+ for insert to authenticated with check (true);
+
+create policy "Allow update video only to authenticated owner user" on public.videos for update to authenticated
+with
+  check (
+    auth.uid() = owner_id
+  );
+
+create policy "Allow delete video only to authenticated owner user" on public.videos for delete to authenticated
+using (
+    auth.uid() = owner_id
+  );
+
+-- Create Images table
+create table
+  public.images (
+    id uuid not null,
+    owner_id uuid not null,
+    url text not null,
+    blur_hash text null,
+    constraint images_pkey primary key (id),
+    constraint images_owner_id_fkey foreign key (owner_id) references public.profiles (id) on update cascade on delete cascade
+  ) tablespace pg_default;
+
+alter table images enable row level security;
+
+create policy "Allow to see images for everybody" on public.images for select using (true);
+
+create policy "Allow upload post only to authenticated user" on public.images
+ for insert to authenticated with check (true);
+
+create policy "Allow update post only to authenticated user" on public.images for update to authenticated
+with
+  check (
+    auth.uid() = owner_id
+  );
+
+create policy "Allow delete post only to authenticated user" on public.images for delete to authenticated
+using (
+    auth.uid() = owner_id
+  );
+
+-- Create Likes table
+  
 create table
   public.likes (
     id uuid not null default gen_random_uuid (),

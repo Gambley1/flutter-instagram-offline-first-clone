@@ -1,95 +1,63 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:convert';
-
+import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 import 'package:shared/shared.dart';
+import 'package:shared/src/models/date_time_converter.dart';
+import 'package:shared/src/models/user_converter.dart';
+import 'package:user_repository/user_repository.dart';
+
+part 'post.g.dart';
 
 @immutable
+@JsonSerializable()
+
+/// {@template post}
+/// A post model.
+/// {@endtemplate}
 class Post {
   /// {@macro post}
   const Post({
     required this.id,
     required this.author,
     required this.caption,
-    required this.type,
-    required this.mediaUrl,
-    required this.publishedAt,
-    required this.imagesUrl,
-    required this.isOwner,
-    required this.avatarUrl,
-    required this.username,
-    required this.fullName,
+    required this.createdAt,
+    this.media = const [],
     this.updatedAt,
-    this.subscribed,
-    this.wasSubscribed,
   });
 
-  factory Post.fromRow(
-    Map<String, dynamic> row, {
-    required String author,
-    int? followed,
-  }) {
-    final isOwner = row['user_id'] == author;
-    final isSubscribed = followed == 1 || isOwner;
-    final wasSubscribed = isSubscribed;
-    final username = row['username'] as String?;
-    final fullName = row['full_name'] as String?;
-    final avatarUrl = row['avatar_url'] as String?;
+  /// Converts a `Map<String, dynamic>` into a [Post] instance.
+  factory Post.fromJson(Map<String, dynamic> json) => _$PostFromJson(
+        json
+          ..putIfAbsent(
+            'author',
+            () => {
+              'id': json['user_id'],
+              'avatar_url': json['avatar_url'],
+              'username': json['username'],
+            },
+          ),
+      );
 
-    return Post(
-      id: row['id'] as String,
-      author: row['user_id'] as String,
-      caption: row['caption'] as String,
-      type: row['type'] as String,
-      mediaUrl: row['media_url'] as String,
-      publishedAt: DateTime.parse(row['created_at'] as String),
-      updatedAt: row['updated_at'] == null
-          ? null
-          : DateTime.parse(row['updated_at'] as String),
-      imagesUrl:
-          (jsonDecode(row['images_url'] as String) as List).cast<String>(),
-      isOwner: isOwner,
-      subscribed: isSubscribed,
-      wasSubscribed: wasSubscribed,
-      avatarUrl: avatarUrl ?? '',
-      username: username ?? '',
-      fullName: fullName ?? '',
-    );
-  }
-
+  /// The post unique identifier.
   final String id;
-  final String author;
+
+  /// The author of the post.
+  @UserConverter()
+  final User author;
+
+  /// The post caption.
   final String caption;
-  final String type;
-  final String mediaUrl;
-  final DateTime publishedAt;
+
+  /// The date time when the post was created.
+  @DateTimeConverter()
+  final DateTime createdAt;
+
+  /// The date time(if updated) when the post was updated.
   final DateTime? updatedAt;
-  final List<String> imagesUrl;
-  final bool isOwner;
-  final bool? subscribed;
-  final bool? wasSubscribed;
-  final String avatarUrl;
-  final String username;
-  final String fullName;
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'id': id,
-      'author': {
-        'id': author,
-        'username': username,
-        'full_name': fullName,
-        'avatar_url': avatarUrl,
-      },
-      'caption': caption,
-      'type': type,
-      'mediaUrl': mediaUrl,
-      'publishedAt': publishedAt.toIso8601String(),
-      'updatedAt': updatedAt?.toIso8601String(),
-      'imageUrls': imagesUrl,
-      'is_owner': isOwner.toInt,
-    };
-  }
+  /// The list of media of the post.
+  @ListMediaConverterFromDb()
+  final List<Media> media;
 
-  String toJson() => json.encode(toMap());
+  /// Converts current [Post] instance to a `Map<String, dynamic>`.
+  Map<String, dynamic> toJson() => _$PostToJson(this);
 }

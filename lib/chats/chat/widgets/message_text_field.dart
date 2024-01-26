@@ -161,6 +161,10 @@ class _ChatMessageTextFieldInputState extends State<ChatMessageTextFieldInput>
 
     void onSend() {
       final wasEditing = _effectiveController.editingMessage != null;
+      final hasEditingMessage = _effectiveController.editingMessage != null;
+      final hasChanges = hasEditingMessage &&
+          _effectiveController.editingMessage?.message !=
+              _effectiveController.message.message;
       void sendMessage(Message message) {
         context.read<ChatBloc>().add(
               ChatSendMessageRequested(
@@ -185,13 +189,14 @@ class _ChatMessageTextFieldInputState extends State<ChatMessageTextFieldInput>
 
       if (_effectiveController.message.message.trim().isEmpty) return;
       final message = _effectiveController.message;
-      if (wasEditing) {
+
+      if (!hasEditingMessage) {
+        sendMessage(message);
+      } else if (hasEditingMessage && hasChanges) {
         updateMessage(
           oldMessage: _effectiveController.editingMessage!,
           newMessage: message,
         );
-      } else {
-        sendMessage(message);
       }
 
       setState(_effectiveController.resetAll);

@@ -33,6 +33,6 @@ abstract class InstaBlock {
       case SectionHeaderBlock.identifier:
         return SectionHeaderBlock.fromJson(json);
     }
-    return const UnknownBlock();
+    return UnknownBlock();
   }
 }

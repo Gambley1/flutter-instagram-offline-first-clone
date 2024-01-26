@@ -1,4 +1,4 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
+// ignore_for_file: public_member_api_docs
 import 'package:flutter/material.dart';
 import 'package:shared/shared.dart';
 
@@ -9,23 +9,26 @@ List<NavBarItem> mainNavigationBarItems({
   required String createMediaLabel,
   required String reelsLabel,
   required String userProfileLabel,
+  required Widget userProfileAvatar,
 }) =>
     <NavBarItem>[
       NavBarItem(icon: Icons.home_filled, label: homeLabel),
       NavBarItem(icon: Icons.search, label: searchLabel),
       NavBarItem(icon: Icons.add_box_outlined, label: createMediaLabel),
       NavBarItem(icon: Icons.movie_outlined, label: reelsLabel),
-      NavBarItem(icon: Icons.person, label: userProfileLabel),
+      NavBarItem(child: userProfileAvatar, label: userProfileLabel),
     ];
 
 class NavBarItem {
-  final String? label;
-  final IconData icon;
-
   NavBarItem({
-    required this.icon,
+    this.icon,
     this.label,
+    this.child,
   });
+
+  final String? label;
+  final Widget? child;
+  final IconData? icon;
 
   String? get tooltip => label;
 }

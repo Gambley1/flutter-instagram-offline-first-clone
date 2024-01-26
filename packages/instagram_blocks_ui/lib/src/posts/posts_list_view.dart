@@ -1,9 +1,10 @@
 // ignore_for_file: avoid_positional_boolean_parameters
 
 import 'package:flutter/material.dart';
-import 'package:insta_blocks/insta_blocks.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
+import 'package:instagram_blocks_ui/src/post_large/post_header.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import 'package:shared/shared.dart';
 
 typedef CommentsTapCallback = void Function(
   PostBlock block,
@@ -26,6 +27,7 @@ class PostsListView extends StatelessWidget {
     required this.commentsCountOf,
     required this.onPressed,
     required this.onPostShareTap,
+    required this.withInViewNotifier,
     this.withLoading = true,
     this.loading,
     this.withItemController = false,
@@ -36,6 +38,8 @@ class PostsListView extends StatelessWidget {
     this.itemPositionsListener,
     this.scrollOffsetListener,
     this.enableFollowButton = true,
+    this.videoPlayerBuilder,
+    this.postAuthorAvatarBuilder,
   });
 
   final List<PostBlock>? blocks;
@@ -61,6 +65,9 @@ class PostsListView extends StatelessWidget {
   final Stream<int> Function(String) commentsCountOf;
   final void Function(BlockAction action, String? avatarUrl) onPressed;
   final void Function(String, PostAuthor) onPostShareTap;
+  final VideoPlayerBuilder? videoPlayerBuilder;
+  final AvatarBuilder? postAuthorAvatarBuilder;
+  final bool withInViewNotifier;
 
   @override
   Widget build(BuildContext context) {
@@ -89,6 +96,9 @@ class PostsListView extends StatelessWidget {
         onCommentsTap: onCommentsTap,
         likesText: likesText,
         commentsText: commentsText,
+        videoPlayerBuilder: videoPlayerBuilder,
+        postAuthorAvatarBuilder: postAuthorAvatarBuilder,
+        withInViewNotifier: withInViewNotifier,
       );
     }
     return SliverList.builder(
@@ -96,19 +106,16 @@ class PostsListView extends StatelessWidget {
         final block = blocks![index];
         final id = block.id;
         final author = block.author;
-        final publishedAt = block.publishedAt;
+        final createdAt = block.createdAt;
         final isOwner = this.isOwner(block.id);
-        final imagesUrl = block.imagesUrl;
 
         return PostLarge(
           block: block,
           isOwner: isOwner,
           key: ValueKey(id),
-          hasStories: false,
-          imagesUrl: imagesUrl,
           isLiked: isLiked(id),
           likePost: () => likePost(id),
-          publishedAt: timeAgo(publishedAt),
+          createdAt: timeAgo(createdAt),
           isFollowed: isFollowed(author.id),
           wasFollowed: true,
           follow: () => follow(author.id),
@@ -120,6 +127,10 @@ class PostsListView extends StatelessWidget {
           onCommentsTap: (showFullSized) => onCommentsTap(block, showFullSized),
           onPressed: onPressed,
           onPostShareTap: onPostShareTap,
+          videoPlayerBuilder: videoPlayerBuilder,
+          postIndex: index,
+          postAuthorAvatarBuilder: postAuthorAvatarBuilder,
+          withInViewNotifier: withInViewNotifier,
         );
       },
       itemCount: blocks!.length,
@@ -149,6 +160,9 @@ class _PostsItemController extends StatefulWidget {
     required this.commentsCountOf,
     required this.onPressed,
     required this.onPostShareTap,
+    required this.videoPlayerBuilder,
+    required this.postAuthorAvatarBuilder,
+    required this.withInViewNotifier,
   });
 
   final List<PostBlock> blocks;
@@ -171,6 +185,9 @@ class _PostsItemController extends StatefulWidget {
   final CommentsTapCallback onCommentsTap;
   final void Function(BlockAction action, String? avatarUrl) onPressed;
   final void Function(String, PostAuthor) onPostShareTap;
+  final VideoPlayerBuilder? videoPlayerBuilder;
+  final AvatarBuilder? postAuthorAvatarBuilder;
+  final bool withInViewNotifier;
 
   @override
   State<_PostsItemController> createState() => _PostsItemControllerState();
@@ -197,19 +214,16 @@ class _PostsItemControllerState extends State<_PostsItemController> {
           final block = widget.blocks[index];
           final author = block.author;
           final id = block.id;
-          final publishedAt = block.publishedAt;
+          final createdAt = block.createdAt;
           final isOwner = widget.isOwner(author.id);
-          final imagesUrl = block.imagesUrl;
 
           return PostLarge(
             block: block,
             isOwner: isOwner,
             key: ValueKey(id),
-            hasStories: false,
-            imagesUrl: imagesUrl,
             isLiked: widget.isLiked(id),
             likePost: () => widget.likePost(id),
-            publishedAt: widget.timeAgo(publishedAt),
+            createdAt: widget.timeAgo(createdAt),
             isFollowed: widget.isFollowed(author.id),
             wasFollowed: true,
             follow: () => widget.follow(author.id),
@@ -222,6 +236,10 @@ class _PostsItemControllerState extends State<_PostsItemController> {
                 widget.onCommentsTap(block, showFullSized),
             onPressed: widget.onPressed,
             onPostShareTap: widget.onPostShareTap,
+            videoPlayerBuilder: widget.videoPlayerBuilder,
+            postIndex: index,
+            postAuthorAvatarBuilder: widget.postAuthorAvatarBuilder,
+            withInViewNotifier: widget.withInViewNotifier,
           );
         },
         itemCount: widget.blocks.length,
@@ -233,7 +251,7 @@ class _PostsItemControllerState extends State<_PostsItemController> {
 class _EmptyPosts extends StatelessWidget {
   const _EmptyPosts();
 
-  static const _noPostsText = 'No blocks';
+  static const _noPostsText = 'No Posts';
 
   @override
   Widget build(BuildContext context) {

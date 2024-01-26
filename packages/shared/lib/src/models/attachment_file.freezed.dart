@@ -139,7 +139,7 @@ class _$PreparingImpl extends Preparing {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType && other is _$PreparingImpl);
   }
@@ -299,7 +299,7 @@ class _$InProgressImpl extends InProgress {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$InProgressImpl &&
@@ -451,7 +451,7 @@ class _$SuccessImpl extends Success {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType && other is _$SuccessImpl);
   }
@@ -602,7 +602,7 @@ class _$FailedImpl extends Failed {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$FailedImpl &&

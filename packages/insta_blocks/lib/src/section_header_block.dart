@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:insta_blocks/insta_blocks.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:shared/shared.dart';
 
 part 'section_header_block.g.dart';
 
@@ -8,12 +8,12 @@ part 'section_header_block.g.dart';
 /// A block which represents a section header.
 /// {@endtemplate}
 @JsonSerializable()
-class SectionHeaderBlock with EquatableMixin implements InstaBlock {
+class SectionHeaderBlock extends InstaBlock with EquatableMixin {
   /// {@macro section_header_block}
-  const SectionHeaderBlock({
+  SectionHeaderBlock({
     required this.title,
     this.action,
-    this.type = SectionHeaderBlock.identifier,
+    super.type = SectionHeaderBlock.identifier,
   });
 
   /// Converts a `Map<String, dynamic>` into a [SectionHeaderBlock] instance.
@@ -29,9 +29,6 @@ class SectionHeaderBlock with EquatableMixin implements InstaBlock {
   /// An optional action which occurs upon interaction.
   @BlockActionConverter()
   final BlockAction? action;
-
-  @override
-  final String type;
 
   @override
   Map<String, dynamic> toJson() => _$SectionHeaderBlockToJson(this);

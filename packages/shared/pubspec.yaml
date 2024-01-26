@@ -37,6 +37,7 @@ dependencies:
   user_repository:
     path: ../user_repository
   uuid: ^4.3.3
+  video_compress: ^3.1.2
   video_thumbnail: ^0.5.3
 
 dev_dependencies:

@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -39,8 +38,9 @@ class CreatePostView extends StatefulWidget {
 
 class _CreatePostViewState extends State<CreatePostView> {
   final _captionController = TextEditingController();
-  List<Uint8List>? _imagesBytes;
-  List<File>? _imagesFile;
+  // List<Uint8List>? _imagesBytes;
+  // List<File>? _imagesFile;
+  List<SelectedByte>? _selectedFiles;
   bool _busy = false;
 
   @override
@@ -63,14 +63,15 @@ class _CreatePostViewState extends State<CreatePostView> {
         scrolledUnderElevation: 0,
         title: const Text('Create post'),
         actions: [
-          if (_imagesFile != null && (_imagesFile?.isNotEmpty ?? false))
+          if (_selectedFiles != null && (_selectedFiles?.isNotEmpty ?? false))
             Tappable(
               onTap: _busy
                   ? null
                   : () => context.confirmAction(
                         fn: () => setState(() {
-                          _imagesBytes?.clear();
-                          _imagesFile?.clear();
+                          // _imagesBytes?.clear();
+                          // _imagesFile?.clear();
+                          _selectedFiles?.clear();
                         }),
                         noText: 'Cancel',
                         yesText: 'Clear',
@@ -94,17 +95,50 @@ class _CreatePostViewState extends State<CreatePostView> {
                           await PickImage.pickAssetsFromBoth(
                             context,
                             onMediaPicked: (context, details) async {
-                              final imagesFile = <File>[];
-                              final imagesBytes = <Uint8List>[];
-                              for (final file in details.selectedFiles) {
-                                imagesFile.add(file.selectedFile);
-                                imagesBytes.add(file.selectedByte);
+                              // final imagesFile = <File>[];
+                              // final imagesBytes = <Uint8List>[];
+                              // for (final file in details.selectedFiles) {
+                              //   imagesFile.add(file.selectedFile);
+                              //   imagesBytes.add(file.selectedByte);
+                              // }
+                              // setState(() {
+                              //   _imagesFile = imagesFile;
+                              //   _imagesBytes = imagesBytes;
+                              // });
+                              void pop() => context.pop();
+                              final selectedFiles = <SelectedByte>[];
+                              for (final selectedFile
+                                  in details.selectedFiles) {
+                                if (selectedFile.selectedFile.isVideo ||
+                                    !selectedFile.isThatImage) {
+                                  selectedFiles.add(selectedFile);
+                                  continue;
+                                }
+                                final compressedFile =
+                                    await ImageCompress.compressFile(
+                                  selectedFile.selectedFile,
+                                );
+                                final compressedByte =
+                                    await PickImage.imageBytes(
+                                  file: compressedFile != null
+                                      ? File(compressedFile.path)
+                                      : selectedFile.selectedFile,
+                                );
+                                final byte = SelectedByte(
+                                  isThatImage:
+                                      selectedFile.selectedFile.isVideo,
+                                  selectedFile: compressedFile == null
+                                      ? selectedFile.selectedFile
+                                      : File(compressedFile.path),
+                                  selectedByte: compressedByte,
+                                );
+                                selectedFiles.add(byte);
                               }
+
                               setState(() {
-                                _imagesFile = imagesFile;
-                                _imagesBytes = imagesBytes;
+                                _selectedFiles = selectedFiles;
                               });
-                              context.pop();
+                              pop.call();
                             },
                             // await Navigator.of(context, rootNavigator: true)
                             //     .push(
@@ -179,85 +213,163 @@ class _CreatePostViewState extends State<CreatePostView> {
                 padding: const EdgeInsets.symmetric(horizontal: 12),
                 child: CreatePostButton(
                   busy: _busy,
-                  onPostCreate: _imagesFile == null ||
-                          (_imagesFile?.isEmpty ?? true)
+                  onPostCreate: _selectedFiles == null ||
+                          (_selectedFiles?.isEmpty ?? true)
                       ? null
                       : () async {
-                          setState(() {
-                            _busy = true;
-                          });
-                          final postId = UidGenerator.v4();
-                          final imagesUrl = <String>[];
-                          String mediaUrl;
-                          for (var i = 0; i < _imagesFile!.length; i++) {
-                            final file = _imagesFile![i];
-                            final imageExtension =
-                                file.path.split('.').last.toLowerCase();
-                            final imageBytes =
-                                await PickImage.imageBytes(file: file);
+                          try {
+                            setState(() {
+                              _busy = true;
+                            });
+                            late final storage =
+                                Supabase.instance.client.storage.from('posts');
 
-                            final imagePath = '$postId/image_$i';
+                            final postId = UidGenerator.v4();
+                            final media = <Map<String, dynamic>>[];
+                            for (var i = 0; i < _selectedFiles!.length; i++) {
+                              late final selectedByte =
+                                  _selectedFiles![i].selectedByte;
+                              late final selectedFile =
+                                  _selectedFiles![i].selectedFile;
+                              late final isVideo = selectedFile.isVideo;
+                              String blurHash;
+                              Uint8List? convertedBytes;
+                              if (isVideo) {
+                                convertedBytes =
+                                    await VideoPlus.getVideoThumbnail(
+                                  selectedFile,
+                                );
+                                blurHash = convertedBytes == null
+                                    ? ''
+                                    : await BlurHashPlus.blurHashEncode(
+                                        convertedBytes,
+                                      );
+                              } else {
+                                blurHash = await BlurHashPlus.blurHashEncode(
+                                  selectedByte,
+                                );
+                              }
+                              if (!mounted) return;
+                              late final mediaExtension = selectedFile.path
+                                  .split('.')
+                                  .last
+                                  .toLowerCase();
 
-                            if (!mounted) return;
-                            await Supabase.instance.client.storage
-                                .from('posts')
-                                .uploadBinary(
-                                  imagePath,
-                                  imageBytes,
-                                  fileOptions: FileOptions(
-                                    contentType: 'image/$imageExtension',
-                                  ),
-                                );
-                            final imageUrl = Supabase.instance.client.storage
-                                .from('posts')
-                                .getPublicUrl(
-                                  imagePath,
-                                );
-                            imagesUrl.add(imageUrl);
-                          }
-                          mediaUrl = imagesUrl.first;
-                          if (!mounted) return;
-                          await Future.sync(
-                            () => context.read<UserProfileBloc>().add(
-                                  UserProfilePostCreateRequested(
-                                    postId: postId,
-                                    userId: user.id,
-                                    caption: _captionController.text,
-                                    type: 'photo',
-                                    mediaUrl: mediaUrl,
-                                    imagesUrl: jsonEncode(imagesUrl),
-                                  ),
+                              late final mediaPath =
+                                  '$postId/${!isVideo ? 'image_$i' : 'video_$i'}';
+
+                              if (!mounted) return;
+                              Uint8List bytes;
+                              if (isVideo) {
+                                try {
+                                  final compressedVideo =
+                                      await VideoPlus.compressVideo(
+                                    selectedFile,
+                                  );
+                                  bytes = await PickImage.imageBytes(
+                                    file: compressedVideo!.file!,
+                                  );
+                                } catch (error, stackTrace) {
+                                  logE(
+                                    'Error compressing video',
+                                    error: error,
+                                    stackTrace: stackTrace,
+                                  );
+                                  continue;
+                                }
+                              } else {
+                                bytes = selectedByte;
+                              }
+                              await storage.uploadBinary(
+                                mediaPath,
+                                bytes,
+                                fileOptions: FileOptions(
+                                  contentType:
+                                      '${!isVideo ? 'image' : 'video'}/$mediaExtension',
                                 ),
-                          );
-                          setState(() {
-                            _busy = false;
-                          });
-                          if (mounted) {
-                            if (context.canPop()) {
-                              context.pop('/account');
+                              );
+                              final mediaUrl = storage.getPublicUrl(mediaPath);
+                              String? firstFrameUrl;
+                              if (convertedBytes != null) {
+                                late final firstFramePath =
+                                    '$postId/video_first_frame_$i';
+                                await storage.uploadBinary(
+                                  firstFramePath,
+                                  convertedBytes,
+                                  fileOptions: FileOptions(
+                                    contentType: 'video/$mediaExtension',
+                                  ),
+                                );
+                                firstFrameUrl =
+                                    storage.getPublicUrl(firstFramePath);
+                              }
+                              final mediaType = isVideo
+                                  ? VideoMedia.identifier
+                                  : ImageMedia.identifier;
+                              if (isVideo) {
+                                media.add({
+                                  'media_id': UidGenerator.v4(),
+                                  'url': mediaUrl,
+                                  'type': mediaType,
+                                  'blur_hash': blurHash,
+                                  'first_frame_url': firstFrameUrl,
+                                });
+                              } else {
+                                media.add({
+                                  'media_id': UidGenerator.v4(),
+                                  'url': mediaUrl,
+                                  'type': mediaType,
+                                  'blur_hash': blurHash,
+                                });
+                              }
                             }
+                            if (!mounted) return;
+                            await Future.sync(
+                              () => context.read<UserProfileBloc>().add(
+                                    UserProfilePostCreateRequested(
+                                      postId: postId,
+                                      userId: user.id,
+                                      caption: _captionController.text,
+                                      media: media,
+                                    ),
+                                  ),
+                            );
+                            setState(() {
+                              _busy = false;
+                            });
+                            if (mounted) {
+                              if (context.canPop()) context.pop();
+                              // _imagesBytes?.clear();
+                              // _imagesFile?.clear();
+                              _selectedFiles?.clear();
+                              _captionController.clear();
+                            }
+                            openSnackbar(
+                              const SnackbarMessage.success(
+                                title: 'Successfully created post!',
+                              ),
+                            );
+                          } catch (error, stackTrace) {
+                            logE(error, stackTrace: stackTrace);
+                            setState(() => _busy = false);
+                            openSnackbar(
+                              const SnackbarMessage.error(
+                                title: 'Failed to create post!',
+                              ),
+                            );
                           }
-                          if (mounted) {
-                            _imagesBytes?.clear();
-                            _imagesFile?.clear();
-                            _captionController.clear();
-                          }
-                          openSnackbar(
-                            const SnackbarMessage(
-                              icon: Icons.done,
-                              title: 'Successfully created post!',
-                            ),
-                          );
                         },
                 ),
               ),
-              if (_imagesBytes != null)
+              if (_selectedFiles != null)
                 ImagesCarouselPreview(
-                  imagesBytes: _imagesBytes!,
+                  imagesBytes:
+                      _selectedFiles!.map((e) => e.selectedByte).toList(),
                   onImageDelete: (bytes, index) {
                     setState(() {
-                      _imagesBytes?.removeWhere((e) => e == bytes);
-                      _imagesFile?.removeAt(index);
+                      // _imagesBytes?.removeWhere((e) => e == bytes);
+                      // _imagesFile?.removeAt(index);
+                      _selectedFiles?.removeAt(index);
                     });
                   },
                 ),

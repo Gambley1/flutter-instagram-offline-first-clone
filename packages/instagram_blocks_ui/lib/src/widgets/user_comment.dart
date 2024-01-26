@@ -29,7 +29,7 @@ class UserComment extends StatelessWidget {
     required this.onLikeComment,
     required this.likesCount,
     required this.likesText,
-    required this.publishedAt,
+    required this.createdAt,
     required this.onCommentDelete,
     required this.showDeleteCommentConfirm,
     this.onReplyButtonTap,
@@ -50,7 +50,7 @@ class UserComment extends StatelessWidget {
   final ValueSetter<String>? onReplyButtonTap;
   final ValueSetter<String> onCommentDelete;
   final Future<bool?> Function() showDeleteCommentConfirm;
-  final String publishedAt;
+  final String createdAt;
   final CommentUserAvatarBuilder? avatarBuilder;
 
   @override
@@ -97,7 +97,7 @@ class UserComment extends StatelessWidget {
                   style: context.labelLarge,
                 ),
               ),
-              TimeAgo(publishedAt: '$publishedAt '),
+              TimeAgo(createdAt: '$createdAt '),
               if (isLiked != null && isLiked)
                 CommentOwnerLikedAvatar(avatarUrl: post.author.avatarUrl),
             ],

@@ -28,12 +28,16 @@ class $AssetsIconsGen {
   /// File path: assets/icons/check.svg
   SvgGenImage get check => const SvgGenImage('assets/icons/check.svg');
 
+  /// File path: assets/icons/instagram-reel.svg
+  SvgGenImage get instagramReel =>
+      const SvgGenImage('assets/icons/instagram-reel.svg');
+
   /// File path: assets/icons/verified_user.svg
   SvgGenImage get verifiedUser =>
       const SvgGenImage('assets/icons/verified_user.svg');
 
   /// List of all assets
-  List<SvgGenImage> get values => [check, verifiedUser];
+  List<SvgGenImage> get values => [check, instagramReel, verifiedUser];
 }
 
 class $AssetsImagesGen {
@@ -63,6 +67,8 @@ class $AssetsImagesGen {
 class Assets {
   Assets._();
 
+  static const String package = 'app_ui';
+
   static const $AssetsAnimationsGen animations = $AssetsAnimationsGen();
   static const $AssetsIconsGen icons = $AssetsIconsGen();
   static const $AssetsImagesGen images = $AssetsImagesGen();
@@ -72,6 +78,8 @@ class AssetGenImage {
   const AssetGenImage(this._assetName);
 
   final String _assetName;
+
+  static const String package = 'app_ui';
 
   Image image({
     Key? key,
@@ -93,7 +101,8 @@ class AssetGenImage {
     bool matchTextDirection = false,
     bool gaplessPlayback = false,
     bool isAntiAlias = false,
-    String? package = 'app_ui',
+    @Deprecated('Do not specify package for a generated library asset')
+    String? package = package,
     FilterQuality filterQuality = FilterQuality.low,
     int? cacheWidth,
     int? cacheHeight,
@@ -128,7 +137,8 @@ class AssetGenImage {
 
   ImageProvider provider({
     AssetBundle? bundle,
-    String? package = 'app_ui',
+    @Deprecated('Do not specify package for a generated library asset')
+    String? package = package,
   }) {
     return AssetImage(
       _assetName,
@@ -147,11 +157,14 @@ class SvgGenImage {
 
   final String _assetName;
 
+  static const String package = 'app_ui';
+
   SvgPicture svg({
     Key? key,
     bool matchTextDirection = false,
     AssetBundle? bundle,
-    String? package = 'app_ui',
+    @Deprecated('Do not specify package for a generated library asset')
+    String? package = package,
     double? width,
     double? height,
     BoxFit fit = BoxFit.contain,

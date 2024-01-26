@@ -3,6 +3,7 @@ import 'package:firebase_config/firebase_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
+import 'package:flutter_instagram_offline_first_clone/feed/feed.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:flutter_instagram_offline_first_clone/stories/create_stories/create_stories.dart';
 import 'package:flutter_instagram_offline_first_clone/user_profile/bloc/user_profile_bloc.dart';
@@ -43,6 +44,13 @@ class UserProfilePage extends StatelessWidget {
             storiesRepository: context.read<StoriesRepository>(),
             remoteConfig: context.read<FirebaseConfig>(),
           )..add(const CreateStoriesFeatureAvaiableSubscriptionRequested()),
+        ),
+        BlocProvider(
+          create: (context) => FeedBloc(
+            postsRepository: context.read<PostsRepository>(),
+            userRepository: context.read<UserRepository>(),
+            remoteConfig: context.read<FirebaseConfig>(),
+          ),
         ),
       ],
       child: UserProfileView(
@@ -225,9 +233,14 @@ class _PostsPageState extends State<PostsPage>
               itemCount: blocks.length,
               itemBuilder: (context, index) {
                 final block = blocks[index];
-                final imageUrl = block.imageUrl;
-                final imagesUrl = block.imagesUrl;
-                final hasMultiplePhotos = imagesUrl.length > 1;
+                final media = block.media.first;
+                late String mediaUrl;
+                if (media is ImageMedia) {
+                  mediaUrl = media.url;
+                } else if (media is VideoMedia) {
+                  mediaUrl = media.firstFrameUrl;
+                }
+                final multiMedia = block.media.length > 1;
 
                 return PostSmall(
                   key: ValueKey(block.id),
@@ -239,12 +252,13 @@ class _PostsPageState extends State<PostsPage>
                       'index': index.toString(),
                     },
                   ),
-                  onDeletePost: () => context
-                      .read<UserProfileBloc>()
-                      .add(UserProfileDeletePostRequested(block.id)),
+                  onPostDelete: () => bloc.add(
+                    UserProfileDeletePostRequested(block.id),
+                  ),
                   pinned: false,
-                  hasMultiplePhotos: hasMultiplePhotos,
-                  mediaUrl: imageUrl,
+                  multiMedia: multiMedia,
+                  mediaUrl: mediaUrl,
+                  isReel: block.isReel,
                 );
               },
             );

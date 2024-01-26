@@ -4,21 +4,21 @@ import 'package:instagram_blocks_ui/src/carousel_indicator_controller.dart';
 import 'package:instagram_blocks_ui/src/comments_count.dart';
 import 'package:instagram_blocks_ui/src/like_button.dart';
 import 'package:instagram_blocks_ui/src/likes_count.dart';
+import 'package:instagram_blocks_ui/src/media_carousel_settings.dart';
 import 'package:instagram_blocks_ui/src/post_large/post_footer.dart';
 import 'package:instagram_blocks_ui/src/post_large/post_header.dart';
 import 'package:instagram_blocks_ui/src/post_large/post_media.dart';
+import 'package:shared/shared.dart';
 
 class PostLarge extends StatelessWidget {
   const PostLarge({
     required this.block,
     required this.isOwner,
-    required this.hasStories,
-    required this.imagesUrl,
     required this.isLiked,
     required this.likePost,
     required this.likesCount,
     required this.commentsCount,
-    required this.publishedAt,
+    required this.createdAt,
     required this.isFollowed,
     required this.wasFollowed,
     required this.follow,
@@ -28,8 +28,11 @@ class PostLarge extends StatelessWidget {
     required this.likesText,
     required this.commentsText,
     required this.onPressed,
+    required this.withInViewNotifier,
     this.sponsoredText,
     this.postAuthorAvatarBuilder,
+    this.videoPlayerBuilder,
+    this.postIndex,
     super.key,
   });
 
@@ -43,10 +46,6 @@ class PostLarge extends StatelessWidget {
 
   final VoidCallback follow;
 
-  final bool hasStories;
-
-  final List<String> imagesUrl;
-
   final Stream<bool> isLiked;
 
   final LikeCallback likePost;
@@ -59,7 +58,7 @@ class PostLarge extends StatelessWidget {
 
   final CommentsText commentsText;
 
-  final String publishedAt;
+  final String createdAt;
 
   final bool enableFollowButton;
 
@@ -72,6 +71,12 @@ class PostLarge extends StatelessWidget {
   final String? sponsoredText;
 
   final AvatarBuilder? postAuthorAvatarBuilder;
+
+  final VideoPlayerBuilder? videoPlayerBuilder;
+
+  final int? postIndex;
+  
+  final bool withInViewNotifier;
 
   @override
   Widget build(BuildContext context) {
@@ -95,17 +100,20 @@ class PostLarge extends StatelessWidget {
         ),
         PostMedia(
           isLiked: isLiked,
-          imagesUrl: imagesUrl,
+          media: block.media,
           likePost: likePost,
           onPageChanged: indicatorController.updateCurrentIndex,
+          videoPlayerBuilder: videoPlayerBuilder,
+          postIndex: postIndex,
+          withInViewNotifier: withInViewNotifier,
         ),
         PostFooter(
           block: block,
           controller: indicatorController,
-          imagesUrl: imagesUrl,
+          imagesUrl: block.mediaUrls,
           isLiked: isLiked,
           likePost: likePost,
-          publishedAt: publishedAt,
+          createdAt: createdAt,
           likesCount: likesCount,
           commentsCount: commentsCount,
           onUserProfileAvatarTap: (avatarUrl) =>

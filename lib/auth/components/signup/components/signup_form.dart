@@ -23,10 +23,11 @@ class _SignupFormState extends State<SignupForm> {
       listener: (context, state) {
         if (state.isError) {
           openSnackbar(
-            SnackbarMessage(
+            SnackbarMessage.error(
               title:
                   signupSubmissionStatusMessage[state.submissionStatus]!.title,
-              icon: Icons.error_outline,
+              description: signupSubmissionStatusMessage[state.submissionStatus]
+                  ?.description,
             ),
             clearIfQueue: true,
           );

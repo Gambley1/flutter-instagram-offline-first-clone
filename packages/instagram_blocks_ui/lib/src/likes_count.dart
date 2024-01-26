@@ -23,7 +23,6 @@ class LikesCount extends StatefulWidget {
 
   final double? size;
 
-
   @override
   State<LikesCount> createState() => _LikesCountState();
 }
@@ -38,6 +37,24 @@ class _LikesCountState extends State<LikesCount>
       builder: (context, snapshot) {
         final count = snapshot.data;
         final isVisible = count != null && count != 0;
+        // const text = 'Liked by emil.zulufov and 4 others';
+        // final username = text.split(' ')[2];
+
+        // String firstPart() {
+        //   final newText = text.split(' ');
+        //   final firstPart = newText.first;
+        //   final secondPart = newText[1];
+        //   return '$firstPart $secondPart ';
+        // }
+
+        // String secondPart() {
+        //   final newText = text.split(' ');
+        //   final firstPart = newText[3];
+        //   final secondPart = newText[4];
+        //   final thirdPart = newText[5];
+        //   return '$firstPart $secondPart $thirdPart';
+        // }
+
         return AnimatedVisibility(
           height: 25,
           duration: 250.ms,
@@ -45,6 +62,19 @@ class _LikesCountState extends State<LikesCount>
           curve: Sprung.criticallyDamped,
           child: Tappable(
             animationEffect: TappableAnimationEffect.none,
+            // child: Text.rich(
+            //   TextSpan(
+            //     children: [
+            //       TextSpan(text: firstPart()),
+            //       TextSpan(
+            //         text: '$username ',
+            //         style: context.bodyMedium
+            //             ?.copyWith(fontWeight: AppFontWeight.bold),
+            //       ),
+            //       TextSpan(text: secondPart()),
+            //     ],
+            //   ),
+            // ),
             child: Text(
               widget.likesText(count ?? 0),
               style: context.titleMedium?.copyWith(

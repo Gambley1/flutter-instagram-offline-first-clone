@@ -38,6 +38,19 @@
             }
         }
     },
+    "likedByText": "Liked by {userName} and {count, plural, =1{{count} other} other{{count} others}}",
+    "@likedByText": {
+        "placeholders": {
+            "userName": {
+              "type": "String",
+              "example": "john.dale" 
+            },
+            "count": {
+                "type": "int",
+                "example": "1" 
+            }
+        }
+    },
     "likesCountTextShort": "{count}",
     "@likesCountTextShort": {
         "description": "Text shown in post footer section that display short count of likes",

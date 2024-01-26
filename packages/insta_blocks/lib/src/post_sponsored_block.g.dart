@@ -19,11 +19,12 @@ PostSponsoredBlock _$PostSponsoredBlockFromJson(Map<String, dynamic> json) =>
               'author',
               (v) => const PostAuthorConverter()
                   .fromJson(v as Map<String, dynamic>)),
-          publishedAt: $checkedConvert(
-              'published_at', (v) => DateTime.parse(v as String)),
-          imageUrl: $checkedConvert('image_url', (v) => v as String),
-          imagesUrl: $checkedConvert('images_url',
-              (v) => (v as List<dynamic>).map((e) => e as String).toList()),
+          createdAt:
+              $checkedConvert('created_at', (v) => DateTime.parse(v as String)),
+          media: $checkedConvert(
+              'media',
+              (v) => const ListMediaConverterFromRemoteConfig()
+                  .fromJson(v as List)),
           caption: $checkedConvert('caption', (v) => v as String),
           action: $checkedConvert(
               'action',
@@ -34,20 +35,16 @@ PostSponsoredBlock _$PostSponsoredBlockFromJson(Map<String, dynamic> json) =>
         );
         return val;
       },
-      fieldKeyMap: const {
-        'publishedAt': 'published_at',
-        'imageUrl': 'image_url',
-        'imagesUrl': 'images_url'
-      },
+      fieldKeyMap: const {'createdAt': 'created_at'},
     );
 
 Map<String, dynamic> _$PostSponsoredBlockToJson(PostSponsoredBlock instance) {
   final val = <String, dynamic>{
-    'id': instance.id,
+    'type': instance.type,
     'author': const PostAuthorConverter().toJson(instance.author),
-    'published_at': instance.publishedAt.toIso8601String(),
-    'image_url': instance.imageUrl,
-    'images_url': instance.imagesUrl,
+    'id': instance.id,
+    'created_at': instance.createdAt.toIso8601String(),
+    'media': const ListMediaConverterFromRemoteConfig().toJson(instance.media),
     'caption': instance.caption,
   };
 
@@ -58,6 +55,5 @@ Map<String, dynamic> _$PostSponsoredBlockToJson(PostSponsoredBlock instance) {
   }
 
   writeNotNull('action', const BlockActionConverter().toJson(instance.action));
-  val['type'] = instance.type;
   return val;
 }
