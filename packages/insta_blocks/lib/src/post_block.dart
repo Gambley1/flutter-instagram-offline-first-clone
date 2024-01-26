@@ -1,43 +1,37 @@
 import 'package:equatable/equatable.dart';
-import 'package:insta_blocks/insta_blocks.dart';
 import 'package:insta_blocks/src/block_action.dart';
 import 'package:insta_blocks/src/models/models.dart';
+import 'package:shared/shared.dart';
 
 /// {@template post_block}
 /// An abstract block which represents a post block.
 /// {@endtemplate}
-abstract class PostBlock with EquatableMixin implements InstaBlock {
+abstract class PostBlock extends InstaBlock with EquatableMixin {
   /// {@macro post_block}
   const PostBlock({
     required this.id,
     required this.author,
-    required this.publishedAt,
+    required this.createdAt,
     required this.caption,
-    required this.imageUrl,
-    required this.imagesUrl,
-    required this.type,
+    required this.media,
+    required super.type,
     this.action,
     this.isSponsored = false,
   });
-
-  /// The medium post block type identifier.
-  static const identifier = '__post_large__';
-
-  /// The identifier of this post.
-  final String id;
 
   /// The author of this post.
   @PostAuthorConverter()
   final PostAuthor author;
 
-  /// The date when this post was published.
-  final DateTime publishedAt;
+  /// The unique identifier of the [PostBlock].
+  final String id;
 
-  /// The image URL of this post.
-  final String imageUrl;
+  /// The date when this post was published.
+  final DateTime createdAt;
 
   /// The list of images URL of this post.
-  final List<String> imagesUrl;
+  @ListMediaConverterFromRemoteConfig()
+  final List<Media> media;
 
   /// The caption of this post.
   final String caption;
@@ -49,15 +43,46 @@ abstract class PostBlock with EquatableMixin implements InstaBlock {
   /// Whether the post was promoted by author.
   final bool isSponsored;
 
-  @override
-  final String type;
+  /// The first media of the [PostBlock].
+  ///
+  /// ### Note
+  /// Never use [firstMedia] directly to get it's url, because [firstMedia]
+  /// getter returns the abstraction of [Media] and it is uncertain which
+  /// type is the first media. In that case getting url from [Media] can be
+  /// wrong, as the url of the [VideoMedia] is used to display the video
+  /// itself.
+  ///
+  /// Instead use [firstMediaUrl] if you need to get a correct url to display
+  /// as a preview(image).
+  Media? get firstMedia => media.isEmpty ? null : media.first;
+
+  /// The first media url of the [PostBlock].
+  ///
+  /// If the [firstMedia] is null returns null.
+  /// If the [firstMedia] is a [VideoMedia] returns it's `firstFrameUrl`.
+  /// Otherwise returns the [firstMedia] url from [ImageMedia].
+  String? get firstMediaUrl => firstMedia is VideoMedia
+      ? (firstMedia as VideoMedia?)?.firstFrameUrl
+      : firstMedia?.url;
+
+  /// The list of all media url of the [PostBlock].
+  List<String> get mediaUrls => media.map((e) => e.url).toList();
+
+  /// Whether the post counts as Instagram `Reel`.
+  bool get isReel => media.length == 1 && firstMedia is VideoMedia;
+
+  /// Whether the post contains at least one of both `Image` and `Video` media
+  /// types.
+  bool get hasBothMediaTypes =>
+      media.any((media) => media is ImageMedia) &&
+      media.any((media) => media is VideoMedia);
 
   @override
   List<Object?> get props => [
         id,
         author,
-        publishedAt,
-        imageUrl,
+        createdAt,
+        media,
         caption,
         action,
         isSponsored,

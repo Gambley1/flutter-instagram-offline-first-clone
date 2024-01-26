@@ -27,25 +27,22 @@ class PostsRepository implements PostsBaseRepository {
       _client.like(userId: userId, id: id, post: post);
 
   @override
-  Future<Post> createPost({
+  Future<void> createPost({
     required String id,
     required String userId,
     required String caption,
-    required String type,
-    required String mediaUrl,
-    required String imagesUrl,
+    required String media,
   }) =>
       _client.createPost(
         id: id,
         userId: userId,
         caption: caption,
-        type: type,
-        mediaUrl: mediaUrl,
-        imagesUrl: imagesUrl,
+        media: media,
       );
 
   @override
-  Future<void> deletePost({required String id}) => _client.deletePost(id: id);
+  Future<String?> deletePost({required String id}) =>
+      _client.deletePost(id: id);
 
   @override
   Stream<bool> isLiked({
@@ -118,4 +115,42 @@ class PostsRepository implements PostsBaseRepository {
 
   @override
   Future<Post?> getPostBy({required String id}) => _client.getPostBy(id: id);
+
+  @override
+  Future<void> uploadMedia({
+    required String id,
+    required String ownerId,
+    required String url,
+    required String type,
+    required String blurHash,
+    required String? firstFrame,
+  }) =>
+      _client.uploadMedia(
+        id: id,
+        ownerId: ownerId,
+        url: url,
+        type: type,
+        blurHash: blurHash,
+        firstFrame: firstFrame,
+      );
+
+  @override
+  Future<List<User>> getPostLikers({
+    required String postId,
+    int limit = 30,
+    int offset = 0,
+  }) =>
+      _client.getPostLikers(postId: postId, limit: limit, offset: offset);
+
+  @override
+  Future<List<User>> getPostLikersInFollowings({
+    required String postId,
+    int limit = 3,
+    int offset = 0,
+  }) =>
+      _client.getPostLikersInFollowings(
+        postId: postId,
+        limit: limit,
+        offset: offset,
+      );
 }

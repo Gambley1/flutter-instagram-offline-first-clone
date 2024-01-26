@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/feed.dart';
 import 'package:posts_repository/posts_repository.dart';
 import 'package:shared/shared.dart';
@@ -58,18 +60,6 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
 
   StreamSubscription<dynamic>? _userSubscription;
 
-  int currentPage = 0;
-
-  final StreamController<int> pageController = StreamController<int>.broadcast()
-    ..add(0);
-
-  final StreamController<List<Post>> postsController =
-      StreamController.broadcast();
-
-  final List<Post> allPosts = <Post>[];
-
-  bool hasNext = true;
-
   late final _currentUserId = _userRepository.currentUserId;
 
   bool get isOwner {
@@ -78,18 +68,46 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
     return false;
   }
 
-  Stream<List<PostBlock>> userPosts() => _postsRepository
-      .postsOf(
-        currentUserId: _currentUserId!,
-        userId: _userId,
-      )
-      .map((posts) => posts.map((e) => e.toPostSmallBlock).toList());
+  Stream<List<PostBlock>> userPosts({bool small = true}) async* {
+    if (small) {
+      yield* _postsRepository
+          .postsOf(
+            currentUserId: _currentUserId!,
+            userId: _userId,
+          )
+          .map((posts) => posts.map((e) => e.toPostSmallBlock).toList())
+          .asBroadcastStream();
+    } else {
+      yield* _postsRepository
+          .postsOf(
+            currentUserId: _currentUserId!,
+            userId: _userId,
+          )
+          .asyncMap((posts) async {
+            final postLikersFutures = posts.map(
+              (post) =>
+                  _postsRepository.getPostLikersInFollowings(postId: post.id),
+            );
+            final postLikers = await Future.wait(postLikersFutures);
+            final blocks = List<InstaBlock>.generate(posts.length, (index) {
+              final likersInFollowings = postLikers[index];
+              final post = posts[index]
+                  .toPostLargeBlock(likersInFollowings: likersInFollowings);
+              return post;
+            });
+            return blocks;
+          })
+          .map((blocks) => blocks.toList().cast<PostBlock>())
+          .asBroadcastStream();
+    }
+  }
 
   Stream<int> postsAmountOf() => _postsRepository.postsAmountOf(
         userId: _userId ?? _currentUserId!,
       );
 
-  Stream<int> likesCount(String postId) => _postsRepository.likesOf(id: postId);
+  Stream<int> likesCount(String postId) =>
+      _postsRepository.likesOf(id: postId).asBroadcastStream();
 
   Stream<bool> isLiked(String postId) => _postsRepository
       .isLiked(
@@ -116,10 +134,12 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
     required String userId,
     String? followerId,
   }) =>
-      _userRepository.followingStatus(
-        followerId: followerId ?? _currentUserId!,
-        userId: userId,
-      );
+      _userRepository
+          .followingStatus(
+            followerId: followerId ?? _currentUserId!,
+            userId: userId,
+          )
+          .asBroadcastStream();
 
   Future<void> _onUserProfileUpdate(
     UserProfileUpdateRequested event,
@@ -150,22 +170,22 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
   Future<void> _onCreatePost(
     UserProfilePostCreateRequested event,
     Emitter<UserProfileState> emit,
-  ) =>
-      _postsRepository.createPost(
-        id: event.postId,
-        userId: event.userId,
-        caption: event.caption,
-        type: event.type,
-        mediaUrl: event.mediaUrl,
-        imagesUrl: event.imagesUrl,
-      );
+  ) async {
+    await _postsRepository.createPost(
+      id: event.postId,
+      userId: event.userId,
+      caption: event.caption,
+      media: json.encode(event.media),
+    );
+  }
 
   Future<void> _onDeletePost(
     UserProfileDeletePostRequested event,
     Emitter<UserProfileState> emit,
   ) async {
     final postId = event.postId;
-    await _postsRepository.deletePost(id: postId);
+    final deletedId = await _postsRepository.deletePost(id: postId);
+    event.onPostDeleted?.call(deletedId);
   }
 
   Future<void> _onFollowersFetch(

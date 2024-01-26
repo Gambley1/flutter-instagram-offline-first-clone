@@ -16,15 +16,36 @@ const schema = Schema([
     'posts',
     [
       Column.text('user_id'),
-      Column.text('media_url'),
       Column.text('created_at'),
       Column.text('caption'),
-      Column.text('type'),
       Column.text('updated_at'),
-      Column.text('images_url'),
+      Column.text('media'),
     ],
     indexes: [
       Index('user', [IndexedColumn('user_id')]),
+    ],
+  ),
+  Table(
+    'videos',
+    [
+      Column.text('owner_id'),
+      Column.text('url'),
+      Column.text('blur_hash'),
+      Column.text('first_frame_url'),
+    ],
+    indexes: [
+      Index('user', [IndexedColumn('owner_id')]),
+    ],
+  ),
+  Table(
+    'images',
+    [
+      Column.text('owner_id'),
+      Column.text('url'),
+      Column.text('blur_hash'),
+    ],
+    indexes: [
+      Index('user', [IndexedColumn('owner_id')]),
     ],
   ),
   Table(
@@ -114,7 +135,9 @@ const schema = Schema([
       Column.text('og_scrape_url'),
       Column.text('type'),
     ],
-    indexes: [Index('message', [IndexedColumn('message_id')])],
+    indexes: [
+      Index('message', [IndexedColumn('message_id')]),
+    ],
   ),
   Table(
     'subscriptions',
@@ -139,6 +162,8 @@ const schema = Schema([
       Column.text('created_at'),
       Column.text('expires_at'),
     ],
-    indexes: [Index('user', [IndexedColumn('user_id')])],
+    indexes: [
+      Index('user', [IndexedColumn('user_id')]),
+    ],
   ),
 ]);

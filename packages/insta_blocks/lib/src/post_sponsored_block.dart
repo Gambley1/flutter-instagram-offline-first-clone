@@ -1,6 +1,6 @@
-import 'package:insta_blocks/insta_blocks.dart';
 import 'package:insta_blocks/src/models/models.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:shared/shared.dart';
 
 part 'post_sponsored_block.g.dart';
 
@@ -13,9 +13,8 @@ class PostSponsoredBlock extends PostBlock {
   const PostSponsoredBlock({
     required super.id,
     required super.author,
-    required super.publishedAt,
-    required super.imageUrl,
-    required super.imagesUrl,
+    required super.createdAt,
+    required super.media,
     required super.caption,
     super.action,
     super.type = PostSponsoredBlock.identifier,

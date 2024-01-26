@@ -159,12 +159,10 @@ class _PostPreviewDetailsState extends State<PostPreviewDetails> {
             PostLarge(
               block: block!,
               isOwner: bloc.isOwnerOfPostBy(block!.author.id),
-              hasStories: false,
-              imagesUrl: block!.imagesUrl,
               isLiked: bloc.isLiked(block!.id),
               likePost: () => bloc.add(FeedLikePostRequested(block!.id)),
               likesCount: bloc.likesCount(block!.id),
-              publishedAt: block!.publishedAt.timeAgo(context),
+              createdAt: block!.createdAt.timeAgo(context),
               isFollowed: bloc.followingStatus(userId: block!.author.id),
               wasFollowed: true,
               follow: () =>
@@ -184,11 +182,9 @@ class _PostPreviewDetailsState extends State<PostPreviewDetails> {
                 final receiverId = await context.pushNamed(
                   'search_users',
                   extra: true,
-                ) as String?;
+                ) as Map<String, dynamic>?;
                 if (receiverId == null) return;
-                final receiver = User.fromJson(
-                  jsonDecode(receiverId) as Map<String, dynamic>,
-                );
+                final receiver = User.fromJson(receiverId);
                 await Future(
                   () => context.read<FeedBloc>().add(
                         FeedPostShareRequested(
@@ -201,6 +197,7 @@ class _PostPreviewDetailsState extends State<PostPreviewDetails> {
                       ),
                 );
               },
+              withInViewNotifier: false,
             ),
         ],
       ),

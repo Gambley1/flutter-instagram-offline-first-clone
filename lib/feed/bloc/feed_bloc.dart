@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_config/firebase_config.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:posts_repository/posts_repository.dart';
 import 'package:shared/shared.dart';
@@ -69,15 +70,16 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
   }) {
     final random = Random();
 
-    final sponsored = sponsoredBlocks ??
-        List<Map<String, dynamic>>.from(
-          jsonDecode(_remoteConfig.getRemoteData('sponsored_blocks')) as List,
-        ).map(InstaBlock.fromJson).toList();
     var tempBlocks = [...blocks];
     var tempDataLength = tempBlocks.length;
 
     final skipRange = [1, 2, 3];
     var previosSkipRangeIs1 = false;
+
+    late final sponsored = sponsoredBlocks ??
+        List<Map<String, dynamic>>.from(
+          jsonDecode(_remoteConfig.getRemoteData('sponsored_blocks')) as List,
+        ).map(InstaBlock.fromJson).take(20).toList();
 
     while (tempDataLength > 1) {
       List<int> allowedSkipRange() {
@@ -106,8 +108,8 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
     if (!hasMore) {
       return blocks.followedBy([
-        if (blocks.isNotEmpty) const DividerHorizontalBlock(),
-        const SectionHeaderBlock(
+        if (blocks.isNotEmpty) DividerHorizontalBlock(),
+        SectionHeaderBlock(
           title: 'Suggested for you',
         ),
       ]).toList();
@@ -127,15 +129,21 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         offset: currentPage * _pageLimit,
         limit: _pageLimit,
       );
+      final postLikersFutures = posts.map(
+        (post) => _postsRepository.getPostLikersInFollowings(postId: post.id),
+      );
+      final postLikers = await Future.wait(postLikersFutures);
 
       final newPage = currentPage + 1;
 
       final hasMore = posts.length >= _pageLimit;
-      final instaBlocks = <InstaBlock>[];
 
-      for (final post in posts) {
-        instaBlocks.add(post.toPostLargeBlock);
-      }
+      final instaBlocks = List<InstaBlock>.generate(posts.length, (index) {
+        final likersInFollowings = postLikers[index];
+        final post = posts[index]
+            .toPostLargeBlock(likersInFollowings: likersInFollowings);
+        return post;
+      });
       final blocks = insertSponsoredBlocks(
         hasMore: hasMore,
         blocks: instaBlocks,
@@ -169,13 +177,18 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         offset: page * _pageLimit,
         limit: _pageLimit,
       );
+      final postLikersFutures = posts.map(
+        (post) => _postsRepository.getPostLikersInFollowings(postId: post.id),
+      );
+      final postLikers = await Future.wait(postLikersFutures);
 
       final hasMore = posts.length >= _pageLimit;
-      final instaBlocks = <InstaBlock>[];
-
-      for (final post in posts) {
-        instaBlocks.add(post.toPostLargeBlock);
-      }
+      final instaBlocks = List<InstaBlock>.generate(posts.length, (index) {
+        final likersInFollowings = postLikers[index];
+        final post = posts[index]
+            .toPostLargeBlock(likersInFollowings: likersInFollowings);
+        return post;
+      });
       final blocks = insertSponsoredBlocks(
         hasMore: hasMore,
         blocks: instaBlocks,
@@ -227,38 +240,38 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
   Future<PostBlock?> getPostBy(String id) async {
     final post = await _postsRepository.getPostBy(id: id);
-    return post?.toPostLargeBlock;
+    return post?.toPostLargeBlock();
   }
 }
 
 extension PostX on Post {
   /// Converts [Post] instance into [PostLargeBlock] instance.
-  PostLargeBlock get toPostLargeBlock => PostLargeBlock(
+  PostLargeBlock toPostLargeBlock({List<User> likersInFollowings = const []}) =>
+      PostLargeBlock(
         id: id,
         author: PostAuthor.confirmed(
-          id: author,
-          avatarUrl: avatarUrl,
-          username: username,
+          id: author.id,
+          avatarUrl: author.avatarUrl,
+          username: author.username,
         ),
-        publishedAt: publishedAt,
-        imageUrl: mediaUrl,
-        imagesUrl: imagesUrl,
+        createdAt: createdAt,
+        media: media,
         caption: caption,
-        action: NavigateToPostAuthorProfileAction(authorId: author),
+        likersInFollowings: likersInFollowings,
+        action: NavigateToPostAuthorProfileAction(authorId: author.id),
       );
 
   /// Converts [Post] instance into [PostSmallBlock] instance.
   PostSmallBlock get toPostSmallBlock => PostSmallBlock(
         id: id,
         author: PostAuthor.confirmed(
-          id: author,
-          avatarUrl: avatarUrl,
-          username: username,
+          id: author.id,
+          avatarUrl: author.avatarUrl,
+          username: author.username,
         ),
-        publishedAt: publishedAt,
-        imageUrl: mediaUrl,
-        imagesUrl: imagesUrl,
+        createdAt: createdAt,
+        media: media,
         caption: caption,
-        action: NavigateToPostAuthorProfileAction(authorId: author),
+        action: NavigateToPostAuthorProfileAction(authorId: author.id),
       );
 }

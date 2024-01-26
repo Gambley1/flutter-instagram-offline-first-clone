@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:app_ui/app_ui.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -97,17 +99,26 @@ class UserProfileAvatar extends StatelessWidget {
   );
 
   Future<void> _pickImage(BuildContext context) async {
+    Future<void> precacheAvatarUrl(String url) =>
+        precacheImage(CachedNetworkImageProvider(url), context);
+
     final imageFile =
         await PickImage.pickImage(context, source: ImageSource.both);
     if (imageFile == null) return;
 
     final selectedFile = imageFile.selectedFiles.firstOrNull;
     if (selectedFile == null) return;
+    final compressed =
+        await ImageCompress.compressFile(selectedFile.selectedFile);
+    final compressedFile = compressed == null ? null : File(compressed.path);
+    final file = compressedFile ?? selectedFile.selectedFile;
+    final compressedBytes = compressedFile == null
+        ? null
+        : await PickImage.imageBytes(file: compressedFile);
+    final bytes = compressedBytes ?? selectedFile.selectedByte;
     final avatarsStorage = Supabase.instance.client.storage.from('avatars');
 
-    final bytes = selectedFile.selectedByte;
-    final fileExt =
-        selectedFile.selectedFile.path.split('.').last.toLowerCase();
+    final fileExt = file.path.split('.').last.toLowerCase();
     final fileName = '${DateTime.now().toIso8601String()}.$fileExt';
     final filePath = fileName;
     await avatarsStorage.uploadBinary(
@@ -117,6 +128,15 @@ class UserProfileAvatar extends StatelessWidget {
     );
     final imageUrlResponse =
         await avatarsStorage.createSignedUrl(filePath, 60 * 60 * 24 * 365 * 10);
+    try {
+      await precacheAvatarUrl(imageUrlResponse);
+    } catch (error, stackTrace) {
+      logE(
+        'Failed to precache avatar url',
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
     onImagePick?.call(imageUrlResponse);
   }
 

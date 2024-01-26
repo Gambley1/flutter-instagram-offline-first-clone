@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:app_ui/app_ui.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -12,31 +14,28 @@ class PostSmall extends StatelessWidget {
     required this.isOwner,
     required this.onTap,
     required this.pinned,
-    required this.hasMultiplePhotos,
+    required this.multiMedia,
     required this.mediaUrl,
-    this.onDeletePost,
+    this.isReel,
+    this.onPostDelete,
     this.tappableColor,
     super.key,
   });
 
   final bool isOwner;
-
   final PostTapCallback onTap;
-
-  final DeletePostCallback? onDeletePost;
-
+  final DeletePostCallback? onPostDelete;
   final Color? tappableColor;
-
   final String mediaUrl;
-
+  final bool? isReel;
   final bool pinned;
+  final bool multiMedia;
 
-  final bool hasMultiplePhotos;
+  late final _showPinned = pinned && multiMedia || pinned && !multiMedia;
 
-  late final _showPinned =
-      pinned && hasMultiplePhotos || pinned && !hasMultiplePhotos;
+  late final _showHasMultiplePhotos = !pinned && multiMedia;
 
-  late final _showHasMultiplePhotos = !pinned && hasMultiplePhotos;
+  late final _showVideoIcon = !_showPinned && (isReel ?? false);
 
   @override
   Widget build(BuildContext context) {
@@ -48,14 +47,15 @@ class PostSmall extends StatelessWidget {
                 title: 'Delete this post?',
               );
               if (!confirmed) return;
-              if (onDeletePost == null) return;
-              onDeletePost?.call();
+              if (onPostDelete == null) return;
+              onPostDelete?.call();
             },
       onTap: onTap,
       child: _PostThumbnailImage(
         mediaUrl,
         showPinned: _showPinned,
         showHasMultiplePhotos: _showHasMultiplePhotos,
+        showVideoIcon: _showVideoIcon,
       ),
     );
   }
@@ -66,13 +66,13 @@ class _PostThumbnailImage extends StatelessWidget {
     this.mediaUrl, {
     required this.showPinned,
     required this.showHasMultiplePhotos,
+    required this.showVideoIcon,
   });
 
   final String mediaUrl;
-
   final bool showPinned;
-
   final bool showHasMultiplePhotos;
+  final bool showVideoIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -117,11 +117,32 @@ class _PostThumbnailImage extends StatelessWidget {
       child: rotatedOrNotIcon,
     );
 
-    if (showPinned || showHasMultiplePhotos) {
+    late final videoReelIcon = Positioned(
+      top: 4,
+      right: 6,
+      child: Container(
+        decoration: const BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black26,
+              blurRadius: 15,
+              offset: Offset(2, 2),
+            ),
+          ],
+        ),
+        child: Assets.icons.instagramReel.svg(
+          height: 22,
+          width: 22,
+          color: Colors.white,
+        ),
+      ),
+    );
+
+    if (showPinned || showHasMultiplePhotos || showVideoIcon) {
       return Stack(
         children: [
           thumbnailImage,
-          pinnedOrMultiplePhotosIcon,
+          if (showVideoIcon) videoReelIcon else pinnedOrMultiplePhotosIcon,
         ],
       );
     } else {

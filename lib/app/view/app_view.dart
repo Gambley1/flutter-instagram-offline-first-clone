@@ -6,9 +6,7 @@ import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 
 class AppView extends StatelessWidget {
-  const AppView({
-    super.key,
-  });
+  const AppView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +26,7 @@ class AppView extends StatelessWidget {
       //   ),
       // ),
       routerConfig: router(context.read<AppBloc>()),
+      // home: const TestPageInViewNotifier(),
       builder: (context, child) {
         return Stack(
           children: [

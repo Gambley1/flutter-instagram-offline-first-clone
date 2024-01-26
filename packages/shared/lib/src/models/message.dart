@@ -1,4 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:convert';
+
 import 'package:equatable/equatable.dart';
 import 'package:shared/shared.dart';
 
@@ -255,8 +257,17 @@ class Message extends Equatable {
       'replied_message': repliedMessage?.toRepliedMessage(),
       'reply_message_username': replyMessageUsername,
       'reply_message_attachment_url': replyMessageAttachmentUrl,
-      'shared_post_id': sharedPostId,
-      'shared_post': sharedPost?.toJson(),
+      if (sharedPost != null) 'shared_post_id': sharedPostId,
+      'shared_post_created_at': sharedPost?.createdAt.toIso8601String(),
+      if (sharedPost != null)
+        'shared_post_media':
+            jsonEncode(sharedPost?.media.map((e) => e.toJson()).toList()),
+      'shared_post_caption': sharedPost?.caption,
+      if (sharedPost != null) 'shared_post_author_id': sharedPost?.author.id,
+      if (sharedPost != null)
+        'shared_post_author_avatar_url': sharedPost?.author.avatarUrl,
+      if (sharedPost != null)
+        'shared_post_author_username': sharedPost?.author.username,
     };
   }
 

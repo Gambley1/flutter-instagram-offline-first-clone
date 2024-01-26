@@ -27,8 +27,7 @@ final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 
 GoRouter router(AppBloc appBloc) => GoRouter(
       navigatorKey: _rootNavigatorKey,
-      initialLocation:
-          appBloc.state.status == AppStatus.authenticated ? '/feed' : '/auth',
+      initialLocation: '/feed',
       routes: [
         GoRoute(
           path: '/auth',

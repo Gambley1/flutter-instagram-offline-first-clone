@@ -72,10 +72,7 @@ void openSnackbar(
 /// Closes all snack bars.
 void closeSnackbars() => snackbarKey.currentState?.closeAll();
 
-void showCurrentlyUnavailableFeature({
-  bool clearIfQueue = true,
-  bool undismissable = false,
-}) =>
+void showCurrentlyUnavailableFeature({bool clearIfQueue = true}) =>
     openSnackbar(
       const SnackbarMessage.error(
         title: 'Feature is not avaliable!',
@@ -84,5 +81,4 @@ void showCurrentlyUnavailableFeature({
         icon: Icons.error_outline,
       ),
       clearIfQueue: clearIfQueue,
-      undismissable: undismissable,
     );

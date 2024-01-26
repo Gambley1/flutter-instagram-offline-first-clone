@@ -218,7 +218,7 @@ class CommentsListView extends StatelessWidget {
                       likesCount: bloc.likesOf(comment.id),
                       likesText: (count) =>
                           context.l10n.likesCountTextShort(count),
-                      publishedAt: comment.createdAt.timeAgoShort(context),
+                      createdAt: comment.createdAt.timeAgoShort(context),
                     ),
                     RepliedComments(comment: comment, post: post),
                   ],
@@ -458,7 +458,7 @@ class RepliedComments extends StatelessWidget {
                   ),
                   likesCount: bloc.likesOf(c.id),
                   likesText: (count) => context.l10n.likesCountTextShort(count),
-                  publishedAt: c.createdAt.timeAgoShort(context),
+                  createdAt: c.createdAt.timeAgoShort(context),
                   avatarBuilder: (context, author, onAvatarTap, radius) =>
                       UserStoriesAvatar(
                     author: author,

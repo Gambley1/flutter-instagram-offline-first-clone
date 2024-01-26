@@ -1,7 +1,7 @@
 import 'package:logger/logger.dart';
 
 /// Initialize here main global [Logger] instance.
-Logger _logger = Logger();
+Logger _logger = Logger(level: Logger.level);
 
 /// Log error method that used for printing out the error.
 void logE(

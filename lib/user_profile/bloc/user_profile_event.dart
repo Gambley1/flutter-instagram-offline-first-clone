@@ -48,17 +48,13 @@ final class UserProfilePostCreateRequested extends UserProfileEvent {
     required this.postId,
     required this.userId,
     required this.caption,
-    required this.type,
-    required this.mediaUrl,
-    required this.imagesUrl,
+    required this.media,
   });
 
   final String postId;
   final String userId;
   final String caption;
-  final String type;
-  final String mediaUrl;
-  final String imagesUrl;
+  final List<Map<String, dynamic>> media;
 }
 
 sealed class _PostEvent extends UserProfileEvent {
@@ -72,7 +68,9 @@ final class UserProfileLikePostRequested extends _PostEvent {
 }
 
 final class UserProfileDeletePostRequested extends _PostEvent {
-  const UserProfileDeletePostRequested(super.postId);
+  const UserProfileDeletePostRequested(super.postId, {this.onPostDeleted});
+
+  final ValueSetter<String?>? onPostDeleted;
 }
 
 final class UserProfileFetchFollowersRequested extends UserProfileEvent {

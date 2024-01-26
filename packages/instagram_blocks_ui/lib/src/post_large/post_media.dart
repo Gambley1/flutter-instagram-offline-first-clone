@@ -3,41 +3,52 @@ import 'dart:async';
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
-import 'package:instagram_blocks_ui/src/images_carousel_settings.dart';
 import 'package:instagram_blocks_ui/src/like_button.dart';
-import 'package:instagram_blocks_ui/src/widgets/like_animation_overlay.dart';
+import 'package:instagram_blocks_ui/src/widgets/popping_icon_overlay.dart';
+import 'package:shared/shared.dart';
 
 class PostMedia extends StatelessWidget {
   const PostMedia({
-    required this.imagesUrl,
+    required this.media,
     required this.likePost,
     required this.isLiked,
+    required this.withInViewNotifier,
     this.onPageChanged,
+    this.videoPlayerBuilder,
+    this.postIndex,
     super.key,
   });
 
-  final List<String> imagesUrl;
+  final List<Media> media;
+  final int? postIndex;
   final LikeCallback likePost;
   final Stream<bool> isLiked;
   final ValueSetter<int>? onPageChanged;
+  final VideoPlayerBuilder? videoPlayerBuilder;
+  final bool withInViewNotifier;
 
   @override
   Widget build(BuildContext context) {
     final currentIndex = ValueNotifier<int>(0);
     final showImagesCountText = ValueNotifier(false);
 
-    final singleImage = imagesUrl.length == 1;
-    final showImagesCount = !singleImage && imagesUrl.isNotEmpty;
+    final singleImage = media.length == 1;
+    final showImagesCount = !singleImage && media.isNotEmpty;
 
     return Stack(
       children: [
         RepaintBoundary(
-          child: LikeAnimationOverlay(
+          child: PoppingIconAnimationOverlay(
             isLiked: isLiked,
             onTap: likePost,
-            child: ImagesCarousel(
-              imagesUrl: imagesUrl,
-              settings: ImagesCarouselSettings.create(
+            child: MediaCarousel(
+              media: media,
+              postIndex: postIndex,
+              settings: MediaCarouselSettings.create(
+                videoPlayerBuilder: videoPlayerBuilder,
+                aspectRatio: media.hasVideo ? kDefaultVideoAspectRatio : null,
+                fit: media.hasVideo ? kDefaultVideoMediaBoxFit : null,
+                withInViewNotifier: withInViewNotifier,
                 onPageChanged: (index, _) {
                   showImagesCountText.value = true;
                   currentIndex.value = index;
@@ -66,7 +77,7 @@ class PostMedia extends StatelessWidget {
                     return RepaintBoundary(
                       child: _CurrentPostImageInexOfTotal(
                         currentIndex: index + 1,
-                        total: imagesUrl.length,
+                        total: media.length,
                         showText: showText,
                       ),
                     );

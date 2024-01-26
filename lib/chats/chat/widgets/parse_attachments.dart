@@ -122,10 +122,7 @@ Future<void> launchURL(BuildContext context, String url) async {
     );
   } catch (e) {
     openSnackbar(
-      const SnackbarMessage(
-        title: 'Failed to open the url.',
-        icon: Icons.sms_failed_outlined,
-      ),
+      const SnackbarMessage.error(title: 'Failed to open the url.'),
     );
   }
 }

@@ -1,6 +1,7 @@
-import 'package:insta_blocks/insta_blocks.dart';
 import 'package:insta_blocks/src/models/post_author_converter.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:shared/shared.dart';
+import 'package:user_repository/user_repository.dart';
 
 part 'post_large_block.g.dart';
 
@@ -13,10 +14,10 @@ class PostLargeBlock extends PostBlock {
   const PostLargeBlock({
     required super.id,
     required super.author,
-    required super.publishedAt,
-    required super.imageUrl,
-    required super.imagesUrl,
+    required super.createdAt,
+    required super.media,
     required super.caption,
+    this.likersInFollowings = const [],
     super.action,
     super.type = PostLargeBlock.identifier,
   });
@@ -27,6 +28,10 @@ class PostLargeBlock extends PostBlock {
 
   /// The large post block type identifier.
   static const identifier = '__post_large__';
+
+  /// List of user profiles that liked the post and are currently in followings
+  /// list of currently authenticated user.
+  final List<User> likersInFollowings;
 
   @override
   Map<String, dynamic> toJson() => _$PostLargeBlockToJson(this);

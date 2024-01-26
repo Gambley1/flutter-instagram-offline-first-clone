@@ -171,15 +171,17 @@ class CustomCropState extends State<CustomCrop> with TickerProviderStateMixin {
           onScaleStart: _isEnabled ? _handleScaleStart : null,
           onScaleUpdate: _isEnabled ? _handleScaleUpdate : null,
           onScaleEnd: _isEnabled ? _handleScaleEnd : null,
-          child: AnimatedBuilder(
-            builder: (context, child) {
-              if (widget.isThatImage) {
-                return buildCustomPaint();
-              } else {
-                return _DisplayVideo(selectedFile: widget.image);
-              }
-            },
-            animation: _activeController,
+          child: RepaintBoundary(
+            child: AnimatedBuilder(
+              builder: (context, child) {
+                if (widget.isThatImage) {
+                  return buildCustomPaint();
+                } else {
+                  return _DisplayVideo(selectedFile: widget.image);
+                }
+              },
+              animation: _activeController,
+            ),
           ),
         ),
       ),
@@ -589,7 +591,7 @@ class _CropPainter extends CustomPainter {
         image.width * scale * ratio,
         image.height * scale * ratio,
       );
-      
+
       canvas.save();
       canvas.clipRect(Rect.fromLTWH(0.0, 0.0, rect.width, rect.height));
       canvas.drawImageRect(image, src, dst, paint);
@@ -668,7 +670,7 @@ class _DisplayVideo extends StatefulWidget {
 }
 
 class _DisplayVideoState extends State<_DisplayVideo> {
-  late VideoPlayerController controller;
+  VideoPlayerController? controller;
   late Future<void> initializeVideoPlayerFuture;
 
   @override
@@ -691,15 +693,16 @@ class _DisplayVideoState extends State<_DisplayVideo> {
     _initVideoController();
   }
 
-  void _initVideoController() {
+  Future<void> _initVideoController() async {
+    if (controller != null) controller?.dispose();
     controller = VideoPlayerController.file(widget.selectedFile);
-    initializeVideoPlayerFuture = controller.initialize();
-    controller.setLooping(true);
+    initializeVideoPlayerFuture = controller!.initialize();
+    controller!.setLooping(true);
   }
 
   @override
   void dispose() {
-    controller.dispose();
+    controller?.dispose();
     super.dispose();
   }
 
@@ -708,43 +711,83 @@ class _DisplayVideoState extends State<_DisplayVideo> {
     return FutureBuilder(
       future: initializeVideoPlayerFuture,
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          return Stack(
-            alignment: Alignment.center,
-            children: [
-              InteractiveViewer(
-                minScale: 1,
-                child: SizedBox(
-                    height: double.infinity,
-                    width: double.infinity,
-                    child: VideoPlayer(controller)),
-              ),
-              Align(
-                alignment: Alignment.center,
-                child: GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      if (controller.value.isPlaying) {
-                        controller.pause();
-                      } else {
-                        controller.play();
-                      }
-                    });
-                  },
-                  child: Icon(
-                    controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
-                    color: Colors.white,
-                    size: 45,
-                  ),
+        return AnimatedSwitcher(
+          duration: const Duration(milliseconds: 350),
+          child: snapshot.connectionState == ConnectionState.done
+              ? Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    InteractiveViewer(
+                      minScale: 1,
+                      child: VideoPlayer(controller!),
+                    ),
+                    Align(
+                      alignment: Alignment.center,
+                      child: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            if (controller?.value.isPlaying ?? false) {
+                              controller?.pause();
+                            } else {
+                              controller?.play();
+                            }
+                          });
+                        },
+                        child: AnimatedSwitcher(
+                          reverseDuration: const Duration(milliseconds: 350),
+                          duration: const Duration(milliseconds: 350),
+                          transitionBuilder: (child, animation) {
+                            return ScaleTransition(
+                              scale: animation,
+                              child: child,
+                            );
+                          },
+                          child: controller?.value.isPlaying ?? false
+                              ? Container(
+                                  decoration: const BoxDecoration(
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black26,
+                                        blurRadius: 10.0,
+                                        offset: Offset(2.0, 2.0),
+                                      ),
+                                    ],
+                                  ),
+                                  child: const Icon(
+                                    Icons.pause,
+                                    color: Colors.white,
+                                    size: 45,
+                                  ))
+                              : Container(
+                                  decoration: const BoxDecoration(
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black26,
+                                        blurRadius: 15.0,
+                                        offset: Offset(2.0, 2.0),
+                                      ),
+                                    ],
+                                  ),
+                                  child: const Icon(
+                                    Icons.play_arrow,
+                                    color: Colors.white,
+                                    size: 45,
+                                  )),
+                        ),
+                      ),
+                    )
+                  ],
+                )
+              : const Center(
+                  child: CircularProgressIndicator(strokeWidth: 1),
                 ),
-              )
-            ],
-          );
-        } else {
-          return const Center(
-            child: CircularProgressIndicator(strokeWidth: 1),
-          );
-        }
+          transitionBuilder: (child, animation) {
+            return FadeTransition(
+              opacity: animation,
+              child: child,
+            );
+          },
+        );
       },
     );
   }

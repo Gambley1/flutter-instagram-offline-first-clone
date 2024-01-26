@@ -5,4 +5,16 @@ extension IterableExtension<T> on Iterable<T> {
         yield item;
         yield e;
       }).skip(1).toList(growable: false);
+
+  /// Insert any item<T> inBetween the list items
+  Iterable<T> separatedBy(T element) sync* {
+    final iterator = this.iterator;
+    if (iterator.moveNext()) {
+      yield iterator.current;
+      while (iterator.moveNext()) {
+        yield element;
+        yield iterator.current;
+      }
+    }
+  }
 }

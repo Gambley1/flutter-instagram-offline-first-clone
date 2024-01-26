@@ -13,21 +13,22 @@ class PostSponsored extends StatelessWidget {
     required this.wasFollowed,
     required this.isFollowed,
     required this.follow,
-    required this.hasStories,
-    required this.imagesUrl,
     required this.isLiked,
     required this.likePost,
     required this.likesCount,
     required this.commentsCount,
     required this.likesText,
     required this.commentsText,
-    required this.publishedAt,
+    required this.createdAt,
     required this.enableFollowButton,
     required this.onCommentsTap,
     required this.onPostShareTap,
     required this.onPressed,
     required this.sponsoredText,
+    required this.withInViewNotifier,
     this.postAuthorAvatarBuilder,
+    this.videoPlayerBuilder,
+    this.postIndex,
     super.key,
   });
 
@@ -41,10 +42,6 @@ class PostSponsored extends StatelessWidget {
 
   final VoidCallback follow;
 
-  final bool hasStories;
-
-  final List<String> imagesUrl;
-
   final Stream<bool> isLiked;
 
   final LikeCallback likePost;
@@ -57,7 +54,7 @@ class PostSponsored extends StatelessWidget {
 
   final CommentsText commentsText;
 
-  final String publishedAt;
+  final String createdAt;
 
   final bool enableFollowButton;
 
@@ -71,19 +68,23 @@ class PostSponsored extends StatelessWidget {
 
   final AvatarBuilder? postAuthorAvatarBuilder;
 
+  final VideoPlayerBuilder? videoPlayerBuilder;
+
+  final int? postIndex;
+
+  final bool withInViewNotifier;
+
   @override
   Widget build(BuildContext context) {
     return PostLarge(
       block: block,
       onPressed: onPressed,
       isOwner: isOwner,
-      hasStories: hasStories,
-      imagesUrl: imagesUrl,
       isLiked: isLiked,
       likePost: likePost,
       likesCount: likesCount,
       commentsCount: commentsCount,
-      publishedAt: publishedAt,
+      createdAt: createdAt,
       isFollowed: isFollowed,
       wasFollowed: wasFollowed,
       follow: follow,
@@ -94,6 +95,9 @@ class PostSponsored extends StatelessWidget {
       commentsText: commentsText,
       sponsoredText: sponsoredText,
       postAuthorAvatarBuilder: postAuthorAvatarBuilder,
+      videoPlayerBuilder: videoPlayerBuilder,
+      postIndex: postIndex,
+      withInViewNotifier: withInViewNotifier,
     );
   }
 }
