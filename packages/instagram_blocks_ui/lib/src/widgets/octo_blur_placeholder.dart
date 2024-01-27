@@ -71,7 +71,6 @@ class OctoBlurPlaceholderBuilder extends StatelessWidget {
     return BlurHashImagePlaceholder(
       blurHash: blurHash,
       fit: fit,
-      withLoadingIndicator: true,
     );
   }
 }
