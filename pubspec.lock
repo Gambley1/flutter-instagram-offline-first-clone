@@ -635,10 +635,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_animate
-      sha256: "2f3535790fff1ad21bca4f16b7435fa4af6a3c4b43e88e273a8683ed4ec26b26"
+      sha256: "7c8a6594a9252dad30cc2ef16e33270b6248c4dedc3b3d06c86c4f3f4dc05ae5"
       url: "https://pub.dev"
     source: hosted
-    version: "4.4.0"
+    version: "4.5.0"
   flutter_bloc:
     dependency: "direct main"
     description:
@@ -740,6 +740,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.9.0"
+  flutter_shaders:
+    dependency: transitive
+    description:
+      name: flutter_shaders
+      sha256: "02750b545c01ff4d8e9bbe8f27a7731aa3778402506c67daa1de7f5fc3f4befe"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.2"
   flutter_staggered_grid_view:
     dependency: transitive
     description:
