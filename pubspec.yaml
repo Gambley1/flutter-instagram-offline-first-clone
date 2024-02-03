@@ -74,7 +74,7 @@ dependencies:
   story_view: ^0.16.0
   supabase_authentication_client:
     path: packages/authentication_client/supabase_authentication_client
-  timeago: ^3.6.0
+  timeago: ^3.6.1
   token_storage:
     path: packages/authentication_client/token_storage
   url_launcher: ^6.2.4
