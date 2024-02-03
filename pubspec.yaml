@@ -21,7 +21,7 @@ dependencies:
   database_client:
     path: packages/database_client
   equatable: ^2.0.5
-  fast_immutable_collections: ^9.2.0
+  fast_immutable_collections: ^10.1.0
   firebase_config:
     path: packages/remote_config/firebase_config
   firebase_core: ^2.25.2
