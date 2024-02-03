@@ -1,10 +1,13 @@
 /// A Flutter package that contains UI components for Instagram blocks.
 library instagram_blocks_ui;
 
+export 'package:video_player/video_player.dart';
+
 export 'src/media_carousel_settings.dart';
 export 'src/post_large/index.dart';
 export 'src/post_small/index.dart';
 export 'src/posts/index.dart';
+export 'src/smooth_video_progress_indicator.dart' hide VideoScrubber;
 export 'src/user_profile/index.dart';
 export 'src/widgets/widgets.dart'
     show
@@ -15,6 +18,7 @@ export 'src/widgets/widgets.dart'
         MediaCarousel,
         PostSponsored,
         PromoFloatingAction,
+        RunningText,
         ShimmerPlaceholder,
         StoryAvatar,
         SubscribeButton,

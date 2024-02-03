@@ -379,7 +379,8 @@ class AppSnackbarState extends State<AppSnackbar>
                                   padding: const EdgeInsets.only(right: 10),
                                   child: Icon(
                                     currentMessage?.icon,
-                                    size: currentMessage?.iconSize ?? 28,
+                                    size: currentMessage?.iconSize ??
+                                        AppSize.iconSize,
                                     color: currentMessage?.iconColor,
                                   ),
                                 ),

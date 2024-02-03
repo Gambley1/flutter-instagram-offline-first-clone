@@ -15,8 +15,9 @@ class PostsRepository implements PostsBaseRepository {
   Future<List<Post>> getPage({
     required int offset,
     required int limit,
+    bool onlyReels = false,
   }) =>
-      _client.getPage(offset: offset, limit: limit);
+      _client.getPage(offset: offset, limit: limit, onlyReels: onlyReels);
 
   @override
   Future<void> like({

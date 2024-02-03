@@ -1,14 +1,16 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:convert';
-
 import 'package:equatable/equatable.dart';
 import 'package:insta_blocks/insta_blocks.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
+import 'package:shared/shared.dart';
+
+part 'comment.g.dart';
 
 /// {@template comment}
 /// Comment model class representing a comment on a post.
 /// {@endtemplate}
 @immutable
+@JsonSerializable()
 class Comment extends Equatable {
   /// {@macro comment}
   const Comment({
@@ -17,10 +19,13 @@ class Comment extends Equatable {
     required this.author,
     required this.content,
     required this.createdAt,
-    required this.isReplied,
     this.repliedToCommentId,
     this.replies,
   });
+
+  /// Converts [Comment] instance from a `Map<String, dynamic>`
+  factory Comment.fromJson(Map<String, dynamic> json) =>
+      _$CommentFromJson(json);
 
   /// Converts a [row] into a [Comment] instance.
   factory Comment.fromRow(Map<String, dynamic> row) => Comment(
@@ -34,7 +39,6 @@ class Comment extends Equatable {
         content: row['content'] as String,
         repliedToCommentId: row['replied_to_comment_id'] as String?,
         createdAt: DateTime.parse(row['created_at'] as String),
-        isReplied: !(row['replied_to_comment_id'] == null),
         replies: row['replies'] as int?,
       );
 
@@ -60,7 +64,7 @@ class Comment extends Equatable {
   final DateTime createdAt;
 
   /// Whether the comment is a reply to another comment.
-  final bool isReplied;
+  bool get isReplied => !(repliedToCommentId == null);
 
   @override
   List<Object?> get props => [
@@ -74,18 +78,6 @@ class Comment extends Equatable {
         replies,
       ];
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'id': id,
-      'postId': postId,
-      'author': author.id,
-      'repliedToCommentId': repliedToCommentId,
-      'replies': replies,
-      'content': content,
-      'createdAt': createdAt.millisecondsSinceEpoch,
-      'isReplied': isReplied,
-    };
-  }
-
-  String toJson() => json.encode(toMap());
+  /// Converts current [Comment] instance to the `Map<String, dynamic>`.
+  Map<String, dynamic> toJson() => _$CommentToJson(this);
 }

@@ -10,6 +10,7 @@ environment:
 dependencies:
   app_ui:
     path: ../app_ui
+  bloc_concurrency: ^0.2.3
   blurhash: ^1.1.1
   dio: ^5.4.0
   equatable: ^2.0.5
@@ -34,6 +35,7 @@ dependencies:
   mime: ^1.0.4
   ogp_data_extract: ^0.1.4
   powersync: ^1.1.0
+  stream_transform: ^2.1.0
   user_repository:
     path: ../user_repository
   uuid: ^4.3.3

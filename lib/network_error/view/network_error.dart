@@ -52,7 +52,7 @@ class NetworkError extends StatelessWidget {
               children: [
                 const Flexible(
                   flex: 0,
-                  child: Icon(Icons.refresh, size: 24),
+                  child: Icon(Icons.refresh, size: AppSize.iconSize),
                 ),
                 const SizedBox(width: AppSpacing.xs),
                 Flexible(

@@ -29,18 +29,18 @@ class GalleryMediaPicker extends StatefulWidget {
 
 class _GalleryMediaPickerState extends State<GalleryMediaPicker> {
   /// create object of PickerDataProvider
-  final GalleryMediaPickerController provider = GalleryMediaPickerController();
+  final provider = GalleryMediaPickerController();
 
   @override
   void initState() {
-    _getPermission();
     provider.paramsModel = widget.mediaPickerParams;
+    _getPermission();
     super.initState();
   }
 
   /// get photo manager permission
-  _getPermission() {
-    GalleryFunctions.getPermission(setState, provider);
+  Future<void> _getPermission() async {
+    await GalleryFunctions.getPermission(mounted ? setState : null, provider);
     GalleryFunctions.onPickMax(provider);
   }
 
@@ -48,7 +48,8 @@ class _GalleryMediaPickerState extends State<GalleryMediaPicker> {
   void dispose() {
     if (mounted) {
       /// clear all controller list
-      provider.onPickMax.removeListener(GalleryFunctions.onPickMax(provider));
+      provider.onPickMax
+          .removeListener(() => GalleryFunctions.onPickMax(provider));
       provider.pickedFile.clear();
       provider.picked.clear();
       provider.pathList.clear();

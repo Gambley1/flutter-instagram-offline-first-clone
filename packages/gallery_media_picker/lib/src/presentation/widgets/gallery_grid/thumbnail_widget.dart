@@ -28,7 +28,7 @@ class ThumbnailWidget extends StatelessWidget {
         /// background gradient from image
         Container(
           decoration:
-              BoxDecoration(color: provider.paramsModel.imageBackgroundColor),
+              BoxDecoration(color: provider.paramsModel!.imageBackgroundColor),
         ),
 
         /// thumbnail image
@@ -44,16 +44,16 @@ class ThumbnailWidget extends StatelessWidget {
                     image: DecodeImage(
                         provider.pathList[
                             provider.pathList.indexOf(provider.currentAlbum!)],
-                        thumbSize: provider.paramsModel.thumbnailQuality,
+                        thumbSize: provider.paramsModel!.thumbnailQuality,
                         index: index),
                     gaplessPlayback: true,
-                    fit: provider.paramsModel.thumbnailBoxFix,
+                    fit: provider.paramsModel!.thumbnailBoxFix,
                     filterQuality: FilterQuality.high,
                   ),
                 );
               } else {
                 return Container(
-                  color: provider.paramsModel.imageBackgroundColor,
+                  color: provider.paramsModel!.imageBackgroundColor,
                 );
               }
             },
@@ -69,7 +69,7 @@ class ThumbnailWidget extends StatelessWidget {
                 duration: const Duration(milliseconds: 300),
                 decoration: BoxDecoration(
                   color: picked
-                      ? provider.paramsModel.selectedBackgroundColor
+                      ? provider.paramsModel!.selectedBackgroundColor
                           .withOpacity(0.3)
                       : Colors.transparent,
                 ),
@@ -95,16 +95,16 @@ class ThumbnailWidget extends StatelessWidget {
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: picked
-                            ? provider.paramsModel.selectedCheckBackgroundColor
+                            ? provider.paramsModel!.selectedCheckBackgroundColor
                                 .withOpacity(0.6)
                             : Colors.transparent,
                         border: Border.all(
                             width: 1.5,
-                            color: provider.paramsModel.selectedCheckColor),
+                            color: provider.paramsModel!.selectedCheckColor),
                       ),
                       child: Icon(
                         Icons.check,
-                        color: provider.paramsModel.selectedCheckColor,
+                        color: provider.paramsModel!.selectedCheckColor,
                         size: 14,
                       ),
                     ),

@@ -1,1 +1,1 @@
-export 'reels_view.dart';
+export 'reels_page.dart';

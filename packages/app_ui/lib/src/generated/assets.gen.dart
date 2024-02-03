@@ -25,6 +25,13 @@ class $AssetsAnimationsGen {
 class $AssetsIconsGen {
   const $AssetsIconsGen();
 
+  /// File path: assets/icons/add-button.svg
+  SvgGenImage get addButton => const SvgGenImage('assets/icons/add-button.svg');
+
+  /// File path: assets/icons/chat_circle.svg
+  SvgGenImage get chatCircle =>
+      const SvgGenImage('assets/icons/chat_circle.svg');
+
   /// File path: assets/icons/check.svg
   SvgGenImage get check => const SvgGenImage('assets/icons/check.svg');
 
@@ -32,12 +39,26 @@ class $AssetsIconsGen {
   SvgGenImage get instagramReel =>
       const SvgGenImage('assets/icons/instagram-reel.svg');
 
+  /// File path: assets/icons/setting.svg
+  SvgGenImage get setting => const SvgGenImage('assets/icons/setting.svg');
+
+  /// File path: assets/icons/trash.svg
+  SvgGenImage get trash => const SvgGenImage('assets/icons/trash.svg');
+
   /// File path: assets/icons/verified_user.svg
   SvgGenImage get verifiedUser =>
       const SvgGenImage('assets/icons/verified_user.svg');
 
   /// List of all assets
-  List<SvgGenImage> get values => [check, instagramReel, verifiedUser];
+  List<SvgGenImage> get values => [
+        addButton,
+        chatCircle,
+        check,
+        instagramReel,
+        setting,
+        trash,
+        verifiedUser
+      ];
 }
 
 class $AssetsImagesGen {

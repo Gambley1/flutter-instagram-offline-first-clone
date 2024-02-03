@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:app_ui/app_ui.dart';
 import 'package:firebase_config/firebase_config.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
@@ -10,6 +11,7 @@ import 'package:flutter_instagram_offline_first_clone/comments/comments.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/feed.dart';
 import 'package:flutter_instagram_offline_first_clone/home/home.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
+import 'package:flutter_instagram_offline_first_clone/l10n/slang/translations.g.dart';
 import 'package:flutter_instagram_offline_first_clone/network_error/network_error.dart';
 import 'package:flutter_instagram_offline_first_clone/stories/stories.dart';
 import 'package:flutter_instagram_offline_first_clone/user_profile/user_profile.dart';
@@ -52,39 +54,33 @@ class _FeedPageState extends State<FeedPage> with RouteAware {
   Widget build(BuildContext context) {
     final videoPlayer = VideoPlayerProvider.of(context);
 
-    return AnimatedBuilder(
-      animation: videoPlayer.pageController,
-      builder: (context, child) {
-        return child!;
-      },
-      child: MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: (context) => FeedBloc(
-              userRepository: context.read<UserRepository>(),
-              postsRepository: context.read<PostsRepository>(),
-              remoteConfig: context.read<FirebaseConfig>(),
-            )..add(const FeedPageRequested(page: 0)),
-          ),
-          BlocProvider(
-            create: (context) => StoriesBloc(
-              storiesRepository: context.read<StoriesRepository>(),
-              userRepository: context.read<UserRepository>(),
-            )..add(
-                StoriesFetchUserFollowingsStories(
-                  context.read<AppBloc>().state.user.id,
-                ),
-              ),
-          ),
-        ],
-        child: PageView(
-          controller: videoPlayer.pageController,
-          children: const [
-            UserProfileCreatePost(),
-            FeedView(),
-            ChatsPage(),
-          ],
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => FeedBloc(
+            userRepository: context.read<UserRepository>(),
+            postsRepository: context.read<PostsRepository>(),
+            remoteConfig: context.read<FirebaseConfig>(),
+          )..add(const FeedPageRequested(page: 0)),
         ),
+        BlocProvider(
+          create: (context) => StoriesBloc(
+            storiesRepository: context.read<StoriesRepository>(),
+            userRepository: context.read<UserRepository>(),
+          )..add(
+              StoriesFetchUserFollowingsStories(
+                context.read<AppBloc>().state.user.id,
+              ),
+            ),
+        ),
+      ],
+      child: PageView(
+        controller: videoPlayer.pageController,
+        children: const [
+          UserProfileCreatePost(),
+          FeedView(),
+          ChatsPage(),
+        ],
       ),
     );
   }
@@ -175,6 +171,7 @@ class _FeedBodyState extends State<FeedBody> {
         ),
       ]),
       child: InViewNotifierCustomScrollView(
+        shrinkWrap: true,
         initialInViewIds: const ['0'],
         isInViewPortCondition: (deltaTop, deltaBottom, vpHeight) {
           return deltaTop < (0.5 * vpHeight) + 80.0 &&
@@ -219,6 +216,8 @@ class _FeedBodyState extends State<FeedBody> {
     required bool hasMorePosts,
     required bool isFailure,
   }) {
+    final t = context.t;
+    final l10n = context.l10n;
     if (block is DividerHorizontalBlock) {
       return DividerBlock(feedAnimationController: controller);
     }
@@ -252,18 +251,19 @@ class _FeedBodyState extends State<FeedBody> {
           },
         );
       } else {
-        return hasMorePosts
-            ? Padding(
-                padding: EdgeInsets.only(
-                  top: feedLength == 0 ? 12 : 0,
-                ),
-                child: FeedLoaderItem(
-                  key: ValueKey(index),
-                  onPresented: () =>
-                      context.read<FeedBloc>().add(const FeedPageRequested()),
-                ),
-              )
-            : const SizedBox();
+        return Padding(
+          padding: EdgeInsets.only(
+            top: feedLength == 0 ? 12 : 0,
+          ),
+          child: FeedLoaderItem(
+            key: ValueKey(index),
+            onPresented: () => hasMorePosts
+                ? context.read<FeedBloc>().add(const FeedPageRequested())
+                : context
+                    .read<FeedBloc>()
+                    .add(const FeedRecommenedPostsPageRequested()),
+          ),
+        );
       }
     }
     if (block is PostLargeBlock) {
@@ -278,15 +278,39 @@ class _FeedBodyState extends State<FeedBody> {
         wasFollowed: true,
         follow: () => bloc.add(FeedPostAuthorFollowRequested(block.author.id)),
         enableFollowButton: true,
+        likesCountBuilder: (name, userId, count) => name == null
+            ? null
+            : Text.rich(
+                t.likedBy(
+                  name: TextSpan(
+                    text: name,
+                    style: context.titleMedium
+                        ?.copyWith(fontWeight: AppFontWeight.bold),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = userId == null
+                          ? null
+                          : () => context.pushNamed(
+                                'user_profile',
+                                pathParameters: {'user_id': userId},
+                              ),
+                  ),
+                  and: TextSpan(text: count < 1 ? '' : l10n.and),
+                  others: TextSpan(
+                    text: l10n.others(count),
+                    style: context.titleMedium
+                        ?.copyWith(fontWeight: AppFontWeight.bold),
+                  ),
+                ),
+                style: context.titleMedium,
+              ),
         onCommentsTap: (showFullSized) => _onCommentsTap(
           context: context,
           post: block,
-          bloc: bloc,
           showFullSized: showFullSized,
         ),
         commentsCount: bloc.commentsCountOf(block.id),
-        likesText: context.l10n.likesCountText,
-        commentsText: context.l10n.seeAllComments,
+        likesText: l10n.likesCountText,
+        commentsText: l10n.seeAllComments,
         onPressed: (action, _) => _onFeedItemAction(context, action),
         onPostShareTap: (postId, author) async {
           final receiverId = await context.pushNamed(
@@ -312,6 +336,8 @@ class _FeedBodyState extends State<FeedBody> {
             author: author.toUser,
             onAvatarTap: onAvatarTap,
             enableUnactiveBorder: false,
+            withAdaptiveBorder: false,
+            radius: 16,
           );
         },
         postIndex: index,
@@ -358,7 +384,6 @@ class _FeedBodyState extends State<FeedBody> {
         onCommentsTap: (showFullSized) => _onCommentsTap(
           context: context,
           post: block,
-          bloc: bloc,
           showFullSized: showFullSized,
         ),
         likesText: context.l10n.likesCountText,
@@ -390,6 +415,8 @@ class _FeedBodyState extends State<FeedBody> {
             author: author.toUser,
             onAvatarTap: onAvatarTap,
             enableUnactiveBorder: false,
+            withAdaptiveBorder: false,
+            radius: 16,
           );
         },
         postIndex: index,
@@ -427,35 +454,18 @@ class _FeedBodyState extends State<FeedBody> {
 
   Future<void> _onCommentsTap({
     required PostBlock post,
-    required FeedBloc bloc,
     required BuildContext context,
     bool showFullSized = false,
   }) =>
-      context.showBottomModal<void>(
-        isScrollControlled: true,
-        enalbeDrag: false,
-        showDragHandle: false,
-        builder: (context) {
-          final controller = DraggableScrollableController();
-          return DraggableScrollableSheet(
-            controller: controller,
-            expand: false,
-            snap: true,
-            snapSizes: const [
-              .6,
-              1,
-            ],
-            initialChildSize: showFullSized ? 1.0 : .7,
-            minChildSize: .4,
-            builder: (context, scrollController) => CommentsPage(
-              bloc: bloc,
-              post: post,
-              scrollController: scrollController,
-              scrollableSheetController: controller,
-            ),
-          );
-        },
-      );
+      context.showCommentsModal(
+        showFullSized: showFullSized,
+          pageBuilder: (scrollController, draggableScrollController) =>
+              CommentsPage(
+            post: post,
+            scrollController: scrollController,
+            scrollableSheetController: draggableScrollController,
+          ),
+        );
 
   /// Handles actions triggered by tapping on feed items.
   void _onFeedItemAction(

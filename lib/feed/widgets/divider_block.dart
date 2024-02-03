@@ -6,7 +6,10 @@ import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:lottie/lottie.dart';
 
 class DividerBlock extends StatefulWidget {
-  const DividerBlock({required this.feedAnimationController, super.key});
+  const DividerBlock({
+    required this.feedAnimationController,
+    super.key,
+  });
 
   final FeedPageController feedAnimationController;
 
@@ -21,7 +24,6 @@ class _DividerBlockState extends State<DividerBlock>
   @override
   void initState() {
     super.initState();
-
     _controller = AnimationController(vsync: this);
   }
 

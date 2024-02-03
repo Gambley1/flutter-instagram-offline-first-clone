@@ -81,7 +81,7 @@ class AvatarImagePicker extends StatelessWidget {
               ),
               child: const Icon(
                 Icons.add,
-                size: 20,
+                size: AppSize.iconSizeSmall,
               ),
             ),
           ),

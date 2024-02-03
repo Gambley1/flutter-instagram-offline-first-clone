@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:app_ui/app_ui.dart';
 import 'package:firebase_config/firebase_config.dart';
 import 'package:flutter/material.dart';
@@ -233,13 +235,6 @@ class _PostsPageState extends State<PostsPage>
               itemCount: blocks.length,
               itemBuilder: (context, index) {
                 final block = blocks[index];
-                final media = block.media.first;
-                late String mediaUrl;
-                if (media is ImageMedia) {
-                  mediaUrl = media.url;
-                } else if (media is VideoMedia) {
-                  mediaUrl = media.firstFrameUrl;
-                }
                 final multiMedia = block.media.length > 1;
 
                 return PostSmall(
@@ -257,7 +252,7 @@ class _PostsPageState extends State<PostsPage>
                   ),
                   pinned: false,
                   multiMedia: multiMedia,
-                  mediaUrl: mediaUrl,
+                  mediaUrl: block.firstMediaUrl!,
                   isReel: block.isReel,
                 );
               },
@@ -297,7 +292,7 @@ class UserProfileAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = context.select((UserProfileBloc b) => b.state.user);
     return SliverPadding(
-      padding: const EdgeInsets.only(right: 12),
+      padding: const EdgeInsets.only(right: AppSpacing.md),
       sliver: SliverAppBar(
         centerTitle: false,
         scrolledUnderElevation: 0,
@@ -314,7 +309,10 @@ class UserProfileAppBar extends StatelessWidget {
               ),
             ),
             Flexible(
-              child: Assets.icons.verifiedUser.svg(width: 16, height: 16),
+              child: Assets.icons.verifiedUser.svg(
+                width: AppSize.iconSizeSmall,
+                height: AppSize.iconSizeSmall,
+              ),
             ),
           ],
         ),
@@ -326,7 +324,7 @@ class UserProfileAppBar extends StatelessWidget {
             : [
                 const UserProfileAddMediaButton(),
                 if (ModalRoute.of(context)!.isFirst) ...const [
-                  SizedBox(width: 12),
+                  SizedBox(width: AppSpacing.md),
                   UserProfileLogoutButton(),
                 ],
               ],
@@ -344,7 +342,7 @@ class UserProfileActions extends StatelessWidget {
   Widget build(BuildContext context) {
     return Tappable(
       onTap: () {},
-      child: Icon(Icons.adaptive.more_outlined, size: 36),
+      child: Icon(Icons.adaptive.more_outlined, size: AppSize.iconSize),
     );
   }
 }
@@ -355,8 +353,26 @@ class UserProfileLogoutButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Tappable(
-      onTap: () => context.read<AppBloc>().add(const AppLogoutRequested()),
-      child: const Icon(Icons.logout, size: 36),
+      onTap: () async {
+        final option = await context.showListOptionsModal(
+          options: [
+            ModalOption(
+              name: 'Log out',
+              icon: Icons.logout_rounded,
+              distractive: true,
+              onTap: () =>
+                  context.read<AppBloc>().add(const AppLogoutRequested()),
+            ),
+          ],
+        );
+        if (option == null) return;
+        await Future.microtask(() => option.distractiveCallback(context));
+      },
+      child: Assets.icons.setting.svg(
+        height: AppSize.iconSize,
+        width: AppSize.iconSize,
+        color: context.adaptiveColor,
+      ),
     );
   }
 }
@@ -409,7 +425,7 @@ class UserProfileAddMediaButton extends StatelessWidget {
       },
       child: const Icon(
         Icons.add_box_outlined,
-        size: 36,
+        size: AppSize.iconSize,
       ),
     );
   }

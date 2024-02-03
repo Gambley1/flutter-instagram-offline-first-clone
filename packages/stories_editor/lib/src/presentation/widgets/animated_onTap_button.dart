@@ -4,6 +4,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:stories_editor/src/presentation/utils/mixins/safe_set_state_mixin.dart';
 
 class AnimatedOnTapButton extends StatefulWidget {
   final Widget child;
@@ -22,7 +23,7 @@ class AnimatedOnTapButton extends StatefulWidget {
 }
 
 class _AnimatedOnTapButtonState extends State<AnimatedOnTapButton>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, SafeSetStateMixin {
   late AnimationController _controllerA;
   double squareScaleA = 1;
   Timer _timer = Timer(const Duration(milliseconds: 300), () {});
@@ -49,11 +50,9 @@ class _AnimatedOnTapButtonState extends State<AnimatedOnTapButton>
   }
 
   void _controllerAListener() {
-    if (mounted) {
-      setState(() {
-        squareScaleA = _controllerA.value;
-      });
-    }
+    safeSetState(() {
+      squareScaleA = _controllerA.value;
+    });
   }
 
   @override
@@ -71,11 +70,9 @@ class _AnimatedOnTapButtonState extends State<AnimatedOnTapButton>
       },
       onTapUp: (dp) {
         try {
-          if (mounted) {
-            _timer = Timer(const Duration(milliseconds: 100), () {
-              _controllerA.fling();
-            });
-          }
+          _timer = Timer(const Duration(milliseconds: 100), () {
+            _controllerA.fling();
+          });
         } catch (e) {
           debugPrint(e.toString());
         }

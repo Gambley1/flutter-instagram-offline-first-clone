@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:stories_editor/src/domain/providers/notifiers/control_provider.dart';
 import 'package:stories_editor/src/domain/providers/notifiers/painting_notifier.dart';
 import 'package:stories_editor/src/domain/providers/notifiers/text_editing_notifier.dart';
+import 'package:stories_editor/src/presentation/utils/mixins/safe_set_state_mixin.dart';
 
 class SizeSliderWidget extends StatefulWidget {
   const SizeSliderWidget({super.key});
@@ -12,7 +13,8 @@ class SizeSliderWidget extends StatefulWidget {
   State<SizeSliderWidget> createState() => _SizeSliderWidgetState();
 }
 
-class _SizeSliderWidgetState extends State<SizeSliderWidget> {
+class _SizeSliderWidgetState extends State<SizeSliderWidget>
+    with SafeSetStateMixin {
   bool _isChange = false;
   bool _showIndicator = false;
   @override
@@ -80,20 +82,16 @@ class _SizeSliderWidgetState extends State<SizeSliderWidget> {
                           }
                         },
                         onChangeStart: (start) {
-                          if (mounted) {
-                            setState(() {
-                              _isChange = true;
-                              _showIndicator = true;
-                            });
-                          }
+                          safeSetState(() {
+                            _isChange = true;
+                            _showIndicator = true;
+                          });
                         },
                         onChangeEnd: (end) {
-                          if (mounted) {
-                            setState(() {
-                              _isChange = false;
-                              _showIndicator = false;
-                            });
-                          }
+                          safeSetState(() {
+                            _isChange = false;
+                            _showIndicator = false;
+                          });
                         },
                       ),
                     ),

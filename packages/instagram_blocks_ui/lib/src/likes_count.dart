@@ -8,20 +8,23 @@ typedef LikesText = String Function(int count);
 
 class LikesCount extends StatefulWidget {
   const LikesCount({
-    required this.likesText,
     required this.likesCount,
+    this.likesText,
+    this.textBuilder,
     this.color,
     this.size,
     super.key,
   });
 
-  final LikesText likesText;
+  final LikesText? likesText;
 
   final Stream<int> likesCount;
 
   final Color? color;
 
   final double? size;
+
+  final Widget? Function(int count)? textBuilder;
 
   @override
   State<LikesCount> createState() => _LikesCountState();
@@ -37,54 +40,22 @@ class _LikesCountState extends State<LikesCount>
       builder: (context, snapshot) {
         final count = snapshot.data;
         final isVisible = count != null && count != 0;
-        // const text = 'Liked by emil.zulufov and 4 others';
-        // final username = text.split(' ')[2];
-
-        // String firstPart() {
-        //   final newText = text.split(' ');
-        //   final firstPart = newText.first;
-        //   final secondPart = newText[1];
-        //   return '$firstPart $secondPart ';
-        // }
-
-        // String secondPart() {
-        //   final newText = text.split(' ');
-        //   final firstPart = newText[3];
-        //   final secondPart = newText[4];
-        //   final thirdPart = newText[5];
-        //   return '$firstPart $secondPart $thirdPart';
-        // }
 
         return AnimatedVisibility(
           height: 25,
           duration: 250.ms,
           isVisible: isVisible,
           curve: Sprung.criticallyDamped,
-          child: Tappable(
-            animationEffect: TappableAnimationEffect.none,
-            // child: Text.rich(
-            //   TextSpan(
-            //     children: [
-            //       TextSpan(text: firstPart()),
-            //       TextSpan(
-            //         text: '$username ',
-            //         style: context.bodyMedium
-            //             ?.copyWith(fontWeight: AppFontWeight.bold),
-            //       ),
-            //       TextSpan(text: secondPart()),
-            //     ],
-            //   ),
-            // ),
-            child: Text(
-              widget.likesText(count ?? 0),
-              style: context.titleMedium?.copyWith(
-                color: widget.color,
-                fontSize: widget.size,
-                overflow: TextOverflow.visible,
+          child: widget.textBuilder?.call(count != null ? count - 1 : 0) ??
+              Text(
+                widget.likesText!.call(count ?? 0),
+                style: context.titleMedium?.copyWith(
+                  color: widget.color,
+                  fontSize: widget.size,
+                  overflow: TextOverflow.visible,
+                ),
+                textAlign: TextAlign.center,
               ),
-              textAlign: TextAlign.center,
-            ),
-          ),
         );
       },
     );

@@ -20,6 +20,7 @@ dependencies:
   insta_blocks:
     path: ../insta_blocks
   inview_notifier_list: ^3.0.0
+  marquee: ^2.2.3
   octo_image: ^2.0.0
   path_provider: ^2.1.2
   pinch_zoom_release_unzoom: ^1.0.1
@@ -31,6 +32,7 @@ dependencies:
   shimmer: ^3.0.0
   sliver_tools: ^0.2.12
   smooth_page_indicator: ^1.1.0
+  smooth_video_progress: ^0.0.4
   sprung: ^3.0.1
   url_launcher: ^6.2.3
   user_repository:

@@ -29,6 +29,7 @@ class BottomNavBar extends StatelessWidget {
     final videoPlayer = VideoPlayerProvider.of(context);
 
     final user = context.select((AppBloc bloc) => bloc.state.user);
+
     final navigationBarItems = mainNavigationBarItems(
       homeLabel: context.l10n.homeNavBarItemLabel,
       searchLabel: context.l10n.searchNavBarItemLabel,
@@ -49,6 +50,7 @@ class BottomNavBar extends StatelessWidget {
         duration: const Duration(milliseconds: 350),
       ),
     );
+
     return BottomNavigationBar(
       currentIndex: navigationShell.currentIndex,
       onTap: (index) {
@@ -56,6 +58,11 @@ class BottomNavBar extends StatelessWidget {
           videoPlayer.videoPlayerState.shouldPlay.value = false;
         } else {
           videoPlayer.videoPlayerState.shouldPlay.value = true;
+        }
+        if (index != 3) {
+          videoPlayer.videoPlayerState.shouldPlayReels.value = false;
+        } else {
+          videoPlayer.videoPlayerState.shouldPlayReels.value = true;
         }
         navigationShell.goBranch(
           index,

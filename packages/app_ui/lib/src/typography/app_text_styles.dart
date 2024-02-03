@@ -249,6 +249,7 @@ abstract class ContentTextStyle {
   /// Button Text Style
   static final TextStyle button = _baseTextStyle.copyWith(
     // fontFamily: 'Montserrat',
+    fontFamily: 'Inter',
     fontSize: 14,
     fontWeight: AppFontWeight.bold,
     height: 1.42,

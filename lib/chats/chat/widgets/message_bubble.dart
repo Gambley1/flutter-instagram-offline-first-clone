@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use_from_same_package
+// ignore_for_file: deprecated_member_use
 // ignore_for_file: avoid_positional_boolean_parameters
 
 import 'dart:math' as math;
@@ -258,7 +258,7 @@ class MessageBubbleContent extends StatelessWidget {
                                     if (sharedPost.media.length > 1) {
                                       return const Icon(
                                         Icons.layers,
-                                        size: 36,
+                                        size: AppSize.iconSizeBig,
                                         shadows: [
                                           Shadow(
                                             blurRadius: 2,
@@ -401,7 +401,7 @@ class MessageBubbleContent extends StatelessWidget {
                                         if (sharedPost.media.length > 1) {
                                           return const Icon(
                                             Icons.layers,
-                                            size: 36,
+                                            size: AppSize.iconSizeBig,
                                             shadows: [
                                               Shadow(
                                                 blurRadius: 2,
@@ -558,13 +558,13 @@ class MessageStatuses extends StatelessWidget {
           if (message.isRead)
             Assets.icons.check.svg(
               color: Colors.white,
-              height: 20,
-              width: 20,
+              height: AppSize.iconSizeSmall,
+              width: AppSize.iconSizeSmall,
             )
           else
             const Icon(
               Icons.check,
-              size: 20,
+              size: AppSize.iconSizeSmall,
               color: Colors.white,
             ),
         ],

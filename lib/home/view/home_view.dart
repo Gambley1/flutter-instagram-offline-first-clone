@@ -9,12 +9,12 @@ import 'package:flutter_instagram_offline_first_clone/navigation/navigation.dart
 import 'package:go_router/go_router.dart';
 import 'package:inview_notifier_list/inview_notifier_list.dart';
 
-/// {@template main_view}
+/// {@template home_view}
 /// Main view of the application. It contains the [navigationShell] that will
 /// handle the navigation between the different bottom navigation bars.
 /// {@endtemplate}
 class HomeView extends StatefulWidget {
-  /// {@macro main_view}
+  /// {@macro home_view}
   const HomeView({required this.navigationShell, Key? key})
       : super(key: key ?? const ValueKey<String>('ScaffoldWithNavBar'));
 
@@ -63,9 +63,11 @@ class _HomeViewState extends State<HomeView> {
   void _isPageScrolling() {
     if (_pageController.position.isScrollingNotifier.value == true) {
       _videoPlayerState.shouldPlay.value = false;
+      _videoPlayerState.shouldPlayReels.value = false;
     } else if (_pageController.position.isScrollingNotifier.value == false &&
         _pageController.page == 1) {
       _videoPlayerState.shouldPlay.value = true;
+      _videoPlayerState.shouldPlayReels.value = false;
     }
   }
 
@@ -114,6 +116,7 @@ class VideoPlayerState {
   VideoPlayerState();
 
   final shouldPlay = ValueNotifier(true);
+  final shouldPlayReels = ValueNotifier(true);
   final withSound = ValueNotifier(false);
 }
 

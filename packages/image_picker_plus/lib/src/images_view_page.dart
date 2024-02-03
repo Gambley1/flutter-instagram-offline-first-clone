@@ -326,7 +326,7 @@ class _ImagesViewPageState extends State<ImagesViewPage>
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          existButton(),
+          exitButton(),
           const Spacer(),
           doneButton(),
         ],
@@ -334,7 +334,7 @@ class _ImagesViewPageState extends State<ImagesViewPage>
     );
   }
 
-  IconButton existButton() {
+  IconButton exitButton() {
     return IconButton(
       icon: Icon(Icons.clear_rounded, color: widget.blackColor, size: 30),
       onPressed: () {
@@ -391,7 +391,9 @@ class _ImagesViewPageState extends State<ImagesViewPage>
               if (!mounted) return;
 
               if (widget.callbackFunction != null) {
+                void pop() => Navigator.of(context).maybePop(details);
                 await widget.callbackFunction!(details);
+                pop.call();
               } else {
                 Navigator.of(context).maybePop(details);
               }
@@ -419,7 +421,9 @@ class _ImagesViewPageState extends State<ImagesViewPage>
             if (!mounted) return;
 
             if (widget.callbackFunction != null) {
+              void pop() => Navigator.of(context).maybePop(details);
               await widget.callbackFunction!(details);
+              pop.call();
             } else {
               Navigator.of(context).maybePop(details);
             }

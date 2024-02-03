@@ -10,7 +10,7 @@ class UidGenerator {
   const UidGenerator._();
   static final _uuid = Uuid(goptions: GlobalOptions(CryptoRNG._()));
 
-  /// Generate random user id based on ['Uuid'] library
+  /// Generate random id based on [Uuid] library
   static String v4() => _uuid.v4();
 }
 

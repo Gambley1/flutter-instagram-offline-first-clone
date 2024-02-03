@@ -144,6 +144,16 @@
     "@suggestedForYouText": {
         "description": "Текст, отображаемый в предлагаемом блоке раздела."
     },
+    "and": "и",
+    "others": "{count, plural, =0{} other{ещё {count}}}",
+    "@others": {
+        "placeholders": {
+            "count": {
+                "type": "int",
+                "example": "1"
+            }
+        }
+    },
     "secondsAgo": "{seconds, plural, =1{{seconds} секунду назад} few{{seconds} секунды назад} other{{seconds} секунд назад}}",
     "@secondsAgo": {
         "description": "Секунд назад",

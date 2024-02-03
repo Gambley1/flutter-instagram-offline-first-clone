@@ -23,6 +23,7 @@ import 'package:stories_editor/src/presentation/painting_view/painting.dart';
 import 'package:stories_editor/src/presentation/painting_view/widgets/sketcher.dart';
 import 'package:stories_editor/src/presentation/text_editor_view/text_editor.dart';
 import 'package:stories_editor/src/presentation/utils/constants/app_enums.dart';
+import 'package:stories_editor/src/presentation/utils/mixins/safe_set_state_mixin.dart';
 import 'package:stories_editor/src/presentation/utils/modal_sheets.dart';
 import 'package:stories_editor/src/presentation/widgets/animated_onTap_button.dart';
 import 'package:stories_editor/src/presentation/widgets/scrollable_pageView.dart';
@@ -74,7 +75,7 @@ class MainView extends StatefulWidget {
   State<MainView> createState() => _MainViewState();
 }
 
-class _MainViewState extends State<MainView> {
+class _MainViewState extends State<MainView> with SafeSetStateMixin {
   /// content container key
   final GlobalKey contentKey = GlobalKey();
 
@@ -341,11 +342,9 @@ class _MainViewState extends State<MainView> {
                       BottomTools(
                         contentKey: contentKey,
                         onDone: (bytes) {
-                          if (mounted) {
-                            setState(() {
-                              widget.onDone!(bytes);
-                            });
-                          }
+                          safeSetState(() {
+                            widget.onDone!(bytes);
+                          });
                         },
                         onDoneButtonStyle: widget.onDoneButtonStyle,
                         editorBackgroundColor: widget.editorBackgroundColor,
@@ -465,13 +464,11 @@ class _MainViewState extends State<MainView> {
     final left = (delta.dx / screenUtil.screenWidth) + _currentPos.dx;
     final top = (delta.dy / screenUtil.screenHeight) + _currentPos.dy;
 
-    if (mounted) {
-      setState(() {
+      safeSetState(() {
         _activeItem!.position = Offset(left, top);
         _activeItem!.rotation = details.rotation + _currentRotation;
         _activeItem!.scale = details.scale * _currentScale;
       });
-    }
   }
 
   /// active delete widget with offset position
@@ -480,19 +477,15 @@ class _MainViewState extends State<MainView> {
         item.position.dy >= 0.75.h &&
         item.position.dx >= -0.4.w &&
         item.position.dx <= 0.2.w) {
-      if (mounted) {
-        setState(() {
+        safeSetState(() {
           _isDeletePosition = true;
           item.deletePosition = true;
         });
-      }
     } else {
-      if (mounted) {
-        setState(() {
+        safeSetState(() {
           _isDeletePosition = false;
           item.deletePosition = false;
         });
-      }
     }
   }
 
@@ -507,24 +500,18 @@ class _MainViewState extends State<MainView> {
         item.position.dy >= 0.75.h &&
         item.position.dx >= -0.4.w &&
         item.position.dx <= 0.2.w) {
-      if (mounted) {
-        setState(() {
+        safeSetState(() {
           itemProvider.removeAt(itemProvider.indexOf(item));
           HapticFeedback.heavyImpact();
         });
-      }
     } else {
-      if (mounted) {
-        setState(() {
+        safeSetState(() {
           _activeItem = null;
         });
-      }
     }
-    if (mounted) {
-      setState(() {
+      safeSetState(() {
         _activeItem = null;
       });
-    }
   }
 
   /// update item position, scale, rotation

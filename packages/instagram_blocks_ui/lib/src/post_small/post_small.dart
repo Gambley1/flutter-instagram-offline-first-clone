@@ -95,7 +95,7 @@ class _PostThumbnailImage extends StatelessWidget {
 
     final icon = Icon(
       showPinned ? Icons.push_pin : Icons.layers,
-      size: 26,
+      size: AppSize.iconSizeMedium,
       color: Colors.white,
       shadows: const [
         Shadow(

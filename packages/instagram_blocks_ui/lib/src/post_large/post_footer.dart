@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:async';
 
 import 'package:app_ui/app_ui.dart';
@@ -6,7 +8,6 @@ import 'package:avatar_stack/positions.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:insta_blocks/insta_blocks.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:instagram_blocks_ui/src/carousel_dot_indicator.dart';
 import 'package:instagram_blocks_ui/src/carousel_indicator_controller.dart';
@@ -15,6 +16,7 @@ import 'package:instagram_blocks_ui/src/like_button.dart';
 import 'package:instagram_blocks_ui/src/likes_count.dart';
 import 'package:instagram_blocks_ui/src/post_large/post_caption.dart';
 import 'package:instagram_blocks_ui/src/post_large/post_header.dart';
+import 'package:shared/shared.dart';
 import 'package:user_repository/user_repository.dart';
 
 class PostFooter extends StatelessWidget {
@@ -32,6 +34,7 @@ class PostFooter extends StatelessWidget {
     required this.likesText,
     required this.commentsText,
     required this.createdAt,
+    this.likesCountBuilder,
     super.key,
   });
 
@@ -43,12 +46,13 @@ class PostFooter extends StatelessWidget {
   final LikeCallback likePost;
   final LikesText likesText;
   final CommentsText commentsText;
-  // final String sponsoredText;
   final List<String> imagesUrl;
   final OnAvatarTapCallback onUserProfileAvatarTap;
   final ValueSetter<bool> onCommentsTap;
   final void Function(String, PostAuthor) onPostShareTap;
   final String createdAt;
+  final Widget? Function(String? name, String? userId, int count)?
+      likesCountBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -62,58 +66,57 @@ class PostFooter extends StatelessWidget {
             .where((e) => e.avatarUrl != null);
     double avatarStackWidth() {
       if (likersInFollowings.length case 1) {
-        return 36;
+        return 28;
       }
       if (likersInFollowings.length case 2) {
-        return 57;
+        return 44;
       }
-      return 84;
+      return 60;
     }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
+      children: <Widget>[
         if (isSponsored)
           SponsoredPostAction(
             imageUrl: block.firstMedia?.url ?? '',
             onTap: () => onUserProfileAvatarTap.call(author.avatarUrl),
           ),
-        const AppDivider(padding: 12),
-        const SizedBox(height: 8),
+        const AppDivider(padding: AppSpacing.md),
+        const SizedBox(height: AppSpacing.sm),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
+                children: <Widget>[
                   LikeButton(
                     isLiked: isLiked,
                     like: likePost,
                   ),
-                  const SizedBox(width: 14),
                   Tappable(
                     onTap: () => onCommentsTap(true),
                     animationEffect: TappableAnimationEffect.scale,
                     child: Transform.flip(
                       flipX: true,
-                      child: const Icon(
-                        Icons.chat_bubble_outline_outlined,
-                        size: 30,
+                      child: Assets.icons.chatCircle.svg(
+                        color: Colors.white,
+                        height: AppSize.iconSize,
+                        width: AppSize.iconSize,
                       ),
                     ),
                   ),
-                  const SizedBox(width: 14),
                   Tappable(
                     onTap: () => onPostShareTap(block.id, block.author),
                     animationEffect: TappableAnimationEffect.scale,
                     child: const Icon(
                       Icons.near_me_outlined,
-                      size: 30,
+                      size: AppSize.iconSize,
                     ),
                   ),
-                ],
+                ].insertBetween(const SizedBox(width: AppSpacing.md)),
               ),
               if (imagesUrl.length > 1)
                 ValueListenableBuilder(
@@ -130,14 +133,15 @@ class PostFooter extends StatelessWidget {
                 onTap: () {},
                 child: const Icon(
                   Icons.bookmark_outline_rounded,
-                  size: 30,
+                  size: AppSize.iconSize,
                 ),
               ),
             ],
           ),
         ),
+        const SizedBox(height: AppSpacing.sm),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -145,7 +149,7 @@ class PostFooter extends StatelessWidget {
                 children: [
                   if (likersInFollowings.isNotEmpty) ...[
                     AvatarStack(
-                      height: 34,
+                      height: 28,
                       width: avatarStackWidth(),
                       borderColor: Colors.black,
                       borderWidth: 2,
@@ -155,17 +159,25 @@ class PostFooter extends StatelessWidget {
                       avatars: [
                         for (var i = 0; i < likersInFollowings.length; i++)
                           CachedNetworkImageProvider(
+                            maxWidth: 28,
+                            maxHeight: 28,
                             likersInFollowings.toList()[i].avatarUrl!,
+                            cacheKey: likersInFollowings.toList()[i].avatarUrl,
                           ),
                       ],
                     ),
-                    const SizedBox(width: AppSpacing.sm),
+                    const SizedBox(width: AppSpacing.xs),
                   ],
                   RepaintBoundary(
                     child: LikesCount(
                       key: ValueKey(block.id),
                       likesText: likesText,
                       likesCount: likesCount,
+                      textBuilder: (count) => likesCountBuilder?.call(
+                        likersInFollowings.firstOrNull?.username,
+                        likersInFollowings.firstOrNull?.id,
+                        count,
+                      ),
                     ),
                   ),
                 ],
@@ -179,11 +191,12 @@ class PostFooter extends StatelessWidget {
               RepaintBoundary(
                 child: CommentsCount(
                   count: commentsCount,
-                  onTap: () => onCommentsTap(false),
+                  onTap: () => onCommentsTap.call(false),
                   commentsText: commentsText,
                 ),
               ),
               if (!isSponsored) TimeAgo(createdAt: createdAt),
+              const SizedBox(height: AppSpacing.sm),
             ],
           ),
         ),
@@ -239,7 +252,10 @@ class _SponsoredPostActionState extends State<SponsoredPostAction> {
             : (context.isLight
                 ? _colorScheme?.primaryContainer
                 : _colorScheme?.primary),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.sm,
+        ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -251,7 +267,7 @@ class _SponsoredPostActionState extends State<SponsoredPostAction> {
             ),
             const Icon(
               Icons.arrow_forward_ios_rounded,
-              size: 18,
+              size: AppSize.iconSizeSmall,
             ),
           ],
         ),

@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:ui' as ui;
 
 import 'package:app_ui/app_ui.dart';
@@ -40,9 +42,17 @@ class ChatView extends StatefulWidget {
 }
 
 class _ChatViewState extends State<ChatView> {
-  late final _messageInputController = MessageInputController();
-  final _scrollController = ScrollController();
-  final _focusNode = FocusNode();
+  late MessageInputController _messageInputController;
+  late ScrollController _scrollController;
+  late FocusNode _focusNode;
+
+  @override
+  void initState() {
+    super.initState();
+    _messageInputController = MessageInputController();
+    _scrollController = ScrollController();
+    _focusNode = FocusNode();
+  }
 
   Future<MessageAction?> onMessageTap(
     TapUpDetails details,
@@ -80,12 +90,16 @@ class _ChatViewState extends State<ChatView> {
                 title: Text('Edit'),
               ),
             ),
-          const PopupMenuItem(
+          PopupMenuItem(
             value: MessageAction.delete,
             child: ListTile(
               contentPadding: EdgeInsets.zero,
-              leading: Icon(Icons.delete_outlined),
-              title: Text('Delete'),
+              leading: Assets.icons.trash.svg(
+                color: context.adaptiveColor,
+                height: AppSize.iconSizeMedium,
+                width: AppSize.iconSizeMedium,
+              ),
+              title: const Text('Delete'),
             ),
           ),
         ],
@@ -113,9 +127,9 @@ class _ChatViewState extends State<ChatView> {
 
   @override
   void dispose() {
-    _scrollController.dispose();
-    _focusNode.dispose();
     _messageInputController.dispose();
+    _focusNode.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -560,7 +574,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
         leading: UserStoriesAvatar(
           author: participant,
           enableUnactiveBorder: false,
-          radius: 19,
+          withAdaptiveBorder: false,
         ),
       ),
       bottom: const PreferredSize(

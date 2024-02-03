@@ -1,4 +1,3 @@
-import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
 
@@ -33,7 +32,7 @@ class BlurHashImagePlaceholder extends StatelessWidget {
       return Stack(
         children: [
           image,
-          AppCircularProgress(indicatorColor ?? Colors.white),
+          const Positioned.fill(child: CircularProgressIndicator()),
         ],
       );
     }

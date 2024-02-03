@@ -36,6 +36,7 @@ class ChatInboxTile extends StatelessWidget {
       leading: UserStoriesAvatar(
         author: participant,
         enableUnactiveBorder: false,
+        withAdaptiveBorder: false,
       ),
       title: Text(participant.fullName ?? participant.username ?? ''),
       subtitle: Text(chat.lastMessage ?? 'No last messages'),

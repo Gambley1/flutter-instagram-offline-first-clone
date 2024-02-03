@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/comments/bloc/comments_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/comments/controller/comments_controller.dart';
-import 'package:flutter_instagram_offline_first_clone/feed/feed.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:flutter_instagram_offline_first_clone/stories/stories.dart';
 import 'package:go_router/go_router.dart';
@@ -14,14 +13,12 @@ import 'package:shared/shared.dart';
 
 class CommentsPage extends StatelessWidget {
   const CommentsPage({
-    required this.bloc,
     required this.post,
     required this.scrollController,
     required this.scrollableSheetController,
     super.key,
   });
 
-  final FeedBloc bloc;
   final PostBlock post;
   final ScrollController scrollController;
   final DraggableScrollableController scrollableSheetController;
@@ -34,7 +31,6 @@ class CommentsPage extends StatelessWidget {
       child: RepositoryProvider.value(
         value: CommentsController(),
         child: CommentsView(
-          bloc: bloc,
           post: post,
           scrollController: scrollController,
           scrollableSheetController: scrollableSheetController,
@@ -46,14 +42,12 @@ class CommentsPage extends StatelessWidget {
 
 class CommentsView extends StatelessWidget {
   const CommentsView({
-    required this.bloc,
     required this.post,
     required this.scrollController,
     required this.scrollableSheetController,
     super.key,
   });
 
-  final FeedBloc bloc;
   final PostBlock post;
   final ScrollController scrollController;
   final DraggableScrollableController scrollableSheetController;
@@ -68,7 +62,6 @@ class CommentsView extends StatelessWidget {
         controller: scrollableSheetController,
       ),
       body: CommentsListView(
-        bloc: bloc,
         post: post,
         scrollController: scrollController,
       ),
@@ -114,13 +107,11 @@ class TextEmoji extends StatelessWidget {
 
 class CommentsListView extends StatelessWidget {
   const CommentsListView({
-    required this.bloc,
     required this.post,
     required this.scrollController,
     super.key,
   });
 
-  final FeedBloc bloc;
   final PostBlock post;
   final ScrollController scrollController;
 
@@ -186,6 +177,7 @@ class CommentsListView extends StatelessWidget {
                         onAvatarTap: onAvatarTap,
                         radius: radius,
                         enableUnactiveBorder: false,
+                        withAdaptiveBorder: false,
                       ),
                       onReplyButtonTap: (username) =>
                           context.read<CommentsController>().setReplyingTo(
@@ -299,7 +291,6 @@ class _CommentTextFieldState extends State<CommentTextField> {
                     animationEffect: TappableAnimationEffect.none,
                     child: Icon(
                       Icons.cancel,
-                      size: 24,
                       color: Colors.grey.shade500,
                     ),
                   ),
@@ -465,6 +456,7 @@ class RepliedComments extends StatelessWidget {
                     radius: radius,
                     onAvatarTap: onAvatarTap,
                     enableUnactiveBorder: false,
+                    withAdaptiveBorder: false,
                   ),
                 ),
               )

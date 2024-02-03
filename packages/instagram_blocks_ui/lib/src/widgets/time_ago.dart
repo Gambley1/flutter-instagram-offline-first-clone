@@ -10,9 +10,7 @@ class TimeAgo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       createdAt,
-      style: context.bodyMedium?.copyWith(
-        color: Colors.grey.shade500,
-      ),
+      style: context.bodyMedium?.copyWith(color: Colors.grey.shade500),
     );
   }
 }

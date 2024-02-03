@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:app_ui/app_ui.dart';
 import 'package:chats_repository/chats_repository.dart';
 import 'package:flutter/material.dart';
@@ -68,7 +70,7 @@ class ChatsAppBar extends StatelessWidget {
                   ),
             );
           },
-          child: const Icon(Icons.add),
+          child: const Icon(Icons.add,size: AppSize.iconSize),
         ),
       ],
     );
@@ -107,10 +109,8 @@ class ChatsEmpty extends StatelessWidget {
             children: [
               Transform.flip(
                 flipX: true,
-                child: const Icon(
-                  Icons.message_outlined,
-                  size: 86,
-                ),
+                child: Assets.icons.chatCircle
+                    .svg(color: context.adaptiveColor, height: 86, width: 86),
               ),
               const SizedBox(height: AppSpacing.md),
               Text(

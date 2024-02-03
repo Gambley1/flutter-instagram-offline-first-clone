@@ -63,6 +63,8 @@ dependencies:
   shared:
     path: packages/shared
   shimmer: ^3.0.0
+  slang: ^3.29.0
+  slang_flutter: ^3.29.0
   sliver_tools: ^0.2.12
   sprung: ^3.0.1
   stories_editor:
@@ -78,6 +80,7 @@ dependencies:
   url_launcher: ^6.2.4
   user_repository:
     path: packages/user_repository
+  vector_math: ^2.1.4
   visibility_detector: ^0.4.0+2
 
 dev_dependencies:
@@ -87,6 +90,7 @@ dev_dependencies:
     sdk: flutter
   json_serializable: ^6.7.1
   mocktail: ^1.0.3
+  slang_build_runner: ^3.29.0
   very_good_analysis: ^5.1.0
 
 flutter:

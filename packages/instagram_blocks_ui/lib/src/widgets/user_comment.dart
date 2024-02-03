@@ -58,8 +58,11 @@ class UserComment extends StatelessWidget {
     final canDeletePost =
         post.author.id == currentUserId || comment.author.id == currentUserId;
     return ListTile(
-      contentPadding:
-          EdgeInsetsDirectional.only(end: 12, start: isReplied ? 62 : 0),
+      contentPadding: EdgeInsets.only(
+        right: AppSpacing.md,
+        left: isReplied ? 62 : AppSpacing.md,
+      ),
+      horizontalTitleGap: AppSpacing.md,
       titleAlignment: ListTileTitleAlignment.titleHeight,
       isThreeLine: true,
       onLongPress: !canDeletePost
@@ -73,11 +76,11 @@ class UserComment extends StatelessWidget {
             context,
             comment.author.toUser,
             (_) => onAvatarTap,
-            !isReplied ? null : 16,
+            !isReplied ? null : 14,
           ) ??
           UserProfileAvatar(
             isLarge: false,
-            radius: !isReplied ? null : 16,
+            radius: !isReplied ? null : 14,
             avatarUrl: comment.author.avatarUrl,
             onTap: (_) => onAvatarTap,
             withShimmerPlaceholder: true,
@@ -110,10 +113,6 @@ class UserComment extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 4),
             child: buildHighlightedText(comment.content),
-            // child: ExpandableText(
-            // comment.content,
-            // trimLines: 12,
-            // ),
           ),
           Tappable(
             onTap: () => onReplyButtonTap?.call(comment.author.username),
@@ -123,30 +122,6 @@ class UserComment extends StatelessWidget {
               style: context.labelMedium?.copyWith(color: Colors.grey.shade500),
             ),
           ),
-          // if (comment.replies != null && comment.replies != 0)
-          //   Row(
-          //     crossAxisAlignment: CrossAxisAlignment.start,
-          //     children: [
-          //       Container(
-          //         margin: const EdgeInsets.only(top: 8),
-          //         color: Theme.of(context).dividerColor,
-          //         height: 1,
-          //         width: 40,
-          //       ),
-          //       const SizedBox(width: 10),
-          //       Expanded(
-          //         child: Tappable(
-          //           animationEffect: TappableAnimationEffect.none,
-          //           onTap: () {},
-          //           child: Text(
-          //             'Show ${comment.replies} replies',
-          //             style: context.labelMedium
-          //                 ?.copyWith(color: Colors.grey.shade500),
-          //           ),
-          //         ),
-          //       ),
-          //     ],
-          //   ),
         ],
       ),
       trailing: Column(
@@ -187,12 +162,12 @@ class CommentOwnerLikedAvatar extends StatelessWidget {
         const Icon(
           Icons.favorite,
           color: Colors.red,
-          size: 16,
+          size: AppSize.iconSizeSmall,
         ),
         const SizedBox(width: 4),
         Container(
-          height: 16,
-          width: 16,
+          height: AppSize.iconSizeSmall,
+          width: AppSize.iconSizeSmall,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             image: DecorationImage(

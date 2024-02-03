@@ -59,13 +59,9 @@ class BottomTools extends StatelessWidget {
                         child: controlNotifier.mediaPath.isEmpty
                             ? ClipRRect(
                                 borderRadius: BorderRadius.circular(8),
-                                child: Theme.of(context).platform ==
-                                        TargetPlatform.iOS
-                                    ? const Icon(
-                                        Icons.photo_camera_back_outlined)
-                                    : const CoverThumbnail(
-                                        thumbnailQuality: 150,
-                                      ),
+                                child: const CoverThumbnail(
+                                  thumbnailQuality: 150,
+                                ),
                               )
 
                             /// return clear [imagePath] provider

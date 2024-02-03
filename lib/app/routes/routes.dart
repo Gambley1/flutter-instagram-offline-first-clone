@@ -374,7 +374,7 @@ GoRouter router(AppBloc appBloc) => GoRouter(
                   path: '/reels',
                   pageBuilder: (context, state) {
                     return CustomTransitionPage(
-                      child: const ReelsView(),
+                      child: const ReelsPage(),
                       transitionsBuilder:
                           (context, animation, secondaryAnimation, child) {
                         return FadeTransition(
