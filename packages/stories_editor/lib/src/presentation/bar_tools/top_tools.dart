@@ -7,6 +7,7 @@ import 'package:stories_editor/src/domain/providers/notifiers/control_provider.d
 import 'package:stories_editor/src/domain/providers/notifiers/draggable_widget_notifier.dart';
 import 'package:stories_editor/src/domain/providers/notifiers/painting_notifier.dart';
 import 'package:stories_editor/src/domain/sevices/save_as_image.dart';
+import 'package:stories_editor/src/presentation/utils/mixins/safe_set_state_mixin.dart';
 import 'package:stories_editor/src/presentation/utils/modal_sheets.dart';
 import 'package:stories_editor/src/presentation/widgets/animated_onTap_button.dart';
 import 'package:stories_editor/src/presentation/widgets/tool_button.dart';
@@ -20,7 +21,7 @@ class TopTools extends StatefulWidget {
   State<TopTools> createState() => _TopToolsState();
 }
 
-class _TopToolsState extends State<TopTools> {
+class _TopToolsState extends State<TopTools> with SafeSetStateMixin {
   @override
   Widget build(BuildContext context) {
     return Consumer3<ControlNotifier, PaintingNotifier,
@@ -53,17 +54,13 @@ class _TopToolsState extends State<TopTools> {
                       onTap: () {
                         if (controlNotifier.gradientIndex >=
                             controlNotifier.gradientColors!.length - 1) {
-                          if (mounted) {
-                            setState(() {
-                              controlNotifier.gradientIndex = 0;
-                            });
-                          }
+                          safeSetState(() {
+                            controlNotifier.gradientIndex = 0;
+                          });
                         } else {
-                          if (mounted) {
-                            setState(() {
-                              controlNotifier.gradientIndex += 1;
-                            });
-                          }
+                          safeSetState(() {
+                            controlNotifier.gradientIndex += 1;
+                          });
                         }
                       }),
                 ToolButton(

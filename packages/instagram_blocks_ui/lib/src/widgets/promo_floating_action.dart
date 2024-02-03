@@ -55,7 +55,7 @@ class PromoFloatingAction extends StatelessWidget {
           ),
           trailing: const Icon(
             Icons.arrow_forward_ios_rounded,
-            size: 18,
+            size: AppSize.iconSizeSmall,
           ),
         ),
       ),

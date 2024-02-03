@@ -3,7 +3,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart' show BoxFit, BuildContext, Widget;
 import 'package:shared/shared.dart';
 
-const kDefaultVideoAspectRatio = 4 / 5;
+const kDefaultVideoAspectRatio = 8 / 12;
 const kDefaultAspectRatio = 1.0;
 const kDefaultMediaBoxFit = BoxFit.cover;
 const kDefaultVideoMediaBoxFit = BoxFit.cover;

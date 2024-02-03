@@ -200,15 +200,48 @@ extension DialogExtension on BuildContext {
                     child: ListTile(
                       title: Text(
                         option.name,
-                        style: bodyLarge?.copyWith(color: option.nameColor),
+                        style: bodyLarge?.copyWith(
+                          color: option.nameColor ?? option.distractiveColor,
+                        ),
                       ),
-                      leading: option.icon == null ? null : Icon(option.icon),
+                      leading: option.child ??
+                          Icon(
+                            option.icon,
+                            color: option.distractiveColor,
+                          ),
                     ),
                   ),
                 )
                 .toList(),
           ),
         ),
+      );
+
+  /// Opens the modal bottom sheet for a comments page builder.
+  Future<void> showCommentsModal({
+    required Widget Function(
+      ScrollController scrollController,
+      DraggableScrollableController draggableScrollController,
+    ) pageBuilder,
+    bool showFullSized = false,
+  }) =>
+      showBottomModal<void>(
+        isScrollControlled: true,
+        enalbeDrag: false,
+        showDragHandle: false,
+        builder: (context) {
+          final controller = DraggableScrollableController();
+          return DraggableScrollableSheet(
+            controller: controller,
+            expand: false,
+            snap: true,
+            snapSizes: const [.6, 1],
+            initialChildSize: showFullSized ? 1.0 : .7,
+            minChildSize: .4,
+            builder: (context, scrollController) =>
+                pageBuilder.call(scrollController, controller),
+          );
+        },
       );
 
   /// Opens a dialog where shows a preview of an image in a circular avatar.

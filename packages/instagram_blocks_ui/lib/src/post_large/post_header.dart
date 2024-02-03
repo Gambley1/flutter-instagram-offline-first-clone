@@ -55,7 +55,10 @@ class PostHeader extends StatelessWidget {
                 '${author.username} ',
                 style: context.titleMedium,
               ),
-              Assets.icons.verifiedUser.svg(width: 20, height: 20),
+              Assets.icons.verifiedUser.svg(
+                width: AppSize.iconSizeSmall,
+                height: AppSize.iconSizeSmall,
+              ),
             ],
           )
         : Text(
@@ -65,8 +68,8 @@ class PostHeader extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(
-        vertical: 6,
-        horizontal: 6,
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.sm,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -88,7 +91,7 @@ class PostHeader extends StatelessWidget {
                       onTap: avatarOnTap,
                       scaleStrength: ScaleStrength.xxs,
                     ),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.sm),
                 if (isSponsored)
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -131,9 +134,9 @@ class PostHeader extends StatelessWidget {
                       wasSubscribed: wasFollowed,
                       subscribe: follow,
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: AppSpacing.md),
                   ],
-                  _MoreOptionsButton(
+                  PostOptionsButton(
                     isOwner: isOwner,
                     isSubscribed: isSubscribed,
                   ),
@@ -147,9 +150,10 @@ class PostHeader extends StatelessWidget {
   }
 }
 
-class _MoreOptionsButton extends StatelessWidget {
-  const _MoreOptionsButton({
+class PostOptionsButton extends StatelessWidget {
+  const PostOptionsButton({
     required this.isOwner,
+    super.key,
     this.isSubscribed,
   });
 
@@ -161,7 +165,7 @@ class _MoreOptionsButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Tappable(
       onTap: () {},
-      child: const Icon(Icons.more_vert),
+      child: const Icon(Icons.more_vert, size: AppSize.iconSizeMedium),
     );
   }
 }

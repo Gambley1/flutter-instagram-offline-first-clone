@@ -77,7 +77,7 @@ class _CreatePostViewState extends State<CreatePostView> {
                         yesText: 'Clear',
                         title: 'Are you sure to clear all the images?',
                       ),
-              child: const Icon(Icons.cancel, size: 30),
+              child: const Icon(Icons.cancel, size: AppSize.iconSize),
             ),
         ],
       ),
@@ -105,7 +105,6 @@ class _CreatePostViewState extends State<CreatePostView> {
                               //   _imagesFile = imagesFile;
                               //   _imagesBytes = imagesBytes;
                               // });
-                              void pop() => context.pop();
                               final selectedFiles = <SelectedByte>[];
                               for (final selectedFile
                                   in details.selectedFiles) {
@@ -138,7 +137,6 @@ class _CreatePostViewState extends State<CreatePostView> {
                               setState(() {
                                 _selectedFiles = selectedFiles;
                               });
-                              pop.call();
                             },
                             // await Navigator.of(context, rootNavigator: true)
                             //     .push(
@@ -179,7 +177,7 @@ class _CreatePostViewState extends State<CreatePostView> {
                   child: const FittedBox(child: Icon(Icons.camera)),
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.md),
               AppTextField(
                 filled: true,
                 border: outlinedBorder(
@@ -199,7 +197,6 @@ class _CreatePostViewState extends State<CreatePostView> {
                         onTap: () => setState(_captionController.clear),
                         child: const Icon(
                           Icons.cancel,
-                          size: 20,
                         ),
                       ),
                 onChanged: (value) {
@@ -210,7 +207,7 @@ class _CreatePostViewState extends State<CreatePostView> {
               ),
               const SizedBox(height: AppSpacing.sm),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
                 child: CreatePostButton(
                   busy: _busy,
                   onPostCreate: _selectedFiles == null ||
@@ -420,8 +417,8 @@ class ImagesCarouselPreview extends StatelessWidget {
                   },
                 ),
                 Positioned(
-                  top: 12,
-                  left: 12,
+                  top: AppSpacing.md,
+                  left: AppSpacing.md,
                   child: Tappable(
                     onTap: () {
                       final index = imagesBytes.indexWhere((e) => e == bytes);
@@ -430,7 +427,7 @@ class ImagesCarouselPreview extends StatelessWidget {
                     },
                     child: const Icon(
                       Icons.cancel,
-                      size: 34,
+                      size: AppSize.iconSizeBig,
                       color: Colors.white,
                     ),
                   ),

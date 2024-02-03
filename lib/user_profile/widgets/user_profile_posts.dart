@@ -1,12 +1,14 @@
 import 'dart:convert';
 
 import 'package:app_ui/app_ui.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/comments/view/view.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/feed.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
+import 'package:flutter_instagram_offline_first_clone/l10n/slang/translations.g.dart';
 import 'package:flutter_instagram_offline_first_clone/stories/user_stories/user_stories.dart';
 import 'package:flutter_instagram_offline_first_clone/user_profile/user_profile.dart';
 import 'package:go_router/go_router.dart';
@@ -66,34 +68,17 @@ class _UserProfilePostsState extends State<UserProfilePosts> {
 
   Future<void> _onCommentsTap({
     required PostBlock post,
-    required FeedBloc bloc,
     required BuildContext context,
     bool showFullSized = false,
   }) =>
-      context.showBottomModal<void>(
-        isScrollControlled: true,
-        enalbeDrag: false,
-        showDragHandle: false,
-        builder: (context) {
-          final controller = DraggableScrollableController();
-          return DraggableScrollableSheet(
-            controller: controller,
-            expand: false,
-            snap: true,
-            snapSizes: const [
-              .6,
-              1,
-            ],
-            initialChildSize: showFullSized ? 1.0 : .7,
-            minChildSize: .4,
-            builder: (context, scrollController) => CommentsPage(
-              bloc: bloc,
-              post: post,
-              scrollController: scrollController,
-              scrollableSheetController: controller,
-            ),
-          );
-        },
+      context.showCommentsModal(
+        showFullSized: showFullSized,
+        pageBuilder: (scrollController, draggableScrollController) =>
+            CommentsPage(
+          post: post,
+          scrollController: scrollController,
+          scrollableSheetController: draggableScrollController,
+        ),
       );
 
   @override
@@ -102,6 +87,8 @@ class _UserProfilePostsState extends State<UserProfilePosts> {
     final feedBloc = context.read<FeedBloc>();
 
     final user = context.select((AppBloc bloc) => bloc.state.user);
+    final t = context.t;
+    final l10n = context.l10n;
 
     return AppScaffold(
       body: InViewNotifierCustomScrollView(
@@ -128,6 +115,31 @@ class _UserProfilePostsState extends State<UserProfilePosts> {
                     userBloc.add(UserProfileLikePostRequested(id)),
                 isFollowed: (id) =>
                     context.read<UserProfileBloc>().followingStatus(userId: id),
+                likesCountBuilder: (name, userId, count) => name == null
+                    ? null
+                    : Text.rich(
+                        t.likedBy(
+                          name: TextSpan(
+                            text: name,
+                            style: context.titleMedium
+                                ?.copyWith(fontWeight: AppFontWeight.bold),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = userId == null
+                                  ? null
+                                  : () => context.pushNamed(
+                                        'user_profile',
+                                        pathParameters: {'user_id': userId},
+                                      ),
+                          ),
+                          and: TextSpan(text: count < 1 ? '' : l10n.and),
+                          others: TextSpan(
+                            text: l10n.others(count),
+                            style: context.titleMedium
+                                ?.copyWith(fontWeight: AppFontWeight.bold),
+                          ),
+                        ),
+                        style: context.titleMedium,
+                      ),
                 follow: (id) => context
                     .read<UserProfileBloc>()
                     .add(UserProfileFollowUserRequested(id)),
@@ -144,7 +156,6 @@ class _UserProfilePostsState extends State<UserProfilePosts> {
                 onPressed: (action, _) => _onFeedItemAction(context, action),
                 onCommentsTap: (block, showFullSized) => _onCommentsTap(
                   post: block,
-                  bloc: feedBloc,
                   context: context,
                   showFullSized: showFullSized,
                 ),

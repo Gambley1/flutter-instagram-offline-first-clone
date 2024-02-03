@@ -40,6 +40,7 @@ class PostsListView extends StatelessWidget {
     this.enableFollowButton = true,
     this.videoPlayerBuilder,
     this.postAuthorAvatarBuilder,
+    this.likesCountBuilder,
   });
 
   final List<PostBlock>? blocks;
@@ -68,6 +69,8 @@ class PostsListView extends StatelessWidget {
   final VideoPlayerBuilder? videoPlayerBuilder;
   final AvatarBuilder? postAuthorAvatarBuilder;
   final bool withInViewNotifier;
+  final Widget? Function(String? name, String? userId, int count)?
+      likesCountBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -99,6 +102,7 @@ class PostsListView extends StatelessWidget {
         videoPlayerBuilder: videoPlayerBuilder,
         postAuthorAvatarBuilder: postAuthorAvatarBuilder,
         withInViewNotifier: withInViewNotifier,
+        likesCountBuilder: likesCountBuilder,
       );
     }
     return SliverList.builder(
@@ -131,6 +135,7 @@ class PostsListView extends StatelessWidget {
           postIndex: index,
           postAuthorAvatarBuilder: postAuthorAvatarBuilder,
           withInViewNotifier: withInViewNotifier,
+          likesCountBuilder: likesCountBuilder,
         );
       },
       itemCount: blocks!.length,
@@ -163,6 +168,7 @@ class _PostsItemController extends StatefulWidget {
     required this.videoPlayerBuilder,
     required this.postAuthorAvatarBuilder,
     required this.withInViewNotifier,
+    required this.likesCountBuilder,
   });
 
   final List<PostBlock> blocks;
@@ -188,6 +194,8 @@ class _PostsItemController extends StatefulWidget {
   final VideoPlayerBuilder? videoPlayerBuilder;
   final AvatarBuilder? postAuthorAvatarBuilder;
   final bool withInViewNotifier;
+  final Widget? Function(String? name, String? userId, int count)?
+      likesCountBuilder;
 
   @override
   State<_PostsItemController> createState() => _PostsItemControllerState();
@@ -240,6 +248,7 @@ class _PostsItemControllerState extends State<_PostsItemController> {
             postIndex: index,
             postAuthorAvatarBuilder: widget.postAuthorAvatarBuilder,
             withInViewNotifier: widget.withInViewNotifier,
+            likesCountBuilder: widget.likesCountBuilder,
           );
         },
         itemCount: widget.blocks.length,

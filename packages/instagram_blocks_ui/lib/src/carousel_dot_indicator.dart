@@ -1,3 +1,4 @@
+import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 
 class CarouselDotIndicator extends StatelessWidget {
@@ -12,7 +13,8 @@ class CarouselDotIndicator extends StatelessWidget {
 
   Widget _buildDot({required bool isActive}) {
     return Container(
-      margin: const EdgeInsets.only(left: 3, right: 3),
+      margin:
+          const EdgeInsets.only(left: AppSpacing.xxs, right: AppSpacing.xxs),
       height: isActive ? 7.5 : 6.0,
       width: isActive ? 7.5 : 6.0,
       decoration: BoxDecoration(

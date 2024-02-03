@@ -18,3 +18,23 @@ extension IterableExtension<T> on Iterable<T> {
     }
   }
 }
+
+/// The extension that splits the original string and inserts the `text` between
+/// each word.
+extension SplitTextBy on String {
+  /// Splits the original string and inserts the [text] between
+  /// each word.
+  String insertBetween(String text, {String splitBy = ' '}) {
+    final iterator = split(splitBy).iterator;
+    final str = StringBuffer();
+    if (iterator.moveNext()) {
+      str.write(iterator.current);
+      while (iterator.moveNext()) {
+        str
+          ..write(' $text ')
+          ..write(iterator.current);
+      }
+    }
+    return str.toString();
+  }
+}

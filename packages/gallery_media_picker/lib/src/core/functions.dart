@@ -53,12 +53,13 @@ class GalleryFunctions {
     );
   }
 
-  static onPickMax(GalleryMediaPickerController provider) {
+  static void onPickMax(GalleryMediaPickerController provider) {
     provider.onPickMax
         .addListener(() => showToast("Already pick ${provider.max} items."));
   }
 
-  static getPermission(setState, GalleryMediaPickerController provider) async {
+  static Future<void> getPermission(void Function(void Function() fn)? setState,
+      GalleryMediaPickerController provider) async {
     /// request for device permission
     var result = await PhotoManager.requestPermissionExtend(
         requestOption: const PermissionRequestOption(
@@ -81,17 +82,18 @@ class GalleryFunctions {
     }
   }
 
-  static _refreshPathList(setState, GalleryMediaPickerController provider) {
+  static _refreshPathList(void Function(void Function() fn)? setState,
+      GalleryMediaPickerController provider) {
     PhotoManager.getAssetPathList(
-            type: provider.paramsModel.onlyVideos
+            type: provider.paramsModel?.onlyVideos ?? false
                 ? RequestType.video
-                : provider.paramsModel.onlyImages
+                : provider.paramsModel?.onlyImages ?? false
                     ? RequestType.image
                     : RequestType.image)
         .then((pathList) {
       /// don't delete setState
       Future.delayed(Duration.zero, () {
-        setState(() {
+        setState?.call(() {
           provider.resetPathList(pathList);
         });
       });

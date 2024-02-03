@@ -25,8 +25,9 @@ class Formatters {
   Formatters({
     required BuildContext context,
     DateFormat Function(String locale)? dateFormat,
-  })  : formatter =
-            NumberFormat('', Localizations.localeOf(context).languageCode),
+  })  : formatter = NumberFormat.decimalPattern(
+          Localizations.localeOf(context).languageCode,
+        ),
         currency = NumberFormat.currency(
           symbol:
               Localizations.localeOf(context).languageCode == 'en' ? r'$' : '₸',
@@ -145,6 +146,15 @@ extension CompactFormatter on num {
         NumberFormat.compactLong(locale: locale.languageCode);
     return this <= 9999
         ? format(context: context).replaceWithEmptySpace(',')
+        : compactFormatter.format(this).replaceAll('.', ',');
+  }
+
+  /// From 1,200,000 to 1,2M.
+  String compactShort(BuildContext context) {
+    final locale = Localizations.localeOf(context);
+    final compactFormatter = NumberFormat.compact(locale: locale.languageCode);
+    return this <= 9999
+        ? format(context: context)
         : compactFormatter.format(this).replaceAll('.', ',');
   }
 }

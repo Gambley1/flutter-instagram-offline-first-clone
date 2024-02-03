@@ -17,3 +17,14 @@ targets:
           explicit_to_json: true
           field_rename: snake
           include_if_null: false
+      slang_build_runner:
+        options:
+          base_locale: en
+          fallback_strategy: base_locale
+          input_directory: lib/l10n/slang
+          input_file_pattern: .arb
+          output_directory: lib/l10n/slang
+          output_file_name: translations.g.dart
+          output_format: single_file
+          locale_handling: true
+          flutter_integration: true

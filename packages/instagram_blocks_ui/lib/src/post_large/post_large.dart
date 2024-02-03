@@ -33,6 +33,7 @@ class PostLarge extends StatelessWidget {
     this.postAuthorAvatarBuilder,
     this.videoPlayerBuilder,
     this.postIndex,
+    this.likesCountBuilder,
     super.key,
   });
 
@@ -75,8 +76,11 @@ class PostLarge extends StatelessWidget {
   final VideoPlayerBuilder? videoPlayerBuilder;
 
   final int? postIndex;
-  
+
   final bool withInViewNotifier;
+
+  final Widget? Function(String? name, String? userId, int count)?
+      likesCountBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -122,6 +126,7 @@ class PostLarge extends StatelessWidget {
           onPostShareTap: onPostShareTap,
           likesText: likesText,
           commentsText: commentsText,
+          likesCountBuilder: likesCountBuilder,
         ),
       ],
     );

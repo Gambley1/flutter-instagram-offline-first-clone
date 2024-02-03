@@ -37,8 +37,8 @@ class UserProfileHeader extends StatelessWidget {
         );
 
     final isOwner = context.select((UserProfileBloc b) => b.isOwner);
-    // final user = context.select((UserProfileBloc b) => b.state.user);
-    final user = context.select((AppBloc bloc) => bloc.state.user);
+    final user = context.select((UserProfileBloc b) => b.state.user);
+    // final user = context.select((AppBloc bloc) => bloc.state.user);
     final canCreateStories =
         context.select((CreateStoriesBloc bloc) => bloc.state.isAvailable);
 
@@ -288,6 +288,7 @@ class UserProfileSubscribeUserButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final bloc = context.read<UserProfileBloc>();
     final user = context.select((UserProfileBloc b) => b.state.user);
+    
     return StreamBuilder<bool>(
       stream: bloc.followingStatus(userId: userId!),
       builder: (context, snapshot) {

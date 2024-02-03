@@ -67,7 +67,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                             child: Icon(
                               Icons.copy_rounded,
                               color: Colors.white,
-                              size: 20,
+                              size: AppSize.iconSizeSmall,
                             ),
                           ),
                         ),
@@ -78,7 +78,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                             child: Icon(
                               Icons.slow_motion_video_sharp,
                               color: Colors.white,
-                              size: 20,
+                              size: AppSize.iconSizeSmall,
                             ),
                           ),
                         ),
@@ -130,7 +130,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                 },
                 icon: const Icon(
                   Icons.check_rounded,
-                  size: 30,
+                  size: AppSize.iconSize,
                   color: Colors.blue,
                 ),
               ),

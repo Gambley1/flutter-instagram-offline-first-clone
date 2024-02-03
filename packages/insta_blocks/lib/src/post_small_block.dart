@@ -48,5 +48,24 @@ class PostSmallBlock extends PostBlock {
   static const identifier = '__post_small__';
 
   @override
+  PostSmallBlock copyWith({
+    String? id,
+    PostAuthor? author,
+    DateTime? createdAt,
+    List<Media>? media,
+    String? caption,
+    BlockAction? action,
+  }) {
+    return PostSmallBlock(
+      id: id ?? this.id,
+      author: author ?? this.author,
+      createdAt: createdAt ?? this.createdAt,
+      media: media ?? this.media,
+      caption: caption ?? this.caption,
+      action: action ?? this.action,
+    );
+  }
+
+  @override
   Map<String, dynamic> toJson() => _$PostSmallBlockToJson(this);
 }

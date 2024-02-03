@@ -7,6 +7,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_instagram_offline_first_clone/firebase_options_prod.dart';
+import 'package:flutter_instagram_offline_first_clone/l10n/slang/translations.g.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:persistent_storage/persistent_storage.dart';
@@ -25,8 +26,8 @@ class AppBlocObserver extends BlocObserver {
 
   @override
   void onError(BlocBase<dynamic> bloc, Object error, StackTrace stackTrace) {
-    super.onError(bloc, error, stackTrace);
     log('onError ${bloc.runtimeType}', error: error, stackTrace: stackTrace);
+    super.onError(bloc, error, stackTrace);
   }
 }
 
@@ -50,6 +51,9 @@ Future<void> bootstrap(
   await runZonedGuarded(
     () async {
       WidgetsFlutterBinding.ensureInitialized();
+
+      LocaleSettings.useDeviceLocale();
+      LocaleSettings.setLocale(AppLocale.en);
 
       await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform,
@@ -80,11 +84,13 @@ Future<void> bootstrap(
       await remoteConfig.init();
 
       runApp(
-        await builder(
-          powerSyncRepository,
-          firebaseMessaging,
-          sharedPreferences,
-          remoteConfig,
+        TranslationProvider(
+          child: await builder(
+            powerSyncRepository,
+            firebaseMessaging,
+            sharedPreferences,
+            remoteConfig,
+          ),
         ),
       );
     },

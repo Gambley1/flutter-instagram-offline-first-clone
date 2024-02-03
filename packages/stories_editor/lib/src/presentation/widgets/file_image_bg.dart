@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:stories_editor/src/presentation/utils/color_detection.dart';
+import 'package:stories_editor/src/presentation/utils/mixins/safe_set_state_mixin.dart';
 
 class FileImageBG extends StatefulWidget {
   final File? filePath;
@@ -18,7 +19,7 @@ class FileImageBG extends StatefulWidget {
   State<FileImageBG> createState() => _FileImageBGState();
 }
 
-class _FileImageBGState extends State<FileImageBG> {
+class _FileImageBGState extends State<FileImageBG> with SafeSetStateMixin {
   GlobalKey imageKey = GlobalKey();
   GlobalKey paintKey = GlobalKey();
 
@@ -57,7 +58,7 @@ class _FileImageBGState extends State<FileImageBG> {
           Offset(imageKey.currentState!.context.size!.width / 2.03, 530));
       color1 = cd1;
       color2 = cd12;
-      if (mounted) setState(() {});
+      safeSetState(() {});
       widget.generatedGradient(color1, color2);
       callback.cancel();
       stateController.close();
@@ -67,6 +68,7 @@ class _FileImageBGState extends State<FileImageBG> {
   @override
   void dispose() {
     _timer?.cancel();
+    stateController.close();
     super.dispose();
   }
 

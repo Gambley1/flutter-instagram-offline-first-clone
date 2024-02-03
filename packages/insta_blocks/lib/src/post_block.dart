@@ -77,6 +77,9 @@ abstract class PostBlock extends InstaBlock with EquatableMixin {
       media.any((media) => media is ImageMedia) &&
       media.any((media) => media is VideoMedia);
 
+  /// Copies current [PostBlock] instance and merges with new values.
+  PostBlock copyWith();
+
   @override
   List<Object?> get props => [
         id,

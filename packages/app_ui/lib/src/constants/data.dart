@@ -1,4 +1,5 @@
-// ignore_for_file: public_member_api_docs
+// ignore_for_file: public_member_api_docs,
+// ignore_for_file: deprecated_member_use_from_same_package
 import 'package:flutter/material.dart';
 import 'package:shared/shared.dart';
 
@@ -15,7 +16,7 @@ List<NavBarItem> mainNavigationBarItems({
       NavBarItem(icon: Icons.home_filled, label: homeLabel),
       NavBarItem(icon: Icons.search, label: searchLabel),
       NavBarItem(icon: Icons.add_box_outlined, label: createMediaLabel),
-      NavBarItem(icon: Icons.movie_outlined, label: reelsLabel),
+      NavBarItem(icon: Icons.video_collection_outlined, label: reelsLabel),
       NavBarItem(child: userProfileAvatar, label: userProfileLabel),
     ];
 

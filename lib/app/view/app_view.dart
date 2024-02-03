@@ -13,20 +13,7 @@ class AppView extends StatelessWidget {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       title: 'Instagram Clone',
-      // home: const ChatPage(
-      //   chatId: '6db9b9ca-d1ad-47d3-961f-7b3f5357edd8',
-      //   chat: ChatInbox(
-      //     id: '6db9b9ca-d1ad-47d3-961f-7b3f5357edd8',
-      //     participant: User(
-      //       id: 'f918043c-30e0-4f86-9894-34e6844d4e8f',
-      //       username: 'emo.official',
-      //       avatarUrl:
-      //           'https://wefeasvyrksvvywqgchk.supabase.co/storage/v1/object/sign/avatars/2023-12-06T00:50:45.298421.jpg?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJhdmF0YXJzLzIwMjMtMTItMDZUMDA6NTA6NDUuMjk4NDIxLmpwZyIsImlhdCI6MTcwMTgwMjI0NywiZXhwIjoyMDE3MTYyMjQ3fQ.-Jt3JWJV1lWU4dli0zy0uNEapCTzmnq6Sb9wtdCgN9M',
-      //     ),
-      //   ),
-      // ),
       routerConfig: router(context.read<AppBloc>()),
-      // home: const TestPageInViewNotifier(),
       builder: (context, child) {
         return Stack(
           children: [
@@ -48,7 +35,7 @@ class AppView extends StatelessWidget {
         useMaterial3ErrorColors: true,
         appBarStyle: FlexAppBarStyle.scaffoldBackground,
       ).copyWith(
-        // textTheme: const AppTheme().textTheme,
+        textTheme: const AppTheme().textTheme,
         iconTheme: const IconThemeData(color: Colors.black),
         bottomNavigationBarTheme: const BottomNavigationBarThemeData(
           type: BottomNavigationBarType.fixed,

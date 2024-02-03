@@ -1,15 +1,17 @@
-// ignore_for_file: deprecated_member_use_from_same_package
+// ignore_for_file: deprecated_member_use
 
 import 'dart:convert';
 
 import 'package:app_ui/app_ui.dart';
 import 'package:firebase_config/firebase_config.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/bloc/app_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/comments/view/view.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/feed.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
+import 'package:flutter_instagram_offline_first_clone/l10n/slang/translations.g.dart';
 import 'package:go_router/go_router.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:posts_repository/posts_repository.dart';
@@ -94,34 +96,17 @@ class _PostPreviewDetailsState extends State<PostPreviewDetails> {
 
   Future<void> _onCommentsTap({
     required PostBlock post,
-    required FeedBloc bloc,
     required BuildContext context,
     bool showFullSized = false,
   }) =>
-      context.showBottomModal<void>(
-        isScrollControlled: true,
-        enalbeDrag: false,
-        showDragHandle: false,
-        builder: (context) {
-          final controller = DraggableScrollableController();
-          return DraggableScrollableSheet(
-            controller: controller,
-            expand: false,
-            snap: true,
-            snapSizes: const [
-              .6,
-              1,
-            ],
-            initialChildSize: showFullSized ? 1.0 : .7,
-            minChildSize: .4,
-            builder: (context, scrollController) => CommentsPage(
-              bloc: bloc,
-              post: post,
-              scrollController: scrollController,
-              scrollableSheetController: controller,
-            ),
-          );
-        },
+      context.showCommentsModal(
+        showFullSized: showFullSized,
+        pageBuilder: (scrollController, draggableScrollController) =>
+            CommentsPage(
+          post: post,
+          scrollController: scrollController,
+          scrollableSheetController: draggableScrollController,
+        ),
       );
 
   /// Handles actions triggered by tapping on feed items.
@@ -147,6 +132,9 @@ class _PostPreviewDetailsState extends State<PostPreviewDetails> {
     final bloc = context.read<FeedBloc>();
     final user = context.select((AppBloc bloc) => bloc.state.user);
 
+    final t = context.t;
+    final l10n = context.l10n;
+
     return RefreshIndicator.adaptive(
       onRefresh: () async => bloc
           .getPostBy(widget.id)
@@ -168,10 +156,34 @@ class _PostPreviewDetailsState extends State<PostPreviewDetails> {
               follow: () =>
                   bloc.add(FeedPostAuthorFollowRequested(block!.author.id)),
               enableFollowButton: true,
+              likesCountBuilder: (name, userId, count) => name == null
+                  ? null
+                  : Text.rich(
+                      t.likedBy(
+                        name: TextSpan(
+                          text: name,
+                          style: context.titleMedium
+                              ?.copyWith(fontWeight: AppFontWeight.bold),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = userId == null
+                                ? null
+                                : () => context.pushNamed(
+                                      'user_profile',
+                                      pathParameters: {'user_id': userId},
+                                    ),
+                        ),
+                        and: TextSpan(text: count < 1 ? '' : l10n.and),
+                        others: TextSpan(
+                          text: l10n.others(count),
+                          style: context.titleMedium
+                              ?.copyWith(fontWeight: AppFontWeight.bold),
+                        ),
+                      ),
+                      style: context.titleMedium,
+                    ),
               onCommentsTap: (showFullSized) => _onCommentsTap(
                 context: context,
                 post: block!,
-                bloc: bloc,
                 showFullSized: showFullSized,
               ),
               commentsCount: bloc.commentsCountOf(block!.id),

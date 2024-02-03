@@ -127,6 +127,7 @@ abstract class PostsBaseRepository {
   Future<List<Post>> getPage({
     required int offset,
     required int limit,
+    bool onlyReels = false,
   });
 
   /// Uploads the post [Media] to the server.
@@ -460,7 +461,35 @@ ON CONFLICT (id) DO UPDATE SET url = ?3, blur_hash = ?5, owner_id = ?2, first_fr
   Future<List<Post>> getPage({
     required int offset,
     required int limit,
+    bool onlyReels = false,
   }) async {
+//     if (onlyReels) {
+//       final result = await _powerSyncRepository.db().execute(
+//         '''
+// SELECT
+//   posts.*,
+//   p.id as user_id,
+//   p.avatar_url as avatar_url,
+//   p.username as username
+// FROM
+//   posts
+//   inner join profiles p on posts.user_id = p.id
+// WHERE array_length(array(posts.media), 1) = 1
+//   AND posts.media.type = '__video_media__'
+// LIMIT ?1 OFFSET ?2
+//     ''',
+//         [limit, offset],
+//       );
+
+//       final posts = <Post>[];
+
+//       for (final row in result) {
+//         final json = Map<String, dynamic>.from(row);
+//         final post = Post.fromJson(json);
+//         posts.add(post);
+//       }
+//       return posts;
+//     }
     final result = await _powerSyncRepository.db().execute(
       '''
 SELECT
@@ -1222,7 +1251,7 @@ values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   /// Sends notification in a background isolate.
   static Future<void> sendBackgroundNotification(List<dynamic> args) async {
     await sendNotification(
-      sendToPushToken: args[1] as String,
+      sendToPushToken: args[1] as String?,
       sender: args[2] as User,
       message: args[3] as Message,
       postAuthor: args[4] as PostAuthor?,
@@ -1233,7 +1262,7 @@ values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 
   /// Sends notification using Google APIs to user.
   static Future<void> sendNotification({
-    required String sendToPushToken,
+    required String? sendToPushToken,
     String? chatId,
     User? sender,
     Message? message,
@@ -1423,11 +1452,8 @@ values (?, ?, ?, ?, ?, ?, ?)
           contentType.toJson(),
           contentUrl,
           duration,
-          DateTime.now().toLocal().toIso8601String(),
-          DateTime.now()
-              .add(const Duration(days: 1))
-              .toLocal()
-              .toIso8601String(),
+          DateTime.timestamp().toIso8601String(),
+          DateTime.timestamp().add(const Duration(days: 1)).toIso8601String(),
         ],
       );
 
@@ -1517,7 +1543,7 @@ LIMIT ? OFFSET ?
   }) async {
     final result = await _powerSyncRepository.db().getAll(
       '''
-SELECT up.id, up.avatar_url
+SELECT up.id, up.avatar_url, up.username
 FROM profiles up
 WHERE up.id IN (
     SELECT l.user_id

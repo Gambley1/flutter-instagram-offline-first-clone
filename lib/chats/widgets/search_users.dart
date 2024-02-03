@@ -60,7 +60,8 @@ class _SearchUsersState extends State<SearchUsers> {
             contentPadding: EdgeInsets.zero,
             onTap: () =>
                 context.pop(widget.returnUser ? user.toJson() : user.id),
-            leading: UserStoriesAvatar(author: user),
+            leading:
+                UserStoriesAvatar(author: user, enableUnactiveBorder: false),
             title: Text(user.fullName!),
           );
         },

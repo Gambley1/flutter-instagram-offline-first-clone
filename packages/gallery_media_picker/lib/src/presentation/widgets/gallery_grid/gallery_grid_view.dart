@@ -53,20 +53,20 @@ class GalleryGridViewState extends State<GalleryGridView> {
             child: AnimatedBuilder(
               animation: widget.provider.assetCountNotifier,
               builder: (_, __) => Container(
-                color: widget.provider.paramsModel.gridViewBackgroundColor,
+                color: widget.provider.paramsModel?.gridViewBackgroundColor,
                 child: GridView.builder(
                   key: ValueKey(widget.path),
                   shrinkWrap: true,
-                  padding: widget.provider.paramsModel.gridPadding ??
+                  padding: widget.provider.paramsModel?.gridPadding ??
                       const EdgeInsets.all(0),
-                  physics: widget.provider.paramsModel.gridViewPhysics ??
+                  physics: widget.provider.paramsModel?.gridViewPhysics ??
                       const ScrollPhysics(),
-                  controller: widget.provider.paramsModel.gridViewController ??
+                  controller: widget.provider.paramsModel?.gridViewController ??
                       ScrollController(),
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     childAspectRatio:
-                        widget.provider.paramsModel.childAspectRatio,
-                    crossAxisCount: widget.provider.paramsModel.crossAxisCount,
+                        widget.provider.paramsModel!.childAspectRatio,
+                    crossAxisCount: widget.provider.paramsModel!.crossAxisCount,
                     mainAxisSpacing: 2.5,
                     crossAxisSpacing: 2.5,
                   ),
@@ -123,7 +123,7 @@ class GalleryGridViewState extends State<GalleryGridView> {
             return Container(
               width: double.infinity,
               height: double.infinity,
-              color: widget.provider.paramsModel.gridViewBackgroundColor,
+              color: widget.provider.paramsModel!.gridViewBackgroundColor,
             );
           }
           final asset = snapshot.data![0];
