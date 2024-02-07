@@ -24,7 +24,7 @@ dependencies:
   fast_immutable_collections: ^10.1.0
   firebase_config:
     path: packages/remote_config/firebase_config
-  firebase_core: ^2.25.2
+  firebase_core: ^2.25.4
   firebase_messaging: ^14.7.10
   firebase_notifications_client:
     path: packages/notifications_client/firebase_notifications_client
