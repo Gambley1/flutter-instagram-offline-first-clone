@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:mime/mime.dart';
-import 'package:shared/shared.dart';
 
 /// Extensions on [String].
 extension StringExtension on String {
@@ -77,44 +76,5 @@ extension StringExtension on String {
       if (mimeType == null) return null;
       return MediaType.parse(mimeType);
     }
-  }
-
-  // Returns a resized imageUrl with the given [width], [height], [resize]
-  /// and [crop] if it is from Stream CDN or Dashboard.
-  String getResizedImageUrl({
-    double width = 400,
-    double height = 400,
-    String /*clip|crop|scale|fill*/ resize = 'clip',
-    String /*center|top|bottom|left|right*/ crop = 'center',
-  }) {
-    final uri = Uri.parse(this);
-    final host = uri.host;
-
-    final fromStreamCDN = host.endsWith('stream-io-cdn.com');
-    final fromStreamDashboard = host.endsWith('stream-cloud-uploads.imgix.net');
-
-    if (!fromStreamCDN && !fromStreamDashboard) {
-      return this;
-    }
-
-    final queryParameters = {...uri.queryParameters};
-
-    if (fromStreamCDN) {
-      if (queryParameters['h'].isNullOrMatches('*') &&
-          queryParameters['w'].isNullOrMatches('*') &&
-          queryParameters['crop'].isNullOrMatches('*') &&
-          queryParameters['resize'].isNullOrMatches('*')) {
-        queryParameters['h'] = height.floor().toString();
-        queryParameters['w'] = width.floor().toString();
-        queryParameters['crop'] = crop;
-        queryParameters['resize'] = resize;
-      }
-    } else if (fromStreamDashboard) {
-      queryParameters['height'] = height.floor().toString();
-      queryParameters['width'] = width.floor().toString();
-      queryParameters['fit'] = crop;
-    }
-
-    return uri.replace(queryParameters: queryParameters).toString();
   }
 }

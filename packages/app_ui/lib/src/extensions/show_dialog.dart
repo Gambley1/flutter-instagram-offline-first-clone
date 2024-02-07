@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared/shared.dart';
 
+/// The signature for the callback that uses the [BuildContext].
+typedef BuildContextCallback = void Function(BuildContext context);
+
 /// {@template show_dialog_extension}
 /// Dialog extension that shows dialog with optionaly provided `title`,
 /// `content` and `actions`.
@@ -188,47 +191,49 @@ extension DialogExtension on BuildContext {
       showBottomModal<ModalOption>(
         isScrollControlled: true,
         title: title,
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: options
-                .map(
-                  (option) => Tappable(
-                    animationEffect: TappableAnimationEffect.none,
-                    onTap: () => pop<ModalOption>(option),
-                    child: ListTile(
-                      title: Text(
-                        option.name,
-                        style: bodyLarge?.copyWith(
-                          color: option.nameColor ?? option.distractiveColor,
-                        ),
-                      ),
-                      leading: option.child ??
-                          Icon(
-                            option.icon,
-                            color: option.distractiveColor,
+        content: SafeArea(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: options
+                  .map(
+                    (option) => Tappable(
+                      animationEffect: TappableAnimationEffect.none,
+                      onTap: () => pop<ModalOption>(option),
+                      child: ListTile(
+                        title: Text(
+                          option.name,
+                          style: bodyLarge?.copyWith(
+                            color: option.nameColor ?? option.distractiveColor,
                           ),
+                        ),
+                        leading: option.icon == null
+                            ? option.child
+                            : Icon(
+                                option.icon,
+                                color: option.distractiveColor,
+                              ),
+                      ),
                     ),
-                  ),
-                )
-                .toList(),
+                  )
+                  .toList(),
+            ),
           ),
         ),
       );
 
   /// Opens the modal bottom sheet for a comments page builder.
-  Future<void> showCommentsModal({
+  Future<void> showScrollableModal({
     required Widget Function(
       ScrollController scrollController,
       DraggableScrollableController draggableScrollController,
     ) pageBuilder,
+    double initialChildSize = .7,
     bool showFullSized = false,
   }) =>
       showBottomModal<void>(
         isScrollControlled: true,
-        enalbeDrag: false,
-        showDragHandle: false,
         builder: (context) {
           final controller = DraggableScrollableController();
           return DraggableScrollableSheet(
@@ -236,7 +241,7 @@ extension DialogExtension on BuildContext {
             expand: false,
             snap: true,
             snapSizes: const [.6, 1],
-            initialChildSize: showFullSized ? 1.0 : .7,
+            initialChildSize: showFullSized ? 1.0 : initialChildSize,
             minChildSize: .4,
             builder: (context, scrollController) =>
                 pageBuilder.call(scrollController, controller),
@@ -281,8 +286,8 @@ extension DialogExtension on BuildContext {
     required String noText,
     required String yesText,
     required String title,
-    ValueSetter<BuildContext>? noAction,
-    ValueSetter<BuildContext>? yesAction,
+    BuildContextCallback? noAction,
+    BuildContextCallback? yesAction,
   }) async {
     final isConfimred = await showConfirmationDialog(
       noText: noText,
@@ -302,8 +307,8 @@ extension DialogExtension on BuildContext {
     required String yesText,
     String? title,
     String? subtitle,
-    ValueSetter<BuildContext>? noAction,
-    ValueSetter<BuildContext>? yesAction,
+    BuildContextCallback? noAction,
+    BuildContextCallback? yesAction,
     TextStyle? noTextStyle,
     TextStyle? yesTextStyle,
     bool distractiveAction = true,
@@ -320,7 +325,7 @@ extension DialogExtension on BuildContext {
                 style: textTheme.bodyMedium,
               ),
         actions: theme.platform == TargetPlatform.android
-            ? [
+            ? <Widget>[
                 TextButton(
                   onPressed: () =>
                       noAction == null ? pop(false) : noAction.call(this),
@@ -344,7 +349,7 @@ extension DialogExtension on BuildContext {
                   ),
                 ),
               ]
-            : [
+            : <Widget>[
                 AppButton(
                   isDialogButton: true,
                   isDefaultAction: true,

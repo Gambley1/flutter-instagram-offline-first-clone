@@ -3,14 +3,12 @@
 import 'dart:io' show File;
 import 'dart:typed_data';
 
-import 'package:app_ui/app_ui.dart';
 import 'package:cached_memory_image/cached_memory_image.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_instagram_offline_first_clone/attachments/widgets/thumnail/thumbnail.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:shared/shared.dart';
-import 'package:shimmer/shimmer.dart';
 
 /// Transparent image data.
 final kTransparentImage = Uint8List.fromList(
@@ -94,10 +92,14 @@ class ImageAttachmentThumbnail extends StatelessWidget {
     super.key,
     this.width,
     this.height,
+    this.memCacheHeight,
+    this.memCacheWidth,
     this.fit,
     this.thumbnailSize,
     this.thumbnailResizeType = 'clip',
     this.thumbnailCropType = 'center',
+    this.withPlaceholder = true,
+    this.withAdaptiveColors = true,
     this.borderRadius,
     this.errorBuilder = _defaultErrorBuilder,
   });
@@ -111,6 +113,12 @@ class ImageAttachmentThumbnail extends StatelessWidget {
   /// Height of the attachment image thumbnail.
   final double? height;
 
+  /// Memmory width of the attachment image thumbnail.
+  final int? memCacheWidth;
+
+  /// Memmory height of the attachment image thumbnail.
+  final int? memCacheHeight;
+
   /// The border radius of the image.
   final double? borderRadius;
 
@@ -123,12 +131,18 @@ class ImageAttachmentThumbnail extends StatelessWidget {
   /// Resize type of the image attachment thumbnail.
   ///
   /// Defaults to [crop]
-  final String /*clip|crop|scale|fill*/ thumbnailResizeType;
+  final String thumbnailResizeType;
 
   /// Crop type of the image attachment thumbnail.
   ///
   /// Defaults to [center]
-  final String /*center|top|bottom|left|right*/ thumbnailCropType;
+  final String thumbnailCropType;
+
+  /// Whether to show a default shimmer placeholder when image is loading.
+  final bool withPlaceholder;
+
+  /// Whether the shimmer placeholder should use adaptive colors.
+  final bool withAdaptiveColors;
 
   /// Builder used when the thumbnail fails to load.
   final ThumbnailErrorBuilder errorBuilder;
@@ -153,32 +167,27 @@ class ImageAttachmentThumbnail extends StatelessWidget {
     final file = image.file;
     if (file != null) {
       return LocalImageAttachment(
+        fit: fit,
         file: file,
         width: width,
         height: height,
-        fit: fit,
+        withPlaceholder: withPlaceholder,
         errorBuilder: errorBuilder,
       );
     }
 
-    var imageUrl = image.thumbUrl ?? image.imageUrl ?? image.assetUrl;
+    final imageUrl = image.thumbUrl ?? image.imageUrl ?? image.assetUrl;
     if (imageUrl != null) {
-      final thumbnailSize = this.thumbnailSize;
-      if (thumbnailSize != null) {
-        imageUrl = imageUrl.getResizedImageUrl(
-          width: thumbnailSize.width,
-          height: thumbnailSize.height,
-          resize: thumbnailResizeType,
-          crop: thumbnailCropType,
-        );
-      }
-
       return NetworkImageAttachment(
         url: imageUrl,
+        fit: fit,
         width: width,
         height: height,
+        memCacheHeight: memCacheHeight,
+        memCacheWidth: memCacheWidth,
+        withPlaceholder: withPlaceholder,
+        withAdaptiveColors: withAdaptiveColors,
         borderRadius: borderRadius,
-        fit: fit,
         errorBuilder: errorBuilder,
       );
     }
@@ -195,13 +204,14 @@ class ImageAttachmentThumbnail extends StatelessWidget {
 class LocalImageAttachment extends StatelessWidget {
   const LocalImageAttachment({
     required this.errorBuilder,
-    this.file,
-    this.bytes,
-    this.imageFile,
-    super.key,
+    required this.fit,
     this.width,
     this.height,
-    this.fit,
+    this.withPlaceholder = true,
+    this.file,
+    this.imageFile,
+    this.bytes,
+    super.key,
   });
 
   final AttachmentFile? file;
@@ -210,6 +220,7 @@ class LocalImageAttachment extends StatelessWidget {
   final double? width;
   final double? height;
   final BoxFit? fit;
+  final bool withPlaceholder;
   final ThumbnailErrorBuilder errorBuilder;
 
   @override
@@ -225,10 +236,12 @@ class LocalImageAttachment extends StatelessWidget {
         cacheWidth: width?.toInt(),
         fit: fit,
         errorBuilder: errorBuilder,
-        placeholder: ShimmerPlaceholder(
-          height: height,
-          width: width,
-        ),
+        placeholder: !withPlaceholder
+            ? null
+            : ShimmerPlaceholder(
+                height: height,
+                width: width,
+              ),
       );
     }
 
@@ -257,26 +270,35 @@ class NetworkImageAttachment extends StatelessWidget {
   const NetworkImageAttachment({
     required this.url,
     required this.errorBuilder,
+    required this.withAdaptiveColors,
+    required this.withPlaceholder,
+    required this.width,
+    required this.height,
+    required this.borderRadius,
+    required this.fit,
+    required this.memCacheWidth,
+    required this.memCacheHeight,
     super.key,
-    this.width,
-    this.height,
-    this.borderRadius,
-    this.fit,
   });
 
   final String url;
   final double? width;
   final double? height;
+  final int? memCacheWidth;
+  final int? memCacheHeight;
   final double? borderRadius;
   final BoxFit? fit;
+  final bool withPlaceholder;
+  final bool withAdaptiveColors;
   final ThumbnailErrorBuilder errorBuilder;
 
   @override
   Widget build(BuildContext context) {
     return CachedNetworkImage(
       imageUrl: url,
-      memCacheHeight: 132,
-      memCacheWidth: 132,
+      cacheKey: url,
+      memCacheHeight: memCacheHeight ?? height?.toInt(),
+      memCacheWidth: memCacheWidth ?? width?.toInt(),
       imageBuilder: (context, imageProvider) {
         return Container(
           height: height,
@@ -289,25 +311,13 @@ class NetworkImageAttachment extends StatelessWidget {
           ),
         );
       },
-      placeholder: (context, __) {
-        final image = Assets.images.placeholder.image(
-          width: width,
-          height: height,
-          fit: BoxFit.cover,
-        );
-
-        return Shimmer.fromColors(
-          baseColor: context.customReversedAdaptiveColor(
-            dark: const Color(0xff2d2f2f),
-            light: Colors.white.withOpacity(.4),
-          ),
-          highlightColor: context.customReversedAdaptiveColor(
-            dark: const Color(0xff13151b),
-            light: const Color.fromARGB(255, 181, 190, 226),
-          ),
-          child: image,
-        );
-      },
+      placeholder: !withPlaceholder
+          ? null
+          : (context, __) => ShimmerPlaceholder(
+                height: height,
+                width: width,
+                withAdaptiveColors: withAdaptiveColors,
+              ),
       errorWidget: (context, url, error) {
         return errorBuilder(
           context,

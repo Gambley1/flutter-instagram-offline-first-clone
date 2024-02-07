@@ -1,5 +1,7 @@
 library image_picker_plus;
 
+export 'package:photo_manager/photo_manager.dart';
+
 export 'src/entities/app_theme.dart';
 export 'src/entities/image_picker_display.dart';
 export 'src/entities/selected_image_details.dart';

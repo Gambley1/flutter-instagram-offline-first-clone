@@ -1,4 +1,4 @@
-// ignore_for_file: must_be_immutable, deprecated_member_use
+// ignore_for_file: deprecated_member_use
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -51,25 +51,27 @@ class MainView extends StatefulWidget {
   final Future<bool>? onBackPress;
 
   /// editor background color
-  Color? editorBackgroundColor;
+  final Color? editorBackgroundColor;
 
   /// gallery thumbnail quality
   final int? galleryThumbnailQuality;
 
   /// editor custom color palette list
-  List<Color>? colorList;
-  MainView(
-      {super.key,
-      required this.onDone,
-      this.middleBottomWidget,
-      this.colorList,
-      this.isCustomFontList,
-      this.fontFamilyList,
-      this.gradientColors,
-      this.onBackPress,
-      this.onDoneButtonStyle,
-      this.editorBackgroundColor,
-      this.galleryThumbnailQuality});
+  final List<Color>? colorList;
+
+  const MainView({
+    super.key,
+    required this.onDone,
+    this.middleBottomWidget,
+    this.colorList,
+    this.isCustomFontList,
+    this.fontFamilyList,
+    this.gradientColors,
+    this.onBackPress,
+    this.onDoneButtonStyle,
+    this.editorBackgroundColor,
+    this.galleryThumbnailQuality,
+  });
 
   @override
   State<MainView> createState() => _MainViewState();
@@ -464,11 +466,11 @@ class _MainViewState extends State<MainView> with SafeSetStateMixin {
     final left = (delta.dx / screenUtil.screenWidth) + _currentPos.dx;
     final top = (delta.dy / screenUtil.screenHeight) + _currentPos.dy;
 
-      safeSetState(() {
-        _activeItem!.position = Offset(left, top);
-        _activeItem!.rotation = details.rotation + _currentRotation;
-        _activeItem!.scale = details.scale * _currentScale;
-      });
+    safeSetState(() {
+      _activeItem!.position = Offset(left, top);
+      _activeItem!.rotation = details.rotation + _currentRotation;
+      _activeItem!.scale = details.scale * _currentScale;
+    });
   }
 
   /// active delete widget with offset position
@@ -477,15 +479,15 @@ class _MainViewState extends State<MainView> with SafeSetStateMixin {
         item.position.dy >= 0.75.h &&
         item.position.dx >= -0.4.w &&
         item.position.dx <= 0.2.w) {
-        safeSetState(() {
-          _isDeletePosition = true;
-          item.deletePosition = true;
-        });
+      safeSetState(() {
+        _isDeletePosition = true;
+        item.deletePosition = true;
+      });
     } else {
-        safeSetState(() {
-          _isDeletePosition = false;
-          item.deletePosition = false;
-        });
+      safeSetState(() {
+        _isDeletePosition = false;
+        item.deletePosition = false;
+      });
     }
   }
 
@@ -500,18 +502,18 @@ class _MainViewState extends State<MainView> with SafeSetStateMixin {
         item.position.dy >= 0.75.h &&
         item.position.dx >= -0.4.w &&
         item.position.dx <= 0.2.w) {
-        safeSetState(() {
-          itemProvider.removeAt(itemProvider.indexOf(item));
-          HapticFeedback.heavyImpact();
-        });
+      safeSetState(() {
+        itemProvider.removeAt(itemProvider.indexOf(item));
+        HapticFeedback.heavyImpact();
+      });
     } else {
-        safeSetState(() {
-          _activeItem = null;
-        });
-    }
       safeSetState(() {
         _activeItem = null;
       });
+    }
+    safeSetState(() {
+      _activeItem = null;
+    });
   }
 
   /// update item position, scale, rotation

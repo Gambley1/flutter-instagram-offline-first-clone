@@ -39,10 +39,6 @@ final class UserProfileUpdateRequested extends UserProfileEvent {
   final String? pushToken;
 }
 
-final class UserProfilePostsRequested extends UserProfileEvent {
-  const UserProfilePostsRequested();
-}
-
 final class UserProfilePostCreateRequested extends UserProfileEvent {
   const UserProfilePostCreateRequested({
     required this.postId,
@@ -61,6 +57,31 @@ sealed class _PostEvent extends UserProfileEvent {
   const _PostEvent(this.postId);
 
   final String postId;
+}
+
+final class UserProfileSubscriptionRequested extends UserProfileEvent {
+  const UserProfileSubscriptionRequested({this.userId});
+
+  final String? userId;
+}
+
+final class UserProfilePostsSubscriptionRequested extends UserProfileEvent {
+  const UserProfilePostsSubscriptionRequested();
+}
+
+final class UserProfilePostsCountSubscriptionRequested
+    extends UserProfileEvent {
+  const UserProfilePostsCountSubscriptionRequested();
+}
+
+final class UserProfileFollowingsCountSubscriptionRequested
+    extends UserProfileEvent {
+  const UserProfileFollowingsCountSubscriptionRequested();
+}
+
+final class UserProfileFollowersCountSubscriptionRequested
+    extends UserProfileEvent {
+  const UserProfileFollowersCountSubscriptionRequested();
 }
 
 final class UserProfileLikePostRequested extends _PostEvent {

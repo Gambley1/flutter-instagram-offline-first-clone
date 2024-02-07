@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter_instagram_offline_first_clone/reels/reel/bloc/reel_bloc.dart';
+import 'package:flutter_instagram_offline_first_clone/feed/feed.dart';
 import 'package:posts_repository/posts_repository.dart';
 import 'package:shared/shared.dart';
 
@@ -49,10 +49,10 @@ class ReelsBloc extends Bloc<ReelsEvent, ReelsState> {
     ReelsCreateReelRequested event,
     Emitter<ReelsState> emit,
   ) =>
-     _postsRepository.createPost(
-      id: event.postId,
-      userId: event.userId,
-      caption: event.caption,
-      media: json.encode(event.media),
-    );
+      _postsRepository.createPost(
+        id: event.postId,
+        userId: event.userId,
+        caption: event.caption,
+        media: json.encode(event.media),
+      );
 }

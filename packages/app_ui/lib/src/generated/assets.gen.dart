@@ -39,11 +39,17 @@ class $AssetsIconsGen {
   SvgGenImage get instagramReel =>
       const SvgGenImage('assets/icons/instagram-reel.svg');
 
+  /// File path: assets/icons/search.svg
+  SvgGenImage get search => const SvgGenImage('assets/icons/search.svg');
+
   /// File path: assets/icons/setting.svg
   SvgGenImage get setting => const SvgGenImage('assets/icons/setting.svg');
 
   /// File path: assets/icons/trash.svg
   SvgGenImage get trash => const SvgGenImage('assets/icons/trash.svg');
+
+  /// File path: assets/icons/user.svg
+  SvgGenImage get user => const SvgGenImage('assets/icons/user.svg');
 
   /// File path: assets/icons/verified_user.svg
   SvgGenImage get verifiedUser =>
@@ -55,8 +61,10 @@ class $AssetsIconsGen {
         chatCircle,
         check,
         instagramReel,
+        search,
         setting,
         trash,
+        user,
         verifiedUser
       ];
 }

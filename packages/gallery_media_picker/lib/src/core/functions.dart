@@ -58,12 +58,16 @@ class GalleryFunctions {
         .addListener(() => showToast("Already pick ${provider.max} items."));
   }
 
-  static Future<void> getPermission(void Function(void Function() fn)? setState,
-      GalleryMediaPickerController provider) async {
+  static Future<void> getPermission(
+    void Function(void Function() fn)? setState,
+    GalleryMediaPickerController provider,
+  ) async {
     /// request for device permission
-    var result = await PhotoManager.requestPermissionExtend(
-        requestOption: const PermissionRequestOption(
-            iosAccessLevel: IosAccessLevel.readWrite));
+    final result = await PhotoManager.requestPermissionExtend(
+      requestOption: const PermissionRequestOption(
+        iosAccessLevel: IosAccessLevel.readWrite,
+      ),
+    );
     if (result.isAuth) {
       /// load "recent" album
       provider.setAssetCount();
@@ -82,15 +86,28 @@ class GalleryFunctions {
     }
   }
 
-  static _refreshPathList(void Function(void Function() fn)? setState,
-      GalleryMediaPickerController provider) {
+  static void _refreshPathList(
+    void Function(void Function() fn)? setState,
+    GalleryMediaPickerController provider, {
+    FilterOptionGroup? filterOption,
+  }) {
+    filterOption ??= FilterOptionGroup(
+      videoOption: const FilterOption(
+        durationConstraint: DurationConstraint(
+          max: Duration(minutes: 3),
+        ),
+      ),
+    );
+
+    final type = provider.paramsModel?.onlyVideos ?? false
+        ? RequestType.video
+        : provider.paramsModel?.onlyImages ?? false
+            ? RequestType.image
+            : RequestType.image;
     PhotoManager.getAssetPathList(
-            type: provider.paramsModel?.onlyVideos ?? false
-                ? RequestType.video
-                : provider.paramsModel?.onlyImages ?? false
-                    ? RequestType.image
-                    : RequestType.image)
-        .then((pathList) {
+      type: type,
+      filterOption: filterOption,
+    ).then((pathList) {
       /// don't delete setState
       Future.delayed(Duration.zero, () {
         setState?.call(() {
@@ -101,7 +118,7 @@ class GalleryFunctions {
   }
 
   /// get asset path
-  static Future getFile(AssetEntity asset) async {
+  static Future<String> getFile(AssetEntity asset) async {
     var file = await asset.file;
     return file!.path;
   }

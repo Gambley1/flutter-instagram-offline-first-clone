@@ -1,12 +1,11 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:async/async.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/bloc/app_bloc.dart';
+import 'package:flutter_instagram_offline_first_clone/attachments/widgets/thumnail/thumbnail.dart';
 import 'package:flutter_instagram_offline_first_clone/chats/chat/bloc/chat_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/chats/chat/widgets/message_input_controller.dart';
-import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:ogp_data_extract/ogp_data_extract.dart';
 import 'package:shared/shared.dart';
 
@@ -480,33 +479,15 @@ class ReplyMessagePreview extends StatelessWidget {
             leading: replyingMessage.replyMessageAttachmentUrl == null ||
                     replyingMessage.replyMessageId != null
                 ? null
-                : CachedNetworkImage(
-                    imageUrl: replyingMessage.replyMessageAttachmentUrl!,
-                    placeholder: (_, __) => const ShimmerPlaceholder(
-                      height: 52,
-                      width: 52,
-                      withAdaptiveColors: false,
+                : ImageAttachmentThumbnail(
+                    image: Attachment(
+                      imageUrl: replyingMessage.replyMessageAttachmentUrl,
                     ),
-                    errorWidget: (context, url, error) =>
-                        Assets.images.placeholder.image(
-                      width: 52,
-                      height: 52,
-                      fit: BoxFit.cover,
-                    ),
-                    imageBuilder: (context, imageProvider) {
-                      return Container(
-                        height: 52,
-                        width: 52,
-                        decoration: BoxDecoration(
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(4)),
-                          image: DecorationImage(
-                            image: imageProvider,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      );
-                    },
+                    height: 52,
+                    width: 52,
+                    fit: BoxFit.cover,
+                    withAdaptiveColors: false,
+                    borderRadius: 4,
                   ),
             title: replyingMessage.replyMessageUsername == null
                 ? null

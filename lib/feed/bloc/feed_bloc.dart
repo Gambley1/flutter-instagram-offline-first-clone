@@ -16,10 +16,8 @@ part 'feed_state.dart';
 class FeedBloc extends Bloc<FeedEvent, FeedState> {
   FeedBloc({
     required PostsRepository postsRepository,
-    required UserRepository userRepository,
     required FirebaseConfig remoteConfig,
   })  : _postsRepository = postsRepository,
-        _userRepository = userRepository,
         _remoteConfig = remoteConfig,
         super(const FeedState.initial()) {
     on<FeedPageRequested>(_onPageRequested, transformer: throttleDroppable());
@@ -27,10 +25,10 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       _onRefreshRequested,
       transformer: throttleDroppable(),
     );
-    on<FeedLikePostRequested>(_onPostLiked, transformer: sequential());
-    on<FeedPostAuthorFollowRequested>(_onFollow);
-    on<FeedPostShareRequested>(_onFeedPostShareRequested);
-    on<FeedRecommenedPostsPageRequested>(_onFeedRecommenedPostsPageRequested);
+    on<FeedRecommenedPostsPageRequested>(
+      _onFeedRecommenedPostsPageRequested,
+      transformer: throttleDroppable(),
+    );
   }
 
   final _recommenedPosts = <InstaBlock>[
@@ -231,35 +229,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
   static const _pageLimit = 10;
 
   final PostsRepository _postsRepository;
-  final UserRepository _userRepository;
   final FirebaseConfig _remoteConfig;
-
-  String get _currentUserId => _userRepository.currentUserId ?? '';
-
-  bool isOwnerOfPostBy(String authorId) =>
-      _userRepository.isOwnerOfPostBy(authorId: authorId);
-
-  Stream<bool> isLiked(String id) => _postsRepository
-      .isLiked(
-        userId: _currentUserId,
-        id: id,
-      )
-      .asBroadcastStream();
-
-  Stream<int> likesCount(String id) =>
-      _postsRepository.likesOf(id: id).asBroadcastStream();
-
-  Stream<bool> followingStatus({
-    required String userId,
-    String? followerId,
-  }) =>
-      _userRepository.followingStatus(
-        followerId: followerId ?? _currentUserId,
-        userId: userId,
-      );
-
-  Stream<int> commentsCountOf(String postId) =>
-      _postsRepository.commentsAmountOf(postId: postId);
 
   List<InstaBlock> insertSponsoredBlocks({
     required bool hasMore,
@@ -411,36 +381,6 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     }
   }
 
-  Future<void> _onPostLiked(
-    FeedLikePostRequested event,
-    Emitter<FeedState> emit,
-  ) =>
-      _postsRepository.like(
-        userId: _currentUserId,
-        id: event.postId,
-      );
-
-  Future<void> _onFollow(
-    FeedPostAuthorFollowRequested event,
-    Emitter<FeedState> emit,
-  ) =>
-      _userRepository.follow(
-        followerId: _currentUserId,
-        followToId: event.author,
-      );
-
-  Future<void> _onFeedPostShareRequested(
-    FeedPostShareRequested event,
-    Emitter<FeedState> emit,
-  ) =>
-      _postsRepository.sharePost(
-        id: event.postId,
-        sender: event.sender,
-        receiver: event.receiver,
-        message: event.message,
-        postAuthor: event.postAuthor,
-      );
-
   Future<PostBlock?> getPostBy(String id) async {
     final post = await _postsRepository.getPostBy(id: id);
     return post?.toPostLargeBlock();
@@ -493,6 +433,10 @@ extension PostX on Post {
         action: NavigateToPostAuthorProfileAction(authorId: author.id),
       );
 
+  // https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkmZB67e6esDKyxIUTnQhNmOvexujNJ3pccQ&usqp=CAU
+
+  
+
   /// Converts [Post] instance into [PostSmallBlock] instance.
   PostSmallBlock get toPostSmallBlock => PostSmallBlock(
         id: id,
@@ -505,5 +449,17 @@ extension PostX on Post {
         media: media,
         caption: caption,
         action: NavigateToPostAuthorProfileAction(authorId: author.id),
+      );
+
+  PostReelBlock get toPostReelBlock => PostReelBlock(
+        id: id,
+        author: PostAuthor.confirmed(
+          id: author.id,
+          avatarUrl: author.avatarUrl,
+          username: author.username,
+        ),
+        createdAt: createdAt,
+        media: media,
+        caption: caption,
       );
 }

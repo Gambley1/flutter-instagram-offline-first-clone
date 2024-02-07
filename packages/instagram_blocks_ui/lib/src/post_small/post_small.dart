@@ -1,35 +1,29 @@
-// ignore_for_file: deprecated_member_use
-
 import 'package:app_ui/app_ui.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:instagram_blocks_ui/src/widgets/confirm_deletion.dart';
 
-typedef PostTapCallback = void Function();
-
-typedef DeletePostCallback = void Function();
+typedef ImageThumbnailBuilder = Widget Function(
+  BuildContext context,
+  String url,
+);
 
 class PostSmall extends StatelessWidget {
   PostSmall({
     required this.isOwner,
-    required this.onTap,
     required this.pinned,
     required this.multiMedia,
     required this.mediaUrl,
     this.isReel,
-    this.onPostDelete,
-    this.tappableColor,
+    this.imageThumbnailBuilder,
     super.key,
   });
 
   final bool isOwner;
-  final PostTapCallback onTap;
-  final DeletePostCallback? onPostDelete;
-  final Color? tappableColor;
   final String mediaUrl;
   final bool? isReel;
   final bool pinned;
   final bool multiMedia;
+  final ImageThumbnailBuilder? imageThumbnailBuilder;
 
   late final _showPinned = pinned && multiMedia || pinned && !multiMedia;
 
@@ -39,59 +33,48 @@ class PostSmall extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Tappable(
-      onLongPress: !isOwner
-          ? null
-          : () async {
-              final confirmed = await context.showConfirmDeletion(
-                title: 'Delete this post?',
-              );
-              if (!confirmed) return;
-              if (onPostDelete == null) return;
-              onPostDelete?.call();
-            },
-      onTap: onTap,
-      child: _PostThumbnailImage(
-        mediaUrl,
-        showPinned: _showPinned,
-        showHasMultiplePhotos: _showHasMultiplePhotos,
-        showVideoIcon: _showVideoIcon,
-      ),
+    return _PostThumbnailImage(
+      mediaUrl: mediaUrl,
+      showPinned: _showPinned,
+      showHasMultiplePhotos: _showHasMultiplePhotos,
+      showVideoIcon: _showVideoIcon,
+      imageThumbnailBuilder: imageThumbnailBuilder,
     );
   }
 }
 
 class _PostThumbnailImage extends StatelessWidget {
-  const _PostThumbnailImage(
-    this.mediaUrl, {
+  const _PostThumbnailImage({
+    required this.mediaUrl,
     required this.showPinned,
     required this.showHasMultiplePhotos,
     required this.showVideoIcon,
+    required this.imageThumbnailBuilder,
   });
 
   final String mediaUrl;
   final bool showPinned;
   final bool showHasMultiplePhotos;
   final bool showVideoIcon;
+  final ImageThumbnailBuilder? imageThumbnailBuilder;
 
   @override
   Widget build(BuildContext context) {
-    final thumbnailImage = mediaUrl.isEmpty
-        ? const SizedBox.shrink()
-        : CachedNetworkImage(
-            imageUrl: mediaUrl,
-            cacheKey: '${mediaUrl}_thumbnail',
-            memCacheHeight: 225,
-            memCacheWidth: 225,
-            imageBuilder: (context, imageProvider) => Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: imageProvider,
-                  fit: BoxFit.cover,
-                ),
+    final thumbnailImage = imageThumbnailBuilder?.call(context, mediaUrl) ??
+        CachedNetworkImage(
+          imageUrl: mediaUrl,
+          cacheKey: mediaUrl,
+          memCacheHeight: 225,
+          memCacheWidth: 225,
+          imageBuilder: (context, imageProvider) => Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: imageProvider,
+                fit: BoxFit.cover,
               ),
             ),
-          );
+          ),
+        );
 
     final icon = Icon(
       showPinned ? Icons.push_pin : Icons.layers,
@@ -133,7 +116,10 @@ class _PostThumbnailImage extends StatelessWidget {
         child: Assets.icons.instagramReel.svg(
           height: 22,
           width: 22,
-          color: Colors.white,
+          colorFilter: const ColorFilter.mode(
+            Colors.white,
+            BlendMode.srcIn,
+          ),
         ),
       ),
     );

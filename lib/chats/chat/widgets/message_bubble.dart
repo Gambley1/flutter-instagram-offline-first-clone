@@ -1,11 +1,9 @@
-// ignore_for_file: deprecated_member_use
 // ignore_for_file: avoid_positional_boolean_parameters
 
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 
 import 'package:app_ui/app_ui.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart' hide Selectable;
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -212,12 +210,16 @@ class MessageBubbleContent extends StatelessWidget {
                 children: [
                   Text(
                     'Post unavailable',
-                    style: context.bodyLarge
-                        ?.copyWith(fontWeight: AppFontWeight.bold),
+                    style: context.bodyLarge?.copyWith(
+                      fontWeight: AppFontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
                   Text(
                     'This post is unavailable.',
-                    style: context.bodyLarge,
+                    style: context.bodyLarge?.apply(
+                      color: Colors.white,
+                    ),
                   ),
                 ],
               ),
@@ -235,24 +237,17 @@ class MessageBubbleContent extends StatelessWidget {
                           child: Stack(
                             children: [
                               AspectRatio(
-                                aspectRatio: 4 / 5,
-                                child: NetworkImageAttachment(
-                                  url: sharedPost.firstMediaUrl ?? '',
-                                  // fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return ThumbnailError(
-                                      error: error,
-                                      stackTrace: stackTrace,
-                                      height: double.infinity,
-                                      width: double.infinity,
-                                      fit: BoxFit.cover,
-                                    );
-                                  },
+                                aspectRatio: 1,
+                                child: ImageAttachmentThumbnail(
+                                  image: Attachment(
+                                    imageUrl: sharedPost.firstMediaUrl,
+                                  ),
+                                  // fit: BoxFit.fitHeight,
                                 ),
                               ),
                               Positioned(
-                                top: 8,
-                                right: 8,
+                                top: AppSpacing.sm,
+                                right: AppSpacing.sm,
                                 child: Builder(
                                   builder: (_) {
                                     if (sharedPost.media.length > 1) {
@@ -260,37 +255,35 @@ class MessageBubbleContent extends StatelessWidget {
                                         Icons.layers,
                                         size: AppSize.iconSizeBig,
                                         shadows: [
-                                          Shadow(
-                                            blurRadius: 2,
-                                          ),
+                                          Shadow(blurRadius: 2),
                                         ],
                                       );
-                                    }
-                                    if (sharedPost.hasBothMediaTypes) {
-                                      return const SizedBox.shrink();
                                     }
                                     return const SizedBox.shrink();
                                   },
                                 ),
                               ),
                               Positioned(
-                                top: 8,
-                                left: 8,
-                                right: 8,
+                                top: AppSpacing.sm,
+                                left: AppSpacing.sm,
+                                right: AppSpacing.sm,
                                 child: ListTile(
-                                  horizontalTitleGap: 0,
+                                  horizontalTitleGap: AppSpacing.sm,
                                   contentPadding: const EdgeInsets.symmetric(
                                     horizontal: AppSpacing.sm,
                                     vertical: AppSpacing.xs,
                                   ),
                                   leading: UserProfileAvatar(
                                     avatarUrl: sharedPost.author.avatarUrl,
+                                    radius: 16,
                                     isLarge: false,
+                                    withAdaptiveBorder: false,
                                   ),
                                   title: Text(
                                     sharedPost.author.username,
                                     style: context.bodyLarge?.copyWith(
                                       fontWeight: AppFontWeight.bold,
+                                      color: Colors.white,
                                     ),
                                   ),
                                   trailing: Container(
@@ -306,7 +299,10 @@ class MessageBubbleContent extends StatelessWidget {
                                     child: Assets.icons.instagramReel.svg(
                                       height: 36,
                                       width: 36,
-                                      color: Colors.white,
+                                      colorFilter: const ColorFilter.mode(
+                                        Colors.white,
+                                        BlendMode.srcIn,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -359,19 +355,11 @@ class MessageBubbleContent extends StatelessWidget {
                                 children: [
                                   AspectRatio(
                                     aspectRatio: 1,
-                                    child: NetworkImageAttachment(
-                                      url: sharedPost.firstMediaUrl ?? '',
+                                    child: ImageAttachmentThumbnail(
+                                      image: Attachment(
+                                        imageUrl: sharedPost.firstMediaUrl,
+                                      ),
                                       fit: BoxFit.cover,
-                                      errorBuilder:
-                                          (context, error, stackTrace) {
-                                        return ThumbnailError(
-                                          error: error,
-                                          stackTrace: stackTrace,
-                                          height: double.infinity,
-                                          width: double.infinity,
-                                          fit: BoxFit.cover,
-                                        );
-                                      },
                                     ),
                                   ),
                                   Positioned(
@@ -394,7 +382,11 @@ class MessageBubbleContent extends StatelessWidget {
                                                 Assets.icons.instagramReel.svg(
                                               height: 36,
                                               width: 36,
-                                              color: Colors.white,
+                                              colorFilter:
+                                                  const ColorFilter.mode(
+                                                Colors.white,
+                                                BlendMode.srcIn,
+                                              ),
                                             ),
                                           );
                                         }
@@ -508,8 +500,8 @@ class MessageBubbleContent extends StatelessWidget {
                     ),
                     if (displayBottomStatuses)
                       Positioned.fill(
-                        right: 12,
-                        bottom: 4,
+                        right: AppSpacing.md,
+                        bottom: AppSpacing.xs,
                         child: Align(
                           alignment: Alignment.bottomRight,
                           child: MessageStatuses(
@@ -557,9 +549,12 @@ class MessageStatuses extends StatelessWidget {
         if (isMine) ...[
           if (message.isRead)
             Assets.icons.check.svg(
-              color: Colors.white,
               height: AppSize.iconSizeSmall,
               width: AppSize.iconSizeSmall,
+              colorFilter: const ColorFilter.mode(
+                Colors.white,
+                BlendMode.srcIn,
+              ),
             )
           else
             const Icon(
@@ -753,39 +748,17 @@ class RepliedMessageBubble extends StatelessWidget {
         ),
         child: ListTile(
           contentPadding: EdgeInsets.zero,
-          horizontalTitleGap: 6,
+          horizontalTitleGap: AppSpacing.sm - AppSpacing.xxs,
           titleAlignment: ListTileTitleAlignment.titleHeight,
           leading: replyMessageAttachmentUrl == null
               ? null
-              : CachedNetworkImage(
-                  imageUrl: replyMessageAttachmentUrl,
-                  memCacheHeight: imageHeight.toInt(),
-                  memCacheWidth: imageWidth.toInt(),
-                  placeholder: (_, __) => const ShimmerPlaceholder(
-                    height: imageHeight,
-                    width: imageWidth,
-                    withAdaptiveColors: false,
-                  ),
-                  errorWidget: (context, url, error) =>
-                      Assets.images.placeholder.image(
-                    width: 46,
-                    height: 46,
-                    fit: BoxFit.cover,
-                  ),
-                  imageBuilder: (context, imageProvider) {
-                    return Container(
-                      height: 46,
-                      width: 46,
-                      decoration: BoxDecoration(
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(4)),
-                        image: DecorationImage(
-                          image: imageProvider,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    );
-                  },
+              : ImageAttachmentThumbnail(
+                  image: Attachment(imageUrl: replyMessageAttachmentUrl),
+                  width: imageWidth,
+                  height: imageHeight,
+                  fit: BoxFit.cover,
+                  borderRadius: 4,
+                  withAdaptiveColors: false,
                 ),
           title: Text(
             repliedMessageUsername ?? 'Unknown',
@@ -967,6 +940,7 @@ class MessageDateTimeSeparator extends StatelessWidget {
         ),
         child: Text(
           date.format(context, dateFormat: DateFormat.MMMMd),
+          style: context.bodyMedium?.apply(color: Colors.white),
         ),
       ),
     );

@@ -1,5 +1,3 @@
-// ignore_for_file: deprecated_member_use_from_same_package
-
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 
@@ -32,9 +30,12 @@ class AppLogo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Assets.images.instagramTextLogo.svg(
       fit: fit,
-      width: width,
-      height: height,
-      color: color ?? context.adaptiveColor,
+      width: width ?? 50,
+      height: height ?? 50,
+      colorFilter: ColorFilter.mode(
+        color ?? context.adaptiveColor,
+        BlendMode.srcIn,
+      ),
     );
   }
 }

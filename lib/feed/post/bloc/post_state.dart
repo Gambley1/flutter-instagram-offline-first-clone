@@ -1,10 +1,10 @@
-part of 'reel_bloc.dart';
+part of 'post_bloc.dart';
 
-enum ReelStatus { initial, loading, success, failure }
+enum PostStatus { initial, loading, success, failure }
 
 @JsonSerializable()
-class ReelState extends Equatable {
-  const ReelState({
+class PostState extends Equatable {
+  const PostState({
     required this.status,
     required this.likes,
     required this.likers,
@@ -14,12 +14,12 @@ class ReelState extends Equatable {
     this.isFollowed,
   });
 
-  factory ReelState.fromJson(Map<String, dynamic> json) =>
-      _$ReelStateFromJson(json);
+  factory PostState.fromJson(Map<String, dynamic> json) =>
+      _$PostStateFromJson(json);
 
-  const ReelState.intital()
+  const PostState.intital()
       : this(
-          status: ReelStatus.initial,
+          status: PostStatus.initial,
           likes: 0,
           likers: const [],
           commentsCount: 0,
@@ -27,7 +27,7 @@ class ReelState extends Equatable {
           isOwner: false,
         );
 
-  final ReelStatus status;
+  final PostStatus status;
   final int likes;
   final List<User> likers;
   final int commentsCount;
@@ -35,14 +35,14 @@ class ReelState extends Equatable {
   final bool isOwner;
   final bool? isFollowed;
 
-  Map<String, dynamic> toJson() => _$ReelStateToJson(this);
+  Map<String, dynamic> toJson() => _$PostStateToJson(this);
 
   @override
   List<Object?> get props =>
       [status, likes, isLiked, likers, commentsCount, isOwner, isFollowed];
 
-  ReelState copyWith({
-    ReelStatus? status,
+  PostState copyWith({
+    PostStatus? status,
     int? likes,
     List<User>? likers,
     int? commentsCount,
@@ -50,7 +50,7 @@ class ReelState extends Equatable {
     bool? isOwner,
     bool? isFollowed,
   }) {
-    return ReelState(
+    return PostState(
       status: status ?? this.status,
       likes: likes ?? this.likes,
       likers: likers ?? this.likers,

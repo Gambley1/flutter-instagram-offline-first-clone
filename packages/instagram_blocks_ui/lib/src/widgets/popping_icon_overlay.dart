@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:sprung/sprung.dart';
@@ -15,7 +13,7 @@ class PoppingIconAnimationOverlay extends StatefulWidget {
 
   final Widget child;
   final VoidCallback onTap;
-  final Stream<bool>? isLiked;
+  final bool? isLiked;
   final IconData? icon;
 
   @override
@@ -28,44 +26,16 @@ class _PoppingIconAnimationOverlayState
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
 
-  final _isAnimating = ValueNotifier(false);
-  final _isPostLiked = ValueNotifier(false);
-
-  StreamSubscription<bool>? _isLikedSubscription;
-
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      vsync: this,
-    )..addListener(_animationListener);
-
-    if (widget.isLiked != null) {
-      _isLikedSubscription = widget.isLiked!.listen((isLiked) {
-        if (isLiked) {
-          _isPostLiked.value = true;
-          return;
-        }
-        _isPostLiked.value = false;
-      });
-    }
-  }
-
-  void _animationListener() {
-    if (_controller.isAnimating) {
-      _isAnimating.value = true;
-      return;
-    }
-    _isAnimating.value = false;
+    _controller = AnimationController(vsync: this);
   }
 
   @override
   void dispose() {
     super.dispose();
-    _isLikedSubscription?.cancel();
-    _controller
-      ..removeListener(_animationListener)
-      ..dispose();
+    _controller.dispose();
   }
 
   void _handleDoubleTap({required bool isLiked}) {
@@ -99,18 +69,20 @@ class _PoppingIconAnimationOverlayState
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: _isPostLiked,
+    return GestureDetector(
+      onTap: widget.isLiked != null ? null : _handleTap,
+      onDoubleTap: widget.isLiked == null
+          ? null
+          : () => _handleDoubleTap(isLiked: widget.isLiked ?? false),
       child: Stack(
         children: [
           widget.child,
           Positioned.fill(
-            child: ValueListenableBuilder(
-              valueListenable: _isAnimating,
-              builder: (context, isAnimating, child) {
+            child: AnimatedBuilder(
+              animation: _controller,
+              builder: (context, _) {
                 return _AnimatedIcon(
                   controller: _controller,
-                  isAnimating: isAnimating,
                   icon: widget.icon,
                 );
               },
@@ -118,15 +90,6 @@ class _PoppingIconAnimationOverlayState
           ),
         ],
       ),
-      builder: (context, isLiked, child) {
-        return GestureDetector(
-          onTap: _handleTap,
-          onDoubleTap: widget.isLiked == null
-              ? null
-              : () => _handleDoubleTap(isLiked: isLiked),
-          child: child,
-        );
-      },
     );
   }
 }
@@ -134,20 +97,18 @@ class _PoppingIconAnimationOverlayState
 class _AnimatedIcon extends StatelessWidget {
   const _AnimatedIcon({
     required this.controller,
-    required this.isAnimating,
     this.icon,
   });
 
   final IconData? icon;
   final AnimationController controller;
-  final bool isAnimating;
 
   @override
   Widget build(BuildContext context) {
     return IgnorePointer(
       child: AnimatedOpacity(
-        opacity: isAnimating ? 1 : 0,
-        duration: const Duration(milliseconds: 50),
+        opacity: controller.isAnimating ? 1 : 0,
+        duration: 50.ms,
         child: Icon(
           icon ?? Icons.favorite,
           size: 100,

@@ -12,12 +12,14 @@ class CustomImagePicker extends StatefulWidget {
   final bool multiSelection;
   final GalleryDisplaySettings? galleryDisplaySettings;
   final PickerSource pickerSource;
+  final FilterOptionGroup? filterOption;
 
   const CustomImagePicker({
     required this.source,
     required this.multiSelection,
     required this.galleryDisplaySettings,
     required this.pickerSource,
+    this.filterOption,
     super.key,
   });
 
@@ -298,6 +300,7 @@ class CustomImagePickerState extends State<CustomImagePicker>
       showInternalVideos: showInternalVideos,
       showInternalImages: showInternalImages,
       maximumSelection: maximumSelection,
+      filterOption: widget.filterOption,
     );
   }
 

@@ -35,8 +35,8 @@ class ModalOption {
           .showConfirmationDialog(
           noText: distractiveActionNoText ?? 'Cancel',
           yesText: distractiveActionYesText ?? name,
-          title: distractiveActionTitle ??
-              'Are you sure to ${name.toLowerCase()}?',
+          title: 'Are you sure to '
+              '${distractiveActionTitle?.toLowerCase() ?? name.toLowerCase()}?',
         )
           .then((confirmed) {
           if (confirmed == null) return;

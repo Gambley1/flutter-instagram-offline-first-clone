@@ -9,6 +9,7 @@ export 'message.dart';
 export 'modal_option.dart';
 export 'og_attachment.dart';
 export 'post.dart';
+export 'post_options_settings.dart';
 export 'posts_page.dart';
 export 'schema.dart';
 export 'story.dart';

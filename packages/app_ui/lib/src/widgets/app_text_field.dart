@@ -30,6 +30,7 @@ class AppTextField extends StatelessWidget {
     this.enabled = true,
     this.suffixIcon,
     this.prefixIcon,
+    this.prefix,
     this.focusedBorder,
     this.enabledBorder,
     this.disabledBorder,
@@ -95,6 +96,7 @@ class AppTextField extends StatelessWidget {
     bool autofocus = false,
     Widget? suffixIcon,
     Icon? prefixIcon,
+    Widget? prefix,
     TextInputType? textInputType,
     List<TextInputFormatter>? inputFormatters,
     String? Function(String?)? validator,
@@ -204,6 +206,7 @@ class AppTextField extends StatelessWidget {
           errorText: errorText,
           suffixText: suffixText,
           prefixIcon: prefixIcon,
+          prefix: prefix,
           suffixIcon: suffixIcon,
           enabled: enabled,
           filled: filled,
@@ -220,6 +223,7 @@ class AppTextField extends StatelessWidget {
   final bool obscureText, autoCorrect, enabled, autofocus, readOnly;
   final Widget? suffixIcon;
   final Icon? prefixIcon;
+  final Widget? prefix;
   final InputBorder? focusedBorder, enabledBorder, disabledBorder, border;
   final TextInputType? textInputType;
   final List<TextInputFormatter>? inputFormatters;
@@ -338,6 +342,7 @@ class AppTextField extends StatelessWidget {
         disabledBorder: disabledBorder,
         focusedBorder: focusedBorder,
         prefixIcon: prefixIcon,
+        prefix: prefix,
         suffixIcon: suffixIcon,
         filled: filled,
         enabled: enabled,

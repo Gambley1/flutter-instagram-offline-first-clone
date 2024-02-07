@@ -1,22 +1,15 @@
-import 'dart:convert';
-
 import 'package:app_ui/app_ui.dart';
 import 'package:firebase_config/firebase_config.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/chats/chats.dart';
-import 'package:flutter_instagram_offline_first_clone/comments/comments.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/feed.dart';
+import 'package:flutter_instagram_offline_first_clone/feed/post/post.dart';
 import 'package:flutter_instagram_offline_first_clone/home/home.dart';
-import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
-import 'package:flutter_instagram_offline_first_clone/l10n/slang/translations.g.dart';
 import 'package:flutter_instagram_offline_first_clone/network_error/network_error.dart';
 import 'package:flutter_instagram_offline_first_clone/stories/stories.dart';
 import 'package:flutter_instagram_offline_first_clone/user_profile/user_profile.dart';
-import 'package:go_router/go_router.dart';
-import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:inview_notifier_list/inview_notifier_list.dart';
 import 'package:posts_repository/posts_repository.dart';
 import 'package:shared/shared.dart';
@@ -58,7 +51,6 @@ class _FeedPageState extends State<FeedPage> with RouteAware {
       providers: [
         BlocProvider(
           create: (context) => FeedBloc(
-            userRepository: context.read<UserRepository>(),
             postsRepository: context.read<PostsRepository>(),
             remoteConfig: context.read<FirebaseConfig>(),
           )..add(const FeedPageRequested(page: 0)),
@@ -216,8 +208,6 @@ class _FeedBodyState extends State<FeedBody> {
     required bool hasMorePosts,
     required bool isFailure,
   }) {
-    final t = context.t;
-    final l10n = context.l10n;
     if (block is DividerHorizontalBlock) {
       return DividerBlock(feedAnimationController: controller);
     }
@@ -266,222 +256,13 @@ class _FeedBodyState extends State<FeedBody> {
         );
       }
     }
-    if (block is PostLargeBlock) {
-      return PostLarge(
+    if (block is PostBlock) {
+      return PostView(
         block: block,
-        isOwner: bloc.isOwnerOfPostBy(block.author.id),
-        isLiked: bloc.isLiked(block.id),
-        likePost: () => bloc.add(FeedLikePostRequested(block.id)),
-        likesCount: bloc.likesCount(block.id),
-        createdAt: block.createdAt.timeAgo(context),
-        isFollowed: bloc.followingStatus(userId: block.author.id),
-        wasFollowed: true,
-        follow: () => bloc.add(FeedPostAuthorFollowRequested(block.author.id)),
-        enableFollowButton: true,
-        likesCountBuilder: (name, userId, count) => name == null
-            ? null
-            : Text.rich(
-                t.likedBy(
-                  name: TextSpan(
-                    text: name,
-                    style: context.titleMedium
-                        ?.copyWith(fontWeight: AppFontWeight.bold),
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = userId == null
-                          ? null
-                          : () => context.pushNamed(
-                                'user_profile',
-                                pathParameters: {'user_id': userId},
-                              ),
-                  ),
-                  and: TextSpan(text: count < 1 ? '' : l10n.and),
-                  others: TextSpan(
-                    text: l10n.others(count),
-                    style: context.titleMedium
-                        ?.copyWith(fontWeight: AppFontWeight.bold),
-                  ),
-                ),
-                style: context.titleMedium,
-              ),
-        onCommentsTap: (showFullSized) => _onCommentsTap(
-          context: context,
-          post: block,
-          showFullSized: showFullSized,
-        ),
-        commentsCount: bloc.commentsCountOf(block.id),
-        likesText: l10n.likesCountText,
-        commentsText: l10n.seeAllComments,
-        onPressed: (action, _) => _onFeedItemAction(context, action),
-        onPostShareTap: (postId, author) async {
-          final receiverId = await context.pushNamed(
-            'search_users',
-            extra: true,
-          ) as Map<String, dynamic>?;
-          if (receiverId == null) return;
-          final receiver = User.fromJson(receiverId);
-          await Future(
-            () => context.read<FeedBloc>().add(
-                  FeedPostShareRequested(
-                    postId: postId,
-                    sender: user,
-                    receiver: receiver,
-                    postAuthor: author,
-                    message: Message(id: UidGenerator.v4()),
-                  ),
-                ),
-          );
-        },
-        postAuthorAvatarBuilder: (context, author, onAvatarTap) {
-          return UserStoriesAvatar(
-            author: author.toUser,
-            onAvatarTap: onAvatarTap,
-            enableUnactiveBorder: false,
-            withAdaptiveBorder: false,
-            radius: 16,
-          );
-        },
         postIndex: index,
-        withInViewNotifier: true,
-        videoPlayerBuilder: (_, media, aspectRatio, isInView) {
-          final videoPlayer = VideoPlayerProvider.of(context).videoPlayerState;
-
-          return VideoPlayerNotifierWidget(
-            builder: (context, shouldPlay, child) {
-              final play = shouldPlay && isInView;
-              return ValueListenableBuilder(
-                valueListenable: videoPlayer.withSound,
-                builder: (context, withSound, child) {
-                  return VideoPlay(
-                    key: ValueKey(media.id),
-                    url: media.url,
-                    play: play,
-                    aspectRatio: aspectRatio,
-                    blurHash: media.blurHash,
-                    withSound: withSound,
-                    onSoundToggled: (enable) {
-                      videoPlayer.withSound.value = enable;
-                    },
-                  );
-                },
-              );
-            },
-          );
-        },
-      );
-    }
-    if (block is PostSponsoredBlock) {
-      return PostSponsored(
-        block: block,
-        isOwner: bloc.isOwnerOfPostBy(block.author.id),
-        isLiked: bloc.isLiked(block.id),
-        likePost: () => bloc.add(FeedLikePostRequested(block.id)),
-        likesCount: bloc.likesCount(block.id),
-        createdAt: block.createdAt.timeAgo(context),
-        isFollowed: bloc.followingStatus(userId: block.author.id),
-        wasFollowed: true,
-        follow: () => bloc.add(FeedPostAuthorFollowRequested(block.author.id)),
-        enableFollowButton: true,
-        onCommentsTap: (showFullSized) => _onCommentsTap(
-          context: context,
-          post: block,
-          showFullSized: showFullSized,
-        ),
-        likesText: context.l10n.likesCountText,
-        commentsText: context.l10n.seeAllComments,
-        onPressed: (action, _) => _onFeedItemAction(context, action),
-        commentsCount: bloc.commentsCountOf(block.id),
-        sponsoredText: context.l10n.sponsoredPostText,
-        onPostShareTap: (postId, author) async {
-          final receiverId = await context.pushNamed(
-            'search_users',
-            extra: true,
-          ) as Map<String, dynamic>?;
-          if (receiverId == null) return;
-          final receiver = User.fromJson(receiverId);
-          await Future(
-            () => context.read<FeedBloc>().add(
-                  FeedPostShareRequested(
-                    postId: postId,
-                    sender: user,
-                    receiver: receiver,
-                    postAuthor: author,
-                    message: Message(id: UidGenerator.v4()),
-                  ),
-                ),
-          );
-        },
-        postAuthorAvatarBuilder: (context, author, onAvatarTap) {
-          return UserStoriesAvatar(
-            author: author.toUser,
-            onAvatarTap: onAvatarTap,
-            enableUnactiveBorder: false,
-            withAdaptiveBorder: false,
-            radius: 16,
-          );
-        },
-        postIndex: index,
-        withInViewNotifier: true,
-        videoPlayerBuilder: (_, media, aspectRatio, isInView) {
-          final videoPlayer = VideoPlayerProvider.of(context).videoPlayerState;
-
-          return VideoPlayerNotifierWidget(
-            builder: (context, shouldPlay, child) {
-              final play = shouldPlay && isInView;
-              return ValueListenableBuilder(
-                valueListenable: videoPlayer.withSound,
-                builder: (context, withSound, child) {
-                  return VideoPlay(
-                    key: ValueKey(media.id),
-                    url: media.url,
-                    play: play,
-                    aspectRatio: aspectRatio,
-                    blurHash: media.blurHash,
-                    withSound: withSound,
-                    onSoundToggled: (enable) {
-                      videoPlayer.withSound.value = enable;
-                    },
-                  );
-                },
-              );
-            },
-          );
-        },
       );
     }
 
     return const Text('Unknown block');
   }
-
-  Future<void> _onCommentsTap({
-    required PostBlock post,
-    required BuildContext context,
-    bool showFullSized = false,
-  }) =>
-      context.showCommentsModal(
-        showFullSized: showFullSized,
-          pageBuilder: (scrollController, draggableScrollController) =>
-              CommentsPage(
-            post: post,
-            scrollController: scrollController,
-            scrollableSheetController: draggableScrollController,
-          ),
-        );
-
-  /// Handles actions triggered by tapping on feed items.
-  void _onFeedItemAction(
-    BuildContext context,
-    BlockAction action,
-  ) =>
-      action.when(
-        navigateToPostAuthor: (action) => context.pushNamed(
-          'user_profile',
-          pathParameters: {'user_id': action.authorId},
-        ),
-        navigateToSponsoredPostAuthor: (action) => context.pushNamed(
-          'user_profile',
-          queryParameters: {'promo_action': jsonEncode(action.toJson())},
-          pathParameters: {'user_id': action.authorId},
-          extra: true,
-        ),
-      );
 }

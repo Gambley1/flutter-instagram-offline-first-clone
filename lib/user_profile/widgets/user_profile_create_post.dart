@@ -60,7 +60,6 @@ class _CreatePostViewState extends State<CreatePostView> {
         context.pop();
       },
       appBar: AppBar(
-        scrolledUnderElevation: 0,
         title: const Text('Create post'),
         actions: [
           if (_selectedFiles != null && (_selectedFiles?.isNotEmpty ?? false))
@@ -403,18 +402,11 @@ class ImagesCarouselPreview extends StatelessWidget {
             borderRadius: const BorderRadius.all(Radius.circular(16)),
             child: Stack(
               children: <Widget>[
-                LocalImageAttachment(
-                  bytes: bytes,
+                ImageAttachmentThumbnail(
+                  image: Attachment(
+                    file: AttachmentFile(size: bytes.length, bytes: bytes),
+                  ),
                   fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return ThumbnailError(
-                      error: error,
-                      stackTrace: stackTrace,
-                      height: double.infinity,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                    );
-                  },
                 ),
                 Positioned(
                   top: AppSpacing.md,

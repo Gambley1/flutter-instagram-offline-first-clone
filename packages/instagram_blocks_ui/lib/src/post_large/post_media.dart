@@ -22,7 +22,7 @@ class PostMedia extends StatelessWidget {
   final List<Media> media;
   final int? postIndex;
   final LikeCallback likePost;
-  final Stream<bool> isLiked;
+  final bool isLiked;
   final ValueSetter<int>? onPageChanged;
   final VideoPlayerBuilder? videoPlayerBuilder;
   final bool withInViewNotifier;

@@ -2,8 +2,9 @@ import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
-import 'package:flutter_instagram_offline_first_clone/stories/view/view.dart';
+import 'package:flutter_instagram_offline_first_clone/stories/user_stories/user_stories.dart';
 import 'package:go_router/go_router.dart';
+import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:shared/shared.dart';
 import 'package:user_repository/user_repository.dart';
 
@@ -16,9 +17,9 @@ class SearchUsers extends StatefulWidget {
   State<SearchUsers> createState() => _SearchUsersState();
 }
 
-class _SearchUsersState extends State<SearchUsers> {
+class _SearchUsersState extends State<SearchUsers> with SafeSetStateMixin {
   late TextEditingController _queryController;
-  final _debouncer = Debouncer(milliseconds: 450);
+  final _debouncer = Debouncer(milliseconds: 250);
 
   var _users = <User>[];
 
@@ -26,6 +27,10 @@ class _SearchUsersState extends State<SearchUsers> {
   void initState() {
     super.initState();
     _queryController = TextEditingController();
+    context
+        .read<AppBloc>()
+        .searchUsers()
+        .then((users) => safeSetState(() => _users = users));
   }
 
   @override
@@ -37,18 +42,15 @@ class _SearchUsersState extends State<SearchUsers> {
 
   @override
   Widget build(BuildContext context) {
-    final user = context.select((AppBloc bloc) => bloc.state.user);
     return AppScaffold(
       appBar: AppBar(
-        scrolledUnderElevation: 0,
         title: AppTextField(
           textController: _queryController,
-          onChanged: (val) => _debouncer.run(() async {
-            setState(() => _queryController.text = val);
-            final users = await context
-                .read<AppBloc>()
-                .searchUsers(query: val, userId: user.id);
-            setState(() => _users = users);
+          onChanged: (query) => _debouncer.run(() async {
+            safeSetState(() => _queryController.text = query);
+            final users =
+                await context.read<AppBloc>().searchUsers(query: query);
+            safeSetState(() => _users = users);
           }),
         ),
       ),
@@ -57,12 +59,20 @@ class _SearchUsersState extends State<SearchUsers> {
         itemBuilder: (context, index) {
           final user = _users[index];
           return ListTile(
-            contentPadding: EdgeInsets.zero,
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.md,
+              vertical: AppSpacing.xxs,
+            ),
+            horizontalTitleGap: AppSpacing.md,
             onTap: () =>
                 context.pop(widget.returnUser ? user.toJson() : user.id),
-            leading:
-                UserStoriesAvatar(author: user, enableUnactiveBorder: false),
-            title: Text(user.fullName!),
+            leading: UserStoriesAvatar(
+              author: user,
+              enableUnactiveBorder: false,
+              withAdaptiveBorder: false,
+              radius: 14,
+            ),
+            title: Text(user.displayFullName),
           );
         },
       ),

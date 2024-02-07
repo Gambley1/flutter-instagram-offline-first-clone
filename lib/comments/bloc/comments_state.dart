@@ -1,13 +1,18 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'comments_bloc.dart';
 
 enum CommentsStatus { initial, populated, error }
 
+@JsonSerializable()
 class CommentsState extends Equatable {
-  const CommentsState._({required this.status, required this.comments});
+  const CommentsState({required this.status, required this.comments});
+
+  factory CommentsState.fromJson(Map<String, dynamic> json) =>
+      _$CommentsStateFromJson(json);
 
   const CommentsState.initial()
-      : this._(status: CommentsStatus.initial, comments: const []);
+      : this(status: CommentsStatus.initial, comments: const []);
+
+  Map<String, dynamic> toJson() => _$CommentsStateToJson(this);
 
   final CommentsStatus status;
   final List<Comment> comments;
@@ -19,7 +24,7 @@ class CommentsState extends Equatable {
     CommentsStatus? status,
     List<Comment>? comments,
   }) {
-    return CommentsState._(
+    return CommentsState(
       status: status ?? this.status,
       comments: comments ?? this.comments,
     );

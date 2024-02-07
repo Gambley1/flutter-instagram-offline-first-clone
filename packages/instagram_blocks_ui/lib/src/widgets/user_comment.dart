@@ -31,7 +31,6 @@ class UserComment extends StatelessWidget {
     required this.likesText,
     required this.createdAt,
     required this.onCommentDelete,
-    required this.showDeleteCommentConfirm,
     this.onReplyButtonTap,
     this.avatarBuilder,
     super.key,
@@ -41,15 +40,14 @@ class UserComment extends StatelessWidget {
   final PostBlock post;
   final String currentUserId;
   final bool isReplied;
-  final Stream<bool> isLiked;
-  final Stream<bool> isLikedByOwner;
-  final Stream<int> likesCount;
+  final bool isLiked;
+  final bool isLikedByOwner;
+  final int likesCount;
   final LikesText likesText;
   final LikeCallback onLikeComment;
   final VoidCallback onAvatarTap;
   final ValueSetter<String>? onReplyButtonTap;
   final ValueSetter<String> onCommentDelete;
-  final Future<bool?> Function() showDeleteCommentConfirm;
   final String createdAt;
   final CommentUserAvatarBuilder? avatarBuilder;
 
@@ -65,54 +63,42 @@ class UserComment extends StatelessWidget {
       horizontalTitleGap: AppSpacing.md,
       titleAlignment: ListTileTitleAlignment.titleHeight,
       isThreeLine: true,
-      onLongPress: !canDeletePost
-          ? null
-          : () async {
-              final isConfirmed = await showDeleteCommentConfirm();
-              if (isConfirmed == null || !isConfirmed) return;
-              onCommentDelete(comment.id);
-            },
+      onLongPress: !canDeletePost ? null : () => onCommentDelete(comment.id),
       leading: avatarBuilder?.call(
             context,
             comment.author.toUser,
-            (_) => onAvatarTap,
-            !isReplied ? null : 14,
+            (_) => onAvatarTap.call(),
+            !isReplied ? AppSize.iconSizeSmall : AppSize.iconSizeXSmall,
           ) ??
           UserProfileAvatar(
             isLarge: false,
-            radius: !isReplied ? null : 14,
+            radius: !isReplied ? AppSize.iconSizeSmall : AppSize.iconSizeXSmall,
             avatarUrl: comment.author.avatarUrl,
-            onTap: (_) => onAvatarTap,
+            onTap: (_) => onAvatarTap.call(),
             withShimmerPlaceholder: true,
           ),
-      title: StreamBuilder<bool>(
-        stream: isLikedByOwner,
-        builder: (context, snapshot) {
-          final isLiked = snapshot.data;
-          return Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Tappable(
-                onTap: onAvatarTap,
-                animationEffect: TappableAnimationEffect.none,
-                child: Text(
-                  '${comment.author.username} ',
-                  style: context.labelLarge,
-                ),
-              ),
-              TimeAgo(createdAt: '$createdAt '),
-              if (isLiked != null && isLiked)
-                CommentOwnerLikedAvatar(avatarUrl: post.author.avatarUrl),
-            ],
-          );
-        },
+      title: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Tappable(
+            onTap: onAvatarTap,
+            animationEffect: TappableAnimationEffect.none,
+            child: Text(
+              '${comment.author.username} ',
+              style: context.labelLarge,
+            ),
+          ),
+          TimeAgo(createdAt: '$createdAt '),
+          if (isLikedByOwner)
+            CommentOwnerLikedAvatar(avatarUrl: post.author.avatarUrl),
+        ],
       ),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4),
-            child: buildHighlightedText(comment.content),
+            padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
+            child: buildHighlightedText(comment.content, context),
           ),
           Tappable(
             onTap: () => onReplyButtonTap?.call(comment.author.username),
@@ -130,7 +116,7 @@ class UserComment extends StatelessWidget {
         children: [
           LikeButton(
             isLiked: isLiked,
-            like: onLikeComment,
+            onLikedTap: onLikeComment,
             size: 22,
             color: Colors.grey.shade500,
             scaleStrength: ScaleStrength.md,
@@ -140,6 +126,7 @@ class UserComment extends StatelessWidget {
               likesCount: likesCount,
               likesText: likesText,
               size: 14,
+              hideCount: false,
               color: Colors.grey.shade500,
             ),
           ),
@@ -223,7 +210,7 @@ String cleanText(String text) {
   return text;
 }
 
-RichText buildHighlightedText(String text) {
+RichText buildHighlightedText(String text, BuildContext context) {
   text = cleanText(text);
 
   final validMentions = <String>['@'];
@@ -240,9 +227,9 @@ RichText buildHighlightedText(String text) {
       textSpans.add(
         TextSpan(
           text: '$value ',
-          style: TextStyle(
+          style: context.bodySmall?.copyWith(
             color: Colors.blueAccent[100],
-            fontWeight: FontWeight.bold,
+            fontWeight: AppFontWeight.bold,
           ),
           recognizer: TapGestureRecognizer()
             ..onTap = () {
@@ -251,7 +238,7 @@ RichText buildHighlightedText(String text) {
         ),
       );
     } else {
-      textSpans.add(TextSpan(text: '$value '));
+      textSpans.add(TextSpan(text: '$value ', style: context.bodySmall));
     }
   });
 

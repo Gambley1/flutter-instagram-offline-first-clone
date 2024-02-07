@@ -8,7 +8,6 @@ import 'package:image_picker_plus/src/custom_crop.dart';
 import 'package:image_picker_plus/src/image.dart';
 import 'package:image_picker_plus/src/multi_selection_mode.dart';
 import 'package:insta_assets_crop/insta_assets_crop.dart';
-import 'package:photo_manager/photo_manager.dart';
 import 'package:shimmer/shimmer.dart';
 
 class ImagesViewPage extends StatefulWidget {
@@ -29,6 +28,9 @@ class ImagesViewPage extends StatefulWidget {
   final Color blackColor;
   final bool showImagePreview;
   final SliverGridDelegateWithFixedCrossAxisCount gridDelegate;
+
+  final FilterOptionGroup? filterOption;
+
   const ImagesViewPage({
     Key? key,
     required this.multiSelectedImages,
@@ -45,6 +47,7 @@ class ImagesViewPage extends StatefulWidget {
     required this.showImagePreview,
     required this.gridDelegate,
     required this.maximumSelection,
+    required this.filterOption,
     this.callbackFunction,
   }) : super(key: key);
 
@@ -123,16 +126,19 @@ class _ImagesViewPageState extends State<ImagesViewPage>
     return false;
   }
 
-  _fetchNewMedia({required int currentPageValue}) async {
+  Future<void> _fetchNewMedia({required int currentPageValue}) async {
     lastPage.value = currentPageValue;
-    PermissionState result = await PhotoManager.requestPermissionExtend();
+    final result = await PhotoManager.requestPermissionExtend();
     if (result.isAuth) {
-      RequestType type = widget.showInternalVideos && widget.showInternalImages
+      final type = widget.showInternalVideos && widget.showInternalImages
           ? RequestType.common
           : (widget.showInternalImages ? RequestType.image : RequestType.video);
 
-      List<AssetPathEntity> albums =
-          await PhotoManager.getAssetPathList(onlyAll: true, type: type);
+      final albums = await PhotoManager.getAssetPathList(
+        onlyAll: true,
+        type: type,
+        filterOption: widget.filterOption,
+      );
       if (albums.isEmpty) {
         WidgetsBinding.instance
             .addPostFrameCallback((_) => setState(() => noImages = true));
@@ -140,15 +146,14 @@ class _ImagesViewPageState extends State<ImagesViewPage>
       } else if (noImages) {
         noImages = false;
       }
-      List<AssetEntity> media =
+      final media =
           await albums[0].getAssetListPaged(page: currentPageValue, size: 60);
-      List<FutureBuilder<Uint8List?>> temp = [];
-      List<File?> imageTemp = [];
+      final temp = <FutureBuilder<Uint8List?>>[];
+      final imageTemp = <File?>[];
 
       for (int i = 0; i < media.length; i++) {
-        FutureBuilder<Uint8List?> gridViewImage =
-            await getImageGallery(media, i);
-        File? image = await highQualityImage(media, i);
+        final gridViewImage = await getImageGallery(media, i);
+        final image = await highQualityImage(media, i);
         temp.add(gridViewImage);
         imageTemp.add(image);
       }
@@ -433,8 +438,11 @@ class _ImagesViewPageState extends State<ImagesViewPage>
     );
   }
 
-  Widget normalGridView(List<FutureBuilder<Uint8List?>> mediaListValue,
-      int currentPageValue, int lastPageValue) {
+  Widget normalGridView(
+    List<FutureBuilder<Uint8List?>> mediaListValue,
+    int currentPageValue,
+    int lastPageValue,
+  ) {
     return NotificationListener(
       onNotification: (ScrollNotification notification) {
         _handleScrollEvent(notification,
@@ -466,11 +474,12 @@ class _ImagesViewPageState extends State<ImagesViewPage>
             return ValueListenableBuilder(
               valueListenable: widget.multiSelectedImages,
               builder: (context, List<File> selectedImagesValue, child) {
-                FutureBuilder<Uint8List?> mediaList = mediaListValue[index];
-                File? image = allImagesValue[index];
+                final mediaList = mediaListValue[index];
+                final image = allImagesValue[index];
                 if (image != null) {
-                  bool imageSelected = selectedImagesValue.contains(image);
-                  List<File> multiImages = selectedImagesValue;
+                  final imageSelected = selectedImagesValue.contains(image);
+                  final multiImages = selectedImagesValue;
+
                   return Stack(
                     children: [
                       gestureDetector(image, index, mediaList),
@@ -504,9 +513,9 @@ class _ImagesViewPageState extends State<ImagesViewPage>
   }
 
   Widget gestureDetector(File image, int index, Widget childWidget) {
-    return ValueListenableBuilder(
+    return ValueListenableBuilder<bool>(
       valueListenable: widget.multiSelectionMode,
-      builder: (context, bool multipleValue, child) => ValueListenableBuilder(
+      builder: (context, multipleValue, child) => ValueListenableBuilder(
         valueListenable: widget.multiSelectedImages,
         builder: (context, List<File> selectedImagesValue, child) =>
             GestureDetector(
@@ -537,7 +546,7 @@ class _ImagesViewPageState extends State<ImagesViewPage>
   onTapImage(File image, List<File> selectedImagesValue, int index) {
     setState(() {
       if (widget.multiSelectionMode.value) {
-        bool close = selectionImageCheck(image, selectedImagesValue, index);
+        final close = selectionImageCheck(image, selectedImagesValue, index);
         if (close) return;
       }
       selectedImage.value = image;
@@ -554,7 +563,7 @@ class _ImagesViewPageState extends State<ImagesViewPage>
     selectedImage.value = image;
     if (multiSelectionValue.contains(image) && selectedImage.value == image) {
       setState(() {
-        int indexOfImage =
+        final indexOfImage =
             multiSelectionValue.indexWhere((element) => element == image);
         multiSelectionValue.removeAt(indexOfImage);
         if (multiSelectionValue.isNotEmpty &&
@@ -604,8 +613,8 @@ class _ImagesViewPageState extends State<ImagesViewPage>
 
   Future<File?> cropImage(File imageFile, {int? indexOfCropImage}) async {
     await InstaAssetsCrop.requestPermissions();
-    final double? scale;
-    final Rect? area;
+    double? scale;
+    Rect? area;
     if (indexOfCropImage == null) {
       scale = cropKey.value.currentState?.scale;
       area = cropKey.value.currentState?.area;

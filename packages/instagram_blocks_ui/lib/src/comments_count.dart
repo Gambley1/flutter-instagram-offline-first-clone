@@ -18,7 +18,7 @@ class CommentsCount extends StatefulWidget {
   });
 
   final CommentsText commentsText;
-  final Stream<int> count;
+  final int count;
   final VoidCallback onTap;
 
   @override
@@ -30,28 +30,24 @@ class _CommentsCountState extends State<CommentsCount>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return StreamBuilder<int>(
-      stream: widget.count,
-      builder: (context, snapshot) {
-        final count = snapshot.data;
-        final isVisible = count != null && count != 0;
-        return AnimatedVisibility(
-          height: 25,
-          duration: 250.ms,
-          isVisible: isVisible,
-          curve: Sprung.criticallyDamped,
-          child: Tappable(
-            animationEffect: TappableAnimationEffect.none,
-            onTap: widget.onTap,
-            child: Text(
-              widget.commentsText(count ?? 0),
-              style: context.bodyLarge?.copyWith(
-                color: Colors.grey.shade500,
-              ),
-            ),
+    final count = widget.count;
+    final isVisible = count != 0;
+
+    return AnimatedVisibility(
+      height: 25,
+      duration: 250.ms,
+      isVisible: isVisible,
+      curve: Sprung.criticallyDamped,
+      child: Tappable(
+        animationEffect: TappableAnimationEffect.none,
+        onTap: widget.onTap,
+        child: Text(
+          widget.commentsText(count),
+          style: context.bodyLarge?.copyWith(
+            color: Colors.grey.shade500,
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 

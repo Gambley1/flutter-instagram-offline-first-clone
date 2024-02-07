@@ -1,5 +1,3 @@
-// ignore_for_file: deprecated_member_use
-
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -14,25 +12,32 @@ class FeedAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final videoProvider = VideoPlayerProvider.of(context);
 
-    return SliverAppBar(
-      centerTitle: false,
-      forceElevated: innerBoxIsScrolled,
-      title: const AppLogo(height: 50, width: 50),
-      actions: [
-        Tappable(
-          onTap: () {
-            videoProvider.pageController
-                .animateToPage(2, curve: Curves.easeInOut, duration: 150.ms);
-          },
-          animationEffect: TappableAnimationEffect.scale,
-          child: Assets.icons.chatCircle.svg(
-            color: context.adaptiveColor,
-            height: AppSize.iconSize,
-            width: AppSize.iconSize,
+    return SliverPadding(
+      padding: const EdgeInsets.only(right: AppSpacing.md),
+      sliver: SliverAppBar(
+        centerTitle: false,
+        forceElevated: innerBoxIsScrolled,
+        title: const AppLogo(),
+        floating: true,
+        snap: true,
+        actions: [
+          Tappable(
+            onTap: () {
+              videoProvider.pageController
+                  .animateToPage(2, curve: Curves.easeInOut, duration: 150.ms);
+            },
+            animationEffect: TappableAnimationEffect.scale,
+            child: Assets.icons.chatCircle.svg(
+              height: AppSize.iconSize,
+              width: AppSize.iconSize,
+              colorFilter: ColorFilter.mode(
+                context.adaptiveColor,
+                BlendMode.srcIn,
+              ),
+            ),
           ),
-        ),
-      ],
-      scrolledUnderElevation: 0,
+        ],
+      ),
     );
   }
 }
