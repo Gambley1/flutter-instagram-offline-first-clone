@@ -1,0 +1,540 @@
+import 'package:app_ui/app_ui.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_instagram_offline_first_clone/app/app.dart';
+import 'package:flutter_instagram_offline_first_clone/feed/post/post.dart';
+import 'package:flutter_instagram_offline_first_clone/user_profile/user_profile.dart';
+import 'package:go_router/go_router.dart';
+import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
+import 'package:posts_repository/posts_repository.dart';
+import 'package:shared/shared.dart';
+import 'package:sliver_tools/sliver_tools.dart';
+import 'package:user_repository/user_repository.dart';
+
+class SharePost extends StatelessWidget {
+  const SharePost({
+    required this.block,
+    required this.scrollController,
+    required this.draggableScrollController,
+    super.key,
+  });
+
+  final PostBlock block;
+  final ScrollController scrollController;
+  final DraggableScrollableController draggableScrollController;
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => UserProfileBloc(
+            userRepository: context.read<UserRepository>(),
+            postsRepository: context.read<PostsRepository>(),
+          )
+            ..add(const UserProfileFetchFollowersRequested())
+            ..add(const UserProfileFetchFollowingsRequested()),
+        ),
+        BlocProvider(
+          create: (context) => PostBloc(
+            postId: block.id,
+            postsRepository: context.read<PostsRepository>(),
+            userRepository: context.read<UserRepository>(),
+          ),
+        ),
+      ],
+      child: SharePostView(
+        block: block,
+        scrollController: scrollController,
+        draggableScrollController: draggableScrollController,
+      ),
+    );
+  }
+}
+
+class SharePostView extends StatefulWidget {
+  const SharePostView({
+    required this.block,
+    required this.scrollController,
+    required this.draggableScrollController,
+    super.key,
+  });
+
+  final PostBlock block;
+  final ScrollController scrollController;
+  final DraggableScrollableController draggableScrollController;
+
+  @override
+  State<SharePostView> createState() => _SharPostState();
+}
+
+class _SharPostState extends State<SharePostView> with SafeSetStateMixin {
+  late TextEditingController _searchController;
+  late FocusNode _focusNode;
+
+  final _selectedUsers = ValueNotifier(<User>{});
+  final _foundUsers = ValueNotifier(<User>{});
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController = TextEditingController();
+    _focusNode = FocusNode()..addListener(_focusListener);
+  }
+
+  void _focusListener() {
+    if (_focusNode.hasFocus) {
+      if (!widget.draggableScrollController.isAttached) return;
+      if (widget.draggableScrollController.size == 1.0) return;
+      widget.draggableScrollController.animateTo(
+        1,
+        duration: const Duration(milliseconds: 250),
+        curve: Curves.ease,
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    _focusNode
+      ..removeListener(_focusListener)
+      ..dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    const backgroundColor = Color.fromARGB(255, 32, 30, 30);
+
+    final followers =
+        context.select((UserProfileBloc bloc) => bloc.state.followers);
+    final followings =
+        context.select((UserProfileBloc bloc) => bloc.state.followings);
+
+    final followersAndFollowings = {...followers, ...followings};
+    return AppScaffold(
+      releaseFocus: true,
+      backgroundColor: backgroundColor,
+      resizeToAvoidBottomInset: true,
+      appBar: AppBar(
+        surfaceTintColor: backgroundColor,
+        backgroundColor: backgroundColor,
+        automaticallyImplyLeading: false,
+        title: UserSearchField(
+          users: followersAndFollowings.toList(),
+          searchController: _searchController,
+          focusNode: _focusNode,
+          onUsersFound: (users, query) {
+            final existedUsers = query.trim().isEmpty
+                ? <User>[]
+                : followersAndFollowings
+                    .where(
+                      (user) => user.username!
+                          .toLowerCase()
+                          .trim()
+                          .contains(query.toLowerCase().trim()),
+                    )
+                    .toList();
+            if (existedUsers.isNotEmpty) {
+              final foundUsers = <User>[];
+              for (final user in users) {
+                if (existedUsers.any((existed) => existed.id == user.id)) {
+                  continue;
+                }
+                foundUsers.add(user);
+              }
+              _foundUsers.value = {...existedUsers, ...foundUsers};
+            } else {
+              _foundUsers.value = {...users};
+            }
+          },
+        ),
+      ),
+      bottomNavigationBar: _selectedUsers.value.isEmpty
+          ? null
+          : SharePostButton(
+              block: widget.block,
+              selectedUsers: _selectedUsers.value.toList(),
+            ),
+      body: AnimatedBuilder(
+        animation: Listenable.merge([_foundUsers, _selectedUsers]),
+        builder: (context, _) {
+          return UsersListView(
+            users:
+                {..._selectedUsers.value, ...followersAndFollowings}.toList(),
+            foundUsers: _foundUsers.value.toList(),
+            scrollController: widget.scrollController,
+            draggableScrollController: widget.draggableScrollController,
+            selectedUsers: _selectedUsers.value.toList(),
+            onUserSelected: (user, {clearQuery}) => safeSetState(() {
+              if (clearQuery ?? false) {
+                _searchController.clear();
+                _foundUsers.value.clear();
+              }
+              if (_selectedUsers.value.contains(user)) {
+                _selectedUsers.value.remove(user);
+              } else {
+                _selectedUsers.value.add(user);
+              }
+            }),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class SharePostButton extends StatefulWidget {
+  const SharePostButton({
+    required this.block,
+    required this.selectedUsers,
+    super.key,
+  });
+
+  final PostBlock block;
+  final List<User> selectedUsers;
+
+  @override
+  State<SharePostButton> createState() => _SharePostButtonState();
+}
+
+class _SharePostButtonState extends State<SharePostButton> {
+  late TextEditingController _messageController;
+
+  @override
+  void initState() {
+    super.initState();
+    _messageController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _messageController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final user = context.select((AppBloc bloc) => bloc.state.user);
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            const AppDivider(),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+              child: AppTextField(
+                textController: _messageController,
+                onChanged: (message) => _messageController.text = message,
+                contentPadding: EdgeInsets.zero,
+                border: InputBorder.none,
+                filled: false,
+                textInputType: TextInputType.text,
+                textInputAction: TextInputAction.done,
+                textCapitalization: TextCapitalization.sentences,
+                hintText: 'Add a message...',
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+              child: Tappable(
+                onTap: () async {
+                  void pop() => context.pop();
+
+                  openSnackbar(const SnackbarMessage.loading());
+                  final postShareFutures = widget.selectedUsers.map(
+                    (receiver) => Future(
+                      () => context.read<PostBloc>().add(
+                            PostShareRequested(
+                              sender: user,
+                              receiver: receiver,
+                              postAuthor: widget.block.author,
+                              message: Message(
+                                message: _messageController.text,
+                                sender: PostAuthor(
+                                  id: user.id,
+                                  avatarUrl: user.avatarUrl!,
+                                  username: user.username!,
+                                ),
+                              ),
+                            ),
+                          ),
+                    ),
+                  );
+                  try {
+                    await Future.wait(postShareFutures).then((_) {
+                      pop.call();
+                      openSnackbar(
+                        const SnackbarMessage.success(
+                          title: 'Successfully shared post!',
+                        ),
+                      );
+                    });
+                  } catch (error, stackTrace) {
+                    logE(
+                      'Failed to share post.',
+                      error: error,
+                      stackTrace: stackTrace,
+                    );
+                    openSnackbar(
+                      const SnackbarMessage.error(
+                        title: 'Failed to share post.',
+                      ),
+                    );
+                  }
+                },
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: Colors.blue,
+                    borderRadius: BorderRadius.all(Radius.circular(6)),
+                  ),
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.md,
+                    vertical: AppSpacing.md,
+                  ),
+                  child: Text(
+                    widget.selectedUsers.length == 1
+                        ? 'Send'
+                        : 'Send separately',
+                    style: context.bodyLarge?.apply(color: Colors.white),
+                  ),
+                ),
+              ),
+            ),
+          ].insertBetween(const SizedBox(height: AppSpacing.md)),
+        ),
+      ),
+    );
+  }
+}
+
+class UserSearchField extends StatefulWidget {
+  const UserSearchField({
+    required this.users,
+    required this.searchController,
+    required this.focusNode,
+    required this.onUsersFound,
+    super.key,
+  });
+
+  final List<User> users;
+  final TextEditingController searchController;
+  final FocusNode focusNode;
+  final void Function(List<User> users, String query) onUsersFound;
+
+  @override
+  State<UserSearchField> createState() => _UserSearchFieldState();
+}
+
+class _UserSearchFieldState extends State<UserSearchField> {
+  late Debouncer _debouncer;
+
+  final _unactiveIconColor = Colors.grey.shade600;
+  final _activeIconColor = Colors.white;
+
+  late final _iconColor = ValueNotifier(_unactiveIconColor);
+
+  @override
+  void initState() {
+    super.initState();
+    _debouncer = Debouncer();
+
+    widget.focusNode.addListener(_focusListener);
+  }
+
+  void _focusListener() {
+    if (widget.focusNode.hasFocus) {
+      _iconColor.value = _activeIconColor;
+    } else {
+      _iconColor.value = _unactiveIconColor;
+    }
+  }
+
+  void _noUsersFound() => widget.onUsersFound.call([], '');
+
+  @override
+  void dispose() {
+    widget.focusNode.removeListener(_focusListener);
+    _debouncer.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final searchController = widget.searchController;
+
+    return AnimatedBuilder(
+      animation: Listenable.merge([_iconColor, searchController]),
+      builder: (context, _) {
+        return AppTextField(
+          textController: searchController,
+          focusNode: widget.focusNode,
+          onChanged: (query) => _debouncer.run(() async {
+            searchController.text = query;
+            if (query.trim().isEmpty) {
+              _noUsersFound();
+              return;
+            }
+            final excludeUserIds = widget.users.isEmpty
+                ? null
+                : widget.users.map((e) => "'${e.id}'").toList().join(',');
+            final users = await context.read<AppBloc>().searchUsers(
+                  query: query,
+                  excludeUserIds: excludeUserIds,
+                );
+            widget.onUsersFound.call(users, query);
+          }),
+          filled: true,
+          hintText: 'Search',
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.md,
+          ),
+          prefixIcon: Icon(Icons.search, color: _iconColor.value),
+          suffixIcon: searchController.text.trim().isEmpty
+              ? null
+              : Tappable(
+                  onTap: () {
+                    searchController.clear();
+                    _noUsersFound();
+                  },
+                  child: Icon(Icons.clear, color: _iconColor.value),
+                ),
+          border: outlinedBorder(
+            borderRadius: 10,
+            borderSide: BorderSide.none,
+          ),
+        );
+      },
+    );
+  }
+}
+
+class UsersListView extends StatelessWidget {
+  const UsersListView({
+    required this.users,
+    required this.foundUsers,
+    required this.scrollController,
+    required this.draggableScrollController,
+    required this.selectedUsers,
+    required this.onUserSelected,
+    super.key,
+  });
+
+  final List<User> users;
+  final List<User> foundUsers;
+  final ScrollController scrollController;
+  final DraggableScrollableController draggableScrollController;
+  final List<User> selectedUsers;
+  final void Function(User user, {bool? clearQuery}) onUserSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.lg,
+        vertical: AppSpacing.lg,
+      ),
+      child: CustomScrollView(
+        controller: scrollController,
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+        slivers: [
+          SliverAnimatedSwitcher(
+            duration: 150.ms,
+            child: foundUsers.isEmpty
+                ? SliverGrid.builder(
+                    itemCount: users.length,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      mainAxisExtent: 140,
+                      crossAxisSpacing: AppSpacing.xlg,
+                      mainAxisSpacing: AppSpacing.lg,
+                    ),
+                    itemBuilder: (context, index) {
+                      final user = users[index];
+                      return Tappable(
+                        onTap: () => onUserSelected.call(user),
+                        child: Column(
+                          children: [
+                            Stack(
+                              children: [
+                                UserProfileAvatar(
+                                  avatarUrl: user.avatarUrl,
+                                  enableBorder: false,
+                                  withAdaptiveBorder: false,
+                                ),
+                                if (selectedUsers.contains(user))
+                                  Positioned(
+                                    right: 1,
+                                    bottom: 1,
+                                    child: Container(
+                                      height: 32,
+                                      width: 32,
+                                      decoration: BoxDecoration(
+                                        color: Colors.blue,
+                                        shape: BoxShape.circle,
+                                        border: Border.all(width: 2),
+                                      ),
+                                      child: const Icon(
+                                        Icons.check,
+                                        size: 22,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            ),
+                            const SizedBox(height: AppSpacing.xs),
+                            Text(
+                              user.displayFullName,
+                              style: context.bodyLarge,
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  )
+                : SliverList.builder(
+                    itemCount: foundUsers.length,
+                    itemBuilder: (context, index) {
+                      final user = foundUsers[index];
+                      final isSelected = selectedUsers.contains(user);
+
+                      return ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        horizontalTitleGap: AppSpacing.lg,
+                        visualDensity: VisualDensity.comfortable,
+                        onTap: () =>
+                            onUserSelected.call(user, clearQuery: true),
+                        leading: UserProfileAvatar(
+                          avatarUrl: user.avatarUrl,
+                          withAdaptiveBorder: false,
+                          isLarge: false,
+                        ),
+                        title: Text(
+                          user.displayFullName,
+                          style: context.bodyLarge,
+                        ),
+                        subtitle: Text(
+                          user.displayUsername,
+                          style: context.bodyLarge
+                              ?.apply(color: Colors.grey.shade600),
+                        ),
+                        trailing: Checkbox.adaptive(
+                          value: isSelected,
+                          shape: const CircleBorder(),
+                          onChanged: (value) {},
+                        ),
+                      );
+                    },
+                  ),
+          ),
+        ],
+      ),
+    );
+  }
+}

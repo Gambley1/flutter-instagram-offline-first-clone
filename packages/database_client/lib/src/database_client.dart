@@ -20,6 +20,9 @@ abstract class UserBaseRepository {
   /// The currently authenticated user id.
   String? get currentUserId;
 
+  /// Broadcasts the user profile identified by [id].
+  Stream<User> profile({required String id});
+
   /// Checks whether the user exists by the provided id.
   Future<bool> isUserExists({required String id});
 
@@ -78,6 +81,7 @@ abstract class UserBaseRepository {
     required int limit,
     required int offset,
     required String? query,
+    String? excludeUserIds,
   });
 }
 
@@ -303,6 +307,14 @@ class DatabaseClient extends Client {
   @override
   String? get currentUserId =>
       Supabase.instance.client.auth.currentSession?.user.id;
+
+  @override
+  Stream<User> profile({required String id}) => _powerSyncRepository.db().watch(
+        'SELECT * FROM profiles WHERE id = ?',
+        parameters: [id],
+      ).map(
+        (event) => event.isEmpty ? User.anonymous : User.fromJson(event.first),
+      );
 
   @override
   Future<bool> isUserExists({required String id}) async {
@@ -1416,14 +1428,18 @@ values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     required int limit,
     required int offset,
     required String? query,
+    String? excludeUserIds,
   }) async {
+    query ??= query?.removeSpecialCharacters();
+    final excludeUserIdsStatement =
+        excludeUserIds == null ? '' : 'AND id NOT IN ($excludeUserIds)';
+
     final result = await _powerSyncRepository.db().getAll(
       '''
-SELECT id, avatar_url, full_name
+SELECT id, avatar_url, full_name, username
   FROM profiles
-WHERE id != ?1 
-  AND username LIKE '%$query%'
-  OR full_name LIKE '%$query%'
+WHERE (LOWER(username) LIKE LOWER('%$query%') OR LOWER(full_name) LIKE LOWER('%$query%'))
+  AND id <> ?1 $excludeUserIdsStatement 
 LIMIT ?2 OFFSET ?3
 ''',
       [userId, limit, offset],

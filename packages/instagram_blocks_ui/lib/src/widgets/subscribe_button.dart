@@ -1,8 +1,8 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 
-class SubscribeButton extends StatelessWidget {
-  const SubscribeButton({
+class FollowButton extends StatelessWidget {
+  const FollowButton({
     required this.isSubscribed,
     required this.wasSubscribed,
     required this.subscribe,
@@ -13,25 +13,25 @@ class SubscribeButton extends StatelessWidget {
   final bool wasSubscribed;
   final VoidCallback subscribe;
 
-  static const _unsubscribedText = 'Subscribe';
-  static const _subscribedText = 'Subscriptions';
+  static const _unfollowedText = 'Follow';
+  static const _followedText = 'Following';
 
   @override
   Widget build(BuildContext context) {
-    String? text() {
+    String? followingStatus() {
       if (!wasSubscribed && isSubscribed) {
-        return _subscribedText;
+        return _followedText;
       }
       if (!wasSubscribed && !isSubscribed) {
-        return _unsubscribedText;
+        return _unfollowedText;
       }
       if (wasSubscribed && !isSubscribed) {
-        return _unsubscribedText;
+        return _unfollowedText;
       }
       return null;
     }
 
-    return text() == null
+    return followingStatus() == null
         ? const SizedBox.shrink()
         : Tappable(
             onTap: subscribe,
@@ -45,7 +45,7 @@ class SubscribeButton extends StatelessWidget {
               ),
               padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
               child: Text(
-                text()!,
+                followingStatus()!,
                 style: context.labelLarge,
               ),
             ),

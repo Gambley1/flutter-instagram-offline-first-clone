@@ -20,8 +20,9 @@ class CreateStoriesBloc extends Bloc<CreateStoriesEvent, CreateStoriesState> {
         super(const CreateStoriesState.intital()) {
     on<CreateStoriesStoryCreateRequested>(_onStoryCreateRequested);
     on<CreateStoriesStoryDeleteRequested>(_onStoryDeleteRequested);
-    on<CreateStoriesFeatureAvaiableSubscriptionRequested>(
+    on<CreateStoriesIsFeatureAvaiableSubscriptionRequested>(
       _onCreateStoriesFeatureAvaiableSubscriptionRequested,
+      transformer: throttleDroppable(),
     );
   }
 
@@ -29,7 +30,7 @@ class CreateStoriesBloc extends Bloc<CreateStoriesEvent, CreateStoriesState> {
   final FirebaseConfig _remoteConfig;
 
   Future<void> _onCreateStoriesFeatureAvaiableSubscriptionRequested(
-    CreateStoriesFeatureAvaiableSubscriptionRequested event,
+    CreateStoriesIsFeatureAvaiableSubscriptionRequested event,
     Emitter<CreateStoriesState> emit,
   ) async {
     final storiesEnabled =

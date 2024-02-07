@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_instagram_offline_first_clone/attachments/widgets/thumnail/thumbnail.dart';
 import 'package:shared/shared.dart';
 
-/// {@template streamImageAttachment}
+/// {@template image_attachment}
 /// Shows an image attachment.
 /// {@endtemplate}
 class ImageAttachment extends StatelessWidget {
-  /// {@macro streamImageAttachment}
+  /// {@macro image_attachment}
   const ImageAttachment({
     required this.message,
     required this.image,

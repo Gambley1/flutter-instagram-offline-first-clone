@@ -96,12 +96,17 @@ class UserProfileAvatar extends StatelessWidget {
     border: Border.fromBorderSide(BorderSide(width: 3, color: Colors.white)),
   );
 
-  static final _greyBorderDecoration = BoxDecoration(
-    shape: BoxShape.circle,
-    border: Border.fromBorderSide(
-      BorderSide(color: Colors.grey.shade800),
-    ),
-  );
+  BoxDecoration _greyBorderDecoration(BuildContext context) => BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.fromBorderSide(
+          BorderSide(
+            color: context.customReversedAdaptiveColor(
+              dark: Colors.grey.shade800,
+              light: Colors.grey.shade400,
+            ),
+          ),
+        ),
+      );
 
   Future<void> _pickImage(BuildContext context) async {
     Future<void> precacheAvatarUrl(String url) =>
@@ -161,7 +166,7 @@ class UserProfileAvatar extends StatelessWidget {
       if (!enableUnactiveBorder && !showStories) return null;
       if (showStories && hasStories) return _gradientBorderDecoration;
       if (enableUnactiveBorder && !showStories && hasStories) {
-        return _greyBorderDecoration;
+        return _greyBorderDecoration(context);
       }
       return null;
     }

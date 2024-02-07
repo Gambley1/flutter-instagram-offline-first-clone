@@ -1,11 +1,9 @@
-// ignore_for_file: deprecated_member_use
-
 import 'package:app_ui/app_ui.dart';
-import 'package:firebase_config/firebase_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
-import 'package:flutter_instagram_offline_first_clone/feed/feed.dart';
+import 'package:flutter_instagram_offline_first_clone/attachments/attachments.dart';
+import 'package:flutter_instagram_offline_first_clone/feed/post/widgets/post_popup.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:flutter_instagram_offline_first_clone/stories/create_stories/create_stories.dart';
 import 'package:flutter_instagram_offline_first_clone/user_profile/bloc/user_profile_bloc.dart';
@@ -15,7 +13,6 @@ import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:posts_repository/posts_repository.dart';
 import 'package:shared/shared.dart';
 import 'package:sliver_tools/sliver_tools.dart';
-import 'package:stories_repository/stories_repository.dart';
 import 'package:user_repository/user_repository.dart';
 
 class UserProfilePage extends StatelessWidget {
@@ -32,29 +29,16 @@ class UserProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) => UserProfileBloc(
-            postsRepository: context.read<PostsRepository>(),
-            userRepository: context.read<UserRepository>(),
-            userId: userId,
-          ),
-        ),
-        BlocProvider(
-          create: (context) => CreateStoriesBloc(
-            storiesRepository: context.read<StoriesRepository>(),
-            remoteConfig: context.read<FirebaseConfig>(),
-          )..add(const CreateStoriesFeatureAvaiableSubscriptionRequested()),
-        ),
-        BlocProvider(
-          create: (context) => FeedBloc(
-            postsRepository: context.read<PostsRepository>(),
-            userRepository: context.read<UserRepository>(),
-            remoteConfig: context.read<FirebaseConfig>(),
-          ),
-        ),
-      ],
+    return BlocProvider(
+      create: (context) => UserProfileBloc(
+        userId: userId,
+        postsRepository: context.read<PostsRepository>(),
+        userRepository: context.read<UserRepository>(),
+      )
+        ..add(const UserProfileSubscriptionRequested())
+        ..add(const UserProfilePostsCountSubscriptionRequested())
+        ..add(const UserProfileFollowingsCountSubscriptionRequested())
+        ..add(const UserProfileFollowersCountSubscriptionRequested()),
       child: UserProfileView(
         userId: userId,
         isSponsored: isSponsored,
@@ -94,6 +78,8 @@ class _UserProfileViewState extends State<UserProfileView>
   Widget build(BuildContext context) {
     final promoAction =
         widget.promoBlockAction as NavigateToSponsoredPostAuthorProfileAction?;
+    final user = context.select((UserProfileBloc bloc) => bloc.state.user);
+
     return AppScaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: !widget.isSponsored
@@ -116,28 +102,30 @@ class _UserProfileViewState extends State<UserProfileView>
                 sliver: MultiSliver(
                   children: [
                     UserProfileAppBar(userId: widget.userId),
-                    UserProfileHeader(userId: widget.userId),
-                    SliverPersistentHeader(
-                      pinned: !ModalRoute.of(context)!.isFirst,
-                      delegate: _SliverAppBarDelegate(
-                        const TabBar(
-                          indicatorSize: TabBarIndicatorSize.tab,
-                          padding: EdgeInsets.zero,
-                          labelPadding: EdgeInsets.zero,
-                          indicatorWeight: 1,
-                          tabs: [
-                            Tab(
-                              icon: Icon(Icons.grid_on),
-                              iconMargin: EdgeInsets.zero,
-                            ),
-                            Tab(
-                              icon: Icon(Icons.person_outline),
-                              iconMargin: EdgeInsets.zero,
-                            ),
-                          ],
+                    if (!user.isAnonymous) ...[
+                      UserProfileHeader(userId: widget.userId),
+                      SliverPersistentHeader(
+                        pinned: !ModalRoute.of(context)!.isFirst,
+                        delegate: _SliverAppBarDelegate(
+                          const TabBar(
+                            indicatorSize: TabBarIndicatorSize.tab,
+                            padding: EdgeInsets.zero,
+                            labelPadding: EdgeInsets.zero,
+                            indicatorWeight: 1,
+                            tabs: [
+                              Tab(
+                                icon: Icon(Icons.grid_on),
+                                iconMargin: EdgeInsets.zero,
+                              ),
+                              Tab(
+                                icon: Icon(Icons.person_outline),
+                                iconMargin: EdgeInsets.zero,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
+                    ],
                   ],
                 ),
               ),
@@ -237,23 +225,31 @@ class _PostsPageState extends State<PostsPage>
                 final block = blocks[index];
                 final multiMedia = block.media.length > 1;
 
-                return PostSmall(
-                  key: ValueKey(block.id),
-                  isOwner: bloc.isOwnerOfPostBy(block.author.id),
-                  onTap: () => context.pushNamed(
-                    'user_posts',
-                    queryParameters: {
-                      'user_id': block.author.id,
-                      'index': index.toString(),
-                    },
-                  ),
-                  onPostDelete: () => bloc.add(
-                    UserProfileDeletePostRequested(block.id),
-                  ),
-                  pinned: false,
-                  multiMedia: multiMedia,
-                  mediaUrl: block.firstMediaUrl!,
-                  isReel: block.isReel,
+                return BlocBuilder<AppBloc, AppState>(
+                  builder: (context, state) {
+                    final user = state.user;
+                    final isOwner = block.author.id == user.id;
+
+                    return PostPopup(
+                      block: block,
+                      index: index,
+                      builder: (_) => PostSmall(
+                        key: ValueKey(block.id),
+                        isOwner: isOwner,
+                        pinned: false,
+                        isReel: block.isReel,
+                        multiMedia: multiMedia,
+                        mediaUrl: block.firstMediaUrl!,
+                        // imageThumbnailBuilder: (context, url) =>
+                        //     const ShimmerPlaceholder(),
+                        imageThumbnailBuilder: (_, url) =>
+                            ImageAttachmentThumbnail(
+                          image: Attachment(imageUrl: url),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    );
+                  },
                 );
               },
             );
@@ -290,12 +286,15 @@ class UserProfileAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final currentUser = context.select((AppBloc bloc) => bloc.state.user);
     final user = context.select((UserProfileBloc b) => b.state.user);
+
     return SliverPadding(
       padding: const EdgeInsets.only(right: AppSpacing.md),
       sliver: SliverAppBar(
         centerTitle: false,
-        scrolledUnderElevation: 0,
+        pinned: !ModalRoute.of(context)!.isFirst,
+        floating: ModalRoute.of(context)!.isFirst,
         title: Row(
           children: [
             Flexible(
@@ -316,7 +315,7 @@ class UserProfileAppBar extends StatelessWidget {
             ),
           ],
         ),
-        actions: userId != null && userId != user.id ||
+        actions: userId != null && userId != currentUser.id ||
                 (userId == null && !ModalRoute.of(context)!.isFirst)
             ? const [
                 UserProfileActions(),
@@ -328,8 +327,6 @@ class UserProfileAppBar extends StatelessWidget {
                   UserProfileLogoutButton(),
                 ],
               ],
-        pinned: !ModalRoute.of(context)!.isFirst,
-        floating: ModalRoute.of(context)!.isFirst,
       ),
     );
   }
@@ -371,7 +368,10 @@ class UserProfileLogoutButton extends StatelessWidget {
       child: Assets.icons.setting.svg(
         height: AppSize.iconSize,
         width: AppSize.iconSize,
-        color: context.adaptiveColor,
+        colorFilter: ColorFilter.mode(
+          context.adaptiveColor,
+          BlendMode.srcIn,
+        ),
       ),
     );
   }
@@ -385,9 +385,11 @@ class UserProfileAddMediaButton extends StatelessWidget {
     final user = context.select((AppBloc bloc) => bloc.state.user);
     final enableStory =
         context.select((CreateStoriesBloc bloc) => bloc.state.isAvailable);
+
     return Tappable(
       onTap: () async {
         final option = await context.showListOptionsModal(
+          title: 'Create',
           options: createMediaModalOptions(
             reelLabel: 'Reel',
             postLabel: 'Post',
@@ -418,7 +420,6 @@ class UserProfileAddMediaButton extends StatelessWidget {
               context.pop();
             },
           ),
-          title: 'Create',
         );
         if (option == null) return;
         option.onTap?.call();

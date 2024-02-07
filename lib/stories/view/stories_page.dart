@@ -300,7 +300,10 @@ class StoriesAuthorListTile extends StatelessWidget {
         children: [
           Text.rich(
             overflow: TextOverflow.ellipsis,
-            style: context.bodyLarge?.copyWith(fontWeight: AppFontWeight.bold),
+            style: context.bodyLarge?.copyWith(
+              fontWeight: AppFontWeight.bold,
+              color: context.adaptiveColor,
+            ),
             TextSpan(
               text: author.username ?? author.fullName ?? '',
               recognizer: TapGestureRecognizer()
@@ -313,7 +316,11 @@ class StoriesAuthorListTile extends StatelessWidget {
             ),
           ),
           const SizedBox(width: AppSpacing.sm),
-          if (createdAt != null) Text(createdAt!.timeAgo(context)),
+          if (createdAt != null)
+            Text(
+              createdAt!.timeAgo(context),
+              style: context.bodyLarge?.apply(color: context.adaptiveColor),
+            ),
         ],
       ),
       trailing: isMine

@@ -37,9 +37,12 @@ class AppView extends StatelessWidget {
       ).copyWith(
         textTheme: const AppTheme().textTheme,
         iconTheme: const IconThemeData(color: Colors.black),
+        appBarTheme: const AppBarTheme(surfaceTintColor: Colors.white),
         bottomNavigationBarTheme: const BottomNavigationBarThemeData(
           type: BottomNavigationBarType.fixed,
         ),
+        bottomSheetTheme:
+            const BottomSheetThemeData(surfaceTintColor: Colors.white),
       ),
       darkTheme: FlexThemeData.dark(
         scheme: FlexScheme.custom,
@@ -55,8 +58,13 @@ class AppView extends StatelessWidget {
       ).copyWith(
         textTheme: const AppDarkTheme().textTheme,
         iconTheme: const IconThemeData(color: Colors.white),
+        appBarTheme: const AppBarTheme(surfaceTintColor: Colors.black),
         bottomNavigationBarTheme: const BottomNavigationBarThemeData(
           type: BottomNavigationBarType.fixed,
+        ),
+        bottomSheetTheme: const BottomSheetThemeData(
+          surfaceTintColor: Color.fromARGB(255, 32, 30, 30),
+          backgroundColor: Color.fromARGB(255, 32, 30, 30),
         ),
       ),
       locale: const Locale('en'),

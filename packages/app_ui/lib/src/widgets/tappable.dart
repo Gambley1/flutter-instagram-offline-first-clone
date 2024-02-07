@@ -1,5 +1,3 @@
-// ignore_for_file: public_member_api_docs
-
 import 'dart:ui';
 
 import 'package:app_ui/app_ui.dart';
@@ -8,9 +6,16 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+/// The different animation effects that can be applied when a [Tappable]
+/// widget is tapped.
 enum TappableAnimationEffect {
+  /// Visually makes no effect on tap.
   none,
+
+  /// Visually makes button fade on tap.
   fade,
+
+  /// Visually scales button on tap
   scale,
 }
 
@@ -30,6 +35,8 @@ class Tappable extends StatelessWidget {
     this.color,
     this.type = MaterialType.canvas,
     this.onLongPress,
+    this.onLongPressMoveUpdate,
+    this.onLongPressEnd,
     this.animationEffect = TappableAnimationEffect.fade,
     this.scaleStrength = ScaleStrength.xs,
     this.fadeStrength = FadeStrength.large,
@@ -38,19 +45,53 @@ class Tappable extends StatelessWidget {
     this.onTapUp,
   });
 
+  /// The border radius of the tappable widget.
   final double borderRadius;
+
+  /// The custom border radius to override the default.
   final BorderRadius? customBorderRadius;
+
+  /// Callback invoked when the tappable is tapped.
   final VoidCallback? onTap;
+
+  /// Callback invoked when the gesture was started.
   final ValueSetter<TapUpDetails>? onTapUp;
+
+  /// Callback invoked when the tap highlight changes.
   final ValueChanged<bool>? onHighlightChanged;
+
+  /// The background color of the tappable.
   final Color? color;
+
+  /// The child widget being wrapped.
   final Widget child;
+
+  /// The material type for the tappable.
   final MaterialType type;
+
+  /// Callback invoked on a long press.
   final VoidCallback? onLongPress;
+
+  /// The callback that gives the details on long press when there are moving
+  /// gestures.
+  final GestureLongPressMoveUpdateCallback? onLongPressMoveUpdate;
+
+  /// The callback that gives the details on the ending of the long press.
+  final GestureLongPressEndCallback? onLongPressEnd;
+
+  /// The tap animation effect.
   final TappableAnimationEffect animationEffect;
+
+  /// The scale animation strength on tap.
   final ScaleStrength scaleStrength;
+
+  /// The fade animation strength on tap.
   final FadeStrength fadeStrength;
+
+  /// Whether to trigger the tap callbacks on tap down.
   final bool triggerOnTap;
+
+  /// The alignment of the scale animation.
   final Alignment scaleAlignment;
 
   @override
@@ -132,6 +173,7 @@ class Tappable extends StatelessWidget {
       TappableAnimationEffect.fade => FadedButton(
           onTap: onTap,
           onTapUp: onTapUp,
+          onLongPressEnd: onLongPressEnd,
           fadeStrength: fadeStrength,
           borderRadius:
               customBorderRadius ?? BorderRadius.circular(borderRadius),
@@ -145,11 +187,13 @@ class Tappable extends StatelessWidget {
                   onLongPress!();
                 }
               : null,
+          onLongPressMoveUpdate: onLongPressMoveUpdate,
           child: child,
         ),
       TappableAnimationEffect.scale => ScaledButton(
           onTap: onTap,
           onTapUp: onTapUp,
+          onLongPressEnd: onLongPressEnd,
           scaleStrength: scaleStrength,
           borderRadius:
               customBorderRadius ?? BorderRadius.circular(borderRadius),
@@ -162,6 +206,14 @@ class Tappable extends StatelessWidget {
                     HapticFeedback.heavyImpact();
                   }
                   onLongPress!();
+                }
+              : null,
+          onLongPressMoveUpdate: onLongPressMoveUpdate != null
+              ? (details) {
+                  if (context.theme.platform == TargetPlatform.iOS) {
+                    HapticFeedback.heavyImpact();
+                  }
+                  onLongPressMoveUpdate!.call(details);
                 }
               : null,
           child: child,
@@ -183,9 +235,16 @@ class Tappable extends StatelessWidget {
   }
 }
 
+/// Strength values for fading animations. Defines small, medium and large
+/// fade strengths as opacity values from 0.0 to 1.0.
 enum FadeStrength {
+  /// Small fade strength (0.2).
   small(.2),
+
+  /// Medium fade strength (0.4).
   medium(.4),
+
+  /// Large fade strength (1.0).
   large(1);
 
   const FadeStrength(this.strength);
@@ -194,11 +253,15 @@ enum FadeStrength {
   final double strength;
 }
 
+/// The tappable button that makes a fade effect on tap.
 class FadedButton extends StatefulWidget {
+  /// {@macro faded_button}
   const FadedButton({
     required this.child,
     required this.onTap,
     required this.onLongPress,
+    required this.onLongPressMoveUpdate,
+    required this.onLongPressEnd,
     required this.borderRadius,
     required this.color,
     required this.fadeStrength,
@@ -207,13 +270,35 @@ class FadedButton extends StatefulWidget {
     this.onTapUp,
   });
 
+  /// The callback that executes upon a tap on tappable.
   final VoidCallback? onTap;
+
+  /// The detailed callback that starts on first user gesture on tappable.
   final ValueSetter<TapUpDetails>? onTapUp;
+
+  /// The callback on long user gesture.
   final VoidCallback? onLongPress;
+
+  /// The callback that gives the details on long press when there are moving
+  /// gestures.
+  final GestureLongPressMoveUpdateCallback? onLongPressMoveUpdate;
+
+  /// The callback that gives the details on the ending of the long press.
+  final GestureLongPressEndCallback? onLongPressEnd;
+
+  /// The opacity value of the tappable.
   final double pressedOpacity;
+
+  /// The widget that tappable is wrapped around.
   final Widget child;
+
+  /// The border radius of the tappable.
   final BorderRadius borderRadius;
+
+  /// The background color of the tappable.
   final Color color;
+
+  /// Fadee strength, that defines how strong the tappable will fade.
   final FadeStrength fadeStrength;
 
   @override
@@ -342,6 +427,8 @@ class _FadedButtonState extends State<FadedButton>
           onTapUp: _handleTapUp,
           onTapCancel: _handleTapCancel,
           onTap: widget.onTap,
+          onLongPressEnd: widget.onLongPressEnd,
+          onLongPressMoveUpdate: widget.onLongPressMoveUpdate,
           // Use null so other long press actions can be captured
           onLongPress: widget.onLongPress == null
               ? null
@@ -377,6 +464,7 @@ class _FadedButtonState extends State<FadedButton>
   }
 }
 
+/// The different scale strength of tappable button.
 enum ScaleStrength {
   /// xxxxs scale strength (0.0325)
   xxxxs(0.0325),
@@ -405,11 +493,15 @@ enum ScaleStrength {
   final double strength;
 }
 
+/// The tappable button that makes a scalled tap animation effect.
 class ScaledButton extends StatefulWidget {
+  /// {@macro scaled_button}
   const ScaledButton({
     required this.child,
     required this.onTap,
     required this.onLongPress,
+    required this.onLongPressMoveUpdate,
+    required this.onLongPressEnd,
     required this.borderRadius,
     required this.color,
     required this.scaleStrength,
@@ -419,14 +511,38 @@ class ScaledButton extends StatefulWidget {
     this.onTapUp,
   });
 
+  /// The callback that executes upon a tap on tappable.
   final VoidCallback? onTap;
+
+  /// The detailed callback that starts on first user gesture on tappable.
   final ValueSetter<TapUpDetails>? onTapUp;
+
+  /// The callback on long user gesture.
   final VoidCallback? onLongPress;
+
+  /// The callback that gives the details on long press when there are moving
+  /// gestures.
+  final GestureLongPressMoveUpdateCallback? onLongPressMoveUpdate;
+
+  /// The callback that gives the details on the ending of the long press.
+  final GestureLongPressEndCallback? onLongPressEnd;
+
+  /// The opacity value of the tappable.
   final double pressedOpacity;
+
+  /// The widget that the tappable is wrapped around.
   final Widget child;
+
+  /// The border radius of the tappable.
   final BorderRadius borderRadius;
+
+  /// The background color of the tappable.
   final Color color;
+
+  /// Scale strength, that defines how strong the tappable will scale in.
   final ScaleStrength scaleStrength;
+
+  /// The alignment of the scale animation.
   final Alignment scaleAlignment;
 
   @override
@@ -555,12 +671,14 @@ class _ScaledButtonState extends State<ScaledButton>
           onTapUp: _handleTapUp,
           onTapCancel: _handleTapCancel,
           onTap: widget.onTap,
+          onLongPressEnd: widget.onLongPressEnd,
+          onLongPressMoveUpdate: widget.onLongPressMoveUpdate,
           // Use null so other long press actions can be captured
           onLongPress: widget.onLongPress == null
               ? null
               : () {
                   _animate();
-                  widget.onLongPress!();
+                  widget.onLongPress!.call();
                 },
           child: Semantics(
             button: true,

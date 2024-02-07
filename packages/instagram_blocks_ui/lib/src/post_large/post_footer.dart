@@ -1,7 +1,3 @@
-// ignore_for_file: deprecated_member_use
-
-import 'dart:async';
-
 import 'package:app_ui/app_ui.dart';
 import 'package:avatar_stack/avatar_stack.dart';
 import 'package:avatar_stack/positions.dart';
@@ -28,7 +24,7 @@ class PostFooter extends StatelessWidget {
     required this.likePost,
     required this.commentsCount,
     required this.likesCount,
-    required this.onUserProfileAvatarTap,
+    required this.onAvatarTap,
     required this.onCommentsTap,
     required this.onPostShareTap,
     required this.likesText,
@@ -40,14 +36,14 @@ class PostFooter extends StatelessWidget {
 
   final PostBlock block;
   final CarouselIndicatorController controller;
-  final Stream<bool> isLiked;
-  final Stream<int> likesCount;
-  final Stream<int> commentsCount;
+  final bool isLiked;
+  final int likesCount;
+  final int commentsCount;
   final LikeCallback likePost;
   final LikesText likesText;
   final CommentsText commentsText;
   final List<String> imagesUrl;
-  final OnAvatarTapCallback onUserProfileAvatarTap;
+  final OnAvatarTapCallback onAvatarTap;
   final ValueSetter<bool> onCommentsTap;
   final void Function(String, PostAuthor) onPostShareTap;
   final String createdAt;
@@ -80,7 +76,7 @@ class PostFooter extends StatelessWidget {
         if (isSponsored)
           SponsoredPostAction(
             imageUrl: block.firstMedia?.url ?? '',
-            onTap: () => onUserProfileAvatarTap.call(author.avatarUrl),
+            onTap: () => onAvatarTap.call(author.avatarUrl),
           ),
         const AppDivider(padding: AppSpacing.md),
         const SizedBox(height: AppSpacing.sm),
@@ -94,7 +90,7 @@ class PostFooter extends StatelessWidget {
                 children: <Widget>[
                   LikeButton(
                     isLiked: isLiked,
-                    like: likePost,
+                    onLikedTap: likePost,
                   ),
                   Tappable(
                     onTap: () => onCommentsTap(true),
@@ -102,9 +98,12 @@ class PostFooter extends StatelessWidget {
                     child: Transform.flip(
                       flipX: true,
                       child: Assets.icons.chatCircle.svg(
-                        color: Colors.white,
                         height: AppSize.iconSize,
                         width: AppSize.iconSize,
+                        colorFilter: ColorFilter.mode(
+                          context.adaptiveColor,
+                          BlendMode.srcIn,
+                        ),
                       ),
                     ),
                   ),
@@ -151,8 +150,7 @@ class PostFooter extends StatelessWidget {
                     AvatarStack(
                       height: 28,
                       width: avatarStackWidth(),
-                      borderColor: Colors.black,
-                      borderWidth: 2,
+                      borderColor: context.reversedAdaptiveColor,
                       settings: RestrictedPositions(
                         laying: StackLaying.first,
                       ),
@@ -186,7 +184,7 @@ class PostFooter extends StatelessWidget {
                 username: author.username,
                 caption: block.caption,
                 onUserProfileAvatarTap: () =>
-                    onUserProfileAvatarTap.call(author.avatarUrl),
+                    onAvatarTap.call(author.avatarUrl),
               ),
               RepaintBoundary(
                 child: CommentsCount(

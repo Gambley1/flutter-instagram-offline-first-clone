@@ -1,28 +1,21 @@
 import 'package:app_ui/app_ui.dart';
-import 'package:firebase_config/firebase_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:flutter_instagram_offline_first_clone/stories/create_stories/create_stories.dart';
 import 'package:flutter_instagram_offline_first_clone/stories/stories.dart';
+import 'package:flutter_instagram_offline_first_clone/stories/user_stories/user_stories.dart';
 import 'package:go_router/go_router.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:shared/shared.dart';
-import 'package:stories_repository/stories_repository.dart';
 
 class StoriesCarousel extends StatelessWidget {
   const StoriesCarousel({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => CreateStoriesBloc(
-        storiesRepository: context.read<StoriesRepository>(),
-        remoteConfig: context.read<FirebaseConfig>(),
-      )..add(const CreateStoriesFeatureAvaiableSubscriptionRequested()),
-      child: const StoriesListView(),
-    );
+    return const StoriesListView();
   }
 }
 

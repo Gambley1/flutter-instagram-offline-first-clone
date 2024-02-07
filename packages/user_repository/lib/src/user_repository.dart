@@ -18,10 +18,6 @@ class UserRepository implements UserBaseRepository {
   final Client _client;
   final AuthenticationClient _authenticationClient;
 
-  /// Compares provided [authorId] with the current authenticates user id
-  /// to identify whether current user is an owner of chosen post.
-  bool isOwnerOfPostBy({required String authorId}) => currentUserId == authorId;
-
   /// Stream of [User] which will emit the current user when
   /// the authentication state changes.
   Stream<User> get user => _authenticationClient.user
@@ -198,6 +194,9 @@ class UserRepository implements UserBaseRepository {
   String? get currentUserId => _client.currentUserId;
 
   @override
+  Stream<User> profile({required String id}) => _client.profile(id: id);
+
+  @override
   Future<bool> isUserExists({required String id}) =>
       _client.isUserExists(id: id);
 
@@ -263,12 +262,14 @@ class UserRepository implements UserBaseRepository {
     required int limit,
     required int offset,
     required String? query,
+    String? excludeUserIds,
   }) =>
       _client.searchUsers(
         userId: userId,
         limit: limit,
         offset: offset,
         query: query,
+        excludeUserIds: excludeUserIds,
       );
 
   @override

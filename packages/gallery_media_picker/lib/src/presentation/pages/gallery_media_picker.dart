@@ -46,16 +46,13 @@ class _GalleryMediaPickerState extends State<GalleryMediaPicker> {
 
   @override
   void dispose() {
-    if (mounted) {
-      /// clear all controller list
-      provider.onPickMax
-          .removeListener(() => GalleryFunctions.onPickMax(provider));
-      provider.pickedFile.clear();
-      provider.picked.clear();
-      provider.pathList.clear();
-      PhotoManager.stopChangeNotify();
-      super.dispose();
-    }
+    provider.onPickMax
+        .removeListener(() => GalleryFunctions.onPickMax(provider));
+    provider.pickedFile.clear();
+    provider.picked.clear();
+    provider.pathList.clear();
+    PhotoManager.stopChangeNotify();
+    super.dispose();
   }
 
   @override

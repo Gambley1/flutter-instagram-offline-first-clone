@@ -11,28 +11,28 @@ PODS:
     - Flutter
   - camera_avfoundation (0.0.1):
     - Flutter
-  - Firebase/CoreOnly (10.18.0):
-    - FirebaseCore (= 10.18.0)
-  - Firebase/Messaging (10.18.0):
+  - Firebase/CoreOnly (10.20.0):
+    - FirebaseCore (= 10.20.0)
+  - Firebase/Messaging (10.20.0):
     - Firebase/CoreOnly
-    - FirebaseMessaging (~> 10.18.0)
-  - Firebase/RemoteConfig (10.18.0):
+    - FirebaseMessaging (~> 10.20.0)
+  - Firebase/RemoteConfig (10.20.0):
     - Firebase/CoreOnly
-    - FirebaseRemoteConfig (~> 10.18.0)
-  - firebase_core (2.24.2):
-    - Firebase/CoreOnly (= 10.18.0)
+    - FirebaseRemoteConfig (~> 10.20.0)
+  - firebase_core (2.25.2):
+    - Firebase/CoreOnly (= 10.20.0)
     - Flutter
   - firebase_messaging (14.7.10):
-    - Firebase/Messaging (= 10.18.0)
+    - Firebase/Messaging (= 10.20.0)
     - firebase_core
     - Flutter
   - firebase_remote_config (4.3.8):
-    - Firebase/RemoteConfig (= 10.18.0)
+    - Firebase/RemoteConfig (= 10.20.0)
     - firebase_core
     - Flutter
   - FirebaseABTesting (10.20.0):
     - FirebaseCore (~> 10.0)
-  - FirebaseCore (10.18.0):
+  - FirebaseCore (10.20.0):
     - FirebaseCoreInternal (~> 10.0)
     - GoogleUtilities/Environment (~> 7.12)
     - GoogleUtilities/Logger (~> 7.12)
@@ -43,16 +43,16 @@ PODS:
     - GoogleUtilities/Environment (~> 7.8)
     - GoogleUtilities/UserDefaults (~> 7.8)
     - PromisesObjC (~> 2.1)
-  - FirebaseMessaging (10.18.0):
+  - FirebaseMessaging (10.20.0):
     - FirebaseCore (~> 10.0)
     - FirebaseInstallations (~> 10.0)
-    - GoogleDataTransport (~> 9.2)
+    - GoogleDataTransport (~> 9.3)
     - GoogleUtilities/AppDelegateSwizzler (~> 7.8)
     - GoogleUtilities/Environment (~> 7.8)
     - GoogleUtilities/Reachability (~> 7.8)
     - GoogleUtilities/UserDefaults (~> 7.8)
     - nanopb (< 2.30910.0, >= 2.30908.0)
-  - FirebaseRemoteConfig (10.18.0):
+  - FirebaseRemoteConfig (10.20.0):
     - FirebaseABTesting (~> 10.0)
     - FirebaseCore (~> 10.0)
     - FirebaseInstallations (~> 10.0)
@@ -278,16 +278,16 @@ SPEC CHECKSUMS:
   AppAuth: 3bb1d1cd9340bd09f5ed189fb00b1cc28e1e8570
   blurhash: 7f29ee116e0c2674e0a765b5df1f9767239bc279
   camera_avfoundation: 8b8d780bcfb6a4a02b0fbe2b4bd17b5b71946e68
-  Firebase: 414ad272f8d02dfbf12662a9d43f4bba9bec2a06
-  firebase_core: 0af4a2b24f62071f9bf283691c0ee41556dcb3f5
-  firebase_messaging: 90e8a6db84b6e1e876cebce4f30f01dc495e7014
-  firebase_remote_config: 14ad7a3c99810d373ba1ad4a754a8cf26c91d476
+  Firebase: 10c8cb12fb7ad2ae0c09ffc86cd9c1ab392a0031
+  firebase_core: 1612f1d8bbc8ed40598b1317e805658f1d79512f
+  firebase_messaging: 4a89fe9957bfcef1827867ab8d58dae2fcf62846
+  firebase_remote_config: b2e9122d2053c86bf7ae06b828e6947c01b8d019
   FirebaseABTesting: 1d5d49804bcfc5fa782bc2491a8c1364e2cf7241
-  FirebaseCore: 2322423314d92f946219c8791674d2f3345b598f
+  FirebaseCore: 28045c1560a2600d284b9c45a904fe322dc890b6
   FirebaseCoreInternal: efeeb171ac02d623bdaefe121539939821e10811
   FirebaseInstallations: 558b1da7d65afeb996fd5c814332f013234ece4e
-  FirebaseMessaging: 9bc34a98d2e0237e1b121915120d4d48ddcf301e
-  FirebaseRemoteConfig: bbd42790a4e84fde6aab7eae810b608e7b5c0bf6
+  FirebaseMessaging: 06c414a21b122396a26847c523d5c370f8325df5
+  FirebaseRemoteConfig: b873a427a48159082361343a85649eed3f5377ea
   FirebaseSharedSwift: 2fbf73618288b7a36b2014b957745dcdd781389e
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   flutter_image_compress_common: ec1d45c362c9d30a3f6a0426c297f47c52007e3e

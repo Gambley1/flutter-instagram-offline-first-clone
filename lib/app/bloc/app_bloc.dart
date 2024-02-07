@@ -40,14 +40,16 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   StreamSubscription<String>? _pushTokenSubscription;
 
   Future<List<User>> searchUsers({
-    required String? query,
-    required String userId,
+    String? query,
+    String? userId,
+    String? excludeUserIds,
   }) =>
       _userRepository.searchUsers(
-        query: query,
-        userId: userId,
+        query: query ?? '',
+        userId: userId ?? state.user.id,
         limit: 20,
         offset: 0,
+        excludeUserIds: excludeUserIds,
       );
 
   void _userChanged(User user) => add(AppUserChanged(user));

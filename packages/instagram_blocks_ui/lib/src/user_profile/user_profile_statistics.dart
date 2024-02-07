@@ -11,7 +11,7 @@ class UserProfileStatistic extends StatelessWidget {
   });
 
   final String name;
-  final Stream<int> value;
+  final int value;
   final VoidCallback onTap;
 
   static const _statitisticsPadding =
@@ -46,21 +46,15 @@ class UserProfileStatistic extends StatelessWidget {
 class StatisticValue extends StatelessWidget {
   const StatisticValue({required this.value, super.key});
 
-  final Stream<int> value;
+  final int value;
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<int>(
-      stream: value,
-      builder: (context, snapshot) {
-        final value = snapshot.data;
-        return Text(
-          value == null ? '0' : value.compact(context),
-          style: context.titleLarge?.copyWith(fontWeight: AppFontWeight.bold),
-          overflow: TextOverflow.ellipsis,
-          textAlign: TextAlign.center,
-        );
-      },
+    return Text(
+      value.compact(context),
+      style: context.titleLarge?.copyWith(fontWeight: AppFontWeight.bold),
+      overflow: TextOverflow.ellipsis,
+      textAlign: TextAlign.center,
     );
   }
 }

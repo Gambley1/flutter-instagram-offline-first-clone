@@ -56,12 +56,12 @@ class TestPageInViewNotifier extends StatelessWidget {
                     block: block,
                     isOwner: true,
                     postIndex: index,
-                    isLiked: Stream.value(false).asBroadcastStream(),
+                    isLiked: false,
                     likePost: () {},
-                    likesCount: Stream.value(100).asBroadcastStream(),
-                    commentsCount: Stream.value(48).asBroadcastStream(),
+                    likesCount: 100,
+                    commentsCount: 48,
                     createdAt: block.createdAt.timeAgo(context),
-                    isFollowed: Stream.value(true).asBroadcastStream(),
+                    isFollowed: true,
                     wasFollowed: true,
                     follow: () {},
                     enableFollowButton: true,
@@ -86,6 +86,9 @@ class TestPageInViewNotifier extends StatelessWidget {
                         aspectRatio: aspectRatio,
                       );
                     },
+                    postOptionsSettings: PostOptionsSettings.owner(
+                      onPostDelete: (value) {},
+                    ),
                   );
                 },
               ),

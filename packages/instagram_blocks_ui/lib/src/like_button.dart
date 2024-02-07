@@ -6,7 +6,7 @@ typedef LikeCallback = void Function();
 class LikeButton extends StatelessWidget {
   const LikeButton({
     required this.isLiked,
-    required this.like,
+    required this.onLikedTap,
     super.key,
     this.tapEffect = TappableAnimationEffect.scale,
     this.scaleStrength = ScaleStrength.xs,
@@ -14,9 +14,9 @@ class LikeButton extends StatelessWidget {
     this.size,
   });
 
-  final Stream<bool> isLiked;
+  final bool isLiked;
 
-  final LikeCallback like;
+  final LikeCallback onLikedTap;
 
   final TappableAnimationEffect tapEffect;
 
@@ -28,22 +28,16 @@ class LikeButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<bool>(
-      stream: isLiked,
-      builder: (context, snapshot) {
-        final isLiked = snapshot.data;
-        return Tappable(
-          color: Colors.transparent,
-          animationEffect: tapEffect,
-          scaleStrength: scaleStrength,
-          onTap: () => isLiked == null ? null : like.call(),
-          child: Icon(
-            isLiked ?? false ? Icons.favorite : Icons.favorite_outline,
-            color: isLiked ?? false ? Colors.red : color,
-            size: size ?? AppSize.iconSize,
-          ),
-        );
-      },
+    return Tappable(
+      color: Colors.transparent,
+      animationEffect: tapEffect,
+      scaleStrength: scaleStrength,
+      onTap: onLikedTap,
+      child: Icon(
+        isLiked ? Icons.favorite : Icons.favorite_outline,
+        color: isLiked ? Colors.red : color,
+        size: size ?? AppSize.iconSize,
+      ),
     );
   }
 }

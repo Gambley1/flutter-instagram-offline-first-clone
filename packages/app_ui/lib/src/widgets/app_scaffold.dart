@@ -8,7 +8,7 @@ import 'package:flutter/services.dart';
 /// App scaffold that is used as a wrapper for the pages.
 /// {@endtemplate}
 class AppScaffold extends StatelessWidget {
-  /// {@macro custom_scaffold}
+  /// {@macro app_scaffold}
   const AppScaffold({
     required this.body,
     super.key,

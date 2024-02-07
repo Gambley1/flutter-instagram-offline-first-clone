@@ -125,6 +125,19 @@ extension ClearValue on String {
 
   /// Replaces from string given [symbol] to empty ' ' space.
   String replaceWithEmptySpace(String symbol) => replaceAll(symbol, ' ');
+
+  /// Removes all special characters from a String
+  String removeSpecialCharacters({
+    bool keepAllowed = false,
+  }) {
+    if (keepAllowed) {
+      // Use allowed chars RegExp to keep only allowed characters
+      return replaceAll(RegExp(r'[^\w\-_.+]', multiLine: true), '');
+    } else {
+      // Use different RegExp for basic alphanumeric only
+      return replaceAll(RegExp(r'[^\w]+', multiLine: true), '');
+    }
+  }
 }
 
 /// Extension for formatting [DateTime] to [String].

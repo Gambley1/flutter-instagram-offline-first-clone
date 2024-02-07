@@ -1,5 +1,3 @@
-// ignore_for_file: deprecated_member_use
-
 import 'dart:ui' as ui;
 
 import 'package:app_ui/app_ui.dart';
@@ -9,7 +7,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/chats/chat/chat.dart';
-import 'package:flutter_instagram_offline_first_clone/stories/stories.dart';
+import 'package:flutter_instagram_offline_first_clone/stories/user_stories/user_stories.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:shared/shared.dart';
 import 'package:user_repository/user_repository.dart';
@@ -95,9 +93,12 @@ class _ChatViewState extends State<ChatView> {
             child: ListTile(
               contentPadding: EdgeInsets.zero,
               leading: Assets.icons.trash.svg(
-                color: context.adaptiveColor,
                 height: AppSize.iconSizeMedium,
                 width: AppSize.iconSizeMedium,
+                colorFilter: ColorFilter.mode(
+                  context.theme.primaryColorLight,
+                  BlendMode.srcIn,
+                ),
               ),
               title: const Text('Delete'),
             ),
@@ -336,9 +337,7 @@ class _ChatMessagesListViewState extends State<ChatMessagesListView> {
               final nextMessage =
                   isLast ? null : messages[messages.length - 2 - index];
               if (message.createdAt.day != nextMessage?.createdAt.day) {
-                return MessageDateTimeSeparator(
-                  date: message.createdAt,
-                );
+                return MessageDateTimeSeparator(date: message.createdAt);
               }
               final isNextUserSame = nextMessage != null &&
                   message.sender?.id == nextMessage.sender?.id;
@@ -353,10 +352,10 @@ class _ChatMessagesListViewState extends State<ChatMessagesListView> {
               }
 
               if (isNextUserSame && !hasTimeDifference) {
-                return const SizedBox(height: 2);
+                return const SizedBox(height: AppSpacing.xxs);
               }
 
-              return const SizedBox(height: 8);
+              return const SizedBox(height: AppSpacing.sm);
             },
           ),
         ),
@@ -565,7 +564,6 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       centerTitle: false,
-      scrolledUnderElevation: 0,
       leadingWidth: 24,
       title: ListTile(
         contentPadding: EdgeInsets.zero,

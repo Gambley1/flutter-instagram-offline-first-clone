@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:flutter_instagram_offline_first_clone/stories/create_stories/create_stories.dart';
-import 'package:flutter_instagram_offline_first_clone/stories/stories.dart';
+import 'package:flutter_instagram_offline_first_clone/stories/user_stories/user_stories.dart';
 import 'package:flutter_instagram_offline_first_clone/user_profile/user_profile.dart';
 import 'package:go_router/go_router.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
@@ -123,7 +123,10 @@ class UserProfileHeader extends StatelessWidget {
                     const SizedBox(width: AppSpacing.sm),
                   )
                 else
-                  UserProfileSubscribeUserButton(userId: userId),
+                  Flexible(
+                    flex: 3,
+                    child: UserProfileSubscribeUserButton(userId: userId),
+                  ),
               ],
             ),
           ],
@@ -145,7 +148,14 @@ class UserProfileListStatistics extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bloc = context.read<UserProfileBloc>();
+    final l10n = context.l10n;
+
+    final postsCount =
+        context.select((UserProfileBloc bloc) => bloc.state.postsCount);
+    final followersCount =
+        context.select((UserProfileBloc bloc) => bloc.state.followersCount);
+    final followingsCount =
+        context.select((UserProfileBloc bloc) => bloc.state.followingsCount);
 
     return Expanded(
       child: Row(
@@ -153,24 +163,18 @@ class UserProfileListStatistics extends StatelessWidget {
         children: [
           Flexible(
             child: FittedBox(
-              child: StreamBuilder<int>(
-                stream: bloc.postsAmountOf(),
-                builder: (context, snapshot) {
-                  final count = snapshot.data;
-                  return UserProfileStatistic(
-                    name: context.l10n.postsCount(count ?? 0),
-                    value: bloc.postsAmountOf(),
-                    onTap: () {},
-                  );
-                },
+              child: UserProfileStatistic(
+                name: l10n.postsCount(postsCount),
+                value: postsCount,
+                onTap: () {},
               ),
             ),
           ),
           Flexible(
             child: FittedBox(
               child: UserProfileStatistic(
-                name: context.l10n.followersText,
-                value: bloc.followersCountOf(),
+                name: l10n.followersText,
+                value: followersCount,
                 onTap: onSubscribersTap,
               ),
             ),
@@ -178,8 +182,8 @@ class UserProfileListStatistics extends StatelessWidget {
           Flexible(
             child: FittedBox(
               child: UserProfileStatistic(
-                name: context.l10n.followingsText,
-                value: bloc.followingsCountOf(),
+                name: l10n.followingsText,
+                value: followingsCount,
                 onTap: onSubscribesTap,
               ),
             ),
@@ -204,7 +208,10 @@ class EditProfileButton extends StatelessWidget {
       ),
       onTap: () {},
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.sm,
+        ),
         child: Align(
           alignment: Alignment.topCenter,
           child: Text(
@@ -231,7 +238,10 @@ class ShareProfileButton extends StatelessWidget {
       ),
       onTap: () {},
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.sm,
+        ),
         child: Align(
           alignment: Alignment.topCenter,
           child: Text(
@@ -266,7 +276,10 @@ class _ShowSuggestedPeopleButtonState extends State<ShowSuggestedPeopleButton> {
       ),
       onTap: () => setState(() => _showPeople = !_showPeople),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.sm,
+        ),
         child: Align(
           alignment: Alignment.topCenter,
           child: Icon(
@@ -288,7 +301,7 @@ class UserProfileSubscribeUserButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final bloc = context.read<UserProfileBloc>();
     final user = context.select((UserProfileBloc b) => b.state.user);
-    
+
     return StreamBuilder<bool>(
       stream: bloc.followingStatus(userId: userId!),
       builder: (context, snapshot) {
@@ -326,10 +339,13 @@ class UserProfileSubscribeUserButton extends StatelessWidget {
                     UserProfileFollowUserRequested(userId!),
                   ),
           child: Padding(
-            padding: const EdgeInsets.all(8),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.md,
+              vertical: AppSpacing.sm,
+            ),
             child: Text(
-              isSubscribed ? 'Subscriptions ▼' : 'Subscribe ',
-              style: context.labelLarge,
+              isSubscribed ? 'Following ▼' : 'Follow',
+              style: context.labelLarge?.copyWith(),
             ),
           ),
         );

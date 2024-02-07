@@ -1,69 +1,59 @@
-import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:posts_repository/posts_repository.dart';
 import 'package:shared/shared.dart';
 
+part 'comments_bloc.g.dart';
 part 'comments_event.dart';
 part 'comments_state.dart';
 
-class CommentsBloc extends Bloc<CommentsEvent, CommentsState> {
+class CommentsBloc extends HydratedBloc<CommentsEvent, CommentsState> {
   CommentsBloc({
+    required String postId,
     required PostsRepository postsRepository,
-  })  : _postsRepository = postsRepository,
+  })  : _postId = postId,
+        _postsRepository = postsRepository,
         super(const CommentsState.initial()) {
-    on<CommentsPostCommentRequested>(_onCommentPostRequested);
-    on<CommentsLikeCommentRequested>(_onCommentLikeRequested);
-    on<CommentsCommentDeleteRequested>(_onCommentDeleteRequested);
+    on<CommentsSubscriptionRequested>(
+      _onCommentsSubscriptionRequested,
+      transformer: throttleDroppable(),
+    );
+    on<CommentsCommentCreateRequested>(_onCommentsCommentCreateRequested);
   }
+
+  final String _postId;
+
+  @override
+  String get id => _postId;
 
   final PostsRepository _postsRepository;
 
-  Stream<List<Comment>> commentsOf(String postId) =>
-      _postsRepository.commentsOf(postId: postId);
+  Future<void> _onCommentsSubscriptionRequested(
+    CommentsSubscriptionRequested event,
+    Emitter<CommentsState> emit,
+  ) async {
+    await emit.forEach(
+      _postsRepository.commentsOf(postId: id),
+      onData: (comments) => state.copyWith(comments: comments),
+    );
+  }
 
-  Stream<bool> isLiked({required String commentId, required String userId}) =>
-      _postsRepository.isLiked(
-        id: commentId,
-        userId: userId,
-        post: false,
-      );
-
-  Stream<bool> isLikedByOwner({
-    required String commentId,
-    required String userId,
-  }) =>
-      isLiked(commentId: commentId, userId: userId);
-
-  Stream<int> likesOf(String commentdId) =>
-      _postsRepository.likesOf(id: commentdId, post: false);
-
-  Stream<List<Comment>> repliedCommentsOf(String commentId) =>
-      _postsRepository.repliedCommentsOf(commentId: commentId);
-
-  Future<void> _onCommentPostRequested(
-    CommentsPostCommentRequested event,
+  Future<void> _onCommentsCommentCreateRequested(
+    CommentsCommentCreateRequested event,
     Emitter<CommentsState> emit,
   ) =>
       _postsRepository.createComment(
-        content: event.content,
-        postId: event.postId,
+        postId: id,
         userId: event.userId,
+        content: event.content,
         repliedToCommentId: event.repliedToCommentId,
       );
 
-  Future<void> _onCommentLikeRequested(
-    CommentsLikeCommentRequested event,
-    Emitter<CommentsState> emit,
-  ) =>
-      _postsRepository.like(
-        id: event.commentId,
-        userId: event.userId,
-        post: false,
-      );
+  @override
+  CommentsState? fromJson(Map<String, dynamic> json) =>
+      CommentsState.fromJson(json);
 
-  Future<void> _onCommentDeleteRequested(
-    CommentsCommentDeleteRequested event,
-    Emitter<CommentsState> emit,
-  ) =>
-      _postsRepository.deleteComment(id: event.commentId);
+  @override
+  Map<String, dynamic>? toJson(CommentsState state) => state.toJson();
 }

@@ -1,5 +1,3 @@
-// ignore_for_file: deprecated_member_use
-
 import 'package:app_ui/app_ui.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/gestures.dart';
@@ -7,13 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/bloc/app_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/comments/comments.dart';
-import 'package:flutter_instagram_offline_first_clone/reels/reel/bloc/reel_bloc.dart';
-import 'package:flutter_instagram_offline_first_clone/reels/reel/widgets/widgets.dart';
+import 'package:flutter_instagram_offline_first_clone/feed/post/post.dart';
+import 'package:flutter_instagram_offline_first_clone/reels/reel/reel.dart';
 import 'package:flutter_instagram_offline_first_clone/reels/reels.dart';
-import 'package:flutter_instagram_offline_first_clone/stories/stories.dart';
+import 'package:flutter_instagram_offline_first_clone/stories/user_stories/user_stories.dart';
 import 'package:go_router/go_router.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
-import 'package:posts_repository/posts_repository.dart';
 import 'package:shared/shared.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:user_repository/user_repository.dart';
@@ -32,23 +29,9 @@ class ReelView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = context.select((AppBloc bloc) => bloc.state.user);
-    return BlocProvider(
-      create: (context) => ReelBloc(
-        reelId: block.id,
-        userRepository: context.read<UserRepository>(),
-        postsRepository: context.read<PostsRepository>(),
-      )
-        ..add(const ReelLikesCountSubscriptionRequested())
-        ..add(const ReelCommentsCountSubscriptionRequested())
-        ..add(ReelIsLikedSubscriptionRequested(user.id))
-        ..add(
-          ReelAuthoFollowingStatusSubscriptionRequested(
-            ownerId: block.author.id,
-            currentUserId: user.id,
-          ),
-        ),
-      child: Reel(
+    return PostView(
+      block: block,
+      builder: (context) => Reel(
         block: block,
         withSound: withSound,
         play: play,
@@ -226,18 +209,18 @@ class VerticalButtons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = context.select((AppBloc bloc) => bloc.state.user);
-    final isLiked = context.select((ReelBloc bloc) => bloc.state.isLiked);
-    final likes = context.select((ReelBloc bloc) => bloc.state.likes);
+    final isLiked = context.select((PostBloc bloc) => bloc.state.isLiked);
+    final likes = context.select((PostBloc bloc) => bloc.state.likes);
     final commentsCount =
-        context.select((ReelBloc bloc) => bloc.state.commentsCount);
-    final isOwner = context.select((ReelBloc bloc) => bloc.state.isOwner);
+        context.select((PostBloc bloc) => bloc.state.commentsCount);
+    final isOwner = context.select((PostBloc bloc) => bloc.state.isOwner);
 
-    Future<void> onCommentsTap(PostBlock block) => context.showCommentsModal(
+    Future<void> onCommentsTap(PostBlock block) => context.showScrollableModal(
           pageBuilder: (scrollController, draggableScrollController) =>
               CommentsPage(
             post: block,
             scrollController: scrollController,
-            scrollableSheetController: draggableScrollController,
+            draggableScrollController: draggableScrollController,
           ),
         );
 
@@ -253,7 +236,7 @@ class VerticalButtons extends StatelessWidget {
               icon: isLiked ? Icons.favorite : Icons.favorite_outline,
               iconColor: isLiked ? Colors.red : null,
               onButtonTap: () =>
-                  context.read<ReelBloc>().add(ReelLikeRequested(user.id)),
+                  context.read<PostBloc>().add(PostLikeRequested(user.id)),
               size: AppSize.iconSize,
               statisticCount: likes,
             ),
@@ -263,7 +246,10 @@ class VerticalButtons extends StatelessWidget {
               child: Assets.icons.chatCircle.svg(
                 height: AppSize.iconSize,
                 width: AppSize.iconSize,
-                color: context.adaptiveColor,
+                colorFilter: const ColorFilter.mode(
+                  Colors.white,
+                  BlendMode.srcIn,
+                ),
               ),
             ),
             VerticalGroup(
@@ -280,12 +266,17 @@ class VerticalButtons extends StatelessWidget {
                       final option = await context.showListOptionsModal(
                         options: [
                           ModalOption(
-                            name: 'Delete reel',
-                            child: Assets.icons.trash.svg(color: Colors.red),
+                            name: 'Delete Post',
+                            child: Assets.icons.trash.svg(
+                              colorFilter: const ColorFilter.mode(
+                                Colors.red,
+                                BlendMode.srcIn,
+                              ),
+                            ),
                             distractive: true,
                             onTap: () => context
-                                .read<ReelBloc>()
-                                .add(ReelDeleteRequested(block.id)),
+                                .read<PostBloc>()
+                                .add(const PostDeleteRequested()),
                           ),
                         ],
                       );
@@ -334,8 +325,8 @@ class ReelAuthorListTile extends StatelessWidget {
     final author = block.author;
 
     final user = context.select((AppBloc bloc) => bloc.state.user);
-    final isFollowed = context.select((ReelBloc bloc) => bloc.state.isFollowed);
-    final isOwner = context.select((ReelBloc bloc) => bloc.state.isOwner);
+    final isFollowed = context.select((PostBloc bloc) => bloc.state.isFollowed);
+    final isOwner = context.select((PostBloc bloc) => bloc.state.isOwner);
     return Row(
       children: <Widget>[
         UserStoriesAvatar(
@@ -355,7 +346,8 @@ class ReelAuthorListTile extends StatelessWidget {
                       pathParameters: {'user_id': author.id},
                     ),
             ),
-            style: context.bodyLarge?.copyWith(fontWeight: AppFontWeight.bold),
+            style: context.bodyLarge
+                ?.copyWith(fontWeight: AppFontWeight.bold, color: Colors.white),
             overflow: TextOverflow.ellipsis,
           ),
         ),
@@ -363,8 +355,8 @@ class ReelAuthorListTile extends StatelessWidget {
           Flexible(
             flex: 3,
             child: Tappable(
-              onTap: () => context.read<ReelBloc>().add(
-                    ReelAuthorSubscribeRequested(
+              onTap: () => context.read<PostBloc>().add(
+                    PostAuthorFollowRequested(
                       authorId: author.id,
                       currentUserId: user.id,
                     ),
@@ -430,7 +422,10 @@ class ReelParticipants extends StatelessWidget {
             onTap: () {},
             child: DecoratedBox(
               decoration: BoxDecoration(
-                color: const Color.fromARGB(165, 58, 58, 58),
+                color: context.customReversedAdaptiveColor(
+                  light: const Color.fromARGB(164, 120, 119, 119),
+                  dark: const Color.fromARGB(165, 58, 58, 58),
+                ),
                 border: Border.all(
                   color: const Color.fromARGB(
                     45,
@@ -450,6 +445,7 @@ class ReelParticipants extends StatelessWidget {
                       child: Icon(
                         Icons.music_note_rounded,
                         size: AppSize.iconSizeSmall,
+                        color: Colors.white,
                       ),
                     ),
                   ),
@@ -460,6 +456,7 @@ class ReelParticipants extends StatelessWidget {
                       text: '$participant:Original audio'
                           .insertBetween('•', splitBy: ':'),
                       velocity: 40,
+                      style: context.bodyMedium?.apply(color: Colors.white),
                     ),
                   ),
                 ],
@@ -474,7 +471,10 @@ class ReelParticipants extends StatelessWidget {
               onTap: () {},
               child: DecoratedBox(
                 decoration: BoxDecoration(
-                  color: const Color.fromARGB(165, 58, 58, 58),
+                  color: context.customReversedAdaptiveColor(
+                    light: const Color.fromARGB(164, 120, 119, 119),
+                    dark: const Color.fromARGB(165, 58, 58, 58),
+                  ),
                   border: Border.all(
                     color: const Color.fromARGB(
                       45,
@@ -493,8 +493,15 @@ class ReelParticipants extends StatelessWidget {
                     ),
                     child: Row(
                       children: <Widget>[
-                        const Icon(Icons.person, size: AppSize.iconSizeSmall),
-                        Text(participant),
+                        const Icon(
+                          Icons.person,
+                          size: AppSize.iconSizeSmall,
+                          color: Colors.white,
+                        ),
+                        Text(
+                          participant,
+                          style: context.bodyMedium?.apply(color: Colors.white),
+                        ),
                       ].insertBetween(
                         const SizedBox(
                           width: AppSpacing.xs,

@@ -73,8 +73,7 @@ class UserProfileStatisticsAppBar extends StatelessWidget {
     return SliverAppBar(
       pinned: true,
       centerTitle: false,
-      title: Text(user.username ?? 'Unknown'),
-      scrolledUnderElevation: 0,
+      title: Text(user.displayUsername),
       bottom: TabBar(
         indicatorWeight: 1,
         indicatorSize: TabBarIndicatorSize.tab,

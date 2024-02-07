@@ -58,6 +58,14 @@ class User extends AuthenticationUser {
   /// Anonymous user which represents an unauthenticated user.
   static const User anonymous = User(id: '');
 
+  /// The effective full name display without null aware operators.
+  /// By default no existing name value is `Unknown`.
+  String get displayFullName => fullName ?? username ?? 'Unknown';
+
+  /// The effective user name display without null aware operators.
+  /// By default no existing name value is `Unknown`.
+  String get displayUsername => username ?? fullName ?? 'Unknown';
+
   /// Converts current [User] instance to a `Map<String, dynamic>`.
   Map<String, dynamic> toJson() {
     return <String, dynamic>{

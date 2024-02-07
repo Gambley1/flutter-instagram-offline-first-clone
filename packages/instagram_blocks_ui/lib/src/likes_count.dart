@@ -13,18 +13,16 @@ class LikesCount extends StatefulWidget {
     this.textBuilder,
     this.color,
     this.size,
+    this.hideCount = true,
     super.key,
   });
 
   final LikesText? likesText;
-
-  final Stream<int> likesCount;
-
+  final int likesCount;
   final Color? color;
-
   final double? size;
-
   final Widget? Function(int count)? textBuilder;
+  final bool hideCount;
 
   @override
   State<LikesCount> createState() => _LikesCountState();
@@ -35,29 +33,24 @@ class _LikesCountState extends State<LikesCount>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return StreamBuilder<int>(
-      stream: widget.likesCount,
-      builder: (context, snapshot) {
-        final count = snapshot.data;
-        final isVisible = count != null && count != 0;
+    final count = widget.likesCount;
+    final isVisible = !widget.hideCount || count != 0;
 
-        return AnimatedVisibility(
-          height: 25,
-          duration: 250.ms,
-          isVisible: isVisible,
-          curve: Sprung.criticallyDamped,
-          child: widget.textBuilder?.call(count != null ? count - 1 : 0) ??
-              Text(
-                widget.likesText!.call(count ?? 0),
-                style: context.titleMedium?.copyWith(
-                  color: widget.color,
-                  fontSize: widget.size,
-                  overflow: TextOverflow.visible,
-                ),
-                textAlign: TextAlign.center,
-              ),
-        );
-      },
+    return AnimatedVisibility(
+      height: 25,
+      duration: 250.ms,
+      isVisible: isVisible,
+      curve: Sprung.criticallyDamped,
+      child: widget.textBuilder?.call(count != 0 ? count - 1 : 0) ??
+          Text(
+            widget.likesText!.call(count),
+            style: context.titleMedium?.copyWith(
+              color: widget.color,
+              fontSize: widget.size,
+              overflow: TextOverflow.visible,
+            ),
+            textAlign: TextAlign.center,
+          ),
     );
   }
 

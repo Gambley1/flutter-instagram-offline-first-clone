@@ -1,13 +1,16 @@
 // ignore_for_file: avoid_positional_boolean_parameters
 
 import 'package:app_ui/app_ui.dart';
+import 'package:firebase_config/firebase_config.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/bloc/app_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/navigation/navigation.dart';
+import 'package:flutter_instagram_offline_first_clone/stories/create_stories/create_stories.dart';
 import 'package:go_router/go_router.dart';
 import 'package:inview_notifier_list/inview_notifier_list.dart';
+import 'package:stories_repository/stories_repository.dart';
 
 /// {@template home_view}
 /// Main view of the application. It contains the [navigationShell] that will
@@ -72,14 +75,26 @@ class _HomeViewState extends State<HomeView> {
   }
 
   @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return VideoPlayerProvider(
-      videoPlayerState: _videoPlayerState,
-      pageController: _pageController,
-      child: AppScaffold(
-        body: widget.navigationShell,
-        bottomNavigationBar:
-            BottomNavBar(navigationShell: widget.navigationShell),
+    return BlocProvider(
+      create: (context) => CreateStoriesBloc(
+        storiesRepository: context.read<StoriesRepository>(),
+        remoteConfig: context.read<FirebaseConfig>(),
+      )..add(const CreateStoriesIsFeatureAvaiableSubscriptionRequested()),
+      child: VideoPlayerProvider(
+        videoPlayerState: _videoPlayerState,
+        pageController: _pageController,
+        child: AppScaffold(
+          body: widget.navigationShell,
+          bottomNavigationBar:
+              BottomNavBar(navigationShell: widget.navigationShell),
+        ),
       ),
     );
   }

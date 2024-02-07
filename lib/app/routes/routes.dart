@@ -8,19 +8,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/auth/auth.dart';
-import 'package:flutter_instagram_offline_first_clone/chats/chat/view/view.dart';
+import 'package:flutter_instagram_offline_first_clone/chats/chat/chat.dart';
 import 'package:flutter_instagram_offline_first_clone/chats/widgets/search_users.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/feed.dart';
-import 'package:flutter_instagram_offline_first_clone/feed/widgets/post_preview.dart';
+import 'package:flutter_instagram_offline_first_clone/feed/post/post.dart';
 import 'package:flutter_instagram_offline_first_clone/home/home.dart';
 import 'package:flutter_instagram_offline_first_clone/reels/reels.dart';
 import 'package:flutter_instagram_offline_first_clone/search/search.dart';
-import 'package:flutter_instagram_offline_first_clone/stories/view/stories_page.dart';
+import 'package:flutter_instagram_offline_first_clone/stories/create_stories/create_stories.dart';
+import 'package:flutter_instagram_offline_first_clone/stories/stories.dart';
 import 'package:flutter_instagram_offline_first_clone/user_profile/user_profile.dart';
 import 'package:go_router/go_router.dart';
 import 'package:posts_repository/posts_repository.dart';
 import 'package:shared/shared.dart' hide FeedPage;
 import 'package:stories_editor/stories_editor.dart';
+import 'package:stories_repository/stories_repository.dart';
 import 'package:user_repository/user_repository.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
@@ -48,43 +50,17 @@ GoRouter router(AppBloc appBloc) => GoRouter(
                       );
 
             return CustomTransitionPage(
-              child: UserProfilePage(
-                userId: userId,
-                isSponsored: isSponsored,
-                promoBlockAction: promoBlockAction,
-              ),
-              transitionsBuilder:
-                  (context, animation, secondaryAnimation, child) {
-                return SharedAxisTransition(
-                  animation: animation,
-                  secondaryAnimation: secondaryAnimation,
-                  transitionType: SharedAxisTransitionType.horizontal,
-                  child: child,
-                );
-              },
-            );
-          },
-        ),
-        GoRoute(
-          path: '/user/profile/root/:user_id',
-          name: 'user_profile_root',
-          parentNavigatorKey: _rootNavigatorKey,
-          pageBuilder: (context, state) {
-            final userId = state.pathParameters['user_id'];
-            final isSponsored = (state.extra as bool?) ?? false;
-            final promoBlockAction =
-                state.uri.queryParameters['promo_action'] == null
-                    ? null
-                    : BlockAction.fromJson(
-                        jsonDecode(state.uri.queryParameters['promo_action']!)
-                            as Map<String, dynamic>,
-                      );
-
-            return CustomTransitionPage(
-              child: UserProfilePage(
-                userId: userId,
-                isSponsored: isSponsored,
-                promoBlockAction: promoBlockAction,
+              key: state.pageKey,
+              child: BlocProvider(
+                create: (context) => CreateStoriesBloc(
+                  storiesRepository: context.read<StoriesRepository>(),
+                  remoteConfig: context.read<FirebaseConfig>(),
+                ),
+                child: UserProfilePage(
+                  userId: userId,
+                  isSponsored: isSponsored,
+                  promoBlockAction: promoBlockAction,
+                ),
               ),
               transitionsBuilder:
                   (context, animation, secondaryAnimation, child) {
@@ -112,6 +88,7 @@ GoRouter router(AppBloc appBloc) => GoRouter(
             final tabIndex = (state.extra! as String).parse.toInt();
 
             return CustomTransitionPage(
+              key: state.pageKey,
               child: BlocProvider(
                 create: (context) => UserProfileBloc(
                   userRepository: context.read<UserRepository>(),
@@ -142,6 +119,7 @@ GoRouter router(AppBloc appBloc) => GoRouter(
             final index = (state.uri.queryParameters['index']!).parse.toInt();
 
             return CustomTransitionPage(
+              key: state.pageKey,
               child: MultiBlocProvider(
                 providers: [
                   BlocProvider(
@@ -149,13 +127,6 @@ GoRouter router(AppBloc appBloc) => GoRouter(
                       userRepository: context.read<UserRepository>(),
                       postsRepository: context.read<PostsRepository>(),
                       userId: userId,
-                    ),
-                  ),
-                  BlocProvider(
-                    create: (context) => FeedBloc(
-                      postsRepository: context.read<PostsRepository>(),
-                      userRepository: context.read<UserRepository>(),
-                      remoteConfig: context.read<FirebaseConfig>(),
                     ),
                   ),
                 ],
@@ -185,6 +156,7 @@ GoRouter router(AppBloc appBloc) => GoRouter(
             final chat = ChatInbox.fromJson(state.uri.queryParameters['chat']!);
 
             return CustomTransitionPage(
+              key: state.pageKey,
               child: ChatPage(chatId: chatId, chat: chat),
               transitionsBuilder:
                   (context, animation, secondaryAnimation, child) {
@@ -206,6 +178,7 @@ GoRouter router(AppBloc appBloc) => GoRouter(
             final returnUser = state.extra as bool?;
 
             return CustomTransitionPage(
+              key: state.pageKey,
               fullscreenDialog: true,
               child: SearchUsers(returnUser: returnUser ?? false),
               transitionsBuilder:
@@ -228,6 +201,7 @@ GoRouter router(AppBloc appBloc) => GoRouter(
             final id = state.pathParameters['id'];
 
             return CustomTransitionPage(
+              key: state.pageKey,
               child: PostPreviewPage(id: id ?? ''),
               transitionsBuilder:
                   (context, animation, secondaryAnimation, child) {
@@ -250,6 +224,7 @@ GoRouter router(AppBloc appBloc) => GoRouter(
             final stories = fromListJson(state.uri.queryParameters['stories']!);
 
             return CustomTransitionPage(
+              key: state.pageKey,
               child: StoriesPage(stories: stories, author: author),
               transitionsBuilder:
                   (context, animation, secondaryAnimation, child) {
@@ -271,6 +246,7 @@ GoRouter router(AppBloc appBloc) => GoRouter(
             final onDone = state.extra as dynamic Function(String)?;
 
             return CustomTransitionPage(
+              key: state.pageKey,
               child: StoriesEditor(
                 onDone: onDone,
                 galleryThumbnailQuality: 900,
@@ -299,6 +275,7 @@ GoRouter router(AppBloc appBloc) => GoRouter(
                   path: '/feed',
                   pageBuilder: (context, state) {
                     return CustomTransitionPage(
+                      key: state.pageKey,
                       child: const FeedPage(),
                       transitionsBuilder:
                           (context, animation, secondaryAnimation, child) {
@@ -320,6 +297,7 @@ GoRouter router(AppBloc appBloc) => GoRouter(
                   path: '/search',
                   pageBuilder: (context, state) {
                     return CustomTransitionPage(
+                      key: state.pageKey,
                       child: const SearchView(),
                       transitionsBuilder:
                           (context, animation, secondaryAnimation, child) {
@@ -345,12 +323,17 @@ GoRouter router(AppBloc appBloc) => GoRouter(
                         body: Column(
                           children: [
                             const Text('Todo'),
-                            AppButton.outlined(
-                              text: 'Navigate to profile',
-                              onPressed: () =>
-                                  context.pushNamed('user_profile'),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: AppSpacing.md,
+                              ),
+                              child: AppButton.outlined(
+                                text: 'Navigate to profile',
+                                onPressed: () =>
+                                    context.pushNamed('user_profile'),
+                              ),
                             ),
-                            const SizedBox(height: 8),
+                            const SizedBox(height: AppSpacing.sm),
                           ],
                         ),
                       ),
@@ -374,6 +357,7 @@ GoRouter router(AppBloc appBloc) => GoRouter(
                   path: '/reels',
                   pageBuilder: (context, state) {
                     return CustomTransitionPage(
+                      key: state.pageKey,
                       child: const ReelsPage(),
                       transitionsBuilder:
                           (context, animation, secondaryAnimation, child) {
@@ -392,10 +376,14 @@ GoRouter router(AppBloc appBloc) => GoRouter(
             StatefulShellBranch(
               routes: [
                 GoRoute(
-                  path: '/account',
+                  path: '/profile',
                   pageBuilder: (context, state) {
+                    final user =
+                        context.select((AppBloc bloc) => bloc.state.user);
+
                     return CustomTransitionPage(
-                      child: const UserProfilePage(),
+                      key: state.pageKey,
+                      child: UserProfilePage(userId: user.id),
                       transitionsBuilder:
                           (context, animation, secondaryAnimation, child) {
                         return FadeTransition(
@@ -413,6 +401,7 @@ GoRouter router(AppBloc appBloc) => GoRouter(
                       name: 'create_post',
                       pageBuilder: (context, state) {
                         return CustomTransitionPage(
+                          key: state.pageKey,
                           child: const UserProfileCreatePost(),
                           transitionsBuilder:
                               (context, animation, secondaryAnimation, child) {

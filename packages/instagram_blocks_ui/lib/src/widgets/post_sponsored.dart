@@ -1,10 +1,10 @@
 import 'package:flutter/widgets.dart';
-import 'package:insta_blocks/insta_blocks.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:instagram_blocks_ui/src/comments_count.dart';
 import 'package:instagram_blocks_ui/src/like_button.dart';
 import 'package:instagram_blocks_ui/src/likes_count.dart';
 import 'package:instagram_blocks_ui/src/post_large/post_header.dart';
+import 'package:shared/shared.dart';
 
 class PostSponsored extends StatelessWidget {
   const PostSponsored({
@@ -26,6 +26,7 @@ class PostSponsored extends StatelessWidget {
     required this.onPressed,
     required this.sponsoredText,
     required this.withInViewNotifier,
+    required this.postOptionsSettings,
     this.postAuthorAvatarBuilder,
     this.videoPlayerBuilder,
     this.postIndex,
@@ -38,17 +39,17 @@ class PostSponsored extends StatelessWidget {
 
   final bool wasFollowed;
 
-  final Stream<bool> isFollowed;
+  final bool isFollowed;
 
   final VoidCallback follow;
 
-  final Stream<bool> isLiked;
+  final bool isLiked;
 
   final LikeCallback likePost;
 
-  final Stream<int> likesCount;
+  final int likesCount;
 
-  final Stream<int> commentsCount;
+  final int commentsCount;
 
   final LikesText likesText;
 
@@ -65,6 +66,8 @@ class PostSponsored extends StatelessWidget {
   final void Function(BlockAction action, String? avatarUrl) onPressed;
 
   final String sponsoredText;
+
+  final PostOptionsSettings postOptionsSettings;
 
   final AvatarBuilder? postAuthorAvatarBuilder;
 
@@ -94,6 +97,7 @@ class PostSponsored extends StatelessWidget {
       likesText: likesText,
       commentsText: commentsText,
       sponsoredText: sponsoredText,
+      postOptionsSettings: postOptionsSettings,
       postAuthorAvatarBuilder: postAuthorAvatarBuilder,
       videoPlayerBuilder: videoPlayerBuilder,
       postIndex: postIndex,

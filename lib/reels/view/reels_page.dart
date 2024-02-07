@@ -67,7 +67,8 @@ class ReelsView extends StatelessWidget {
                               decoration: BoxDecoration(
                                 borderRadius:
                                     const BorderRadius.all(Radius.circular(22)),
-                                border: Border.all(color: Colors.white),
+                                border:
+                                    Border.all(color: context.adaptiveColor),
                               ),
                               child: Align(
                                 child: Padding(
@@ -229,6 +230,7 @@ class ReelsView extends StatelessWidget {
             child: const Icon(
               Icons.camera_alt_outlined,
               size: AppSize.iconSize,
+              color: Colors.white,
             ),
           ),
         ),

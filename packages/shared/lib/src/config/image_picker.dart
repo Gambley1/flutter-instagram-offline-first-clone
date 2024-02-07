@@ -7,15 +7,22 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker_plus/image_picker_plus.dart';
 import 'package:insta_assets_picker/insta_assets_picker.dart';
-// import 'package:images_picker/images_picker.dart';
 
 class PickImage {
   /// {@macro image_picker}
   const PickImage._();
 
+  static final _defaultFilterOption = FilterOptionGroup(
+    videoOption: const FilterOption(
+      durationConstraint: DurationConstraint(
+        max: Duration(minutes: 3),
+      ),
+    ),
+  );
+
   static AppTheme _appTheme(BuildContext context) => AppTheme(
-        focusColor: Colors.white,
-        primaryColor: Colors.black,
+        focusColor: context.adaptiveColor,
+        primaryColor: context.customReversedAdaptiveColor(),
       );
 
   static TabsTexts _tabsTexts(BuildContext context) => TabsTexts();
@@ -26,9 +33,6 @@ class PickImage {
         crossAxisSpacing: 1.7,
         mainAxisSpacing: 1.5,
       );
-
-  static ImagePickerPlus _imagePickerPlus(BuildContext context) =>
-      ImagePickerPlus(context);
 
   static Future<List<AssetEntity>?> pickAssets(
     BuildContext context, {
@@ -55,9 +59,10 @@ class PickImage {
     int maxSelection = 10,
     bool multiSelection = true,
   }) =>
-      _imagePickerPlus(context).pickBoth(
+      context.pickBoth(
         source: ImageSource.both,
         multiSelection: multiSelection,
+        filterOption: _defaultFilterOption,
         galleryDisplaySettings: GalleryDisplaySettings(
           maximumSelection: maxSelection,
           showImagePreview: showPreview,
@@ -76,7 +81,7 @@ class PickImage {
     bool multiImages = false,
     bool showPreview = true,
   }) =>
-      _imagePickerPlus(context).pickImage(
+      context.pickImage(
         source: source,
         multiImages: multiImages,
         galleryDisplaySettings: GalleryDisplaySettings(
@@ -100,19 +105,19 @@ class PickImage {
     bool cropImage = true,
     bool multiImages = false,
     bool showPreview = true,
-  }) async {
-    await _imagePickerPlus(context).pickVideo(
-      source: source,
-      galleryDisplaySettings: GalleryDisplaySettings(
-        showImagePreview: showPreview,
-        cropImage: cropImage,
-        maximumSelection: maxSelection,
-        tabsTexts: _tabsTexts(context),
-        appTheme: _appTheme(context),
-        callbackFunction: (details) => onMediaPicked.call(context, details),
-      ),
-    );
-  }
+  }) =>
+      context.pickVideo(
+        source: source,
+        filterOption: _defaultFilterOption,
+        galleryDisplaySettings: GalleryDisplaySettings(
+          showImagePreview: showPreview,
+          cropImage: cropImage,
+          maximumSelection: maxSelection,
+          tabsTexts: _tabsTexts(context),
+          appTheme: _appTheme(context),
+          callbackFunction: (details) => onMediaPicked.call(context, details),
+        ),
+      );
 
   /// Reads image as bytes.
   static Future<Uint8List> imageBytes({required File file}) =>

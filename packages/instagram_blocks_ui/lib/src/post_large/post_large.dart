@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:insta_blocks/insta_blocks.dart';
 import 'package:instagram_blocks_ui/src/carousel_indicator_controller.dart';
 import 'package:instagram_blocks_ui/src/comments_count.dart';
 import 'package:instagram_blocks_ui/src/like_button.dart';
@@ -29,6 +28,7 @@ class PostLarge extends StatelessWidget {
     required this.commentsText,
     required this.onPressed,
     required this.withInViewNotifier,
+    required this.postOptionsSettings,
     this.sponsoredText,
     this.postAuthorAvatarBuilder,
     this.videoPlayerBuilder,
@@ -43,17 +43,17 @@ class PostLarge extends StatelessWidget {
 
   final bool wasFollowed;
 
-  final Stream<bool> isFollowed;
+  final bool isFollowed;
 
   final VoidCallback follow;
 
-  final Stream<bool> isLiked;
+  final bool isLiked;
 
   final LikeCallback likePost;
 
-  final Stream<int> likesCount;
+  final int likesCount;
 
-  final Stream<int> commentsCount;
+  final int commentsCount;
 
   final LikesText likesText;
 
@@ -71,6 +71,8 @@ class PostLarge extends StatelessWidget {
 
   final String? sponsoredText;
 
+  final PostOptionsSettings postOptionsSettings;
+
   final AvatarBuilder? postAuthorAvatarBuilder;
 
   final VideoPlayerBuilder? videoPlayerBuilder;
@@ -87,30 +89,45 @@ class PostLarge extends StatelessWidget {
     final isSponsored = block is PostSponsoredBlock;
     final indicatorController = CarouselIndicatorController();
 
+    final postMedia = PostMedia(
+      isLiked: isLiked,
+      media: block.media,
+      likePost: likePost,
+      onPageChanged: indicatorController.updateCurrentIndex,
+      videoPlayerBuilder: videoPlayerBuilder,
+      postIndex: postIndex,
+      withInViewNotifier: withInViewNotifier,
+    );
+
+    Widget postHeader({Color? color}) => PostHeader(
+          follow: follow,
+          block: block,
+          color: color,
+          isOwner: isOwner,
+          isSponsored: isSponsored,
+          isFollowed: isFollowed,
+          sponsoredText: sponsoredText,
+          wasFollowed: wasFollowed,
+          enableFollowButton: enableFollowButton,
+          postAuthorAvatarBuilder: postAuthorAvatarBuilder,
+          postOptionsSettings: postOptionsSettings,
+          onAvatarTap: (avatarUrl) => onPressed(block.action!, avatarUrl),
+        );
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        PostHeader(
-          author: block.author,
-          isSponsored: isSponsored,
-          isOwner: isOwner,
-          isFollowed: isFollowed,
-          follow: follow,
-          wasFollowed: wasFollowed,
-          avatarOnTap: (avatarUrl) => onPressed(block.action!, avatarUrl),
-          enableFollowButton: enableFollowButton,
-          sponsoredText: sponsoredText,
-          postAuthorAvatarBuilder: postAuthorAvatarBuilder,
-        ),
-        PostMedia(
-          isLiked: isLiked,
-          media: block.media,
-          likePost: likePost,
-          onPageChanged: indicatorController.updateCurrentIndex,
-          videoPlayerBuilder: videoPlayerBuilder,
-          postIndex: postIndex,
-          withInViewNotifier: withInViewNotifier,
-        ),
+        if (block.isReel)
+          Stack(
+            children: [
+              postMedia,
+              postHeader(color: Colors.white),
+            ],
+          )
+        else ...[
+          postHeader(),
+          postMedia,
+        ],
         PostFooter(
           block: block,
           controller: indicatorController,
@@ -120,8 +137,7 @@ class PostLarge extends StatelessWidget {
           createdAt: createdAt,
           likesCount: likesCount,
           commentsCount: commentsCount,
-          onUserProfileAvatarTap: (avatarUrl) =>
-              onPressed(block.action!, avatarUrl),
+          onAvatarTap: (avatarUrl) => onPressed(block.action!, avatarUrl),
           onCommentsTap: onCommentsTap,
           onPostShareTap: onPostShareTap,
           likesText: likesText,

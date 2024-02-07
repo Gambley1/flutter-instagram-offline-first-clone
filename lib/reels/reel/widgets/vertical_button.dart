@@ -27,7 +27,7 @@ class VerticalButton extends StatelessWidget {
       child: child ??
           Icon(
             icon,
-            color: color,
+            color: color ?? Colors.white,
             size: size,
           ),
     );
@@ -73,8 +73,10 @@ class VerticalGroup extends StatelessWidget {
             animationEffect: TappableAnimationEffect.none,
             child: Text(
               statisticCount!.compactShort(context),
-              style:
-                  context.bodySmall?.copyWith(fontWeight: AppFontWeight.bold),
+              style: context.bodySmall?.copyWith(
+                fontWeight: AppFontWeight.bold,
+                color: Colors.white,
+              ),
               textAlign: TextAlign.center,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,

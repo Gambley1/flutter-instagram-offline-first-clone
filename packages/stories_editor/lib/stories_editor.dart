@@ -1,4 +1,5 @@
-// ignore_for_file: must_be_immutable, deprecated_member_use
+// ignore_for_file: deprecated_member_use
+
 library stories_editor;
 
 import 'package:flutter/material.dart';
