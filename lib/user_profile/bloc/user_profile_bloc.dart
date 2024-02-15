@@ -161,9 +161,11 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
         fullName: event.fullName,
         pushToken: event.pushToken,
       );
+      emit(state.copyWith(status: UserProfileStatus.userUpdated));
     } catch (error, stackTrace) {
       logE('Failed to update user.', error: error, stackTrace: stackTrace);
       addError(error, stackTrace);
+      emit(state.copyWith(status: UserProfileStatus.userUpdateFailed));
     }
   }
 

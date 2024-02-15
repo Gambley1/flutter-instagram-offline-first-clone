@@ -17,9 +17,7 @@ class Username extends FormzInput<String, UsernameValidationError>
   /// {@macro name}
   const Username.validated(super.value) : super.dirty();
 
-  static final _nameRegex = RegExp(
-    r'^[a-zA-Z0-9_.]{3,16}$',
-  );
+  static final _nameRegex = RegExp(r'^[a-zA-Z0-9_.]{3,16}$');
 
   @override
   UsernameValidationError? validator(String value) {

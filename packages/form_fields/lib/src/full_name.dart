@@ -17,12 +17,12 @@ class FullName extends FormzInput<String, FullNameValidationError>
   /// {@macro name}
   const FullName.validated(super.value) : super.dirty();
 
-  static final _nameRegex = RegExp(r'^[A-Z][a-zA-Z]*(?: [A-Z][a-zA-Z]*)?$');
+  // static final _nameRegex = RegExp(r'^[A-Z][a-zA-Z]*(?: [A-Z][a-zA-Z]*)?$');
 
   @override
   FullNameValidationError? validator(String value) {
     if (value.isEmpty) return FullNameValidationError.empty;
-    if (!_nameRegex.hasMatch(value)) return FullNameValidationError.invalid;
+    // if (!_nameRegex.hasMatch(value)) return FullNameValidationError.invalid;
     return null;
   }
 

@@ -282,6 +282,8 @@ extension DialogExtension on BuildContext {
     String? content,
     String? yesText,
     String? noText,
+    TextStyle? yesTextStyle,
+    TextStyle? noTextStyle,
     BuildContextCallback? noAction,
   }) async {
     final isConfimred = await showConfirmationDialog(
@@ -289,6 +291,8 @@ extension DialogExtension on BuildContext {
       content: content,
       noText: noText,
       yesText: yesText,
+      yesTextStyle: yesTextStyle,
+      noTextStyle: noTextStyle,
       noAction: noAction,
     );
     if (isConfimred == null || !isConfimred) return;
@@ -322,7 +326,7 @@ extension DialogExtension on BuildContext {
                 ? (canPop() ? pop(false) : null)
                 : noAction.call(this),
             text: noText ?? 'Cancel',
-            textStyle: labelLarge?.apply(color: adaptiveColor),
+            textStyle: noTextStyle ?? labelLarge?.apply(color: adaptiveColor),
           ),
           AppButton(
             isDialogButton: true,
@@ -331,7 +335,7 @@ extension DialogExtension on BuildContext {
                 ? (canPop() ? pop(true) : null)
                 : yesAction.call(this),
             text: yesText ?? 'Yes',
-            textStyle: labelLarge?.apply(color: Colors.red),
+            textStyle: yesTextStyle ?? labelLarge?.apply(color: Colors.red),
           ),
         ],
       );

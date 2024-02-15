@@ -42,10 +42,10 @@ class _EmailTextFieldState extends State<EmailTextField> {
     final isLoading = context.select<LoginCubit, bool>(
       (b) => b.state.status.isLoading,
     );
+
     return AppTextField(
       key: const ValueKey('loginEmailTextField'),
       filled: true,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 12),
       focusNode: _focusNode,
       hintText: 'Email',
       enabled: !isLoading,
