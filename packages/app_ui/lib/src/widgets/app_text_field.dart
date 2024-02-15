@@ -78,6 +78,7 @@ class AppTextField extends StatelessWidget {
     this.textAlignVertical,
     this.autofillHints,
     this.errorMaxLines,
+    this.labelStyle,
   });
 
   /// Creates a new [AppTextField] with a filled border.
@@ -123,6 +124,7 @@ class AppTextField extends StatelessWidget {
     int? maxLength,
     int? minLength,
     int? minLines,
+    TextStyle? labelStyle,
     MaxLengthEnforcement? maxLengthEnforcement,
     MouseCursor? mouseCursor,
     ValueSetter<String?>? onSaved,
@@ -172,6 +174,7 @@ class AppTextField extends StatelessWidget {
           mouseCursor: mouseCursor,
           constraints: constraints,
           hintStyle: hintStyle,
+          labelStyle: labelStyle,
           obscuringCharacter: obscuringCharacter,
           onEditingComplete: onEditingComplete,
           onFieldSubmitted: onFieldSubmitted,
@@ -240,6 +243,7 @@ class AppTextField extends StatelessWidget {
   final String? suffixText;
   final bool? filled;
   final TextStyle? hintStyle;
+  final TextStyle? labelStyle;
   final ValueSetter<String?>? onFieldSubmitted;
   final void Function()? onEditingComplete;
   final Color? cursorColor;
@@ -341,6 +345,7 @@ class AppTextField extends StatelessWidget {
       decoration: InputDecoration(
         constraints: constraints,
         suffixText: suffixText,
+        labelStyle: labelStyle,
         floatingLabelAlignment: FloatingLabelAlignment.start,
         floatingLabelBehavior: floatingLabelBehaviour,
         labelText: labelText,

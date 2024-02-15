@@ -38,10 +38,11 @@ class _FullNameTextFieldState extends State<FullNameTextField> {
         context.select<SignupCubit, bool>((c) => c.state.isLoading);
     final fullNameError =
         context.select<SignupCubit, String?>((c) => c.state.fullNameError);
+
     return AppTextField(
       filled: true,
       focusNode: _focusNode,
-      hintText: 'Full name',
+      hintText: 'Name',
       contentPadding: const EdgeInsets.symmetric(horizontal: 12),
       textInputAction: TextInputAction.next,
       textCapitalization: TextCapitalization.words,

@@ -21,6 +21,7 @@ class UserProfileAvatar extends StatelessWidget {
     this.radius,
     this.isLarge = true,
     this.isImagePicker = false,
+    this.onTapPickImage = false,
     this.strokeWidth,
     this.onTap,
     this.onLongPress,
@@ -44,6 +45,7 @@ class UserProfileAvatar extends StatelessWidget {
   final double? strokeWidth;
   final bool isLarge;
   final bool isImagePicker;
+  final bool onTapPickImage;
   final bool withShimmerPlaceholder;
   final ValueSetter<String?>? onTap;
   final VoidCallback? onLongPress;
@@ -283,7 +285,11 @@ class UserProfileAvatar extends StatelessWidget {
     }
 
     return Tappable(
-      onTap: onTap == null ? null : () => onTap?.call(avatarUrl),
+      onTap: onTap == null
+          ? !onTapPickImage
+              ? null
+              : () => _pickImage(context)
+          : () => onTap?.call(avatarUrl),
       onLongPress: isImagePicker ? () => _pickImage.call(context) : onLongPress,
       animationEffect: animationEffect,
       scaleStrength: scaleStrength,

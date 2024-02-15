@@ -48,7 +48,6 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
     return AppTextField(
       key: const ValueKey('loginPasswordTextField'),
       filled: true,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 12),
       focusNode: _focusNode,
       hintText: 'Password',
       enabled: !isLoading,

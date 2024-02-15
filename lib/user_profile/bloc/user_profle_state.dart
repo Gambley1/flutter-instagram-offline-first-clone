@@ -10,6 +10,7 @@ enum UserProfileStatus {
   togglingNotificationsFailed,
   togglingNotificationsSucceeded,
   userUpdated,
+  userUpdateFailed,
 }
 
 class UserProfileState extends Equatable {
