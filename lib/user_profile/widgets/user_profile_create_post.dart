@@ -9,6 +9,7 @@ import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/attachments/attachments.dart';
 import 'package:flutter_instagram_offline_first_clone/user_profile/user_profile.dart';
 import 'package:go_router/go_router.dart';
+import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:posts_repository/posts_repository.dart';
 import 'package:powersync_repository/powersync_repository.dart';
 import 'package:shared/shared.dart';
@@ -36,7 +37,8 @@ class CreatePostView extends StatefulWidget {
   State<CreatePostView> createState() => _CreatePostViewState();
 }
 
-class _CreatePostViewState extends State<CreatePostView> {
+class _CreatePostViewState extends State<CreatePostView>
+    with SafeSetStateMixin {
   final _captionController = TextEditingController();
   // List<Uint8List>? _imagesBytes;
   // List<File>? _imagesFile;
@@ -67,14 +69,12 @@ class _CreatePostViewState extends State<CreatePostView> {
               onTap: _busy
                   ? null
                   : () => context.confirmAction(
-                        fn: () => setState(() {
-                          // _imagesBytes?.clear();
-                          // _imagesFile?.clear();
+                        title: 'Clear images',
+                        content: 'Are you sure you want to clear all images?',
+                        yesText: 'Clear',
+                        fn: () => safeSetState(() {
                           _selectedFiles?.clear();
                         }),
-                        noText: 'Cancel',
-                        yesText: 'Clear',
-                        title: 'Are you sure to clear all the images?',
                       ),
               child: const Icon(Icons.cancel, size: AppSize.iconSize),
             ),
@@ -94,16 +94,6 @@ class _CreatePostViewState extends State<CreatePostView> {
                           await PickImage.pickAssetsFromBoth(
                             context,
                             onMediaPicked: (context, details) async {
-                              // final imagesFile = <File>[];
-                              // final imagesBytes = <Uint8List>[];
-                              // for (final file in details.selectedFiles) {
-                              //   imagesFile.add(file.selectedFile);
-                              //   imagesBytes.add(file.selectedByte);
-                              // }
-                              // setState(() {
-                              //   _imagesFile = imagesFile;
-                              //   _imagesBytes = imagesBytes;
-                              // });
                               final selectedFiles = <SelectedByte>[];
                               for (final selectedFile
                                   in details.selectedFiles) {
@@ -133,42 +123,11 @@ class _CreatePostViewState extends State<CreatePostView> {
                                 selectedFiles.add(byte);
                               }
 
-                              setState(() {
+                              safeSetState(() {
                                 _selectedFiles = selectedFiles;
                               });
                             },
-                            // await Navigator.of(context, rootNavigator: true)
-                            //     .push(
-                            //   MaterialPageRoute<dynamic>(
-                            //     builder: (context) => CreatePostPage(
-                            //       selectedFilesDetails: details,
-                            //     ),
-                            //     maintainState: false,
-                            //   ),
-                            // );
                           );
-                          // await PickImage.pickAssets(
-                          //   context,
-                          //   closeOnComplete: true,
-                          //   onCompleted: (exportDetails) async {
-                          //     await for (final details in exportDetails) {
-                          //       final files = details.croppedFiles;
-                          //       final imagesFile = <File>[];
-                          //       final imagesBytes = <Uint8List>[];
-                          //       for (final file in files) {
-                          //         imagesFile.add(file);
-
-                          //         final bytes =
-                          //             await PickImage.imageBytes(file: file);
-                          //         imagesBytes.add(bytes);
-                          //       }
-                          //       setState(() {
-                          //         _imagesFile = imagesFile;
-                          //         _imagesBytes = imagesBytes;
-                          //       });
-                          //     }
-                          //   },
-                          // );
                         },
                   style: ElevatedButton.styleFrom(
                     shape: const CircleBorder(),
@@ -179,10 +138,6 @@ class _CreatePostViewState extends State<CreatePostView> {
               const SizedBox(height: AppSpacing.md),
               AppTextField(
                 filled: true,
-                border: outlinedBorder(
-                  borderRadius: 4,
-                  borderSide: BorderSide.none,
-                ),
                 enabled: !_busy,
                 textController: _captionController,
                 contentPadding: const EdgeInsets.symmetric(horizontal: 12),
@@ -193,13 +148,13 @@ class _CreatePostViewState extends State<CreatePostView> {
                 suffixIcon: _captionController.text.trim().isEmpty
                     ? null
                     : Tappable(
-                        onTap: () => setState(_captionController.clear),
+                        onTap: () => safeSetState(_captionController.clear),
                         child: const Icon(
                           Icons.cancel,
                         ),
                       ),
                 onChanged: (value) {
-                  setState(() {
+                  safeSetState(() {
                     _captionController.text = value;
                   });
                 },
@@ -214,7 +169,7 @@ class _CreatePostViewState extends State<CreatePostView> {
                       ? null
                       : () async {
                           try {
-                            setState(() {
+                            safeSetState(() {
                               _busy = true;
                             });
                             late final storage =
@@ -282,6 +237,7 @@ class _CreatePostViewState extends State<CreatePostView> {
                                 fileOptions: FileOptions(
                                   contentType:
                                       '${!isVideo ? 'image' : 'video'}/$mediaExtension',
+                                  cacheControl: '9000000',
                                 ),
                               );
                               final mediaUrl = storage.getPublicUrl(mediaPath);
@@ -294,6 +250,7 @@ class _CreatePostViewState extends State<CreatePostView> {
                                   convertedBytes,
                                   fileOptions: FileOptions(
                                     contentType: 'video/$mediaExtension',
+                                    cacheControl: '9000000',
                                   ),
                                 );
                                 firstFrameUrl =
@@ -320,7 +277,7 @@ class _CreatePostViewState extends State<CreatePostView> {
                               }
                             }
                             if (!mounted) return;
-                            await Future.sync(
+                            await Future.microtask(
                               () => context.read<UserProfileBloc>().add(
                                     UserProfilePostCreateRequested(
                                       postId: postId,
@@ -330,7 +287,7 @@ class _CreatePostViewState extends State<CreatePostView> {
                                     ),
                                   ),
                             );
-                            setState(() {
+                            safeSetState(() {
                               _busy = false;
                             });
                             if (mounted) {
@@ -347,7 +304,7 @@ class _CreatePostViewState extends State<CreatePostView> {
                             );
                           } catch (error, stackTrace) {
                             logE(error, stackTrace: stackTrace);
-                            setState(() => _busy = false);
+                            safeSetState(() => _busy = false);
                             openSnackbar(
                               const SnackbarMessage.error(
                                 title: 'Failed to create post!',
@@ -362,7 +319,7 @@ class _CreatePostViewState extends State<CreatePostView> {
                   imagesBytes:
                       _selectedFiles!.map((e) => e.selectedByte).toList(),
                   onImageDelete: (bytes, index) {
-                    setState(() {
+                    safeSetState(() {
                       // _imagesBytes?.removeWhere((e) => e == bytes);
                       // _imagesFile?.removeAt(index);
                       _selectedFiles?.removeAt(index);

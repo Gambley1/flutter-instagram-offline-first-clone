@@ -17,22 +17,15 @@ create policy "Anyone can delete their own avatar." on storage.objects for delet
   and auth.uid ()::text = (storage.foldername (name)) [1]
 );
 
-create policy "Anyone can update their own avatar." on storage.objects
-for update
-  to authenticated using (
-    bucket_id = 'avatars'
-    and auth.uid ()::text = (storage.foldername (name)) [1]
-  );
-
 -- Set up storage for posts.
 insert into storage.buckets (id, name)
   values ('posts', 'posts')
 
-create policy "Only authenticated user can see posts media." on storage.objects for
+create policy "Only authenticated users can see post media." on storage.objects for
 select
   to authenticated using (bucket_id = 'posts');
 
-create policy "Only authenticated can upload posts media." on storage.objects for insert
+create policy "Only authenticated users can upload post media." on storage.objects for insert
  to authenticated
    with
       check (
@@ -145,44 +138,47 @@ create table
 
 alter table profiles enable row level security;
 
-create policy "Public profiles are viewable by everyone." on profiles
+create policy "Profiles are viewable by everyone." on profiles
   for select using (true);
 
-create policy "Users can insert their own profile." on profiles
-  for insert with check (auth.uid() = id);
+create policy "Allow to create profiles for everyone." on profiles
+  for insert with check (true);
 
-create policy "Users can update own profile." on profiles
-  for update using (auth.uid() = id);
+create policy "Only owner can update the profile." on profiles
+  for update with check (auth.uid() = id);
+
+create policy "Only owner can delete the profile." on profiles
+  for delete using (auth.uid() = id);
 
 create type media_type as enum('photo', 'video');
 
 -- Create Posts table
 create table
   public.posts (
-    id uuid not null,
+    id uuid not null default gen_random_uuid (),
     user_id uuid not null,
     caption text null,
-    media text null,
     created_at timestamp with time zone not null default now(),
     updated_at timestamp with time zone null,
+    media text null,
     constraint posts_pkey primary key (id),
-    constraint posts_user_id_fkey foreign key (user_id) references public.profiles (id) on update cascade on delete cascade
+    constraint posts_user_id_fkey foreign key (user_id) references profiles (id) on update cascade on delete cascade
   ) tablespace pg_default;
 
 alter table posts enable row level security;
 
-create policy "Allow to see posts for everybody" on public.posts for select using (true);
+create policy "Allow to see posts for everybody." on public.posts for select using (true);
 
-create policy "Allow upload post only to authenticated user" on public.posts
+create policy "Allow upload post only to authenticated user." on public.posts
  for insert to authenticated with check (true);
 
-create policy "Allow update post only to authenticated user" on public.posts for update to authenticated
+create policy "Allow update post only to owner." on public.posts for update to authenticated
 with
   check (
     auth.uid() = user_id
   );
 
-create policy "Allow delete post only to authenticated user" on public.posts for delete to authenticated
+create policy "Allow delete post only to owner." on public.posts for delete to authenticated
 using (
     auth.uid() = user_id
   );
@@ -196,23 +192,23 @@ create table
     first_frame_url text not null,
     blur_hash text not null,
     constraint videos_pkey primary key (id),
-    constraint videos_user_id_fkey foreign key (owner_id) references public.profiles (id) on update cascade on delete cascade
+    constraint videos_user_id_fkey foreign key (owner_id) references profiles (id) on update cascade on delete cascade
   ) tablespace pg_default;
 
 alter table videos enable row level security;
 
 create policy "Allow to see videos for everybody" on public.videos for select using (true);
 
-create policy "Allow upload video only to authenticated user" on public.videos
+create policy "Allow upload video only to authenticated user." on public.videos
  for insert to authenticated with check (true);
 
-create policy "Allow update video only to authenticated owner user" on public.videos for update to authenticated
+create policy "Only owner can update video." on public.videos for update to authenticated
 with
   check (
     auth.uid() = owner_id
   );
 
-create policy "Allow delete video only to authenticated owner user" on public.videos for delete to authenticated
+create policy "Only owner can delete video." on public.videos for delete to authenticated
 using (
     auth.uid() = owner_id
   );
@@ -230,18 +226,18 @@ create table
 
 alter table images enable row level security;
 
-create policy "Allow to see images for everybody" on public.images for select using (true);
+create policy "Allow to see images for everybody." on public.images for select using (true);
 
-create policy "Allow upload post only to authenticated user" on public.images
+create policy "Allow upload image only to authenticated user." on public.images
  for insert to authenticated with check (true);
 
-create policy "Allow update post only to authenticated user" on public.images for update to authenticated
+create policy "Allow update image only to owner." on public.images for update to authenticated
 with
   check (
     auth.uid() = owner_id
   );
 
-create policy "Allow delete post only to authenticated user" on public.images for delete to authenticated
+create policy "Allow delete image only to owner." on public.images for delete to authenticated
 using (
     auth.uid() = owner_id
   );
@@ -280,13 +276,13 @@ create policy "Everyone can see posts likes" on public.likes for select using (t
 
 create policy "Only authenticated can upload likes" on public.likes for insert to authenticated with check (true);
 
-create policy "Only authenticated can update likes" on public.likes for update to authenticated
+create policy "Only owner can update like" on public.likes for update to authenticated
 with
   check (
     auth.uid() = user_id
   );
 
-create policy "Only authentiaceted can delete likes" on public.likes for delete to authenticated
+create policy "Only onwner can delete like" on public.likes for delete to authenticated
 using (
     auth.uid() = user_id
   );
@@ -307,43 +303,36 @@ create table
 
 alter table comments enable row level security;
 
-create policy "Everyone can see posts comments" on public.comments for select using (true);
+create policy "Everyone can see posts comments." on public.comments for select using (true);
 
-create policy "Only authenticated can upload comments" on public.comments for insert to authenticated with check (true);
-
-create policy "Only authenticated can update comments" on public.comments for update to authenticated
-with
-  check (
-    true
+create policy "Only owners can update comment." on public.comments for update with check(
+    auth.uid() = user_id
   );
 
-create policy "Only authentiaceted can delete comments" on public.comments for delete to authenticated
+create policy "Only authenticated can upload comments." on public.comments for insert to authenticated with check (true);
+
+create policy "Only owners can delete comment." on public.comments for delete to authenticated
 using (
-    true
+    auth.uid() = user_id
   );
 
-CREATE TABLE subscriptions (
-  id uuid not null,
-  subscriber_id uuid not null,
-  subscribed_to_id uuid not null,
-  constraint subscriptions_pkey primary key (id),
-  constraint subscriptions_subscriber_id_fkey foreign key (subscriber_id) references auth.users (id) on update cascade on delete cascade,
-  constraint subscriptions_subcribed_to_fkey foreign key (subscribed_to_id) references auth.users (id) on update cascade on delete cascade
-);
+create table
+  public.subscriptions (
+    id uuid not null,
+    subscriber_id uuid not null,
+    subscribed_to_id uuid not null,
+    constraint subscriptions_pkey primary key (id),
+    constraint subscriptions_subscribed_to_id_fkey foreign key (subscribed_to_id) references profiles (id) on update cascade on delete cascade,
+    constraint subscriptions_subscriber_id_fkey foreign key (subscriber_id) references profiles (id) on update cascade on delete cascade
+  ) tablespace pg_default;
 
-alter table comments enable row level security;
+alter table subscriptions enable row level security;
 
 create policy "Every user can see other users subscribers count." on public.subscriptions
-  for select 
-    using (
-      true
-    );
+  for select using (true);
 
 create policy "Only authenticated users can subscribe to other users." on public.subscriptions
- for insert to authenticated 
-    with check (
-      auth.uid() = subscriber_id
-      );
+ for insert to authenticated with check (true);
 
 create policy "Only authentiaceted users can unsubscribe from other users." on public.subscriptions 
   for delete to authenticated
@@ -353,14 +342,15 @@ create policy "Only authentiaceted users can unsubscribe from other users." on p
 
 create type conversation_type as enum('one-on-one', 'group');
 
-create table conversations (
-    id uuid not null default gen_random_uuid(),
+create table
+  public.conversations (
+    id uuid not null default gen_random_uuid (),
     type conversation_type not null,
     name text not null,
     created_at timestamp with time zone not null default now(),
     updated_at timestamp with time zone not null default now(),
     constraint conversations_pkey primary key (id)
-);
+  ) tablespace pg_default;
 
 alter table conversations enable row level security;
 
@@ -368,19 +358,19 @@ create policy "Everybody can see conversations they participate in." on public.c
   for select using (true);
 
 create policy "Only authenticated users can create conversations with other users." on public.conversations
- for insert to authenticated;
+ for insert to authenticated with check(true);
 
 create policy "Only authentiaceted users can delete conversations they participate in." on public.conversations 
-  for delete to authenticated;
+  for delete to authenticated using true; 
 
 create type message_type as enum('text', 'image', 'video', 'voice');
 
 create table
-  messages (
+  public.messages (
     id uuid not null default gen_random_uuid (),
     conversation_id uuid not null,
     from_id uuid not null,
-    type public.message_type not null,
+    type message_type not null,
     message text not null,
     reply_message_id uuid null,
     created_at timestamp with time zone not null default (now() at time zone 'utc'::text),
@@ -399,19 +389,19 @@ create table
     constraint messages_user_id_fkey foreign key (from_id) references profiles (id) on update cascade on delete cascade
   ) tablespace pg_default;
 
-alter table participants
-add constraint unique_participant unique (user_id, conversation_id);
-
 alter table messages enable row level security;
 
 create policy "Everybody can see messages in the conversation." on public.messages
   for select using (true);
 
+create policy "Only owner can update the message." on public.messages
+  for update to authenticated with check(auth.uid() = from_id);
+
 create policy "Only authenticated users can create message in the conversations with other users." 
   on public.messages
     for insert to authenticated with check (auth.uid() = from_id);
 
-create policy "Only authentiaceted users can delete their own messages in the conversations they participate in." 
+create policy "Only authenticated users can delete their own messages in the conversations they participate in." 
   on public.messages 
     for delete to authenticated using (auth.uid() = from_id);
 
@@ -440,6 +430,9 @@ alter table attachments enable row level security;
 create policy "Everybody can see their messages' attachments." on public.attachments
   for select using (true);
 
+create policy "Everybody can see their messages' attachments." on public.attachments
+  for update using (true) with check (true);
+
 create policy "Only authenticated users can add attachments." 
   on public.attachments
     for insert to authenticated with check (true);
@@ -448,18 +441,20 @@ create policy "Only owners can remove attachments."
   on public.attachments 
     for delete to authenticated using (true);
 
-create table participants (
-    id uuid not null,
+create table
+  public.participants (
+    id uuid not null default gen_random_uuid (),
     user_id uuid not null,
     conversation_id uuid not null,
     constraint participants_pkey primary key (id),
-    constraint participants_user_id_fkey foreign key (user_id) references profiles (id) on update cascade on delete cascade,
-    constraint participants_conversation_id_fkey foreign key (conversation_id) references conversations (id) on update cascade on delete cascade
-);
+    constraint unique_participant unique (user_id, conversation_id),
+    constraint participants_conversation_id_fkey foreign key (conversation_id) references conversations (id) on update cascade on delete cascade,
+    constraint participants_user_id_fkey foreign key (user_id) references profiles (id) on update cascade on delete cascade
+  ) tablespace pg_default;
 
 alter table participants enable row level security;
 
-create policy "Everybody can see their participations with conversations." on public.participants
+create policy "Everybody can see their participation with conversations." on public.participants
   for select using (true);
 
 create policy "Only authenticated users can participate in conversations." 
@@ -469,32 +464,24 @@ create policy "Only authenticated users can participate in conversations."
 create policy "Only authentiaceted users can remove participation in conversations." 
   on public.participants 
     for delete to authenticated using (auth.uid() = user_id);
-
-create table stories (
-  id uuid not null default gen_random_uuid(),
-  user_id uuid not null,
-  content_type story_content_type not null,
-  content_url text not null,
-  duration integer null,
-  created_at timestamp with time zone not null default (now() at time zone 'utc'::text),
-  expires_at timestamp with time zone not null default ((now() at time zone 'utc'::text) + '1 day'::interval),
-  constraint stories_pkey primary key (id),
-  constraint stories_user_id_fkey foreign key (user_id) references users(user_id) on update cascade on delete cascade,
-  constraint check_story_content_type_and_duration check (
-      (
-        (
-          (content_type = 'image'::story_content_type)
-          and (duration is not null)
-        )
-        or (
-          (content_type = 'video'::story_content_type)
-          and (duration is null)
-        )
-      )
-    )
-);
-
+    
 create type story_content_type as enum('image', 'video');
+
+create table
+  public.stories (
+    id uuid not null default gen_random_uuid (),
+    user_id uuid not null,
+    content_type story_content_type not null,
+    content_url text not null,
+    duration integer null,
+    created_at timestamp with time zone not null default (now() at time zone 'utc'::text),
+    expires_at timestamp with time zone not null default (
+      (now() at time zone 'utc'::text) + '1 day'::interval
+    ),
+    constraint stories_pkey primary key (id),
+    constraint stories_user_id_fkey foreign key (user_id) references profiles (id) on update cascade on delete cascade
+  ) tablespace pg_default;
+
 
 alter table stories enable row level security;
 
@@ -513,6 +500,11 @@ create policy "Only owners can update stories."
   on public.stories
     for update to authenticated using (auth.uid() = user_id);
 
+-- Create PowerSync publication with all the existings tables ->
+create publication powersync for all tables;
+
+-- Create useful functions and triggers to manage storage objects and relevant data ->
+
 create or replace function delete_storage_object(bucket text, object text, out status int, out content text)
  returns record
  language 'plpgsql'
@@ -521,7 +513,8 @@ create or replace function delete_storage_object(bucket text, object text, out s
  declare
    project_url text := '<PROJECT_URL>';
    service_role_key text := '<SERVICE_ROLE_KEY>'; -- full access needed
-   url text := project_url||'/storage/v1/object/sign/'||bucket||'/'||object;
+   delete_object text := reverse(split_part(reverse(object), '/', 1));
+   url text := project_url||'/storage/v1/object/'||bucket||'/'||delete_object;
  begin
    select
        into status, content
@@ -650,3 +643,35 @@ create trigger on_auth_user_updated
 after
 update on auth.users for each row
 execute procedure public.handle_update_user();
+
+bucket_definitions:
+  global_media:
+    data:
+        - select * from images
+        - select * from videos
+  global_posts:
+    data:
+        - select * from posts
+        - select * from likes
+        - select * from comments
+  global_stories:
+    data:
+        - select * from stories
+  global_profiles:
+    data:
+        - select * from profiles
+  global_subscriptions:
+    data:
+        - select * from subscriptions
+  global_participants:
+    data:
+        - select * from participants
+  global_messages:
+    parameters: select id as message_id from messages
+    data:
+        - select * from messages where id = bucket.message_id
+        - select * from attachments where message_id = bucket.message_id
+  user_conversations:
+    parameters: select conversation_id from participants where user_id = token_parameters.user_id
+    data: 
+        - select * from conversations where id = bucket.conversation_id

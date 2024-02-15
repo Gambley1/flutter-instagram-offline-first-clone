@@ -23,7 +23,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     on<FeedPageRequested>(_onPageRequested, transformer: throttleDroppable());
     on<FeedRefreshRequested>(
       _onRefreshRequested,
-      transformer: throttleDroppable(),
+      transformer: throttleDroppable(duration: 550.ms),
     );
     on<FeedRecommenedPostsPageRequested>(
       _onFeedRecommenedPostsPageRequested,
@@ -31,7 +31,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     );
   }
 
-  final _recommenedPosts = <InstaBlock>[
+  final _recommenedPosts = <PostLargeBlock>[
     PostLargeBlock(
       id: UidGenerator.v4(),
       author: PostAuthor.randomConfirmed(),
@@ -224,7 +224,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       ],
       caption: 'Hello world!',
     ),
-  ];
+  ].withNavigateToPostAuthorAction;
 
   static const _pageLimit = 10;
 
@@ -433,10 +433,6 @@ extension PostX on Post {
         action: NavigateToPostAuthorProfileAction(authorId: author.id),
       );
 
-  // https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkmZB67e6esDKyxIUTnQhNmOvexujNJ3pccQ&usqp=CAU
-
-  
-
   /// Converts [Post] instance into [PostSmallBlock] instance.
   PostSmallBlock get toPostSmallBlock => PostSmallBlock(
         id: id,
@@ -462,4 +458,12 @@ extension PostX on Post {
         media: media,
         caption: caption,
       );
+}
+
+extension PostsX on List<PostLargeBlock> {
+  List<PostLargeBlock> get withNavigateToPostAuthorAction => map(
+        (e) => e.copyWith(
+          action: NavigateToPostAuthorProfileAction(authorId: e.author.id),
+        ),
+      ).toList();
 }

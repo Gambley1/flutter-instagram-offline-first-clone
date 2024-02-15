@@ -9,6 +9,7 @@ environment:
 
 dependencies:
   cached_network_image: ^3.3.1
+  flex_color_scheme: ^7.3.1
   flutter:
     sdk: flutter
   flutter_cache_manager: ^3.3.1

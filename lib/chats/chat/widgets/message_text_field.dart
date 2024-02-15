@@ -203,7 +203,7 @@ class _ChatMessageTextFieldInputState extends State<ChatMessageTextFieldInput>
       if (!wasEditing) {
         widget.scrollController.animateTo(
           widget.scrollController.position.minScrollExtent,
-          duration: const Duration(milliseconds: 250),
+          duration: 250.ms,
           curve: Curves.easeIn,
         );
       }
@@ -389,7 +389,7 @@ class MessagePreview extends StatelessWidget {
     late final hasReplyingMessage = controller.replyingMessage != null;
 
     return AnimatedSize(
-      duration: const Duration(milliseconds: 250),
+      duration: 250.ms,
       curve: Curves.easeInOut,
       alignment: Alignment.bottomCenter,
       child: Column(
@@ -462,6 +462,7 @@ class ReplyMessagePreview extends StatelessWidget {
         ? replyingMessage.message
         : '${replyingMessage.sharedPost?.author.username} '
             '${replyingMessage.sharedPost?.caption}';
+
     return Row(
       children: [
         const Padding(

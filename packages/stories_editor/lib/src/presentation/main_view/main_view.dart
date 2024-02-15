@@ -44,6 +44,10 @@ class MainView extends StatefulWidget {
   /// on done
   final Function(String)? onDone;
 
+  /// Function that should be executed when user wants to go back from the page.
+  /// Usually pops current page.
+  final VoidCallback? onGoBack;
+
   /// on done button Text
   final Widget? onDoneButtonStyle;
 
@@ -62,6 +66,7 @@ class MainView extends StatefulWidget {
   const MainView({
     super.key,
     required this.onDone,
+    this.onGoBack,
     this.middleBottomWidget,
     this.colorList,
     this.isCustomFontList,
@@ -438,8 +443,9 @@ class _MainViewState extends State<MainView> with SafeSetStateMixin {
 
     /// show close dialog
     else if (!controlNotifier.isTextEditing && !controlNotifier.isPainting) {
-      return widget.onBackPress ??
-          exitDialog(context: context, contentKey: contentKey);
+      late final exit = exitDialog(context: context, contentKey: contentKey);
+
+      return await widget.onBackPress ?? (await exit) ?? false;
     }
     return false;
   }

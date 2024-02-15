@@ -1,6 +1,6 @@
 import 'package:chats_repository/chats_repository.dart';
-import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:test/test.dart';
 
 class MockChatsRepository extends Mock implements ChatsRepository {}
 

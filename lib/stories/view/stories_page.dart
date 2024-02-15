@@ -1,11 +1,11 @@
+import 'dart:math';
+
 import 'package:app_ui/app_ui.dart';
-import 'package:firebase_config/firebase_config.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
-import 'package:flutter_instagram_offline_first_clone/stories/create_stories/create_stories.dart';
 import 'package:flutter_instagram_offline_first_clone/stories/stories.dart';
 import 'package:go_router/go_router.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
@@ -13,6 +13,7 @@ import 'package:shared/shared.dart';
 import 'package:stories_repository/stories_repository.dart';
 import 'package:story_view/story_view.dart';
 import 'package:user_repository/user_repository.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 class StoriesPage extends StatelessWidget {
   const StoriesPage({
@@ -28,21 +29,11 @@ class StoriesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) => StoriesBloc(
-            storiesRepository: context.read<StoriesRepository>(),
-            userRepository: context.read<UserRepository>(),
-          ),
-        ),
-        BlocProvider(
-          create: (context) => CreateStoriesBloc(
-            storiesRepository: context.read<StoriesRepository>(),
-            remoteConfig: context.read<FirebaseConfig>(),
-          ),
-        ),
-      ],
+    return BlocProvider(
+      create: (context) => StoriesBloc(
+        storiesRepository: context.read<StoriesRepository>(),
+        userRepository: context.read<UserRepository>(),
+      ),
       child: AppScaffold(
         extendBody: true,
         extendBodyBehindAppBar: true,
@@ -72,9 +63,10 @@ class StoriesView extends StatefulWidget {
   State<StoriesView> createState() => _StoriesViewState();
 }
 
-class _StoriesViewState extends State<StoriesView> {
+class _StoriesViewState extends State<StoriesView> with SafeSetStateMixin {
   late StoryController _controller;
   late List<StoryItem> _storyItems;
+
   final _currentStory = ValueNotifier<Story>(Story.empty);
   final _createdAt = ValueNotifier<DateTime?>(null);
   final _showOverlay = ValueNotifier<bool>(true);
@@ -102,83 +94,90 @@ class _StoriesViewState extends State<StoriesView> {
 
     return Stack(
       children: [
-        StoryView(
-          storyItems: _storyItems,
-          controller: _controller,
-          inline: true,
-          onStoryShow: (story) {
-            final storyIndex = _storyItems.indexOf(story);
-            _currentStory.value = widget.stories[storyIndex];
-            _createdAt.value = widget.stories[storyIndex].createdAt;
-            if (widget.onStorySeen != null) {
-              widget.onStorySeen!.call(storyIndex, widget.stories);
+        VisibilityDetector(
+          key: ValueKey(user.id),
+          onVisibilityChanged: (info) {
+            if (!info.visibleBounds.isEmpty) {
+              if (_controller.playbackNotifier.value == PlaybackState.pause) {
+                if (mounted) _controller.play();
+              }
             } else {
-              if (storyIndex == -1) return;
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                context
-                    .read<StoriesBloc>()
-                    .add(StoriesStorySeen(widget.stories[storyIndex], user.id));
-              });
+              if (mounted) _controller.pause();
             }
           },
-          onVerticalSwipeComplete: (_) => context.pop(),
-          onComplete: () {
-            if (context.canPop()) context.pop();
-          },
+          child: StoryView(
+            storyItems: _storyItems,
+            controller: _controller,
+            inline: true,
+            onStoryShow: (story) {
+              final storyIndex = _storyItems.indexOf(story);
+              _currentStory.value = widget.stories[storyIndex];
+              _createdAt.value = widget.stories[storyIndex].createdAt;
+              if (widget.onStorySeen != null) {
+                widget.onStorySeen!.call(storyIndex, widget.stories);
+              } else {
+                if (storyIndex == -1) return;
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  context.read<StoriesBloc>().add(
+                        StoriesStorySeen(widget.stories[storyIndex], user.id),
+                      );
+                });
+              }
+            },
+            onVerticalSwipeComplete: (_) => context.pop(),
+            onComplete: () {
+              if (context.canPop()) context.pop();
+            },
+          ),
         ),
-        ValueListenableBuilder<DateTime?>(
-          valueListenable: _createdAt,
-          builder: (_, createdAt, __) {
-            return ValueListenableBuilder<bool>(
-              valueListenable: _showOverlay,
-              builder: (context, showOverlay, __) {
-                return AnimatedOpacity(
-                  opacity: showOverlay ? 1 : 0,
-                  duration: const Duration(seconds: 200),
-                  child: StoriesAuthorListTile(
-                    author: widget.author,
-                    createdAt: createdAt,
-                  ),
-                );
-              },
+        AnimatedBuilder(
+          animation: Listenable.merge([_createdAt, _showOverlay]),
+          builder: (context, child) {
+            return AnimatedOpacity(
+              opacity: _showOverlay.value ? 1 : 0,
+              duration: 200.ms,
+              child: StoriesAuthorListTile(
+                author: widget.author,
+                createdAt: _createdAt.value,
+              ),
             );
           },
         ),
-        ValueListenableBuilder<bool>(
-          valueListenable: _showOverlay,
-          builder: (context, showOverlay, child) {
-            return ValueListenableBuilder<Story>(
-              valueListenable: _currentStory,
-              builder: (context, currentStory, child) {
-                return Positioned(
-                  right: 24,
-                  bottom: 24,
-                  child: AnimatedOpacity(
-                    opacity: showOverlay ? 1 : 0,
-                    duration: const Duration(milliseconds: 200),
-                    child: StoryOptions(
-                      controller: _controller,
-                      author: widget.author,
-                      currentStory: currentStory,
-                      onStoryDeleted: (story) {
-                        if (mounted) {
-                          final storyIndex = widget.stories.indexOf(story);
-                          if (storyIndex == -1) return;
-                          if (_storyItems.length == 1) {
-                            setState(() => _storyItems.removeAt(storyIndex));
-                            context.pop();
-                          } else {
-                            setState(() => _storyItems.removeAt(storyIndex));
-                            // _controller.next();
-                          }
-                        }
-                      },
-                    ),
-                  ),
-                );
-              },
-            );
-          },
+        Positioned(
+          right: 24,
+          bottom: 24,
+          child: AnimatedBuilder(
+            animation: Listenable.merge([_showOverlay, _currentStory]),
+            builder: (context, _) {
+              return AnimatedOpacity(
+                opacity: _showOverlay.value ? 1 : 0,
+                duration: 200.ms,
+                child: StoryOptions(
+                  controller: _controller,
+                  author: widget.author,
+                  currentStory: _currentStory.value,
+                  onStoryDeleted: (story) {
+                    final storyIndex = widget.stories.indexOf(story);
+                    if (storyIndex == -1) return;
+                    if (_storyItems.length == 1) {
+                      safeSetState(() {
+                        _storyItems
+                          ..addAll([Story.empty].toStoryItems(_controller))
+                          ..removeAt(storyIndex);
+                      });
+                      _currentStory.value = Story.empty;
+                      if (context.canPop()) context.pop();
+                    } else {
+                      safeSetState(() => _storyItems.removeAt(storyIndex));
+                      _controller.previous();
+                      _currentStory.value = widget
+                          .stories[min(storyIndex, _storyItems.length - 1)];
+                    }
+                  },
+                ),
+              );
+            },
+          ),
         ),
       ],
     );
@@ -210,36 +209,43 @@ class StoryOptions extends StatelessWidget {
       children: [
         Tappable(
           onTap: () async {
+            void callback(ModalOption option) => option.onTap.call(context);
+
             controller.pause();
             final option = await context.showListOptionsModal(
               options: [
                 ModalOption(
-                  name: 'Delete',
-                  nameColor: Colors.red,
-                  onTap: () => context.confirmAction(
-                    fn: () {
-                      context.read<CreateStoriesBloc>().add(
-                            CreateStoriesStoryDeleteRequested(
-                              id: currentStory.id,
-                              onStoryDeleted: () {
-                                onStoryDeleted.call(currentStory);
-                              },
-                            ),
-                          );
-                    },
-                    title: 'Delete Story',
-                    noText: 'Cancel',
-                    yesText: 'Delete',
-                    noAction: (context) {
-                      context.pop(false);
-                      controller.play();
-                    },
+                  name: 'Delete story',
+                  actionTitle: 'Delete story',
+                  actionContent: 'Are you sure you want to delete this story?',
+                  actionYesText: 'Delete',
+                  child: Assets.icons.trash.svg(
+                    height: AppSize.iconSize,
+                    colorFilter:
+                        const ColorFilter.mode(Colors.red, BlendMode.srcIn),
                   ),
+                  nameColor: Colors.red,
+                  distractive: true,
+                  noAction: (context) {
+                    context.pop(false);
+                    controller.play();
+                  },
+                  onTap: () => context.read<StoriesBloc>().add(
+                        StoriesStoryDeleteRequested(
+                          id: currentStory.id,
+                          onStoryDeleted: () {
+                            onStoryDeleted.call(currentStory);
+                          },
+                        ),
+                      ),
                 ),
               ],
             );
-            if (option == null) return;
-            option.onTap?.call();
+            if (option == null) {
+              controller.play();
+              return;
+            }
+            callback(option);
           },
           child: Column(
             children: [
@@ -287,14 +293,10 @@ class StoriesAuthorListTile extends StatelessWidget {
         isLarge: false,
         avatarUrl: author.avatarUrl,
         userId: author.id,
-        onTap: (_) {
-          context
-            ..pop()
-            ..pushNamed(
-              'user_profile',
-              pathParameters: {'user_id': author.id},
-            );
-        },
+        onTap: (_) => context.pushNamed(
+          'user_profile',
+          pathParameters: {'user_id': author.id},
+        ),
       ),
       title: Row(
         children: [
@@ -305,14 +307,12 @@ class StoriesAuthorListTile extends StatelessWidget {
               color: context.adaptiveColor,
             ),
             TextSpan(
-              text: author.username ?? author.fullName ?? '',
+              text: author.displayUsername,
               recognizer: TapGestureRecognizer()
-                ..onTap = () => context
-                  ..pop()
-                  ..pushNamed(
-                    'user_profile',
-                    pathParameters: {'user_id': author.id},
-                  ),
+                ..onTap = () => context.pushNamed(
+                      'user_profile',
+                      pathParameters: {'user_id': author.id},
+                    ),
             ),
           ),
           const SizedBox(width: AppSpacing.sm),
@@ -346,9 +346,8 @@ extension on List<Story> {
               story.contentUrl,
               shown: story.seen,
               controller: controller,
-              duration: story.duration == null
-                  ? null
-                  : Duration(milliseconds: story.duration! * 1000),
+              duration:
+                  story.duration == null ? null : (story.duration! * 1000).ms,
             )
         },
       ).toList();

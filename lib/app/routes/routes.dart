@@ -14,9 +14,10 @@ import 'package:flutter_instagram_offline_first_clone/feed/feed.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/post/post.dart';
 import 'package:flutter_instagram_offline_first_clone/home/home.dart';
 import 'package:flutter_instagram_offline_first_clone/reels/reels.dart';
-import 'package:flutter_instagram_offline_first_clone/search/search.dart';
+import 'package:flutter_instagram_offline_first_clone/search/view/search_view.dart';
 import 'package:flutter_instagram_offline_first_clone/stories/create_stories/create_stories.dart';
 import 'package:flutter_instagram_offline_first_clone/stories/stories.dart';
+import 'package:flutter_instagram_offline_first_clone/timeline/timeline.dart';
 import 'package:flutter_instagram_offline_first_clone/user_profile/user_profile.dart';
 import 'package:go_router/go_router.dart';
 import 'package:posts_repository/posts_repository.dart';
@@ -120,16 +121,12 @@ GoRouter router(AppBloc appBloc) => GoRouter(
 
             return CustomTransitionPage(
               key: state.pageKey,
-              child: MultiBlocProvider(
-                providers: [
-                  BlocProvider(
-                    create: (context) => UserProfileBloc(
-                      userRepository: context.read<UserRepository>(),
-                      postsRepository: context.read<PostsRepository>(),
-                      userId: userId,
-                    ),
-                  ),
-                ],
+              child: BlocProvider(
+                create: (context) => UserProfileBloc(
+                  userRepository: context.read<UserRepository>(),
+                  postsRepository: context.read<PostsRepository>(),
+                  userId: userId,
+                ),
                 child: UserProfilePosts(
                   userId: userId,
                   index: index,
@@ -238,31 +235,6 @@ GoRouter router(AppBloc appBloc) => GoRouter(
             );
           },
         ),
-        GoRoute(
-          path: '/stories/create',
-          name: 'create_stories',
-          parentNavigatorKey: _rootNavigatorKey,
-          pageBuilder: (context, state) {
-            final onDone = state.extra as dynamic Function(String)?;
-
-            return CustomTransitionPage(
-              key: state.pageKey,
-              child: StoriesEditor(
-                onDone: onDone,
-                galleryThumbnailQuality: 900,
-              ),
-              transitionsBuilder:
-                  (context, animation, secondaryAnimation, child) {
-                return SharedAxisTransition(
-                  animation: animation,
-                  secondaryAnimation: secondaryAnimation,
-                  transitionType: SharedAxisTransitionType.scaled,
-                  child: child,
-                );
-              },
-            );
-          },
-        ),
         StatefulShellRoute.indexedStack(
           parentNavigatorKey: _rootNavigatorKey,
           builder: (context, state, navigationShell) {
@@ -294,11 +266,11 @@ GoRouter router(AppBloc appBloc) => GoRouter(
             StatefulShellBranch(
               routes: [
                 GoRoute(
-                  path: '/search',
+                  path: '/timeline',
                   pageBuilder: (context, state) {
                     return CustomTransitionPage(
                       key: state.pageKey,
-                      child: const SearchView(),
+                      child: const TimelinePage(),
                       transitionsBuilder:
                           (context, animation, secondaryAnimation, child) {
                         return FadeTransition(
@@ -310,6 +282,20 @@ GoRouter router(AppBloc appBloc) => GoRouter(
                       },
                     );
                   },
+                  routes: [
+                    GoRoute(
+                      name: 'search',
+                      path: 'search',
+                      pageBuilder: (context, state) {
+                        final withResult = state.extra as bool?;
+
+                        return NoTransitionPage(
+                          key: state.pageKey,
+                          child: SearchPage(withResult: withResult),
+                        );
+                      },
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -329,8 +315,7 @@ GoRouter router(AppBloc appBloc) => GoRouter(
                               ),
                               child: AppButton.outlined(
                                 text: 'Navigate to profile',
-                                onPressed: () =>
-                                    context.pushNamed('user_profile'),
+                                onPressed: () => context.push('/profile'),
                               ),
                             ),
                             const SizedBox(height: AppSpacing.sm),
@@ -386,10 +371,10 @@ GoRouter router(AppBloc appBloc) => GoRouter(
                       child: UserProfilePage(userId: user.id),
                       transitionsBuilder:
                           (context, animation, secondaryAnimation, child) {
-                        return FadeTransition(
-                          opacity: CurveTween(
-                            curve: Curves.easeInOut,
-                          ).animate(animation),
+                        return SharedAxisTransition(
+                          animation: animation,
+                          secondaryAnimation: secondaryAnimation,
+                          transitionType: SharedAxisTransitionType.horizontal,
                           child: child,
                         );
                       },
@@ -399,6 +384,52 @@ GoRouter router(AppBloc appBloc) => GoRouter(
                     GoRoute(
                       path: 'create_post',
                       name: 'create_post',
+                      parentNavigatorKey: _rootNavigatorKey,
+                      pageBuilder: (context, state) {
+                        return CustomTransitionPage(
+                          key: state.pageKey,
+                          child: const UserProfileCreatePost(),
+                          transitionsBuilder:
+                              (context, animation, secondaryAnimation, child) {
+                            return SharedAxisTransition(
+                              animation: animation,
+                              secondaryAnimation: secondaryAnimation,
+                              transitionType: SharedAxisTransitionType.vertical,
+                              child: child,
+                            );
+                          },
+                        );
+                      },
+                    ),
+                    GoRoute(
+                      path: 'create_stories',
+                      name: 'create_stories',
+                      parentNavigatorKey: _rootNavigatorKey,
+                      pageBuilder: (context, state) {
+                        final onDone = state.extra as dynamic Function(String)?;
+
+                        return CustomTransitionPage(
+                          key: state.pageKey,
+                          child: StoriesEditor(
+                            onDone: onDone,
+                            galleryThumbnailQuality: 900,
+                          ),
+                          transitionsBuilder:
+                              (context, animation, secondaryAnimation, child) {
+                            return SharedAxisTransition(
+                              animation: animation,
+                              secondaryAnimation: secondaryAnimation,
+                              transitionType: SharedAxisTransitionType.scaled,
+                              child: child,
+                            );
+                          },
+                        );
+                      },
+                    ),
+                    GoRoute(
+                      path: 'edit',
+                      name: 'edit_profile',
+                      parentNavigatorKey: _rootNavigatorKey,
                       pageBuilder: (context, state) {
                         return CustomTransitionPage(
                           key: state.pageKey,

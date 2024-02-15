@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/comments/comments.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
+import 'package:shared/shared.dart';
 
 class CommentTextField extends StatefulWidget {
   const CommentTextField({
@@ -37,7 +38,7 @@ class _CommentTextFieldState extends State<CommentTextField> {
         if (widget.controller.size == 1.0) return;
         widget.controller.animateTo(
           1,
-          duration: const Duration(milliseconds: 250),
+          duration: 250.ms,
           curve: Curves.ease,
         );
       }

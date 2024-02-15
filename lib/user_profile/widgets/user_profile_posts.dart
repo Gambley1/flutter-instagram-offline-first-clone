@@ -49,12 +49,15 @@ class _UserProfilePostsState extends State<UserProfilePosts> {
         slivers: [
           UserProfilePostsAppBar(userId: widget.userId),
           StreamBuilder<List<PostBlock>>(
-            stream: context.read<UserProfileBloc>().userPosts(small: false),
+            stream: context
+                .read<UserProfileBloc>()
+                .userPosts(userId: widget.userId, small: false),
             builder: (context, snapshot) {
               final blocks = snapshot.data;
 
               return PostsListView(
                 postBuilder: (_, index, block) => PostView(
+                  key: ValueKey(block.id),
                   block: block,
                   postIndex: index,
                   withCustomVideoPlayer: false,
@@ -113,7 +116,7 @@ class UserProfilePostsAppBar extends StatelessWidget {
             );
             return AnimatedSwitcher(
               switchInCurve: Curves.easeIn,
-              duration: const Duration(milliseconds: 550),
+              duration: 550.ms,
               child: isSubscribed ? const SizedBox.shrink() : subscribeText,
               transitionBuilder: (child, animation) {
                 return FadeTransition(

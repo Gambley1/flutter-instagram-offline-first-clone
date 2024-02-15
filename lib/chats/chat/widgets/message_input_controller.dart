@@ -185,13 +185,14 @@ class MessageInputController extends ValueNotifier<Message> {
       replyMessageAttachmentUrl: alredyReplied
           ? null
           : replyingMessage.sharedPost != null
-              ? replyingMessage.sharedPost?.firstMedia?.url
+              ? replyingMessage.sharedPost?.firstMediaUrl
               : replyingMessage.attachments.firstOrNull?.imageUrl,
+      sharedPostId: replyingMessage.sharedPostId,
     );
     _replyingMessage = replyingMessage.sharedPost != null
         ? replyingMessage.copyWith(
             replyMessageAttachmentUrl:
-                replyingMessage.sharedPost?.firstMedia?.url,
+                replyingMessage.sharedPost?.firstMediaUrl,
           )
         : replyingMessage.copyWith(
             replyMessageAttachmentUrl:

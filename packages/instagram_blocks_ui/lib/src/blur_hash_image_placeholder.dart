@@ -1,3 +1,4 @@
+import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
 
@@ -21,12 +22,15 @@ class BlurHashImagePlaceholder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final image = blurHash == null || (blurHash?.isEmpty ?? true)
-        ? const SizedBox.shrink()
-        : SizedBox.expand(
-            child: Image(
-              image: BlurHashImage(blurHash!),
-              fit: fit ?? BoxFit.cover,
+        ? ColoredBox(
+            color: context.customAdaptiveColor(
+              light: AppColors.grey,
+              dark: AppColors.darkGrey,
             ),
+          )
+        : Image(
+            image: BlurHashImage(blurHash!),
+            fit: fit ?? BoxFit.cover,
           );
     if (withLoadingIndicator ?? false) {
       return Stack(

@@ -224,7 +224,10 @@ class SignupCubit extends Cubit<SignupState> {
         await avatarsStorage.uploadBinary(
           filePath,
           imageBytes,
-          fileOptions: FileOptions(contentType: 'image/$fileExt'),
+          fileOptions: FileOptions(
+            contentType: 'image/$fileExt',
+            cacheControl: '360000',
+          ),
         );
         imageUrlResponse = await avatarsStorage.createSignedUrl(
           filePath,

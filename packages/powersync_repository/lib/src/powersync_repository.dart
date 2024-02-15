@@ -75,7 +75,7 @@ class SupabaseConnector extends PowerSyncBackendConnector {
     // and ignore any errors. Errors will surface as expired tokens.
     _refreshFuture = Supabase.instance.client.auth
         .refreshSession()
-        .timeout(const Duration(seconds: 5))
+        .timeout(5.seconds)
         .then((response) => null, onError: (error) => null);
   }
 
@@ -140,17 +140,7 @@ class SupabaseConnector extends PowerSyncBackendConnector {
 /// {@endtemplate}
 class PowerSyncRepository {
   /// {@macro power_sync_repository}
-  factory PowerSyncRepository({bool isDev = false}) {
-    return PowerSyncRepository._instance(isDev);
-  }
-
-  factory PowerSyncRepository._instance(bool isDev) =>
-      PowerSyncRepository._(isDev: isDev);
-
-  /// {@macro power_sync_repository}
-  PowerSyncRepository._({
-    required this.isDev,
-  });
+  PowerSyncRepository({this.isDev = false});
 
   /// Wether environemnt should be dev.
   final bool isDev;

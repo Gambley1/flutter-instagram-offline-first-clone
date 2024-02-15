@@ -5,18 +5,16 @@ import 'dart:io';
 import 'package:app_ui/app_ui.dart' hide AppTheme;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker_plus/image_picker_plus.dart';
 import 'package:insta_assets_picker/insta_assets_picker.dart';
+import 'package:shared/shared.dart';
 
 class PickImage {
   /// {@macro image_picker}
   const PickImage._();
 
   static final _defaultFilterOption = FilterOptionGroup(
-    videoOption: const FilterOption(
-      durationConstraint: DurationConstraint(
-        max: Duration(minutes: 3),
-      ),
+    videoOption: FilterOption(
+      durationConstraint: DurationConstraint(max: 3.minutes),
     ),
   );
 

@@ -22,6 +22,7 @@ class AppTextField extends StatelessWidget {
     this.textController,
     this.errorText,
     this.onTap,
+    this.hintStyle,
     this.focusNode,
     this.onChanged,
     this.textInputAction,
@@ -41,6 +42,7 @@ class AppTextField extends StatelessWidget {
     this.labelText,
     this.autofocus = false,
     this.border,
+    this.constraints,
     this.contentPadding,
     this.initialValue,
     this.readOnly = false,
@@ -128,6 +130,7 @@ class AppTextField extends StatelessWidget {
     ValueSetter<PointerDownEvent>? onTapOutside,
     String? restorationId,
     ScrollController? scrollController,
+    BoxConstraints? constraints,
     EdgeInsets scrollPadding = const EdgeInsets.all(20),
     ScrollPhysics? scrollPhysics,
     bool? showCursor,
@@ -136,6 +139,7 @@ class AppTextField extends StatelessWidget {
     SmartQuotesType? smartQuotesType,
     StrutStyle? strutStyle,
     TextStyle? style,
+    TextStyle? hintStyle,
     TextAlign textAlign = TextAlign.start,
     SpellCheckConfiguration? spellCheckConfiguration,
     TextAlignVertical? textAlignVertical,
@@ -166,6 +170,8 @@ class AppTextField extends StatelessWidget {
           minLength: minLength,
           minLines: minLines,
           mouseCursor: mouseCursor,
+          constraints: constraints,
+          hintStyle: hintStyle,
           obscuringCharacter: obscuringCharacter,
           onEditingComplete: onEditingComplete,
           onFieldSubmitted: onFieldSubmitted,
@@ -233,6 +239,7 @@ class AppTextField extends StatelessWidget {
   final TextCapitalization textCapitalization;
   final String? suffixText;
   final bool? filled;
+  final TextStyle? hintStyle;
   final ValueSetter<String?>? onFieldSubmitted;
   final void Function()? onEditingComplete;
   final Color? cursorColor;
@@ -248,6 +255,7 @@ class AppTextField extends StatelessWidget {
   final int? maxLength;
   final int? minLength;
   final int? minLines;
+  final BoxConstraints? constraints;
   final MaxLengthEnforcement? maxLengthEnforcement;
   final MouseCursor? mouseCursor;
   final ValueSetter<String?>? onSaved;
@@ -331,11 +339,13 @@ class AppTextField extends StatelessWidget {
       autofocus: autofocus,
       textCapitalization: textCapitalization,
       decoration: InputDecoration(
+        constraints: constraints,
         suffixText: suffixText,
         floatingLabelAlignment: FloatingLabelAlignment.start,
         floatingLabelBehavior: floatingLabelBehaviour,
         labelText: labelText,
         hintText: hintText,
+        hintStyle: hintStyle,
         errorText: errorText,
         errorMaxLines: errorMaxLines,
         enabledBorder: enabledBorder,

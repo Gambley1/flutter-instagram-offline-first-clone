@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:app_ui/app_ui.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +11,7 @@ import 'package:flutter_instagram_offline_first_clone/feed/post/post.dart';
 import 'package:go_router/go_router.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:posts_repository/posts_repository.dart';
-import 'package:shared/shared.dart';
+import 'package:shared/shared.dart' hide NumDurationExtension;
 import 'package:user_repository/user_repository.dart';
 
 class PositionDimension extends Equatable {
@@ -113,6 +115,9 @@ class _PostPopupState extends State<PopupModal>
   final _messagePositionLeft = ValueNotifier<double>(0);
   final _messageText = ValueNotifier('');
 
+  final _isLiked = ValueNotifier(false);
+  StreamSubscription<PostState>? _isLikedSubscription;
+
   @override
   void initState() {
     super.initState();
@@ -122,6 +127,10 @@ class _PostPopupState extends State<PopupModal>
       duration: 150.ms,
       reverseDuration: 400.ms,
     )..addStatusListener(_popupDialogStatusListener);
+
+    _isLikedSubscription = context.read<PostBloc>().stream.listen((state) {
+      _isLiked.value = state.isLiked;
+    });
   }
 
   Future<void> _popupDialogStatusListener(AnimationStatus status) async {
@@ -146,32 +155,39 @@ class _PostPopupState extends State<PopupModal>
     _commentOrViewProfileVisibility.dispose();
     _sharePostVisibility.dispose();
     _optionsVisibility.dispose();
+    _isLiked.dispose();
+    _isLikedSubscription?.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final user = context.select((AppBloc bloc) => bloc.state.user);
-    final isLiked = context.select((PostBloc bloc) => bloc.state.isLiked);
 
-    return Tappable(
-      onTap: () => context.pushNamed(
-        'user_posts',
-        queryParameters: {
-          'user_id': widget.block.author.id,
-          'index': widget.index.toString(),
-        },
-      ),
-      onLongPressMoveUpdate: (details) =>
-          onLongPressMoveUpdate(details, isLiked: isLiked),
-      onLongPress: () => onLongPress(context.read<PostBloc>()),
-      onLongPressEnd: (details) => onLongPressEnd(
-        details,
-        userId: user.id,
-        isLiked: isLiked,
-        context: context,
-      ),
-      child: widget.builder.call(context),
+    return ValueListenableBuilder<bool>(
+      valueListenable: _isLiked,
+      child: RepaintBoundary(child: widget.builder.call(context)),
+      builder: (context, isLiked, child) {
+        return Tappable(
+          onTap: () => context.pushNamed(
+            'user_posts',
+            queryParameters: {
+              'user_id': widget.block.author.id,
+              'index': widget.index.toString(),
+            },
+          ),
+          onLongPressMoveUpdate: (details) =>
+              onLongPressMoveUpdate(details, isLiked: isLiked),
+          onLongPress: () => onLongPress(context.read<PostBloc>()),
+          onLongPressEnd: (details) => onLongPressEnd(
+            details,
+            userId: user.id,
+            isLiked: isLiked,
+            context: context,
+          ),
+          child: child!,
+        );
+      },
     );
   }
 

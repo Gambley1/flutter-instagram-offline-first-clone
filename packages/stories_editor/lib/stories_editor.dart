@@ -31,6 +31,10 @@ class StoriesEditor extends StatefulWidget {
   /// on done
   final Function(String)? onDone;
 
+  /// Function that should be executed when user wants to go back from the page.
+  /// Usually pops current page.
+  final VoidCallback? onGoBack;
+
   /// on done button Text
   final Widget? onDoneButtonStyle;
 
@@ -50,6 +54,7 @@ class StoriesEditor extends StatefulWidget {
     super.key,
     required this.onDone,
     this.middleBottomWidget,
+    this.onGoBack,
     this.colorList,
     this.gradientColors,
     this.fontFamilyList,

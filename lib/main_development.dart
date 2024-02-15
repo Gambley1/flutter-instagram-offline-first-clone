@@ -5,6 +5,7 @@ import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/bootstrap.dart';
 import 'package:persistent_storage/persistent_storage.dart';
 import 'package:posts_repository/posts_repository.dart';
+import 'package:search_repository/search_repository.dart';
 import 'package:stories_repository/stories_repository.dart';
 import 'package:supabase_authentication_client/supabase_authentication_client.dart';
 import 'package:token_storage/token_storage.dart';
@@ -40,6 +41,8 @@ void main() {
         authenticationClient: authenticationClient,
       );
 
+      final searchRepository = SearchRepository(client: client);
+
       final postsRepository = PostsRepository(client: client);
 
       final chatsRepository = ChatsRepository(client: client);
@@ -52,6 +55,7 @@ void main() {
         postsRepository: postsRepository,
         chatsRepository: chatsRepository,
         storiesRepository: storiesRepository,
+        searchRepository: searchRepository,
         notificationsClient: notificationsClient,
         remoteConfig: remoteConfig,
         user: await userRepository.user.first,

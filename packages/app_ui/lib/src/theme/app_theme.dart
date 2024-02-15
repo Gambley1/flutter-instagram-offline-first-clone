@@ -9,6 +9,42 @@ class AppTheme {
   /// {@macro app_theme}
   const AppTheme();
 
+  /// Defines the brightness of theme.
+  Brightness get brightness => Brightness.light;
+
+  /// Defines the background color of theme.
+  Color get backgroundColor => AppColors.white;
+
+  /// Defines the primary color of theme.
+  Color get primary => AppColors.black;
+
+  /// Defines light [ThemeData].
+  ThemeData get theme => FlexThemeData.light(
+        scheme: FlexScheme.custom,
+        colors: FlexSchemeColor.from(
+          brightness: brightness,
+          primary: primary,
+          swapOnMaterial3: true,
+        ),
+        useMaterial3: true,
+        useMaterial3ErrorColors: true,
+      ).copyWith(
+        textTheme: const AppTheme().textTheme,
+        iconTheme: const IconThemeData(color: Colors.black),
+        inputDecorationTheme: const InputDecorationTheme(
+          contentPadding: EdgeInsets.symmetric(horizontal: AppSpacing.md),
+          border: OutlineInputBorder(borderSide: BorderSide.none),
+        ),
+        appBarTheme: const AppBarTheme(surfaceTintColor: Colors.white),
+        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+          type: BottomNavigationBarType.fixed,
+        ),
+        bottomSheetTheme: const BottomSheetThemeData(
+          showDragHandle: true,
+          surfaceTintColor: Colors.white,
+        ),
+      );
+
   /// Defines light SystemUiOverlayStyle.
   static const SystemUiOverlayStyle lightSystemBarTheme = SystemUiOverlayStyle(
     statusBarBrightness: Brightness.dark,
@@ -80,6 +116,15 @@ class AppDarkTheme extends AppTheme {
   const AppDarkTheme();
 
   @override
+  Brightness get brightness => Brightness.dark;
+
+  @override
+  Color get backgroundColor => AppColors.black;
+
+  @override
+  Color get primary => AppColors.white;
+
+  @override
   TextTheme get textTheme {
     return AppTheme.contentTextTheme.apply(
       bodyColor: Colors.white,
@@ -87,4 +132,36 @@ class AppDarkTheme extends AppTheme {
       decorationColor: Colors.white,
     );
   }
+
+  @override
+  ThemeData get theme => FlexThemeData.dark(
+        scheme: FlexScheme.custom,
+        darkIsTrueBlack: true,
+        colors: FlexSchemeColor.from(
+          brightness: brightness,
+          primary: primary,
+          appBarColor: AppColors.transparent,
+          swapOnMaterial3: true,
+        ),
+        useMaterial3: true,
+        useMaterial3ErrorColors: true,
+      ).copyWith(
+        textTheme: const AppDarkTheme().textTheme,
+        iconTheme: const IconThemeData(color: AppColors.white),
+        inputDecorationTheme: const InputDecorationTheme(
+          contentPadding: EdgeInsets.symmetric(horizontal: AppSpacing.md),
+          border: OutlineInputBorder(borderSide: BorderSide.none),
+        ),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: AppColors.black,
+          surfaceTintColor: AppColors.black,
+        ),
+        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+          type: BottomNavigationBarType.fixed,
+        ),
+        bottomSheetTheme: const BottomSheetThemeData(
+          surfaceTintColor: AppColors.background,
+          backgroundColor: AppColors.background,
+        ),
+      );
 }

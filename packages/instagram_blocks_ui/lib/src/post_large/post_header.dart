@@ -8,7 +8,7 @@ typedef OnAvatarTapCallback = void Function(String? avatarUrl);
 typedef AvatarBuilder = Widget Function(
   BuildContext context,
   PostAuthor author,
-  OnAvatarTapCallback onAvatarTap,
+  OnAvatarTapCallback? onAvatarTap,
 );
 
 class PostHeader extends StatelessWidget {
@@ -36,7 +36,7 @@ class PostHeader extends StatelessWidget {
 
   final bool wasFollowed;
 
-  final OnAvatarTapCallback onAvatarTap;
+  final OnAvatarTapCallback? onAvatarTap;
 
   final VoidCallback follow;
 
@@ -84,7 +84,7 @@ class PostHeader extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Tappable(
-            onTap: () => onAvatarTap.call(author.avatarUrl),
+            onTap: () => onAvatarTap?.call(author.avatarUrl),
             animationEffect: TappableAnimationEffect.none,
             child: Row(
               children: [
@@ -179,7 +179,7 @@ class PostOptionsButton extends StatelessWidget {
 
     Future<void> showOptionsSheet(List<ModalOption> options) async {
       void callback(ModalOption option) =>
-          option.distractiveCallback.call(context);
+          option.onTap.call(context);
 
       final option = await context.showListOptionsModal(options: options);
       if (option == null) return;
@@ -188,7 +188,7 @@ class PostOptionsButton extends StatelessWidget {
 
     return settings.when(
       viewer: () => Tappable(
-        onTap: () => showOptionsSheet.call(
+        onTap: () => showOptionsSheet(
           settings.viewerOptions(
             onPostDontShowAgainTap: () {},
             onPostBlockAuthorTap: () {},

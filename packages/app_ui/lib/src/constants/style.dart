@@ -8,6 +8,6 @@ OutlineInputBorder outlinedBorder({
   BorderSide? borderSide,
 }) =>
     OutlineInputBorder(
-      borderSide: borderSide ?? const BorderSide(),
-      borderRadius: BorderRadius.circular(borderRadius),
+      borderSide: borderSide ??  BorderSide.none,
+      borderRadius: BorderRadius.all(Radius.circular(borderRadius)),
     );

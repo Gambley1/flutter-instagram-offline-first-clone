@@ -34,16 +34,3 @@ final class CreateStoriesStoryCreateRequested extends CreateStoriesEvent {
   @override
   List<Object?> get props => [author, contentType, filePath, duration];
 }
-
-final class CreateStoriesStoryDeleteRequested extends CreateStoriesEvent {
-  const CreateStoriesStoryDeleteRequested({
-    required this.id,
-    this.onStoryDeleted,
-  });
-
-  final String id;
-  final VoidCallback? onStoryDeleted;
-
-  @override
-  List<Object?> get props => [id, onStoryDeleted];
-}

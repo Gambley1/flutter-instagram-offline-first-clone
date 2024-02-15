@@ -61,6 +61,20 @@ class CommentsView extends StatelessWidget {
       releaseFocus: true,
       resizeToAvoidBottomInset: true,
       backgroundColor: backgroundColor,
+      appBar: AppBar(
+        elevation: 0,
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.transparent,
+        surfaceTintColor: AppColors.background,
+        centerTitle: true,
+        toolbarHeight: 24,
+        title: Text(
+          'Comments',
+          style: context.titleLarge?.copyWith(
+            color: Colors.grey.shade500,
+          ),
+        ),
+      ),
       bottomNavigationBar: CommentTextField(
         postId: post.id,
         controller: scrollableSheetController,
@@ -90,25 +104,24 @@ class CommentsListView extends StatelessWidget {
     return CustomScrollView(
       controller: scrollController,
       slivers: [
-        SliverToBoxAdapter(
-          child: Align(
-            child: Text(
-              'Comments',
-              style: context.titleLarge?.copyWith(
-                fontWeight: FontWeight.w500,
-                color: Colors.grey.shade500,
+        if (comments.isNotEmpty)
+          SliverList.builder(
+            itemCount: comments.length,
+            itemBuilder: (context, index) {
+              final comment = comments[index];
+
+              return CommentView(comment: comment, post: post);
+            },
+          )
+        else
+          SliverFillRemaining(
+            child: Center(
+              child: Text(
+                'No comments.',
+                style: context.headlineSmall,
               ),
             ),
           ),
-        ),
-        SliverList.builder(
-          itemCount: comments.length,
-          itemBuilder: (context, index) {
-            final comment = comments[index];
-
-            return CommentView(comment: comment, post: post);
-          },
-        ),
       ],
     );
   }

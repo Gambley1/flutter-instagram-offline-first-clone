@@ -208,14 +208,14 @@ class _MaterialScaffold extends StatelessWidget {
       appBar: appBar,
       drawer: drawer,
       bottomSheet: bottomSheet,
-    ).popScope(onPopInvoked).withAdaptiveSystemTheme(context);
+    ).withPopScope(onPopInvoked).withAdaptiveSystemTheme(context);
   }
 }
 
 /// Will pop scope extension that wraps widget with [PopScope].
 extension WillPopScopeX on Widget {
   /// Wraps widget with [PopScope].
-  Widget popScope(void Function(bool)? onPopInvoked) =>
+  Widget withPopScope(void Function(bool)? onPopInvoked) =>
       PopScope(onPopInvoked: onPopInvoked, child: this);
 }
 

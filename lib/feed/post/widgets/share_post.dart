@@ -1,6 +1,5 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/post/post.dart';
@@ -8,6 +7,7 @@ import 'package:flutter_instagram_offline_first_clone/user_profile/user_profile.
 import 'package:go_router/go_router.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:posts_repository/posts_repository.dart';
+import 'package:search_repository/search_repository.dart';
 import 'package:shared/shared.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 import 'package:user_repository/user_repository.dart';
@@ -89,7 +89,7 @@ class _SharPostState extends State<SharePostView> with SafeSetStateMixin {
       if (widget.draggableScrollController.size == 1.0) return;
       widget.draggableScrollController.animateTo(
         1,
-        duration: const Duration(milliseconds: 250),
+        duration: 250.ms,
         curve: Curves.ease,
       );
     }
@@ -115,8 +115,8 @@ class _SharPostState extends State<SharePostView> with SafeSetStateMixin {
     final followersAndFollowings = {...followers, ...followings};
     return AppScaffold(
       releaseFocus: true,
-      backgroundColor: backgroundColor,
       resizeToAvoidBottomInset: true,
+      backgroundColor: backgroundColor,
       appBar: AppBar(
         surfaceTintColor: backgroundColor,
         backgroundColor: backgroundColor,
@@ -156,6 +156,7 @@ class _SharPostState extends State<SharePostView> with SafeSetStateMixin {
           : SharePostButton(
               block: widget.block,
               selectedUsers: _selectedUsers.value.toList(),
+              draggableScrollableController: widget.draggableScrollController,
             ),
       body: AnimatedBuilder(
         animation: Listenable.merge([_foundUsers, _selectedUsers]),
@@ -189,27 +190,43 @@ class SharePostButton extends StatefulWidget {
   const SharePostButton({
     required this.block,
     required this.selectedUsers,
+    required this.draggableScrollableController,
     super.key,
   });
 
   final PostBlock block;
   final List<User> selectedUsers;
+  final DraggableScrollableController draggableScrollableController;
 
   @override
   State<SharePostButton> createState() => _SharePostButtonState();
 }
 
 class _SharePostButtonState extends State<SharePostButton> {
+  late FocusNode _focusNode;
   late TextEditingController _messageController;
 
   @override
   void initState() {
     super.initState();
+    _focusNode = FocusNode()..addListener(_focusListener);
     _messageController = TextEditingController();
+  }
+
+  void _focusListener() {
+    if (_focusNode.hasFocus) {
+      if (widget.draggableScrollableController.isAttached) {
+        widget.draggableScrollableController
+            .animateTo(1, duration: 150.ms, curve: Curves.ease);
+      }
+    }
   }
 
   @override
   void dispose() {
+    _focusNode
+      ..removeListener(_focusListener)
+      ..dispose();
     _messageController.dispose();
     super.dispose();
   }
@@ -217,96 +234,97 @@ class _SharePostButtonState extends State<SharePostButton> {
   @override
   Widget build(BuildContext context) {
     final user = context.select((AppBloc bloc) => bloc.state.user);
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            const AppDivider(),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-              child: AppTextField(
-                textController: _messageController,
-                onChanged: (message) => _messageController.text = message,
-                contentPadding: EdgeInsets.zero,
-                border: InputBorder.none,
-                filled: false,
-                textInputType: TextInputType.text,
-                textInputAction: TextInputAction.done,
-                textCapitalization: TextCapitalization.sentences,
-                hintText: 'Add a message...',
-              ),
+    return Padding(
+      padding: EdgeInsets.only(bottom: context.viewInsets.bottom),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          const AppDivider(),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+            child: AppTextField(
+              focusNode: _focusNode,
+              textController: _messageController,
+              onChanged: (message) => _messageController.text = message,
+              contentPadding: EdgeInsets.zero,
+              border: InputBorder.none,
+              filled: false,
+              textInputType: TextInputType.text,
+              textInputAction: TextInputAction.done,
+              textCapitalization: TextCapitalization.sentences,
+              hintText: 'Add a message...',
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-              child: Tappable(
-                onTap: () async {
-                  void pop() => context.pop();
+          ),
+          Padding(
+            padding: const EdgeInsets.only(
+              left: AppSpacing.lg,
+              right: AppSpacing.lg,
+              bottom: AppSpacing.md,
+            ),
+            child: Tappable(
+              onTap: () async {
+                void pop() => context.pop();
 
-                  openSnackbar(const SnackbarMessage.loading());
-                  final postShareFutures = widget.selectedUsers.map(
-                    (receiver) => Future(
-                      () => context.read<PostBloc>().add(
-                            PostShareRequested(
-                              sender: user,
-                              receiver: receiver,
-                              postAuthor: widget.block.author,
-                              message: Message(
-                                message: _messageController.text,
-                                sender: PostAuthor(
-                                  id: user.id,
-                                  avatarUrl: user.avatarUrl!,
-                                  username: user.username!,
-                                ),
+                openSnackbar(const SnackbarMessage.loading());
+                final postShareFutures = widget.selectedUsers.map(
+                  (receiver) => Future(
+                    () => context.read<PostBloc>().add(
+                          PostShareRequested(
+                            sender: user,
+                            receiver: receiver,
+                            postAuthor: widget.block.author,
+                            message: Message(
+                              message: _messageController.text,
+                              sender: PostAuthor(
+                                id: user.id,
+                                avatarUrl: user.avatarUrl!,
+                                username: user.username!,
                               ),
                             ),
                           ),
-                    ),
-                  );
-                  try {
-                    await Future.wait(postShareFutures).then((_) {
-                      pop.call();
-                      openSnackbar(
-                        const SnackbarMessage.success(
-                          title: 'Successfully shared post!',
                         ),
-                      );
-                    });
-                  } catch (error, stackTrace) {
-                    logE(
-                      'Failed to share post.',
-                      error: error,
-                      stackTrace: stackTrace,
-                    );
+                  ),
+                );
+                try {
+                  await Future.wait(postShareFutures).whenComplete(() {
+                    pop.call();
                     openSnackbar(
-                      const SnackbarMessage.error(
-                        title: 'Failed to share post.',
+                      const SnackbarMessage.success(
+                        title: 'Successfully shared post!',
                       ),
                     );
-                  }
-                },
-                child: Container(
-                  decoration: const BoxDecoration(
-                    color: Colors.blue,
-                    borderRadius: BorderRadius.all(Radius.circular(6)),
-                  ),
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.md,
-                    vertical: AppSpacing.md,
-                  ),
-                  child: Text(
-                    widget.selectedUsers.length == 1
-                        ? 'Send'
-                        : 'Send separately',
-                    style: context.bodyLarge?.apply(color: Colors.white),
-                  ),
+                  });
+                } catch (error, stackTrace) {
+                  logE(
+                    'Failed to share post.',
+                    error: error,
+                    stackTrace: stackTrace,
+                  );
+                  openSnackbar(
+                    const SnackbarMessage.error(
+                      title: 'Failed to share post.',
+                    ),
+                  );
+                }
+              },
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: Colors.blue,
+                  borderRadius: BorderRadius.all(Radius.circular(6)),
+                ),
+                alignment: Alignment.center,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.md,
+                  vertical: AppSpacing.md,
+                ),
+                child: Text(
+                  widget.selectedUsers.length == 1 ? 'Send' : 'Send separately',
+                  style: context.bodyLarge?.apply(color: Colors.white),
                 ),
               ),
             ),
-          ].insertBetween(const SizedBox(height: AppSpacing.md)),
-        ),
+          ),
+        ].insertBetween(const SizedBox(height: AppSpacing.md)),
       ),
     );
   }
@@ -365,6 +383,7 @@ class _UserSearchFieldState extends State<UserSearchField> {
 
   @override
   Widget build(BuildContext context) {
+    final searchRepository = context.read<SearchRepository>();
     final searchController = widget.searchController;
 
     return AnimatedBuilder(
@@ -379,13 +398,7 @@ class _UserSearchFieldState extends State<UserSearchField> {
               _noUsersFound();
               return;
             }
-            final excludeUserIds = widget.users.isEmpty
-                ? null
-                : widget.users.map((e) => "'${e.id}'").toList().join(',');
-            final users = await context.read<AppBloc>().searchUsers(
-                  query: query,
-                  excludeUserIds: excludeUserIds,
-                );
+            final users = await searchRepository.searchUsers(query: query);
             widget.onUsersFound.call(users, query);
           }),
           filled: true,
@@ -403,10 +416,7 @@ class _UserSearchFieldState extends State<UserSearchField> {
                   },
                   child: Icon(Icons.clear, color: _iconColor.value),
                 ),
-          border: outlinedBorder(
-            borderRadius: 10,
-            borderSide: BorderSide.none,
-          ),
+          border: outlinedBorder(borderRadius: 10),
         );
       },
     );
@@ -491,7 +501,8 @@ class UsersListView extends StatelessWidget {
                             const SizedBox(height: AppSpacing.xs),
                             Text(
                               user.displayFullName,
-                              style: context.bodyLarge,
+                              style: context.bodyMedium,
+                              textAlign: TextAlign.center,
                             ),
                           ],
                         ),

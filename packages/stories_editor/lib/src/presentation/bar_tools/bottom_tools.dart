@@ -102,10 +102,10 @@ class BottomTools extends StatelessWidget {
                           onTap: () async {
                             String pngUri;
                             await takePicture(
-                                    contentKey: contentKey,
-                                    context: context,
-                                    saveToGallery: false)
-                                .then((bytes) {
+                              contentKey: contentKey,
+                              context: context,
+                              saveToGallery: false,
+                            ).then((bytes) {
                               if (bytes != null) {
                                 pngUri = bytes;
                                 onDone(pngUri);

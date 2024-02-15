@@ -45,13 +45,8 @@ class _FullNameTextFieldState extends State<FullNameTextField> {
       contentPadding: const EdgeInsets.symmetric(horizontal: 12),
       textInputAction: TextInputAction.next,
       textCapitalization: TextCapitalization.words,
-      // textInputType: TextInputType.name,
       autofillHints: const [AutofillHints.givenName],
       enabled: !isLoading,
-      border: outlinedBorder(
-        borderRadius: 4,
-        borderSide: BorderSide.none,
-      ),
       onChanged: (v) => _debouncer.run(
         () => context.read<SignupCubit>().onFullNameChanged(v),
       ),

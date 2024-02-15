@@ -159,16 +159,8 @@ abstract class PostsBaseRepository {
   /// Updates the post with provided [id] and optional parameters to update.
   Future<void> updatePost({required String id});
 
-  /// Returns the stream of real-time posts of the user identified by
-  /// [currentUserId].
-  ///
-  /// There is an optional parameters [userId] which if provided also checks
-  /// whether the currently authenticated user by [currentUserId] is followed
-  /// to the user identified by [userId].
-  Stream<List<Post>> postsOf({
-    required String currentUserId,
-    String? userId,
-  });
+  /// Returns the stream of real-time posts of the current user.
+  Stream<List<Post>> postsOf({String? userId});
 
   /// Returns a stream of amount of posts of the user identified by [userId].
   Stream<int> postsAmountOf({required String userId});
@@ -338,9 +330,9 @@ SELECT id FROM profiles WHERE id = ?
       _powerSyncRepository.db().execute(
         '''
     INSERT INTO posts(id, user_id, caption, media, created_at)
-    VALUES(?, ?, ?, ?, datetime())
+    VALUES(?, ?, ?, ?, ?)
     ''',
-        [id, userId, caption, media],
+        [id, userId, caption, media, DateTime.timestamp().toIso8601String()],
       );
 
   @override
@@ -355,7 +347,8 @@ SELECT id FROM profiles WHERE id = ?
       );
 
   @override
-  Stream<List<Post>> postsOf({required String currentUserId, String? userId}) {
+  Stream<List<Post>> postsOf({String? userId}) {
+    if (currentUserId == null) return const Stream.empty();
     if (userId == null) {
       return _powerSyncRepository.db().watch(
         '''
@@ -640,6 +633,8 @@ WHERE posts.id = ?
     required String followerId,
     required String followToId,
   }) async {
+    if (currentUserId == null) return;
+    if (followToId == currentUserId) return;
     final exists = await isFollowed(followerId: followerId, userId: followToId);
     if (!exists) {
       await _powerSyncRepository.db().execute(
@@ -1070,6 +1065,17 @@ order by created_at asc
     required String userId,
     required String participantId,
   }) async {
+    final alreadyExists = await _powerSyncRepository.db().getOptional(
+      '''
+      SELECT 1
+      FROM conversations c
+      JOIN participants p1 ON c.id = p1.conversation_id
+      JOIN participants p2 ON c.id = p2.conversation_id
+      WHERE p1.user_id = ? AND p2.user_id = ?
+  ''',
+      [userId, participantId],
+    );
+    if (alreadyExists != null) return;
     final conversationId = UidGenerator.v4();
     final createdConversation = _powerSyncRepository.db().execute(
       '''
@@ -1280,10 +1286,9 @@ values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     Message? message,
     PostAuthor? postAuthor,
   }) async {
-    final notificationBody =
-        (message?.message == null || (message?.message.trim().isEmpty ?? true))
-            ? 'Sent post ${postAuthor?.username}'
-            : message?.message;
+    final notificationBody = postAuthor != null
+        ? 'Sent post ${postAuthor.username}'
+        : message?.message;
 
     final data = {
       'to': sendToPushToken,
@@ -1430,7 +1435,8 @@ values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     required String? query,
     String? excludeUserIds,
   }) async {
-    query ??= query?.removeSpecialCharacters();
+    if (query == null || query.trim().isEmpty) return <User>[];
+    query = query.removeSpecialCharacters();
     final excludeUserIdsStatement =
         excludeUserIds == null ? '' : 'AND id NOT IN ($excludeUserIds)';
 
@@ -1469,7 +1475,7 @@ values (?, ?, ?, ?, ?, ?, ?)
           contentUrl,
           duration,
           DateTime.timestamp().toIso8601String(),
-          DateTime.timestamp().add(const Duration(days: 1)).toIso8601String(),
+          DateTime.timestamp().add(1.days).toIso8601String(),
         ],
       );
 
@@ -1525,6 +1531,7 @@ SELECT * FROM stories WHERE id = ?
       imageBytes,
       fileOptions: FileOptions(
         contentType: 'image/$imageExtension',
+        cacheControl: '9000000',
       ),
     );
     return stories.getPublicUrl(imagePath);
@@ -1559,20 +1566,20 @@ LIMIT ? OFFSET ?
   }) async {
     final result = await _powerSyncRepository.db().getAll(
       '''
-SELECT up.id, up.avatar_url, up.username
-FROM profiles up
-WHERE up.id IN (
+SELECT id, avatar_url, username
+FROM profiles
+WHERE id IN (
     SELECT l.user_id
     FROM likes l
-    WHERE l.post_id = ?
+    WHERE l.post_id = ?1
     AND EXISTS (
         SELECT *
         FROM subscriptions f
         WHERE f.subscriber_id = l.user_Id
-        AND f.subscribed_to_id = ?
-    )
+        AND f.subscribed_to_id = ?2
+    ) AND id <> ?2
 )
-LIMIT ? OFFSET ?
+LIMIT ?3 OFFSET ?4
 ''',
       [postId, currentUserId, limit, offset],
     );

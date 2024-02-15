@@ -156,7 +156,7 @@ class ThumbnailWidget extends StatelessWidget {
 }
 
 /// parse second to duration
-_parseDuration(int seconds) {
+String _parseDuration(int seconds) {
   if (seconds < 600) {
     return '${Duration(seconds: seconds)}'.toString().substring(3, 7);
   } else if (seconds > 600 && seconds < 3599) {

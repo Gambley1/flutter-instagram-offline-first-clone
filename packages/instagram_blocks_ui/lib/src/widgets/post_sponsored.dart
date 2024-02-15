@@ -63,7 +63,7 @@ class PostSponsored extends StatelessWidget {
 
   final void Function(String, PostAuthor) onPostShareTap;
 
-  final void Function(BlockAction action, String? avatarUrl) onPressed;
+  final void Function(BlockAction? action, String? avatarUrl) onPressed;
 
   final String sponsoredText;
 

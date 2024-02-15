@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/bloc/app_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/comments/comments.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/post/post.dart';
+import 'package:flutter_instagram_offline_first_clone/home/home.dart';
 import 'package:flutter_instagram_offline_first_clone/reels/reel/reel.dart';
 import 'package:flutter_instagram_offline_first_clone/reels/reels.dart';
 import 'package:flutter_instagram_offline_first_clone/stories/user_stories/user_stories.dart';
@@ -30,7 +31,9 @@ class ReelView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PostView(
+      key: ValueKey(block.id),
       block: block,
+      videoPlayerType: VideoPlayerType.reels,
       builder: (context) => Reel(
         block: block,
         withSound: withSound,
@@ -136,19 +139,19 @@ class _ReelState extends State<Reel> {
                     children: [
                       const CircleAvatar(
                         radius: 20,
-                        backgroundColor: Color(0xff282828),
+                        backgroundColor: AppColors.dark,
                       ),
                       const SizedBox(height: 5),
                       Container(
                         height: 15,
                         width: 150,
-                        color: const Color(0xff282828),
+                        color: AppColors.dark,
                       ),
                       const SizedBox(height: 5),
                       Container(
                         height: 15,
                         width: 200,
-                        color: const Color(0xff282828),
+                        color: AppColors.dark,
                       ),
                     ],
                   ),
@@ -234,7 +237,7 @@ class VerticalButtons extends StatelessWidget {
           children: <Widget>[
             VerticalGroup(
               icon: isLiked ? Icons.favorite : Icons.favorite_outline,
-              iconColor: isLiked ? Colors.red : null,
+              iconColor: isLiked ? AppColors.red : null,
               onButtonTap: () =>
                   context.read<PostBloc>().add(PostLikeRequested(user.id)),
               size: AppSize.iconSize,
@@ -247,29 +250,43 @@ class VerticalButtons extends StatelessWidget {
                 height: AppSize.iconSize,
                 width: AppSize.iconSize,
                 colorFilter: const ColorFilter.mode(
-                  Colors.white,
+                  AppColors.white,
                   BlendMode.srcIn,
                 ),
               ),
             ),
             VerticalGroup(
               icon: Icons.near_me_outlined,
-              onButtonTap: () {},
+              onButtonTap: () => context.showScrollableModal(
+                pageBuilder: (scrollController, draggableScrollController) =>
+                    SharePost(
+                  block: block,
+                  scrollController: scrollController,
+                  draggableScrollController: draggableScrollController,
+                ),
+              ),
               size: AppSize.iconSize,
               withStatistic: false,
             ),
             VerticalGroup(
               icon: Icons.more_vert_sharp,
               onButtonTap: !isOwner
-                  ? () {}
+                  ? null
                   : () async {
+                      void callback(ModalOption option) =>
+                          option.onTap.call(context);
+
                       final option = await context.showListOptionsModal(
                         options: [
                           ModalOption(
-                            name: 'Delete Post',
+                            name: 'Delete',
+                            actionTitle: 'Delete reel',
+                            actionContent:
+                                'Are you sure you want to delete this reel?',
+                            actionYesText: 'Delete',
                             child: Assets.icons.trash.svg(
                               colorFilter: const ColorFilter.mode(
-                                Colors.red,
+                                AppColors.red,
                                 BlendMode.srcIn,
                               ),
                             ),
@@ -281,9 +298,7 @@ class VerticalButtons extends StatelessWidget {
                         ],
                       );
                       if (option == null) return;
-                      await Future.microtask(
-                        () => option.distractiveCallback.call(context),
-                      );
+                      callback(option);
                     },
               withStatistic: false,
             ),
@@ -296,7 +311,7 @@ class VerticalButtons extends StatelessWidget {
                 width: AppSize.iconSize,
                 decoration: BoxDecoration(
                   borderRadius: const BorderRadius.all(Radius.circular(4)),
-                  border: Border.all(color: Colors.white),
+                  border: Border.all(color: AppColors.white),
                   image: DecorationImage(
                     image: CachedNetworkImageProvider(
                       block.author.avatarUrl,
@@ -346,8 +361,10 @@ class ReelAuthorListTile extends StatelessWidget {
                       pathParameters: {'user_id': author.id},
                     ),
             ),
-            style: context.bodyLarge
-                ?.copyWith(fontWeight: AppFontWeight.bold, color: Colors.white),
+            style: context.bodyLarge?.copyWith(
+              fontWeight: AppFontWeight.bold,
+              color: AppColors.white,
+            ),
             overflow: TextOverflow.ellipsis,
           ),
         ),
@@ -365,7 +382,7 @@ class ReelAuthorListTile extends StatelessWidget {
                 child: DecoratedBox(
                   decoration: BoxDecoration(
                     borderRadius: const BorderRadius.all(Radius.circular(8)),
-                    border: Border.all(color: Colors.white),
+                    border: Border.all(color: AppColors.white),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
@@ -376,7 +393,7 @@ class ReelAuthorListTile extends StatelessWidget {
                       child: Text(
                         isFollowed ?? false ? 'Following' : 'Follow',
                         style: context.bodyLarge?.copyWith(
-                          color: Colors.white,
+                          color: AppColors.white,
                           fontWeight: AppFontWeight.bold,
                         ),
                         overflow: TextOverflow.visible,
@@ -423,17 +440,10 @@ class ReelParticipants extends StatelessWidget {
             child: DecoratedBox(
               decoration: BoxDecoration(
                 color: context.customReversedAdaptiveColor(
-                  light: const Color.fromARGB(164, 120, 119, 119),
-                  dark: const Color.fromARGB(165, 58, 58, 58),
+                  light: AppColors.lightDark,
+                  dark: AppColors.dark,
                 ),
-                border: Border.all(
-                  color: const Color.fromARGB(
-                    45,
-                    250,
-                    250,
-                    250,
-                  ),
-                ),
+                border: Border.all(color: AppColors.borderOutline),
                 borderRadius: const BorderRadius.all(Radius.circular(16)),
               ),
               child: Row(
@@ -445,7 +455,7 @@ class ReelParticipants extends StatelessWidget {
                       child: Icon(
                         Icons.music_note_rounded,
                         size: AppSize.iconSizeSmall,
-                        color: Colors.white,
+                        color: AppColors.white,
                       ),
                     ),
                   ),
@@ -456,7 +466,7 @@ class ReelParticipants extends StatelessWidget {
                       text: '$participant:Original audio'
                           .insertBetween('•', splitBy: ':'),
                       velocity: 40,
-                      style: context.bodyMedium?.apply(color: Colors.white),
+                      style: context.bodyMedium?.apply(color: AppColors.white),
                     ),
                   ),
                 ],
@@ -496,11 +506,12 @@ class ReelParticipants extends StatelessWidget {
                         const Icon(
                           Icons.person,
                           size: AppSize.iconSizeSmall,
-                          color: Colors.white,
+                          color: AppColors.white,
                         ),
                         Text(
                           participant,
-                          style: context.bodyMedium?.apply(color: Colors.white),
+                          style:
+                              context.bodyMedium?.apply(color: AppColors.white),
                         ),
                       ].insertBetween(
                         const SizedBox(

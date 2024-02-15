@@ -11,6 +11,8 @@ dependencies:
   envied: ^0.5.3
   flutter:
     sdk: flutter
+  shared:
+    path: ../shared
 
 dev_dependencies:
   build_runner: ^2.4.8

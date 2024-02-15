@@ -49,23 +49,24 @@ class ChatsAppBar extends StatelessWidget {
       centerTitle: false,
       pinned: true,
       title: Text(
-        user.username ?? user.fullName ?? '',
+        user.displayUsername,
         style: context.titleLarge?.copyWith(fontWeight: AppFontWeight.bold),
       ),
       actions: [
         Tappable(
           onTap: () async {
+            void createChat(String participantId) =>
+                context.read<ChatsBloc>().add(
+                      ChatsCreateChatRequested(
+                        userId: user.id,
+                        participantId: participantId,
+                      ),
+                    );
+
             final participantId =
-                await context.pushNamed('search_users') as String?;
+                await context.push('/timeline/search', extra: true) as String?;
             if (participantId == null) return;
-            await Future(
-              () => context.read<ChatsBloc>().add(
-                    ChatsCreateChatRequested(
-                      userId: user.id,
-                      participantId: participantId,
-                    ),
-                  ),
-            );
+            createChat(participantId);
           },
           child: const Icon(Icons.add, size: AppSize.iconSize),
         ),
@@ -125,8 +126,10 @@ class ChatsEmpty extends StatelessWidget {
               AppButton(
                 text: 'Start a Chat',
                 onPressed: () async {
-                  final participantId =
-                      await context.pushNamed('search_users') as String?;
+                  final participantId = await context.push(
+                    '/timeline/search',
+                    extra: true,
+                  ) as String?;
                   if (participantId == null) return;
                   await Future(
                     () => context.read<ChatsBloc>().add(

@@ -7,6 +7,7 @@ import 'package:flutter_instagram_offline_first_clone/home/home.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:go_router/go_router.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
+import 'package:shared/shared.dart';
 
 /// {@template main_bottom_navigation_bar}
 /// Bottom navigation bar of the application. It contains the [navigationShell]
@@ -47,22 +48,19 @@ class BottomNavBar extends StatelessWidget {
             user.avatarUrl == null || (user.avatarUrl?.isEmpty ?? true)
                 ? CrossFadeState.showFirst
                 : CrossFadeState.showSecond,
-        duration: const Duration(milliseconds: 350),
+        duration: 350.ms,
       ),
     );
 
     return BottomNavigationBar(
       currentIndex: navigationShell.currentIndex,
       onTap: (index) {
-        if (index != 0) {
-          videoPlayer.videoPlayerState.shouldPlay.value = false;
+        if ([0, 1, 3].contains(index)) {
+          if (index case 0) videoPlayer.videoPlayerState.playFeed();
+          if (index case 1) videoPlayer.videoPlayerState.playTimeline();
+          if (index case 3) videoPlayer.videoPlayerState.playReels();
         } else {
-          videoPlayer.videoPlayerState.shouldPlay.value = true;
-        }
-        if (index != 3) {
-          videoPlayer.videoPlayerState.shouldPlayReels.value = false;
-        } else {
-          videoPlayer.videoPlayerState.shouldPlayReels.value = true;
+          videoPlayer.videoPlayerState.stopAll();
         }
         navigationShell.goBranch(
           index,
@@ -72,7 +70,7 @@ class BottomNavBar extends StatelessWidget {
           if (!(index == navigationShell.currentIndex)) return;
           FeedPageController.nestedScrollController.animateTo(
             0,
-            duration: const Duration(milliseconds: 250),
+            duration: 250.ms,
             curve: Curves.ease,
           );
         }

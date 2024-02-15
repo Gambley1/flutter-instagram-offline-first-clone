@@ -124,28 +124,42 @@ class AppButton extends StatelessWidget {
     final platform = context.theme.platform;
     final isIOS = platform == TargetPlatform.iOS;
 
-    return SizedBox(
-      width: width ?? double.infinity,
-      height: height,
-      child: Builder(
-        builder: (_) {
-          if (isDialogButton) {
-            if (isIOS) {
-              return CupertinoDialogAction(
-                onPressed: onPressed,
-                isDefaultAction: isDefaultAction,
-                isDestructiveAction: isDestructiveAction,
-                textStyle: textStyle,
-                child: child ??
-                    _Text(
-                      text: text!,
-                      style: textStyle,
-                    ),
-              );
-            }
+    return Builder(
+      builder: (_) {
+        if (isDialogButton) {
+          if (isIOS) {
+            return CupertinoDialogAction(
+              onPressed: onPressed,
+              isDefaultAction: isDefaultAction,
+              isDestructiveAction: isDestructiveAction,
+              child: child ??
+                  Text(
+                    text!,
+                    style: textStyle,
+                  ),
+            );
+          } else {
+            return TextButton(
+              onPressed: onPressed,
+              style: const ButtonStyle(
+                shape: MaterialStatePropertyAll(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(6)),
+                  ),
+                ),
+              ),
+              child: Text(
+                text!,
+                style: textStyle,
+              ),
+            );
           }
-          if (loading) {
-            return ElevatedButton.icon(
+        }
+        if (loading) {
+          return SizedBox(
+            width: width ?? double.infinity,
+            height: height,
+            child: ElevatedButton.icon(
               onPressed: onPressed,
               icon: icon!,
               style: style,
@@ -154,10 +168,14 @@ class AppButton extends StatelessWidget {
                     text: text!,
                     style: textStyle,
                   ),
-            );
-          }
-          if (outlined) {
-            return OutlinedButton(
+            ),
+          );
+        }
+        if (outlined) {
+          return SizedBox(
+            width: width ?? double.infinity,
+            height: height,
+            child: OutlinedButton(
               style: style,
               onPressed: onPressed,
               child: child ??
@@ -165,10 +183,14 @@ class AppButton extends StatelessWidget {
                     text: text!,
                     style: textStyle,
                   ),
-            );
-          }
-          if (outlined && loading) {
-            return OutlinedButton.icon(
+            ),
+          );
+        }
+        if (outlined && loading) {
+          return SizedBox(
+            width: width ?? double.infinity,
+            height: height,
+            child: OutlinedButton.icon(
               style: style,
               onPressed: onPressed,
               icon: icon!,
@@ -177,9 +199,13 @@ class AppButton extends StatelessWidget {
                     text: text!,
                     style: textStyle,
                   ),
-            );
-          }
-          return ElevatedButton(
+            ),
+          );
+        }
+        return SizedBox(
+          width: width ?? double.infinity,
+          height: height,
+          child: ElevatedButton(
             style: style,
             onPressed: onPressed,
             child: child ??
@@ -187,9 +213,9 @@ class AppButton extends StatelessWidget {
                   text: text!,
                   style: textStyle,
                 ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }
@@ -205,7 +231,6 @@ class _Text extends StatelessWidget {
   Widget build(BuildContext context) {
     return DefaultTextStyle.merge(
       overflow: TextOverflow.visible,
-      textAlign: TextAlign.center,
       style: style,
       child: Text(text),
     );

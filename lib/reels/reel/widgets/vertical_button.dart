@@ -16,7 +16,7 @@ class VerticalButton extends StatelessWidget {
   final Widget? child;
   final Color? color;
   final double? size;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +51,7 @@ class VerticalGroup extends StatelessWidget {
   final Widget? child;
   final Color? iconColor;
   final double? size;
-  final VoidCallback onButtonTap;
+  final VoidCallback? onButtonTap;
   final VoidCallback? onTextTap;
   final bool withStatistic;
   final int? statisticCount;

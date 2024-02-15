@@ -4,6 +4,7 @@ import 'package:instagram_blocks_ui/src/blur_hash_image_placeholder.dart';
 import 'package:instagram_blocks_ui/src/safe_set_state_mixin.dart';
 import 'package:instagram_blocks_ui/src/smooth_video_progress_indicator.dart';
 import 'package:instagram_blocks_ui/src/widgets/popping_icon_overlay.dart';
+import 'package:shared/shared.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
@@ -16,6 +17,7 @@ class VideoPlay extends StatefulWidget {
     this.withSound = true,
     this.fromMemory = false,
     this.aspectRatio = 4 / 5,
+    this.expand = false,
     this.id,
     this.controller,
     this.onSoundToggled,
@@ -25,12 +27,14 @@ class VideoPlay extends StatefulWidget {
     this.withProgressIndicator = false,
     this.loadingBuilder,
     this.stackedWidgets,
+    this.videoPlayerOptions,
   });
 
   final String? id;
   final String url;
   final String? blurHash;
   final double aspectRatio;
+  final bool expand;
   final bool fromMemory;
   final bool play;
   final bool withSound;
@@ -42,6 +46,7 @@ class VideoPlay extends StatefulWidget {
   final bool withProgressIndicator;
   final WidgetBuilder? loadingBuilder;
   final List<Widget>? stackedWidgets;
+  final VideoPlayerOptions? videoPlayerOptions;
 
   @override
   State<VideoPlay> createState() => _VideoPlayState();
@@ -65,7 +70,7 @@ class _VideoPlayState extends State<VideoPlay>
       _controller
         ..play()
         ..setLooping(true);
-      if (widget.withSound) {
+      if (!oldWidget.withSound && widget.withSound) {
         _controller.setVolume(1);
       } else {
         if (_controller.value.volume == 1) {
@@ -82,25 +87,35 @@ class _VideoPlayState extends State<VideoPlay>
   }
 
   Future<void> _initializeController() async {
-    _controller = widget.controller ??
+    _controller = (widget.controller ??
         (widget.fromMemory
-            ? VideoPlayerController.asset(widget.url)
-            : VideoPlayerController.networkUrl(Uri.parse(widget.url)));
-    await _controller.initialize().then((_) {
-      safeSetState(() {});
-    });
-    _controller.addListener(_controllerListener);
-    await _togglePlayer();
-    await _toggleSound();
+            ? VideoPlayerController.asset(
+                widget.url,
+                videoPlayerOptions: widget.videoPlayerOptions,
+              )
+            : VideoPlayerController.networkUrl(
+                Uri.parse(widget.url),
+                videoPlayerOptions: widget.videoPlayerOptions,
+              )))
+      ..addListener(_controllerListener);
+    await Future.wait([
+      _controller.initialize(),
+      _togglePlayer(),
+      _toggleSound(),
+    ]);
   }
 
   Future<void> _togglePlayer() async {
     if (widget.play) {
-      await _controller.play();
-      await _controller.setLooping(true);
+      await Future.wait([
+        _controller.play(),
+        _controller.setLooping(true),
+      ]);
     } else {
-      await _controller.pause();
-      await _controller.seekTo(Duration.zero);
+      await Future.wait([
+        _controller.pause(),
+        _controller.seekTo(Duration.zero),
+      ]);
     }
   }
 
@@ -122,7 +137,10 @@ class _VideoPlayState extends State<VideoPlay>
 
   @override
   void dispose() {
-    _controller.dispose();
+    if (_controller.value.isPlaying) _controller.pause();
+    _controller
+      ..removeListener(_controllerListener)
+      ..dispose();
     super.dispose();
   }
 
@@ -136,9 +154,10 @@ class _VideoPlayState extends State<VideoPlay>
       valueListenable: _isInitialized,
       builder: (context, isInitialized, _) {
         return AnimatedCrossFade(
-          duration: const Duration(milliseconds: 110),
-          firstChild: AspectRatio(
+          duration: 110.ms,
+          firstChild: RatioBox(
             aspectRatio: widget.aspectRatio,
+            expand: widget.expand,
             child: widget.loadingBuilder?.call(context) ??
                 BlurHashImagePlaceholder(blurHash: widget.blurHash),
           ),
@@ -146,8 +165,9 @@ class _VideoPlayState extends State<VideoPlay>
             valueListenable: _controller,
             child: Builder(
               builder: (_) {
-                late Widget videoPlayer = AspectRatio(
+                late Widget videoPlayer = RatioBox(
                   aspectRatio: widget.aspectRatio,
+                  expand: widget.expand,
                   child: VideoPlayer(_controller),
                 );
                 if (widget.stackedWidgets != null) {
@@ -195,6 +215,9 @@ class _VideoPlayState extends State<VideoPlay>
               },
             ),
             builder: (context, controller, child) {
+              if (!widget.withPlayControll && !widget.withSoundButton) {
+                return child!;
+              }
               return Stack(
                 children: [
                   if (widget.withPlayControll)
@@ -207,8 +230,8 @@ class _VideoPlayState extends State<VideoPlay>
                     child!,
                   if (widget.withSoundButton)
                     Positioned(
-                      right: 12,
-                      bottom: 12,
+                      right: AppSpacing.md,
+                      bottom: AppSpacing.md,
                       child: SoundToggleButton(controller: _controller),
                     ),
                 ],
@@ -221,6 +244,30 @@ class _VideoPlayState extends State<VideoPlay>
         );
       },
     );
+  }
+}
+
+class RatioBox extends StatelessWidget {
+  const RatioBox({
+    required this.child,
+    required this.expand,
+    required this.aspectRatio,
+    super.key,
+  });
+
+  final Widget child;
+  final bool expand;
+  final double aspectRatio;
+
+  @override
+  Widget build(BuildContext context) {
+    if (expand) {
+      return ConstrainedBox(
+        constraints: BoxConstraints.tightFor(height: context.screenHeight),
+        child: child,
+      );
+    }
+    return AspectRatio(aspectRatio: aspectRatio, child: child);
   }
 }
 

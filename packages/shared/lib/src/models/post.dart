@@ -1,7 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 import 'package:shared/shared.dart';
-import 'package:shared/src/models/date_time_converter.dart';
 import 'package:shared/src/models/user_converter.dart';
 import 'package:user_repository/user_repository.dart';
 
@@ -48,7 +47,6 @@ class Post {
   final String caption;
 
   /// The date time when the post was created.
-  @DateTimeConverter()
   final DateTime createdAt;
 
   /// The date time(if updated) when the post was updated.

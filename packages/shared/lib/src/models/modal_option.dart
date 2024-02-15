@@ -1,8 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
 import 'package:app_ui/app_ui.dart';
-import 'package:flutter/material.dart'
-    show Color, Colors, IconData, VoidCallback, Widget;
 import 'package:flutter/widgets.dart';
 
 class ModalOption {
@@ -10,50 +8,52 @@ class ModalOption {
   final Color? nameColor;
   final IconData? icon;
   final Widget? child;
-  final VoidCallback? onTap;
-  final String? distractiveActionTitle;
-  final String? distractiveActionNoText;
-  final String? distractiveActionYesText;
+  final BuildContextCallback? noAction;
+  final String? actionTitle;
+  final String? actionContent;
+  final String? actionNoText;
+  final String? actionYesText;
   final bool distractive;
 
   ModalOption({
     required this.name,
     this.icon,
     this.child,
-    this.onTap,
+    VoidCallback? onTap,
+    this.noAction,
     this.nameColor,
     this.distractive = false,
-    this.distractiveActionTitle,
-    this.distractiveActionNoText,
-    this.distractiveActionYesText,
-  });
+    this.actionTitle,
+    this.actionContent,
+    this.actionNoText,
+    this.actionYesText,
+  }) : _onTap = onTap;
 
-  Color? get distractiveColor => distractive ? Colors.red : null;
+  final VoidCallback? _onTap;
 
-  void distractiveCallback(BuildContext context) => distractive
-      ? context
-          .showConfirmationDialog(
-          noText: distractiveActionNoText ?? 'Cancel',
-          yesText: distractiveActionYesText ?? name,
-          title: 'Are you sure to '
-              '${distractiveActionTitle?.toLowerCase() ?? name.toLowerCase()}?',
+  void onTap(BuildContext context) => distractive
+      ? context.confirmAction(
+          title: actionTitle ?? name,
+          content: actionContent,
+          noText: actionNoText ?? 'Cancel',
+          yesText: actionYesText ?? 'Yes',
+          noAction: noAction,
+          fn: () => _onTap?.call(),
         )
-          .then((confirmed) {
-          if (confirmed == null) return;
-          if (!confirmed) return;
-          onTap?.call();
-        })
-      : onTap?.call();
+      : _onTap?.call();
+
+  Color? get distractiveColor => distractive ? AppColors.red : null;
 
   ModalOption copyWith({
     String? name,
     Color? nameColor,
     IconData? icon,
     Widget? child,
-    VoidCallback? onTap,
-    String? distractiveActionTitle,
-    String? distractiveActionNoText,
-    String? distractiveActionYesText,
+    BuildContextCallback? noAction,
+    String? actionTitle,
+    String? actionContent,
+    String? actionNoText,
+    String? actionYesText,
     bool? distractive,
   }) {
     return ModalOption(
@@ -61,13 +61,11 @@ class ModalOption {
       nameColor: nameColor ?? this.nameColor,
       icon: icon ?? this.icon,
       child: child ?? this.child,
-      onTap: onTap ?? this.onTap,
-      distractiveActionTitle:
-          distractiveActionTitle ?? this.distractiveActionTitle,
-      distractiveActionNoText:
-          distractiveActionNoText ?? this.distractiveActionNoText,
-      distractiveActionYesText:
-          distractiveActionYesText ?? this.distractiveActionYesText,
+      noAction: noAction ?? this.noAction,
+      actionTitle: actionTitle ?? this.actionTitle,
+      actionContent: actionContent ?? this.actionContent,
+      actionNoText: actionNoText ?? this.actionNoText,
+      actionYesText: actionYesText ?? this.actionYesText,
       distractive: distractive ?? this.distractive,
     );
   }

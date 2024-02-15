@@ -17,6 +17,7 @@ class ShimmerPlaceholder extends StatelessWidget {
     this.highlightColor = const Color(0xff13151b),
     this.highlightColorLight,
     this.withAdaptiveColors = true,
+    this.child,
     super.key,
     this.placeholderImageBuilder,
   });
@@ -29,6 +30,7 @@ class ShimmerPlaceholder extends StatelessWidget {
   final double? radius;
   final double? width;
   final double? height;
+  final Widget? child;
   final PlaceholderImageBuilder? placeholderImageBuilder;
 
   static Widget _defaultPlaceholderImage({
@@ -69,7 +71,7 @@ class ShimmerPlaceholder extends StatelessWidget {
     return Shimmer.fromColors(
       baseColor: baseColor,
       highlightColor: highlightColor,
-      child: image,
+      child: child ?? image,
     );
   }
 }

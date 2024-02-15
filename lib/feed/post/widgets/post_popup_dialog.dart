@@ -8,7 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/attachments/attachments.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/post/post.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
-import 'package:shared/shared.dart';
+import 'package:shared/shared.dart' hide NumDurationExtension;
 import 'package:sprung/sprung.dart';
 
 class PostPopupDialog extends StatelessWidget {

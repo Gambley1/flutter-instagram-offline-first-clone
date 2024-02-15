@@ -47,10 +47,6 @@ class _EmailTextFieldState extends State<EmailTextField> {
       textInputType: TextInputType.emailAddress,
       textInputAction: TextInputAction.next,
       autofillHints: const [AutofillHints.email],
-      border: outlinedBorder(
-        borderRadius: 4,
-        borderSide: BorderSide.none,
-      ),
       onChanged: (v) => _debouncer.run(
         () => context.read<SignupCubit>().onEmailChanged(v),
       ),

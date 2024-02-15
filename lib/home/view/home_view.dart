@@ -65,11 +65,11 @@ class _HomeViewState extends State<HomeView> {
 
   void _isPageScrolling() {
     if (_pageController.position.isScrollingNotifier.value == true) {
-      _videoPlayerState.shouldPlay.value = false;
+      _videoPlayerState.shouldPlayFeed.value = false;
       _videoPlayerState.shouldPlayReels.value = false;
     } else if (_pageController.position.isScrollingNotifier.value == false &&
         _pageController.page == 1) {
-      _videoPlayerState.shouldPlay.value = true;
+      _videoPlayerState.shouldPlayFeed.value = true;
       _videoPlayerState.shouldPlayReels.value = false;
     }
   }
@@ -130,13 +130,41 @@ class VideoPlayerProvider extends InheritedWidget {
 class VideoPlayerState {
   VideoPlayerState();
 
-  final shouldPlay = ValueNotifier(true);
+  final shouldPlayFeed = ValueNotifier(true);
   final shouldPlayReels = ValueNotifier(true);
+  final shouldPlayTimeline = ValueNotifier(true);
   final withSound = ValueNotifier(false);
+
+  void playFeed() {
+    shouldPlayFeed.value = true;
+    shouldPlayReels.value = false;
+    shouldPlayTimeline.value = false;
+  }
+
+  void playTimeline() {
+    shouldPlayFeed.value = false;
+    shouldPlayReels.value = false;
+    shouldPlayTimeline.value = true;
+  }
+
+  void playReels() {
+    shouldPlayFeed.value = false;
+    shouldPlayReels.value = true;
+    shouldPlayTimeline.value = false;
+  }
+
+  void stopAll() {
+    shouldPlayFeed.value = false;
+    shouldPlayReels.value = false;
+    shouldPlayTimeline.value = false;
+  }
 }
+
+enum VideoPlayerType { feed, timeline, reels }
 
 class VideoPlayerNotifierWidget extends StatefulWidget {
   const VideoPlayerNotifierWidget({
+    required this.type,
     required this.builder,
     this.id,
     this.checkIsInView,
@@ -144,6 +172,7 @@ class VideoPlayerNotifierWidget extends StatefulWidget {
     super.key,
   });
 
+  final VideoPlayerType type;
   final String? id;
   final bool? checkIsInView;
   final Widget? child;
@@ -156,17 +185,23 @@ class VideoPlayerNotifierWidget extends StatefulWidget {
 
 class _VideoPlayerNotifierState extends State<VideoPlayerNotifierWidget> {
   late VideoPlayerState _videoPlayerState;
+  late ValueNotifier<bool> _shouldPlayType;
 
   @override
   void initState() {
     super.initState();
     _videoPlayerState = VideoPlayerProvider.of(context).videoPlayerState;
+    _shouldPlayType = switch (widget.type) {
+      VideoPlayerType.feed => _videoPlayerState.shouldPlayFeed,
+      VideoPlayerType.reels => _videoPlayerState.shouldPlayReels,
+      VideoPlayerType.timeline => _videoPlayerState.shouldPlayTimeline,
+    };
   }
 
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<bool>(
-      valueListenable: _videoPlayerState.shouldPlay,
+      valueListenable: _shouldPlayType,
       child: widget.child,
       builder: (context, shoudPlay, child) {
         if (widget.checkIsInView ?? false) {

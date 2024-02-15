@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:posts_repository/posts_repository.dart';
+import 'package:search_repository/search_repository.dart';
 import 'package:stories_repository/stories_repository.dart';
 import 'package:user_repository/user_repository.dart';
 
@@ -22,6 +23,7 @@ class App extends StatelessWidget {
     required this.postsRepository,
     required this.chatsRepository,
     required this.storiesRepository,
+    required this.searchRepository,
     required this.notificationsClient,
     required this.remoteConfig,
     required this.user,
@@ -32,6 +34,7 @@ class App extends StatelessWidget {
   final PostsRepository postsRepository;
   final ChatsRepository chatsRepository;
   final StoriesRepository storiesRepository;
+  final SearchRepository searchRepository;
   final FirebaseNotificationsClient notificationsClient;
   final FirebaseConfig remoteConfig;
   final User user;
@@ -44,6 +47,7 @@ class App extends StatelessWidget {
         RepositoryProvider.value(value: postsRepository),
         RepositoryProvider.value(value: chatsRepository),
         RepositoryProvider.value(value: storiesRepository),
+        RepositoryProvider.value(value: searchRepository),
         RepositoryProvider.value(value: notificationsClient),
         RepositoryProvider.value(value: remoteConfig),
       ],

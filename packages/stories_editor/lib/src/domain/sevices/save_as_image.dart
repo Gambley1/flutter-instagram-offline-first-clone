@@ -1,36 +1,36 @@
 import 'dart:io';
-import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:stories_editor/src/presentation/utils/image_compress.dart';
 
 Future<dynamic> takePicture({
-  required contentKey,
+  required GlobalKey contentKey,
   required BuildContext context,
-  required saveToGallery,
+  required bool saveToGallery,
 }) async {
   try {
-    /// converter widget to image
-    RenderRepaintBoundary boundary =
-        contentKey.currentContext.findRenderObject();
+    final boundary =
+        contentKey.currentContext?.findRenderObject() as RenderRepaintBoundary?;
 
-    ui.Image image = await boundary.toImage(pixelRatio: 3.0);
+    final image = await boundary?.toImage(pixelRatio: 3.0);
 
-    ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-    Uint8List pngBytes = byteData!.buffer.asUint8List();
+    final byteData = await image?.toByteData(format: ui.ImageByteFormat.png);
+    final pngBytes = byteData?.buffer.asUint8List();
+    final compressedBytes = await ImageCompress.compressByte(pngBytes);
 
     /// create file
-    final String dir = (await getApplicationDocumentsDirectory()).path;
-    String imagePath = '$dir/${DateTime.now()}.png';
-    File capturedFile = File(imagePath);
-    await capturedFile.writeAsBytes(pngBytes);
+    final dir = (await getApplicationDocumentsDirectory()).path;
+    final imagePath = '$dir/${DateTime.now()}.png';
+    final capturedFile = File(imagePath);
+    await capturedFile.writeAsBytes(compressedBytes!);
 
     if (saveToGallery) {
       final result = await ImageGallerySaver.saveImage(
-        pngBytes,
+        pngBytes!,
         quality: 100,
         name: '${DateTime.now()}.png',
       );

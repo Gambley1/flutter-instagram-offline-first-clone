@@ -1,4 +1,5 @@
 version: 2
+enable-beta-ecosystems: true
 updates:
   - package-ecosystem: "github-actions"
     directory: "/"
@@ -6,5 +7,89 @@ updates:
       interval: "daily"
   - package-ecosystem: "pub"
     directory: "/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "pub"
+    directory: "/flutter_instagram_offline_first_clone/packages/app_ui"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "pub"
+    directory: "/flutter_instagram_offline_first_clone/packages/authentication_client/authentication_client"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "pub"
+    directory: "/flutter_instagram_offline_first_clone/packages/authentication_client/supabase_authentication_client"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "pub"
+    directory: "/flutter_instagram_offline_first_clone/packages/authentication_client/token_storage"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "pub"
+    directory: "/flutter_instagram_offline_first_clone/packages/chats_repository"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "pub"
+    directory: "/flutter_instagram_offline_first_clone/packages/database_client"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "pub"
+    directory: "/flutter_instagram_offline_first_clone/packages/env"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "pub"
+    directory: "/flutter_instagram_offline_first_clone/packages/storage/storage"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "pub"
+    directory: "/flutter_instagram_offline_first_clone/packages/storage/secure_storage"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "pub"
+    directory: "/flutter_instagram_offline_first_clone/packages/storage/persistent_storage"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "pub"
+    directory: "/flutter_instagram_offline_first_clone/packages/remote_config/firebase_remote_config"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "pub"
+    directory: "/flutter_instagram_offline_first_clone/packages/insta_blocks"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "pub"
+    directory: "/flutter_instagram_offline_first_clone/packages/instagram_blocks_ui"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "pub"
+    directory: "/flutter_instagram_offline_first_clone/packages/posts_repository"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "pub"
+    directory: "/flutter_instagram_offline_first_clone/packages/powersync_repository"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "pub"
+    directory: "/flutter_instagram_offline_first_clone/packages/user_repository"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "pub"
+    directory: "/flutter_instagram_offline_first_clone/packages/search_repository"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "pub"
+    directory: "/flutter_instagram_offline_first_clone/packages/shared"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "pub"
+    directory: "/flutter_instagram_offline_first_clone/packages/stories_repository"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "pub"
+    directory: "/flutter_instagram_offline_first_clone/packages/notifications_client/firebase_notifications_client"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "pub"
+    directory: "/flutter_instagram_offline_first_clone/packages/user_repository"
     schedule:
       interval: "daily"

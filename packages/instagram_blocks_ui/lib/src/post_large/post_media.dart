@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
@@ -62,26 +60,23 @@ class PostMedia extends StatelessWidget {
           Positioned(
             top: 12,
             right: 12,
-            child: ValueListenableBuilder(
-              valueListenable: showImagesCountText,
-              builder: (context, showText, child) {
-                return ValueListenableBuilder(
-                  valueListenable: currentIndex,
-                  builder: (context, index, child) {
-                    if (showText) {
-                      Future.delayed(const Duration(seconds: 5), () {
-                        showImagesCountText.value = false;
-                      });
-                    }
+            child: AnimatedBuilder(
+              animation: Listenable.merge([showImagesCountText, currentIndex]),
+              builder: (context, child) {
+                if (showImagesCountText.value) {
+                  void showImagesCount() {
+                    showImagesCountText.value = false;
+                  }
 
-                    return RepaintBoundary(
-                      child: _CurrentPostImageInexOfTotal(
-                        currentIndex: index + 1,
-                        total: media.length,
-                        showText: showText,
-                      ),
-                    );
-                  },
+                  showImagesCount.deboune();
+                }
+
+                return RepaintBoundary(
+                  child: _CurrentPostImageInexOfTotal(
+                    currentIndex: currentIndex.value + 1,
+                    total: media.length,
+                    showText: showImagesCountText.value,
+                  ),
                 );
               },
             ),
@@ -108,7 +103,7 @@ class _CurrentPostImageInexOfTotal extends StatelessWidget {
 
     return AnimatedOpacity(
       opacity: showText ? 1 : 0,
-      duration: const Duration(milliseconds: 150),
+      duration: 150.ms,
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
         decoration: BoxDecoration(

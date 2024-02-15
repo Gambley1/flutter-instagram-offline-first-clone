@@ -44,11 +44,7 @@ class _UsernameTextFieldState extends State<UsernameTextField> {
       hintText: 'Username',
       textInputAction: TextInputAction.next,
       enabled: !isLoading,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 12),
-      border: outlinedBorder(
-        borderRadius: 4,
-        borderSide: BorderSide.none,
-      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
       onChanged: (v) => _debouncer.run(
         () => context.read<SignupCubit>().onUsernameChanged(v),
       ),

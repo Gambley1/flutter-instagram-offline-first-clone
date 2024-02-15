@@ -62,8 +62,8 @@ class PostsRepository implements PostsBaseRepository {
       _client.postsAmountOf(userId: userId);
 
   @override
-  Stream<List<Post>> postsOf({required String currentUserId, String? userId}) =>
-      _client.postsOf(currentUserId: currentUserId, userId: userId);
+  Stream<List<Post>> postsOf({String? userId}) =>
+      _client.postsOf(userId: userId);
 
   @override
   Future<void> updatePost({required String id}) => _client.updatePost(id: id);
