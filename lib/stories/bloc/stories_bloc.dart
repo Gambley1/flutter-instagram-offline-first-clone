@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart'
     show FicIterableExtension;
+import 'package:flutter/foundation.dart';
 import 'package:shared/shared.dart';
 import 'package:stories_repository/stories_repository.dart';
 import 'package:user_repository/user_repository.dart';
@@ -18,6 +19,7 @@ class StoriesBloc extends Bloc<StoriesEvent, StoriesState> {
         super(const StoriesState.intital()) {
     on<StoriesFetchUserFollowingsStories>(_onStoriesFetchUserFollowingsStories);
     on<StoriesStorySeen>(_onStoriesStorySeen);
+    on<StoriesStoryDeleteRequested>(_onStoriesStoryDeleteRequested);
   }
 
   final StoriesRepository _storiesRepository;
@@ -66,4 +68,18 @@ class StoriesBloc extends Bloc<StoriesEvent, StoriesState> {
         story: event.story,
         userId: event.userId,
       );
+
+  Future<void> _onStoriesStoryDeleteRequested(
+    StoriesStoryDeleteRequested event,
+    Emitter<StoriesState> emit,
+  ) async {
+    try {
+      await _storiesRepository.deleteStory(id: event.id);
+
+      event.onStoryDeleted?.call();
+    } catch (error, stackTrace) {
+      addError(error, stackTrace);
+      logE('Failed to delete story.', error: error, stackTrace: stackTrace);
+    }
+  }
 }

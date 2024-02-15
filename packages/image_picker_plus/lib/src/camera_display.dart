@@ -295,13 +295,13 @@ class CustomCameraDisplayState extends State<CustomCameraDisplay> {
                 color: Colors.blue, size: 30),
             onPressed: () async {
               if (videoRecordFile != null) {
-                Uint8List byte = await videoRecordFile!.readAsBytes();
-                SelectedByte selectedByte = SelectedByte(
+                final byte = await videoRecordFile!.readAsBytes();
+                final selectedByte = SelectedByte(
                   isThatImage: false,
                   selectedFile: videoRecordFile!,
                   selectedByte: byte,
                 );
-                SelectedImagesDetails details = SelectedImagesDetails(
+                final details = SelectedImagesDetails(
                   multiSelectionMode: false,
                   selectedFiles: [selectedByte],
                   aspectRatio: 1.0,
@@ -309,7 +309,9 @@ class CustomCameraDisplayState extends State<CustomCameraDisplay> {
                 if (!mounted) return;
 
                 if (widget.callbackFunction != null) {
+                  void pop() => Navigator.of(context).maybePop(details);
                   await widget.callbackFunction!(details);
+                  pop.call();
                 } else {
                   Navigator.of(context).maybePop(details);
                 }
@@ -332,7 +334,9 @@ class CustomCameraDisplayState extends State<CustomCameraDisplay> {
                   if (!mounted) return;
 
                   if (widget.callbackFunction != null) {
+                    void pop() => Navigator.of(context).maybePop(details);
                     await widget.callbackFunction!(details);
+                    pop.call();
                   } else {
                     Navigator.of(context).maybePop(details);
                   }

@@ -1,0 +1,20 @@
+name: storage
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  pull_request:
+    paths:
+      - "flutter_instagram_offline_first_clone/packages/storage/storage/**"
+      - ".github/workflows/storage.yaml"
+    branches:
+      - main
+
+jobs:
+  build:
+    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/dart_package.yml@v1
+    with:
+      dart_sdk: 3.2.6
+      working_directory: flutter_instagram_offline_first_clone/packages/storage/storage

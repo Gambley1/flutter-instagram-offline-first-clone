@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/home/home.dart';
-import 'package:flutter_instagram_offline_first_clone/reels/reel/view/reel_view.dart';
+import 'package:flutter_instagram_offline_first_clone/reels/reel/reel.dart';
 import 'package:flutter_instagram_offline_first_clone/reels/reels.dart';
 import 'package:posts_repository/posts_repository.dart';
 import 'package:powersync_repository/powersync_repository.dart';
@@ -23,14 +23,36 @@ class ReelsPage extends StatelessWidget {
   }
 }
 
-class ReelsView extends StatelessWidget {
+class ReelsView extends StatefulWidget {
   const ReelsView({super.key});
 
   @override
+  State<ReelsView> createState() => _ReelsViewState();
+}
+
+class _ReelsViewState extends State<ReelsView> {
+  late PageController _pageController;
+
+  late ValueNotifier<int> _currentIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(keepPage: false);
+
+    _currentIndex = ValueNotifier(0);
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    _currentIndex.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final pageController = PageController(keepPage: false);
     final videoPlayer = VideoPlayerProvider.of(context).videoPlayerState;
-    final currentIndex = ValueNotifier(0);
     final blocks =
         context.select((ReelsBloc bloc) => bloc.state.blocks).cast<PostBlock>();
     final user = context.select((AppBloc bloc) => bloc.state.user);
@@ -52,23 +74,24 @@ class ReelsView extends StatelessWidget {
                       children: [
                         Text(
                           'No reels found.',
-                          style: context.displaySmall
-                              ?.copyWith(fontWeight: AppFontWeight.bold),
+                          style: context.headlineSmall,
                         ),
-                        const SizedBox(
-                          height: AppSpacing.md,
-                        ),
+                        const SizedBox(height: AppSpacing.sm),
                         FittedBox(
                           child: Tappable(
                             onTap: () => context
                                 .read<ReelsBloc>()
                                 .add(const ReelsPageRequested()),
+                            throttle: true,
+                            throttleDuration: 550.ms,
                             child: DecoratedBox(
                               decoration: BoxDecoration(
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(22)),
-                                border:
-                                    Border.all(color: context.adaptiveColor),
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(22),
+                                ),
+                                border: Border.all(
+                                  color: context.adaptiveColor,
+                                ),
                               ),
                               child: Align(
                                 child: Padding(
@@ -81,9 +104,7 @@ class ReelsView extends StatelessWidget {
                                       const Icon(Icons.refresh),
                                       Text(
                                         'Refresh',
-                                        style: context.bodyMedium?.copyWith(
-                                          fontWeight: AppFontWeight.bold,
-                                        ),
+                                        style: context.labelLarge,
                                       ),
                                     ].insertBetween(
                                       const SizedBox(width: AppSpacing.md),
@@ -102,9 +123,9 @@ class ReelsView extends StatelessWidget {
               return RefreshIndicator.adaptive(
                 onRefresh: () async {
                   context.read<ReelsBloc>().add(const ReelsPageRequested());
-                  await pageController.animateToPage(
+                  await _pageController.animateToPage(
                     0,
-                    duration: const Duration(milliseconds: 150),
+                    duration: 150.ms,
                     curve: Curves.easeIn,
                   );
                 },
@@ -113,11 +134,11 @@ class ReelsView extends StatelessWidget {
                   scrollDirection: Axis.vertical,
                   allowImplicitScrolling: true,
                   itemCount: blocks.length,
-                  onPageChanged: (index) => currentIndex.value = index,
-                  controller: pageController,
+                  onPageChanged: (index) => _currentIndex.value = index,
+                  controller: _pageController,
                   itemBuilder: (context, index) {
                     return ValueListenableBuilder<int>(
-                      valueListenable: currentIndex,
+                      valueListenable: _currentIndex,
                       builder: (context, currentIndex, _) {
                         final isCurrent = index == currentIndex;
                         final block = blocks[index];
@@ -136,10 +157,23 @@ class ReelsView extends StatelessWidget {
           ),
         ),
         Positioned(
-          right: 12,
-          top: 12,
+          right: AppSpacing.md,
+          top: AppSpacing.md,
           child: Tappable(
             onTap: () async {
+              void uploadReel({
+                required String postId,
+                required List<Map<String, dynamic>> media,
+              }) =>
+                  context.read<ReelsBloc>().add(
+                        ReelsCreateReelRequested(
+                          postId: postId,
+                          userId: user.id,
+                          caption: '',
+                          media: media,
+                        ),
+                      );
+
               await PickImage.pickVideo(
                 context,
                 onMediaPicked: (context, selectedFiles) async {
@@ -151,28 +185,33 @@ class ReelsView extends StatelessWidget {
 
                     late final mediaPath = '$postId/video_0';
 
-                    final selectedFile =
-                        selectedFiles.selectedFiles.first.selectedFile;
+                    final selectedFile = selectedFiles.selectedFiles.first;
                     final firstFrame = await VideoPlus.getVideoThumbnail(
-                      selectedFile,
+                      selectedFile.selectedFile,
                     );
                     final blurHash = firstFrame == null
                         ? ''
                         : await BlurHashPlus.blurHashEncode(firstFrame);
-                    final compressedVideo = await VideoPlus.compressVideo(
-                      selectedFile,
+                    final compressedVideo = (await VideoPlus.compressVideo(
+                          selectedFile.selectedFile,
+                        ))
+                            ?.file ??
+                        selectedFile.selectedFile;
+                    final compressedVideoBytes = await PickImage.imageBytes(
+                      file: compressedVideo,
                     );
-                    final bytes = await PickImage.imageBytes(
-                      file: compressedVideo!.file!,
+                    final attachment = AttachmentFile(
+                      size: compressedVideoBytes.length,
+                      bytes: compressedVideoBytes,
+                      path: compressedVideo.path,
                     );
-                    late final mediaExtension =
-                        selectedFile.path.split('.').last.toLowerCase();
 
                     await storage.uploadBinary(
                       mediaPath,
-                      bytes,
+                      attachment.bytes!,
                       fileOptions: FileOptions(
-                        contentType: 'video/$mediaExtension',
+                        contentType: attachment.mediaType!.mimeType,
+                        cacheControl: '9000000',
                       ),
                     );
                     final mediaUrl = storage.getPublicUrl(mediaPath);
@@ -183,7 +222,8 @@ class ReelsView extends StatelessWidget {
                         firstFramePath,
                         firstFrame,
                         fileOptions: FileOptions(
-                          contentType: 'video/$mediaExtension',
+                          contentType: attachment.mediaType!.mimeType,
+                          cacheControl: '9000000',
                         ),
                       );
                       firstFrameUrl = storage.getPublicUrl(firstFramePath);
@@ -197,16 +237,7 @@ class ReelsView extends StatelessWidget {
                         'first_frame_url': firstFrameUrl,
                       }
                     ];
-                    await Future.sync(
-                      () => context.read<ReelsBloc>().add(
-                            ReelsCreateReelRequested(
-                              postId: postId,
-                              userId: user.id,
-                              caption: '',
-                              media: media,
-                            ),
-                          ),
-                    );
+                    uploadReel(media: media, postId: postId);
                     openSnackbar(
                       const SnackbarMessage.success(
                         title: 'Successfully created reel!',

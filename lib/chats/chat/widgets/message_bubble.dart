@@ -106,10 +106,10 @@ class _MessageBubbleState extends State<MessageBubble> {
         animationEffect: TappableAnimationEffect.none,
         onTapUp: (details) async {
           late final onDeleteTap = context.confirmAction(
-            fn: () => widget.onDeleteTap?.call(message),
-            noText: 'Cancel',
-            title: 'Delete this message?',
+            title: 'Delete message',
+            content: 'Are you sure you want to delete this message?',
             yesText: 'Delete',
+            fn: () => widget.onDeleteTap?.call(message),
           );
           final option = await widget.onMessageTap.call(
             details,
@@ -224,7 +224,9 @@ class MessageBubbleContent extends StatelessWidget {
                 ],
               ),
             )
-          : sharedPost != null
+          : sharedPost != null &&
+                  message.replyMessageId == null &&
+                  message.replyMessageAttachmentUrl == null
               ? sharedPost.isReel
                   ? Stack(
                       children: [
@@ -725,8 +727,12 @@ class RepliedMessageBubble extends StatelessWidget {
     final isMine = message.sender?.id == user.id;
 
     final repliedMessage = message.repliedMessage;
+
     final repliedMessageUsername = message.replyMessageUsername;
     final replyMessageAttachmentUrl = message.replyMessageAttachmentUrl;
+    final repliedMessageSharedPostDeleted =
+        (replyMessageAttachmentUrl?.isEmpty ?? true) ||
+            message.sharedPostId == null;
 
     final accentColor = isMine ? Colors.white : const Color(0xff337eff);
 
@@ -750,7 +756,7 @@ class RepliedMessageBubble extends StatelessWidget {
           contentPadding: EdgeInsets.zero,
           horizontalTitleGap: AppSpacing.sm - AppSpacing.xxs,
           titleAlignment: ListTileTitleAlignment.titleHeight,
-          leading: replyMessageAttachmentUrl == null
+          leading: repliedMessageSharedPostDeleted
               ? null
               : ImageAttachmentThumbnail(
                   image: Attachment(imageUrl: replyMessageAttachmentUrl),

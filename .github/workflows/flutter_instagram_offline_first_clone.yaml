@@ -1,0 +1,63 @@
+name: flutter_instagram_offline_first_clone
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  pull_request:
+    paths:
+      - "flutter_instagram_offline_first_clone/lib/**"
+      - "flutter_instagram_offline_first_clone/test/**"
+      - "flutter_instagram_offline_first_clone/packages/**"
+      - "flutter_instagram_offline_first_clone/pubspec.yaml"
+      - ".github/workflows/flutter_instagram_offline_first_clone.yaml"
+    branches:
+      - main
+
+jobs:
+  build:
+    defaults:
+      run:
+        working-directory: flutter_instagram_offline_first_clone
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        channel: [stable]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2.12.0
+        with:
+          channel: ${{matrix.channel}}
+          flutter-version: "3.16.9"
+          cache: false
+
+      - name: Install Dependencies
+        run: |
+          flutter pub global activate very_good_cli
+          very_good --analytics false
+          very_good packages get --recursive
+
+      - name: Format
+        run: dart format --set-exit-if-changed lib test
+
+      - name: Analyze
+        run: flutter analyze lib test
+
+      - name: Verify Generated Files Committed
+        run: flutter test ./test/ensure_build_test.dart --run-skipped
+
+      - name: Run tests
+        run: very_good test -x presubmit-only --coverage --test-randomize-ordering-seed random
+
+      - name: Check Code Coverage
+        uses: VeryGoodOpenSource/very_good_coverage@v2
+        with:
+          exclude: "**/*.g.dart **/*.gen.dart **/l10n/*.dart **/l10n/**/*.dart **/main/bootstrap.dart"
+          path: flutter_instagram_offline_first_clone/coverage/lcov.info

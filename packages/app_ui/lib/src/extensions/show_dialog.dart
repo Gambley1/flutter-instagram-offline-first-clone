@@ -95,11 +95,11 @@ extension DialogExtension on BuildContext {
     );
   }
 
-  /// Shows dialog with provided `title`, `content` and `actions` (if provided).
-  /// If `barrierDismissible` is `true` (default), dialog can't be dismissed by
-  /// tapping outside of the dialog.
+  /// Shows adaptive dialog with provided `title`, `content` and `actions`
+  /// (if provided). If `barrierDismissible` is `true` (default), dialog can't
+  /// be dismissed by tapping outside of the dialog.
   Future<T?> showAdaptiveDialog<T>({
-    required Widget content,
+    String? content,
     String? title,
     List<Widget> actions = const [],
     bool barrierDismissible = true,
@@ -112,15 +112,10 @@ extension DialogExtension on BuildContext {
         builder: builder ??
             (context) {
               return AlertDialog.adaptive(
-                title: title == null
-                    ? null
-                    : Text(
-                        title,
-                        textAlign: TextAlign.center,
-                      ),
-                titleTextStyle: titleTextStyle ?? context.headlineMedium,
-                content: content,
                 actionsAlignment: MainAxisAlignment.end,
+                title: Text(title!),
+                titleTextStyle: titleTextStyle,
+                content: content == null ? null : Text(content),
                 actions: actions,
               );
             },
@@ -282,31 +277,31 @@ extension DialogExtension on BuildContext {
   /// Shows the confirmation dialog and upon confirmation executes provided
   /// [fn].
   Future<void> confirmAction({
-    required FutureOr<void> Function() fn,
-    required String noText,
-    required String yesText,
+    required void Function() fn,
     required String title,
+    String? content,
+    String? yesText,
+    String? noText,
     BuildContextCallback? noAction,
-    BuildContextCallback? yesAction,
   }) async {
     final isConfimred = await showConfirmationDialog(
+      title: title,
+      content: content,
       noText: noText,
       yesText: yesText,
-      title: title,
       noAction: noAction,
-      yesAction: yesAction,
     );
     if (isConfimred == null || !isConfimred) return;
-    await Future(() => fn.call());
+    fn.call();
   }
 
   /// Shows a dialog that alerts user that they are about to do distractive
   /// action.
   Future<bool?> showConfirmationDialog({
-    required String noText,
-    required String yesText,
-    String? title,
-    String? subtitle,
+    required String title,
+    String? noText,
+    String? yesText,
+    String? content,
     BuildContextCallback? noAction,
     BuildContextCallback? yesAction,
     TextStyle? noTextStyle,
@@ -315,65 +310,29 @@ extension DialogExtension on BuildContext {
     bool barrierDismissible = true,
   }) =>
       showAdaptiveDialog<bool?>(
-        title: title ?? 'Are you sure?',
+        title: title,
+        content: content,
         barrierDismissible: barrierDismissible,
-        content: subtitle == null
-            ? const SizedBox.shrink()
-            : Text(
-                subtitle,
-                textAlign: TextAlign.center,
-                style: textTheme.bodyMedium,
-              ),
-        actions: theme.platform == TargetPlatform.android
-            ? <Widget>[
-                TextButton(
-                  onPressed: () =>
-                      noAction == null ? pop(false) : noAction.call(this),
-                  child: Text(
-                    noText,
-                    style: noTextStyle ??
-                        textTheme.bodyMedium?.copyWith(
-                          color: adaptiveColor,
-                        ),
-                  ),
-                ),
-                TextButton(
-                  onPressed: () =>
-                      yesAction == null ? pop(true) : yesAction.call(this),
-                  child: Text(
-                    yesText,
-                    style: yesTextStyle ??
-                        textTheme.bodyMedium?.copyWith(
-                          color: distractiveAction ? Colors.red : adaptiveColor,
-                        ),
-                  ),
-                ),
-              ]
-            : <Widget>[
-                AppButton(
-                  isDialogButton: true,
-                  isDefaultAction: true,
-                  onPressed: () => noAction == null
-                      ? (canPop() ? pop(false) : null)
-                      : noAction.call(this),
-                  text: noText,
-                  textStyle: noTextStyle ??
-                      textTheme.bodyMedium?.copyWith(
-                        color: adaptiveColor,
-                      ),
-                ),
-                AppButton(
-                  isDialogButton: true,
-                  isDestructiveAction: true,
-                  onPressed: () => yesAction == null
-                      ? (canPop() ? pop(true) : null)
-                      : yesAction.call(this),
-                  text: yesText,
-                  textStyle: yesTextStyle ??
-                      textTheme.bodyMedium?.copyWith(
-                        color: distractiveAction ? Colors.red : adaptiveColor,
-                      ),
-                ),
-              ],
+        titleTextStyle: headlineSmall,
+        actions: [
+          AppButton(
+            isDialogButton: true,
+            isDefaultAction: true,
+            onPressed: () => noAction == null
+                ? (canPop() ? pop(false) : null)
+                : noAction.call(this),
+            text: noText ?? 'Cancel',
+            textStyle: labelLarge?.apply(color: adaptiveColor),
+          ),
+          AppButton(
+            isDialogButton: true,
+            isDestructiveAction: true,
+            onPressed: () => yesAction == null
+                ? (canPop() ? pop(true) : null)
+                : yesAction.call(this),
+            text: yesText ?? 'Yes',
+            textStyle: labelLarge?.apply(color: Colors.red),
+          ),
+        ],
       );
 }

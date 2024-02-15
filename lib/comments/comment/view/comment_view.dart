@@ -74,14 +74,10 @@ class CommentGroup extends StatelessWidget {
           comment: comment,
           post: post,
           currentUserId: user.id,
-          onAvatarTap: () {
-            context
-              ..pop()
-              ..pushNamed(
-                'user_profile',
-                pathParameters: {'user_id': comment.author.id},
-              );
-          },
+          onAvatarTap: () => context.pushNamed(
+            'user_profile',
+            pathParameters: {'user_id': comment.author.id},
+          ),
           avatarBuilder: (context, author, onAvatarTap, radius) =>
               UserStoriesAvatar(
             author: author,
@@ -100,14 +96,11 @@ class CommentGroup extends StatelessWidget {
           isLiked: isLiked,
           isLikedByOwner: isLikedByOwner,
           onLikeComment: () => bloc.add(CommentLikeRequested(user.id)),
-          onCommentDelete: (_) => context.showConfirmationDialog(
-            title: 'Are you sure to delete comment?',
-            noText: 'Cancel',
-            yesText: 'Delete comment',
-            yesAction: (context) {
-              context.pop();
-              bloc.add(const CommentDeleteRequested());
-            },
+          onCommentDelete: (_) => context.confirmAction(
+            title: 'Delete comment',
+            content: 'Are you sure you want to delete this comment?',
+            yesText: 'Delete',
+            fn: () => bloc.add(const CommentDeleteRequested()),
           ),
           likesCount: likes,
           likesText: context.l10n.likesCountTextShort,
@@ -120,7 +113,11 @@ class CommentGroup extends StatelessWidget {
 }
 
 class RepliedComments extends StatefulWidget {
-  const RepliedComments({required this.comment, required this.post, super.key});
+  const RepliedComments({
+    required this.comment,
+    required this.post,
+    super.key,
+  });
 
   final Comment comment;
   final PostBlock post;

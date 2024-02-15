@@ -1,4 +1,5 @@
 import 'package:app_ui/app_ui.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:sprung/sprung.dart';
@@ -24,9 +25,12 @@ class PromoFloatingAction extends StatelessWidget {
     final shortenWebsite = splittedUrl.contains('www')
         ? splittedUrl.replaceAll('www', '').replaceFirst('.', '')
         : splittedUrl;
-        
+
     return Padding(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.sm,
+      ),
       child: Tappable(
         color: Colors.blue.shade400,
         borderRadius: 4,
@@ -35,23 +39,32 @@ class PromoFloatingAction extends StatelessWidget {
         child: ListTile(
           leading: Container(
             width: 42,
-            padding: const EdgeInsets.only(right: 12),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(2),
-              image: DecorationImage(
-                image: NetworkImage(
-                  promoImageUrl,
+              image: const DecorationImage(
+                image: CachedNetworkImageProvider(
+                  'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Instagram_icon.png/600px-Instagram_icon.png',
+                  cacheKey:
+                      'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Instagram_icon.png/600px-Instagram_icon.png',
                 ),
               ),
             ),
           ),
+          horizontalTitleGap: AppSpacing.sm,
           title: Text(
             title,
-            style: context.titleMedium?.copyWith(fontWeight: FontWeight.w800),
+            style: context.bodyLarge?.copyWith(fontWeight: AppFontWeight.bold),
           ),
-          subtitle: Text(
-            '$subtitle $shortenWebsite',
-            style: context.labelLarge?.copyWith(fontWeight: FontWeight.w700),
+          subtitle: Text.rich(
+            TextSpan(
+              children: [
+                TextSpan(text: '$subtitle '),
+                TextSpan(
+                  text: shortenWebsite,
+                  style: context.labelLarge,
+                ),
+              ],
+            ),
           ),
           trailing: const Icon(
             Icons.arrow_forward_ios_rounded,

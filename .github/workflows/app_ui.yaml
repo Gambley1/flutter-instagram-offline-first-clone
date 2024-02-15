@@ -1,0 +1,21 @@
+name: app_ui
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  pull_request:
+    paths:
+      - "flutter_instagram_offline_first_clone/packages/app_ui/**"
+      - ".github/workflows/app_ui.yaml"
+    branches:
+      - main
+
+jobs:
+  build:
+    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/flutter_package.yml@v1
+    with:
+      flutter_version: 3.16.9
+      working_directory: flutter_instagram_offline_first_clone/packages/app_ui
+      coverage_excludes: "lib/src/generated/*.dart"

@@ -39,19 +39,6 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   StreamSubscription<User>? _userSubscription;
   StreamSubscription<String>? _pushTokenSubscription;
 
-  Future<List<User>> searchUsers({
-    String? query,
-    String? userId,
-    String? excludeUserIds,
-  }) =>
-      _userRepository.searchUsers(
-        query: query ?? '',
-        userId: userId ?? state.user.id,
-        limit: 20,
-        offset: 0,
-        excludeUserIds: excludeUserIds,
-      );
-
   void _userChanged(User user) => add(AppUserChanged(user));
 
   Future<void> _onUserChanged(
@@ -79,8 +66,8 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   Future<void> _onAppOpened(AppOpened event, Emitter<AppState> emit) async {
     await _notificationsClient.requestPermission();
 
-    final newPushToken = await _notificationsClient.getToken();
-    await _userRepository.updateUser(pushToken: newPushToken);
+    // final newPushToken = await _notificationsClient.getToken();
+    // await _userRepository.updateUser(pushToken: newPushToken);
 
     _pushTokenSubscription =
         _notificationsClient.onTokenRefresh().listen((pushToken) async {
@@ -130,7 +117,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     AppLogoutRequested event,
     Emitter<AppState> emit,
   ) =>
-      Future.delayed(const Duration(seconds: 1), _userRepository.logOut);
+      Future.delayed(1.seconds, _userRepository.logOut);
 
   @override
   Future<void> close() {

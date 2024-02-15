@@ -217,11 +217,17 @@ class _ImagesViewPageState extends State<ImagesViewPage>
   Widget build(BuildContext context) {
     super.build(context);
     return noImages
-        ? Center(
-            child: Text(
-              widget.tabsTexts.noImagesFounded,
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
+        ? Stack(
+            children: [
+              normalAppBar(withDoneButton: false),
+              Align(
+                child: Text(
+                  widget.tabsTexts.noImagesFounded,
+                  style: const TextStyle(
+                      fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+              )
+            ],
           )
         : buildGridView();
   }
@@ -247,13 +253,20 @@ class _ImagesViewPageState extends State<ImagesViewPage>
                         children: [
                           normalAppBar(),
                           Flexible(
-                              child: normalGridView(mediaListValue,
-                                  currentPageValue, lastPageValue)),
+                            child: normalGridView(
+                              mediaListValue,
+                              currentPageValue,
+                              lastPageValue,
+                            ),
+                          ),
                         ],
                       );
                     } else {
                       return instagramGridView(
-                          mediaListValue, currentPageValue, lastPageValue);
+                        mediaListValue,
+                        currentPageValue,
+                        lastPageValue,
+                      );
                     }
                   },
                 ),
@@ -322,7 +335,7 @@ class _ImagesViewPageState extends State<ImagesViewPage>
     );
   }
 
-  Widget normalAppBar() {
+  Widget normalAppBar({bool withDoneButton = true}) {
     double width = MediaQuery.of(context).size.width;
     return Container(
       color: widget.whiteColor,
@@ -332,8 +345,10 @@ class _ImagesViewPageState extends State<ImagesViewPage>
         mainAxisSize: MainAxisSize.min,
         children: [
           exitButton(),
-          const Spacer(),
-          doneButton(),
+          if (withDoneButton) ...[
+            const Spacer(),
+            doneButton(),
+          ],
         ],
       ),
     );

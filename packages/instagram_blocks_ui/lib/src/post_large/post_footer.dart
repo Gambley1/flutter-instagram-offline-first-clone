@@ -3,7 +3,6 @@ import 'package:avatar_stack/avatar_stack.dart';
 import 'package:avatar_stack/positions.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:instagram_blocks_ui/src/carousel_dot_indicator.dart';
 import 'package:instagram_blocks_ui/src/carousel_indicator_controller.dart';
@@ -59,7 +58,9 @@ class PostFooter extends StatelessWidget {
         ? <User>[]
         : (block as PostLargeBlock)
             .likersInFollowings
-            .where((e) => e.avatarUrl != null);
+            .where((e) => e.avatarUrl != null)
+            .toList();
+
     double avatarStackWidth() {
       if (likersInFollowings.length case 1) {
         return 28;
@@ -85,37 +86,42 @@ class PostFooter extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: <Widget>[
-                  LikeButton(
-                    isLiked: isLiked,
-                    onLikedTap: likePost,
-                  ),
-                  Tappable(
-                    onTap: () => onCommentsTap(true),
-                    animationEffect: TappableAnimationEffect.scale,
-                    child: Transform.flip(
-                      flipX: true,
-                      child: Assets.icons.chatCircle.svg(
-                        height: AppSize.iconSize,
-                        width: AppSize.iconSize,
-                        colorFilter: ColorFilter.mode(
-                          context.adaptiveColor,
-                          BlendMode.srcIn,
+              Expanded(
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  heightFactor: 1,
+                  child: Row(
+                    children: <Widget>[
+                      LikeButton(
+                        isLiked: isLiked,
+                        onLikedTap: likePost,
+                      ),
+                      Tappable(
+                        onTap: () => onCommentsTap(true),
+                        animationEffect: TappableAnimationEffect.scale,
+                        child: Transform.flip(
+                          flipX: true,
+                          child: Assets.icons.chatCircle.svg(
+                            height: AppSize.iconSize,
+                            width: AppSize.iconSize,
+                            colorFilter: ColorFilter.mode(
+                              context.adaptiveColor,
+                              BlendMode.srcIn,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
+                      Tappable(
+                        onTap: () => onPostShareTap(block.id, block.author),
+                        animationEffect: TappableAnimationEffect.scale,
+                        child: const Icon(
+                          Icons.near_me_outlined,
+                          size: AppSize.iconSize,
+                        ),
+                      ),
+                    ].insertBetween(const SizedBox(width: AppSpacing.lg)),
                   ),
-                  Tappable(
-                    onTap: () => onPostShareTap(block.id, block.author),
-                    animationEffect: TappableAnimationEffect.scale,
-                    child: const Icon(
-                      Icons.near_me_outlined,
-                      size: AppSize.iconSize,
-                    ),
-                  ),
-                ].insertBetween(const SizedBox(width: AppSpacing.md)),
+                ),
               ),
               if (imagesUrl.length > 1)
                 ValueListenableBuilder(
@@ -127,12 +133,18 @@ class PostFooter extends StatelessWidget {
                     );
                   },
                 ),
-              Tappable(
-                animationEffect: TappableAnimationEffect.scale,
-                onTap: () {},
-                child: const Icon(
-                  Icons.bookmark_outline_rounded,
-                  size: AppSize.iconSize,
+              Expanded(
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  heightFactor: 1,
+                  child: Tappable(
+                    animationEffect: TappableAnimationEffect.scale,
+                    onTap: () {},
+                    child: const Icon(
+                      Icons.bookmark_outline_rounded,
+                      size: AppSize.iconSize,
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -159,8 +171,8 @@ class PostFooter extends StatelessWidget {
                           CachedNetworkImageProvider(
                             maxWidth: 28,
                             maxHeight: 28,
-                            likersInFollowings.toList()[i].avatarUrl!,
-                            cacheKey: likersInFollowings.toList()[i].avatarUrl,
+                            likersInFollowings[i].avatarUrl!,
+                            cacheKey: likersInFollowings[i].avatarUrl,
                           ),
                       ],
                     ),

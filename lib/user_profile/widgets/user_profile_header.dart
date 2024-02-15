@@ -18,32 +18,34 @@ class UserProfileHeader extends StatelessWidget {
 
   final String? userId;
 
+  void _navigateToSubscribersPage(BuildContext context) => context.pushNamed(
+        'user_statistics',
+        extra: '0',
+        queryParameters: {
+          'user_id': userId,
+        },
+      );
+
+  void _navigateToSubscriptionsPage(BuildContext context) => context.pushNamed(
+        'user_statistics',
+        extra: '1',
+        queryParameters: {
+          'user_id': userId,
+        },
+      );
+
   @override
   Widget build(BuildContext context) {
-    void navigateToSubscribersPage(BuildContext context) => context.pushNamed(
-          'user_statistics',
-          extra: '0',
-          queryParameters: {
-            'user_id': userId,
-          },
-        );
-
-    void navigateToSubscriptionsPage(BuildContext context) => context.pushNamed(
-          'user_statistics',
-          extra: '1',
-          queryParameters: {
-            'user_id': userId,
-          },
-        );
-
     final isOwner = context.select((UserProfileBloc b) => b.isOwner);
     final user = context.select((UserProfileBloc b) => b.state.user);
-    // final user = context.select((AppBloc bloc) => bloc.state.user);
     final canCreateStories =
         context.select((CreateStoriesBloc bloc) => bloc.state.isAvailable);
 
     return SliverPadding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.md,
+      ),
       sliver: SliverToBoxAdapter(
         child: Column(
           children: [
@@ -78,11 +80,13 @@ class UserProfileHeader extends StatelessWidget {
                                   ),
                                   onLoading: () => openSnackbar(
                                     const SnackbarMessage.loading(),
+                                    clearIfQueue: true,
                                   ),
                                   onStoryCreated: () => openSnackbar(
                                     const SnackbarMessage.success(
                                       title: 'Successfully created story!',
                                     ),
+                                    clearIfQueue: true,
                                   ),
                                 ),
                               );
@@ -97,8 +101,8 @@ class UserProfileHeader extends StatelessWidget {
                 ),
                 const SizedBox(width: 12),
                 UserProfileListStatistics(
-                  onSubscribersTap: () => navigateToSubscribersPage(context),
-                  onSubscribesTap: () => navigateToSubscriptionsPage(context),
+                  onSubscribersTap: () => _navigateToSubscribersPage(context),
+                  onSubscribesTap: () => _navigateToSubscriptionsPage(context),
                 ),
               ],
             ),
@@ -206,7 +210,7 @@ class EditProfileButton extends StatelessWidget {
         light: Colors.grey.shade300,
         dark: const Color.fromARGB(255, 40, 37, 37).withOpacity(.9),
       ),
-      onTap: () {},
+      onTap: () => context.pushNamed('edit_profile'),
       child: Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.md,
@@ -323,6 +327,9 @@ class UserProfileSubscribeUserButton extends StatelessWidget {
                 ),
           onTap: isSubscribed
               ? () async {
+                  void callback(ModalOption option) =>
+                      option.onTap.call(context);
+
                   final option = await context.showListOptionsModal(
                     title: user.username,
                     options: subscriberModalOptions(
@@ -333,7 +340,7 @@ class UserProfileSubscribeUserButton extends StatelessWidget {
                     ),
                   );
                   if (option == null) return;
-                  option.onTap?.call();
+                  callback.call(option);
                 }
               : () => context.read<UserProfileBloc>().add(
                     UserProfileFollowUserRequested(userId!),
@@ -345,7 +352,7 @@ class UserProfileSubscribeUserButton extends StatelessWidget {
             ),
             child: Text(
               isSubscribed ? 'Following ▼' : 'Follow',
-              style: context.labelLarge?.copyWith(),
+              style: context.labelLarge,
             ),
           ),
         );

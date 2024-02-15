@@ -5,12 +5,14 @@ import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/attachments/attachments.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/post/widgets/post_popup.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
+import 'package:flutter_instagram_offline_first_clone/reels/reels.dart';
 import 'package:flutter_instagram_offline_first_clone/stories/create_stories/create_stories.dart';
 import 'package:flutter_instagram_offline_first_clone/user_profile/bloc/user_profile_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/user_profile/widgets/user_profile_header.dart';
 import 'package:go_router/go_router.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:posts_repository/posts_repository.dart';
+import 'package:powersync_repository/powersync_repository.dart';
 import 'package:shared/shared.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 import 'package:user_repository/user_repository.dart';
@@ -29,16 +31,25 @@ class UserProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => UserProfileBloc(
-        userId: userId,
-        postsRepository: context.read<PostsRepository>(),
-        userRepository: context.read<UserRepository>(),
-      )
-        ..add(const UserProfileSubscriptionRequested())
-        ..add(const UserProfilePostsCountSubscriptionRequested())
-        ..add(const UserProfileFollowingsCountSubscriptionRequested())
-        ..add(const UserProfileFollowersCountSubscriptionRequested()),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => UserProfileBloc(
+            userId: userId,
+            postsRepository: context.read<PostsRepository>(),
+            userRepository: context.read<UserRepository>(),
+          )
+            ..add(const UserProfileSubscriptionRequested())
+            ..add(const UserProfilePostsCountSubscriptionRequested())
+            ..add(const UserProfileFollowingsCountSubscriptionRequested())
+            ..add(const UserProfileFollowersCountSubscriptionRequested()),
+        ),
+        BlocProvider(
+          create: (context) => ReelsBloc(
+            postsRepository: context.read<PostsRepository>(),
+          ),
+        ),
+      ],
       child: UserProfileView(
         userId: userId,
         isSponsored: isSponsored,
@@ -93,6 +104,7 @@ class _UserProfileViewState extends State<UserProfileView>
       body: DefaultTabController(
         length: 2,
         child: NestedScrollView(
+          floatHeaderSlivers: true,
           controller: _controller,
           headerSliverBuilder: (context, innerBoxIsScrolled) {
             return [
@@ -205,11 +217,9 @@ class _PostsPageState extends State<PostsPage>
               return const SliverToBoxAdapter(child: SizedBox.shrink());
             }
             if (showEmpty) {
-              return SliverToBoxAdapter(
-                child: Text(
-                  'No posts',
-                  style: context.titleLarge
-                      ?.copyWith(fontWeight: AppFontWeight.bold),
+              return SliverFillRemaining(
+                child: Center(
+                  child: Text('No posts', style: context.headlineSmall),
                 ),
               );
             }
@@ -240,8 +250,6 @@ class _PostsPageState extends State<PostsPage>
                         isReel: block.isReel,
                         multiMedia: multiMedia,
                         mediaUrl: block.firstMediaUrl!,
-                        // imageThumbnailBuilder: (context, url) =>
-                        //     const ShimmerPlaceholder(),
                         imageThumbnailBuilder: (_, url) =>
                             ImageAttachmentThumbnail(
                           image: Attachment(imageUrl: url),
@@ -351,10 +359,15 @@ class UserProfileLogoutButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Tappable(
       onTap: () async {
+        void callback(ModalOption option) => option.onTap.call(context);
+
         final option = await context.showListOptionsModal(
           options: [
             ModalOption(
               name: 'Log out',
+              actionTitle: 'Log out',
+              actionYesText: 'Log out',
+              actionContent: 'Are you sure you want to log out?',
               icon: Icons.logout_rounded,
               distractive: true,
               onTap: () =>
@@ -363,7 +376,7 @@ class UserProfileLogoutButton extends StatelessWidget {
           ],
         );
         if (option == null) return;
-        await Future.microtask(() => option.distractiveCallback(context));
+        callback(option);
       },
       child: Assets.icons.setting.svg(
         height: AppSize.iconSize,
@@ -388,12 +401,15 @@ class UserProfileAddMediaButton extends StatelessWidget {
 
     return Tappable(
       onTap: () async {
+        void callback(ModalOption option) => option.onTap.call(context);
+
         final option = await context.showListOptionsModal(
           title: 'Create',
           options: createMediaModalOptions(
             reelLabel: 'Reel',
             postLabel: 'Post',
             storyLabel: 'Story',
+            context: context,
             goTo: (route, {extra}) => context.pushNamed(route, extra: extra),
             enableStory: enableStory,
             storyExtra: (String path) {
@@ -408,21 +424,122 @@ class UserProfileAddMediaButton extends StatelessWidget {
                           description: 'Failed to create story',
                         ),
                       ),
-                      onLoading: () =>
-                          openSnackbar(const SnackbarMessage.loading()),
+                      onLoading: () => openSnackbar(
+                        const SnackbarMessage.loading(),
+                        clearIfQueue: true,
+                      ),
                       onStoryCreated: () => openSnackbar(
                         const SnackbarMessage.success(
                           title: 'Successfully created story!',
                         ),
+                        clearIfQueue: true,
                       ),
                     ),
                   );
               context.pop();
             },
+            onCreateReelTap: () async {
+              void uploadReel({
+                required String postId,
+                required List<Map<String, dynamic>> media,
+              }) =>
+                  context.read<ReelsBloc>().add(
+                        ReelsCreateReelRequested(
+                          postId: postId,
+                          userId: user.id,
+                          caption: '',
+                          media: media,
+                        ),
+                      );
+
+              await PickImage.pickVideo(
+                context,
+                onMediaPicked: (context, selectedFiles) async {
+                  try {
+                    openSnackbar(const SnackbarMessage.loading());
+                    late final postId = UidGenerator.v4();
+                    late final storage =
+                        Supabase.instance.client.storage.from('posts');
+
+                    late final mediaPath = '$postId/video_0';
+
+                    final selectedFile = selectedFiles.selectedFiles.first;
+                    final firstFrame = await VideoPlus.getVideoThumbnail(
+                      selectedFile.selectedFile,
+                    );
+                    final blurHash = firstFrame == null
+                        ? ''
+                        : await BlurHashPlus.blurHashEncode(firstFrame);
+                    final compressedVideo = (await VideoPlus.compressVideo(
+                          selectedFile.selectedFile,
+                        ))
+                            ?.file ??
+                        selectedFile.selectedFile;
+                    final compressedVideoBytes = await PickImage.imageBytes(
+                      file: compressedVideo,
+                    );
+                    final attachment = AttachmentFile(
+                      size: compressedVideoBytes.length,
+                      bytes: compressedVideoBytes,
+                      path: compressedVideo.path,
+                    );
+
+                    await storage.uploadBinary(
+                      mediaPath,
+                      attachment.bytes!,
+                      fileOptions: FileOptions(
+                        contentType: attachment.mediaType!.mimeType,
+                        cacheControl: '9000000',
+                      ),
+                    );
+                    final mediaUrl = storage.getPublicUrl(mediaPath);
+                    String? firstFrameUrl;
+                    if (firstFrame != null) {
+                      late final firstFramePath = '$postId/video_first_frame_0';
+                      await storage.uploadBinary(
+                        firstFramePath,
+                        firstFrame,
+                        fileOptions: FileOptions(
+                          contentType: attachment.mediaType!.mimeType,
+                          cacheControl: '9000000',
+                        ),
+                      );
+                      firstFrameUrl = storage.getPublicUrl(firstFramePath);
+                    }
+                    final media = [
+                      {
+                        'media_id': UidGenerator.v4(),
+                        'url': mediaUrl,
+                        'type': VideoMedia.identifier,
+                        'blur_hash': blurHash,
+                        'first_frame_url': firstFrameUrl,
+                      }
+                    ];
+                    uploadReel(media: media, postId: postId);
+                    openSnackbar(
+                      const SnackbarMessage.success(
+                        title: 'Successfully created reel!',
+                      ),
+                    );
+                  } catch (error, stackTrace) {
+                    logE(
+                      'Failed to create reel!',
+                      error: error,
+                      stackTrace: stackTrace,
+                    );
+                    openSnackbar(
+                      const SnackbarMessage.error(
+                        title: 'Failed to create reel!',
+                      ),
+                    );
+                  }
+                },
+              );
+            },
           ),
         );
         if (option == null) return;
-        option.onTap?.call();
+        callback(option);
       },
       child: const Icon(
         Icons.add_box_outlined,

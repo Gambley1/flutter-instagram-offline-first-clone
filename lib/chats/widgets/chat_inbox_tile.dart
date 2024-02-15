@@ -26,12 +26,12 @@ class ChatInboxTile extends StatelessWidget {
         queryParameters: {'chat': chat.toJson()},
       ),
       onLongPress: () => context.confirmAction(
+        title: 'Delete conversation',
+        content: 'Are you sure you want to delete this conversation?',
+        yesText: 'Delete',
         fn: () => context
             .read<ChatsBloc>()
             .add(ChatsDeleteChatRequested(chatId: chat.id, userId: user.id)),
-        noText: 'Cancel',
-        yesText: 'Delete',
-        title: 'Are you sure to delete this conversation?',
       ),
       leading: UserStoriesAvatar(
         author: participant,

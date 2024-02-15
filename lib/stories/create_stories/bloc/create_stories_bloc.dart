@@ -19,7 +19,6 @@ class CreateStoriesBloc extends Bloc<CreateStoriesEvent, CreateStoriesState> {
         _remoteConfig = remoteConfig,
         super(const CreateStoriesState.intital()) {
     on<CreateStoriesStoryCreateRequested>(_onStoryCreateRequested);
-    on<CreateStoriesStoryDeleteRequested>(_onStoryDeleteRequested);
     on<CreateStoriesIsFeatureAvaiableSubscriptionRequested>(
       _onCreateStoriesFeatureAvaiableSubscriptionRequested,
       transformer: throttleDroppable(),
@@ -80,19 +79,6 @@ class CreateStoriesBloc extends Bloc<CreateStoriesEvent, CreateStoriesState> {
     } catch (error, stackTrace) {
       addError(error, stackTrace);
       event.onError?.call(error, stackTrace);
-    }
-  }
-
-  Future<void> _onStoryDeleteRequested(
-    CreateStoriesStoryDeleteRequested event,
-    Emitter<CreateStoriesState> emit,
-  ) async {
-    try {
-      await _storiesRepository.deleteStory(id: event.id);
-
-      event.onStoryDeleted?.call();
-    } catch (error, stackTrace) {
-      addError(error, stackTrace);
     }
   }
 }

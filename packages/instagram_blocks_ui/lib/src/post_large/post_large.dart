@@ -63,7 +63,7 @@ class PostLarge extends StatelessWidget {
 
   final bool enableFollowButton;
 
-  final void Function(BlockAction action, String? avatarUrl) onPressed;
+  final void Function(BlockAction? action, String? avatarUrl) onPressed;
 
   final ValueSetter<bool> onCommentsTap;
 
@@ -111,7 +111,9 @@ class PostLarge extends StatelessWidget {
           enableFollowButton: enableFollowButton,
           postAuthorAvatarBuilder: postAuthorAvatarBuilder,
           postOptionsSettings: postOptionsSettings,
-          onAvatarTap: (avatarUrl) => onPressed(block.action!, avatarUrl),
+          onAvatarTap: !block.hasNavigationAction
+              ? null
+              : (avatarUrl) => onPressed(block.action, avatarUrl),
         );
 
     return Column(
@@ -137,7 +139,7 @@ class PostLarge extends StatelessWidget {
           createdAt: createdAt,
           likesCount: likesCount,
           commentsCount: commentsCount,
-          onAvatarTap: (avatarUrl) => onPressed(block.action!, avatarUrl),
+          onAvatarTap: (avatarUrl) => onPressed(block.action, avatarUrl),
           onCommentsTap: onCommentsTap,
           onPostShareTap: onPostShareTap,
           likesText: likesText,

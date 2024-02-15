@@ -42,7 +42,8 @@ class _TopToolsState extends State<TopTools> with SafeSetStateMixin {
                           context: widget.context,
                           contentKey: widget.contentKey,
                         ).then((exit) {
-                          if (exit) context.pop();
+                          if (exit == null || !exit) return;
+                          context.pop();
                         }),
                     child: const Icon(
                       Icons.close,
@@ -68,10 +69,11 @@ class _TopToolsState extends State<TopTools> with SafeSetStateMixin {
                     onTap: () async {
                       if (paintingNotifier.lines.isNotEmpty ||
                           itemNotifier.draggableWidget.isNotEmpty) {
-                        var response = await takePicture(
-                            contentKey: widget.contentKey,
-                            context: context,
-                            saveToGallery: true);
+                        final response = await takePicture(
+                          contentKey: widget.contentKey,
+                          context: context,
+                          saveToGallery: true,
+                        );
                         if (response) {
                           Fluttertoast.showToast(msg: 'Successfully saved');
                         } else {

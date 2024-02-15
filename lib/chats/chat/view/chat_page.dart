@@ -359,146 +359,13 @@ class _ChatMessagesListViewState extends State<ChatMessagesListView> {
             },
           ),
         ),
-        // NotificationListener(
-        //   onNotification: (notification) {
-        //     if (notification is UserScrollNotification) {
-        //       if (notification.direction == ScrollDirection.forward) {
-        //         _showScrollToBottom.value = false;
-        //       } else if (notification.direction == ScrollDirection.reverse) {
-        //         _showScrollToBottom.value = true;
-        //       }
-        //     }
-
-        //     return false;
-        //   },
-        //   child: ListView.custom(
-        //     reverse: true,
-        //     controller: widget.scrollController,
-        //     // itemCount: messages.length,
-        //     // separatorBuilder: (context, index) {
-        //     // final isLast = messages.length - 1 - index == 1;
-        //     // final message = messages[messages.length - 1 - index];
-        //     // final nextMessage =
-        //     //     isLast ? null : messages[messages.length - 2 - index];
-        //     // if (message.createdAt.day != nextMessage?.createdAt.day) {
-        //     //   return MessageDateTimeSeparator(
-        //     //     date: message.createdAt,
-        //     //   );
-        //     // }
-        //     // final isNextUserSame = nextMessage != null &&
-        //     //     message.sender?.id == nextMessage.sender?.id;
-
-        //     // var hasTimeDifference = false;
-        //     // if (nextMessage != null) {
-        //     //   hasTimeDifference =
-        //     //       !Jiffy.parseFromDateTime(message.createdAt).isSame(
-        //     //     Jiffy.parseFromDateTime(nextMessage.createdAt),
-        //     //     unit: Unit.minute,
-        //     //   );
-        //     // }
-
-        //     // if (isNextUserSame && !hasTimeDifference) {
-        //     //   return const SizedBox(height: 2);
-        //     // }
-
-        //     // return const SizedBox(height: 8);
-        //     // },
-        //     childrenDelegate: SliverChildBuilderDelegate(
-        //       (context, index) {
-        //         final isLast = messages.length - 1 - index <= 0;
-        //         final isPreviosLast =
-        //             messages.length - index > messages.length - 1;
-        //         final message = messages[messages.length - 1 - index];
-        //         final nextMessage =
-        //             isLast ? null : messages[messages.length - 2 - index];
-        //         final previosMessage =
-        //             isPreviosLast ? null : messages[messages.length - index];
-        //         final isNextUserSame = nextMessage != null &&
-        //             message.sender!.id == nextMessage.sender!.id;
-        //         final isPreviusUserSame = previosMessage != null &&
-        //             message.sender!.id == previosMessage.sender!.id;
-
-        //         bool checkTimeDifference(
-        //           DateTime date1,
-        //           DateTime date2,
-        //         ) =>
-        //             !Jiffy.parseFromDateTime(date1).isSame(
-        //               Jiffy.parseFromDateTime(date2),
-        //               unit: Unit.minute,
-        //             );
-
-        //         var hasTimeDifferenceWithNext = false;
-        //         if (nextMessage != null) {
-        //           hasTimeDifferenceWithNext = checkTimeDifference(
-        //             message.createdAt,
-        //             nextMessage.createdAt,
-        //           );
-        //         }
-
-        //         var hasTimeDifferenceWithPrevious = false;
-        //         if (previosMessage != null) {
-        //           hasTimeDifferenceWithPrevious = checkTimeDifference(
-        //             message.createdAt,
-        //             previosMessage.createdAt,
-        //           );
-        //         }
-
-        //         Widget messageWidget = MessageBubble(
-        //           key: ValueKey(message.id),
-        //           message: message,
-        //           onMessageTap: widget.onMessageTap,
-        //           borderRadius: (isMine) => BorderRadius.only(
-        //             topLeft: isMine
-        //                 ? const Radius.circular(22)
-        //                 : (isNextUserSame && !hasTimeDifferenceWithNext)
-        //                     ? const Radius.circular(4)
-        //                     : const Radius.circular(22),
-        //             topRight: !isMine
-        //                 ? const Radius.circular(22)
-        //                 : (isNextUserSame && !hasTimeDifferenceWithNext)
-        //                     ? const Radius.circular(4)
-        //                     : const Radius.circular(22),
-        //             bottomLeft: isMine
-        //                 ? const Radius.circular(22)
-        //                 : (isPreviusUserSame && !hasTimeDifferenceWithPreviou
-        // s)
-        //                     ? const Radius.circular(4)
-        //                     : Radius.zero,
-        //             bottomRight: !isMine
-        //                 ? const Radius.circular(22)
-        //                 : (isPreviusUserSame && !hasTimeDifferenceWithPreviou
-        // s)
-        //                     ? const Radius.circular(4)
-        //                     : Radius.zero,
-        //           ),
-        //         );
-
-        //         if (widget.messageBuilder != null) {
-        //           messageWidget = widget.messageBuilder!.call(
-        //             context,
-        //             message,
-        //             messages,
-        //             messageWidget as MessageBubble,
-        //           );
-        //         }
-        //         return messageWidget;
-        //       },
-        //       childCount: messages.length,
-        //       findChildIndexCallback: (key) {
-        //         final valueKey = key as ValueKey<String>;
-        //         final val = _messagesIndex[valueKey.value]!;
-        //         return messages.length - 1 - val;
-        //       },
-        //     ),
-        //   ),
-        // ),
         ValueListenableBuilder<bool>(
           valueListenable: _showScrollToBottom,
           child: ScrollToBottomButton(
             scrollToBottom: () {
               widget.scrollController.animateTo(
                 0,
-                duration: const Duration(milliseconds: 150),
+                duration: 150.ms,
                 curve: Curves.easeIn,
               );
               _showScrollToBottom.value = false;
@@ -511,7 +378,7 @@ class _ChatMessagesListViewState extends State<ChatMessagesListView> {
               child: AnimatedScale(
                 scale: show ? 1 : 0,
                 curve: Curves.bounceInOut,
-                duration: const Duration(milliseconds: 150),
+                duration: 150.ms,
                 child: child,
               ),
             );

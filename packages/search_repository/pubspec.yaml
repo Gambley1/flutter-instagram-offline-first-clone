@@ -1,0 +1,20 @@
+name: search_repository
+description: A package that manages search result data flow.
+version: 0.1.0+1
+publish_to: none
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  database_client:
+    path: ../database_client
+  shared:
+    path: ../shared
+  user_repository:
+    path: ../user_repository
+
+dev_dependencies:
+  mocktail: ^1.0.0
+  test: ^1.19.2
+  very_good_analysis: ^5.1.0

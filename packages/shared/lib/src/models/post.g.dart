@@ -17,8 +17,8 @@ Post _$PostFromJson(Map<String, dynamic> json) => $checkedCreate(
           author: $checkedConvert('author',
               (v) => const UserConverter().fromJson(v as Map<String, dynamic>)),
           caption: $checkedConvert('caption', (v) => v as String),
-          createdAt: $checkedConvert('created_at',
-              (v) => const DateTimeConverter().fromJson(v as String)),
+          createdAt:
+              $checkedConvert('created_at', (v) => DateTime.parse(v as String)),
           media: $checkedConvert(
               'media',
               (v) => v == null
@@ -37,7 +37,7 @@ Map<String, dynamic> _$PostToJson(Post instance) {
     'id': instance.id,
     'author': const UserConverter().toJson(instance.author),
     'caption': instance.caption,
-    'created_at': const DateTimeConverter().toJson(instance.createdAt),
+    'created_at': instance.createdAt.toIso8601String(),
   };
 
   void writeNotNull(String key, dynamic value) {

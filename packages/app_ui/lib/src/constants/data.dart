@@ -73,12 +73,18 @@ List<ModalOption> createMediaModalOptions({
   required String reelLabel,
   required String postLabel,
   required String storyLabel,
+  required BuildContext context,
   required void Function(String route, {Object? extra}) goTo,
   required bool enableStory,
+  required VoidCallback onCreateReelTap,
   Object? storyExtra,
 }) =>
     <ModalOption>[
-      ModalOption(name: reelLabel, icon: Icons.video_collection_outlined),
+      ModalOption(
+        name: reelLabel,
+        icon: Icons.video_collection_outlined,
+        onTap: onCreateReelTap,
+      ),
       ModalOption(
         name: postLabel,
         icon: Icons.outbox_outlined,

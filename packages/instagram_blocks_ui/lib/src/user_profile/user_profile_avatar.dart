@@ -134,7 +134,8 @@ class UserProfileAvatar extends StatelessWidget {
     await avatarsStorage.uploadBinary(
       filePath,
       bytes,
-      fileOptions: FileOptions(contentType: 'image/$fileExt'),
+      fileOptions:
+          FileOptions(contentType: 'image/$fileExt', cacheControl: '360000'),
     );
     final imageUrlResponse =
         await avatarsStorage.createSignedUrl(filePath, 60 * 60 * 24 * 365 * 10);

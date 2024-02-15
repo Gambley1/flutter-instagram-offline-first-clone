@@ -35,9 +35,11 @@ class PostOptionsSettings with _$PostOptionsSettings {
         ),
         ModalOption(
           name: 'Delete',
-          distractiveActionTitle: 'Delete post',
+          actionTitle: 'Delete post',
+          actionContent: 'Are you sure you want to delete this post?',
+          actionYesText: 'Delete',
           child: Assets.icons.trash.svg(
-            colorFilter: const ColorFilter.mode(Colors.red, BlendMode.srcIn),
+            colorFilter: const ColorFilter.mode(AppColors.red, BlendMode.srcIn),
           ),
           distractive: true,
           onTap: onPostDeleteTap,
@@ -58,6 +60,9 @@ class PostOptionsSettings with _$PostOptionsSettings {
         ),
         ModalOption(
           name: 'Block post author',
+          actionTitle: 'Block author',
+          actionContent: 'Are you sure you want to block this author?',
+          actionYesText: 'Block',
           icon: Icons.block,
           distractive: true,
           onTap: onPostBlockAuthorTap,

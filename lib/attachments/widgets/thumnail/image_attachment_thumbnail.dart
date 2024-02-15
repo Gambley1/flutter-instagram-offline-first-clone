@@ -151,13 +151,15 @@ class ImageAttachmentThumbnail extends StatelessWidget {
   static Widget _defaultErrorBuilder(
     BuildContext context,
     Object error,
-    StackTrace? stackTrace,
-  ) {
+    StackTrace? stackTrace, {
+    double? height,
+    double? width,
+  }) {
     return ThumbnailError(
       error: error,
       stackTrace: stackTrace,
-      height: double.infinity,
-      width: double.infinity,
+      height: height ?? double.infinity,
+      width: width ?? double.infinity,
       fit: BoxFit.cover,
     );
   }
@@ -197,6 +199,8 @@ class ImageAttachmentThumbnail extends StatelessWidget {
       context,
       'Image attachment is not valid',
       StackTrace.current,
+      height: height,
+      width: width,
     );
   }
 }
@@ -262,6 +266,8 @@ class LocalImageAttachment extends StatelessWidget {
       context,
       'Image attachment is not valid',
       StackTrace.current,
+      height: height,
+      width: width,
     );
   }
 }
@@ -323,6 +329,8 @@ class NetworkImageAttachment extends StatelessWidget {
           context,
           error,
           StackTrace.current,
+          height: height,
+          width: width,
         );
       },
     );

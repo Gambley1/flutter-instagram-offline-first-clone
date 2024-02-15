@@ -72,14 +72,17 @@ class StoriesListView extends StatelessWidget {
                                         title: 'Something went wrong!',
                                         description: 'Failed to create story',
                                       ),
+                                      clearIfQueue: true,
                                     ),
                                     onLoading: () => openSnackbar(
                                       const SnackbarMessage.loading(),
+                                      clearIfQueue: true,
                                     ),
                                     onStoryCreated: () => openSnackbar(
                                       const SnackbarMessage.success(
                                         title: 'Successfully created story!',
                                       ),
+                                      clearIfQueue: true,
                                     ),
                                   ),
                                 );

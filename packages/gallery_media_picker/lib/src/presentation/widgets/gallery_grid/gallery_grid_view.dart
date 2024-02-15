@@ -56,7 +56,6 @@ class GalleryGridViewState extends State<GalleryGridView> {
                 color: widget.provider.paramsModel?.gridViewBackgroundColor,
                 child: GridView.builder(
                   key: ValueKey(widget.path),
-                  shrinkWrap: true,
                   padding: widget.provider.paramsModel?.gridPadding ??
                       const EdgeInsets.all(0),
                   physics: widget.provider.paramsModel?.gridViewPhysics ??

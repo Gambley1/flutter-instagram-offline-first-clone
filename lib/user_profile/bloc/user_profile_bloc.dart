@@ -111,20 +111,17 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
     return false;
   }
 
-  Stream<List<PostBlock>> userPosts({bool small = true}) async* {
+  Stream<List<PostBlock>> userPosts({
+    String? userId,
+    bool small = true,
+  }) async* {
     if (small) {
       yield* _postsRepository
-          .postsOf(
-            currentUserId: _currentUserId!,
-            userId: _userId,
-          )
+          .postsOf(userId: userId ?? _userId)
           .map((posts) => posts.map((e) => e.toPostSmallBlock).toList());
     } else {
       yield* _postsRepository
-          .postsOf(
-        currentUserId: _currentUserId!,
-        userId: _userId,
-      )
+          .postsOf(userId: userId ?? _userId)
           .asyncMap((posts) async {
         final postLikersFutures = posts.map(
           (post) => _postsRepository.getPostLikersInFollowings(postId: post.id),
@@ -155,14 +152,20 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
   Future<void> _onUserProfileUpdateRequested(
     UserProfileUpdateRequested event,
     Emitter<UserProfileState> emit,
-  ) =>
-      _userRepository.updateUser(
+  ) async {
+    try {
+      await _userRepository.updateUser(
         email: event.email,
         username: event.username,
         avatarUrl: event.avatarUrl,
         fullName: event.fullName,
         pushToken: event.pushToken,
       );
+    } catch (error, stackTrace) {
+      logE('Failed to update user.', error: error, stackTrace: stackTrace);
+      addError(error, stackTrace);
+    }
+  }
 
   Future<void> _onCreatePost(
     UserProfilePostCreateRequested event,

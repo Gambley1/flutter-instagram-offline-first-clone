@@ -1,18 +1,19 @@
 import 'dart:async';
 
 import 'package:flutter/widgets.dart' show VoidCallback;
+import 'package:shared/shared.dart';
 
-/// {@template throttles}
+/// {@template throttler}
 /// A simple class for throttling functions execution
 /// {@endtemplate}
 class Throttler {
   /// {@macro throttler}
-  Throttler({this.milliseconds = _kDefaultDelay});
+  Throttler({this.milliseconds});
 
   static const _kDefaultDelay = 300;
 
   /// The delay in milliseconds.
-  final int milliseconds;
+  final int? milliseconds;
 
   /// The timer of the throttler.
   Timer? timer;
@@ -23,7 +24,7 @@ class Throttler {
 
     timer?.cancel();
     action();
-    timer = Timer(Duration(milliseconds: milliseconds), () {});
+    timer = Timer((milliseconds ?? _kDefaultDelay).ms, () {});
   }
 
   /// Disposes the timer.

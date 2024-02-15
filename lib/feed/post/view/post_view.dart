@@ -24,6 +24,7 @@ class PostView extends StatelessWidget {
     this.postIndex,
     this.withInViewNotifier = true,
     this.withCustomVideoPlayer = true,
+    this.videoPlayerType = VideoPlayerType.feed,
     super.key,
   });
 
@@ -32,6 +33,7 @@ class PostView extends StatelessWidget {
   final int? postIndex;
   final bool withInViewNotifier;
   final bool withCustomVideoPlayer;
+  final VideoPlayerType videoPlayerType;
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +60,7 @@ class PostView extends StatelessWidget {
             postIndex: postIndex,
             withInViewNotifier: withInViewNotifier,
             withCustomVideoPlayer: withCustomVideoPlayer,
+            videoPlayerType: videoPlayerType,
           ),
     );
   }
@@ -69,6 +72,7 @@ class PostLargeView extends StatelessWidget {
     required this.postIndex,
     required this.withInViewNotifier,
     required this.withCustomVideoPlayer,
+    required this.videoPlayerType,
     super.key,
   });
 
@@ -76,6 +80,7 @@ class PostLargeView extends StatelessWidget {
   final int? postIndex;
   final bool withInViewNotifier;
   final bool withCustomVideoPlayer;
+  final VideoPlayerType videoPlayerType;
 
   @override
   Widget build(BuildContext context) {
@@ -135,15 +140,17 @@ class PostLargeView extends StatelessWidget {
           );
         },
         postOptionsSettings: const PostOptionsSettings.viewer(),
-        onPressed: (action, _) => action.when(
+        onPressed: (action, _) => action?.when(
           navigateToPostAuthor: (action) => context.pushNamed(
             'user_profile',
             pathParameters: {'user_id': action.authorId},
           ),
           navigateToSponsoredPostAuthor: (action) => context.pushNamed(
             'user_profile',
-            queryParameters: {'promo_action': json.encode(action.toJson())},
             pathParameters: {'user_id': action.authorId},
+            queryParameters: {
+              'promo_action': json.encode(action.toJson()),
+            },
             extra: true,
           ),
         ),
@@ -162,6 +169,7 @@ class PostLargeView extends StatelessWidget {
                     VideoPlayerProvider.of(context).videoPlayerState;
 
                 return VideoPlayerNotifierWidget(
+                  type: videoPlayerType,
                   builder: (context, shouldPlay, child) {
                     final play = shouldPlay && isInView;
                     return ValueListenableBuilder(
@@ -256,15 +264,17 @@ class PostLargeView extends StatelessWidget {
           draggableScrollController: draggableScrollController,
         ),
       ),
-      onPressed: (action, _) => action.when(
+      onPressed: (action, _) => action?.when(
         navigateToPostAuthor: (action) => context.pushNamed(
           'user_profile',
           pathParameters: {'user_id': action.authorId},
         ),
         navigateToSponsoredPostAuthor: (action) => context.pushNamed(
           'user_profile',
-          queryParameters: {'promo_action': json.encode(action.toJson())},
           pathParameters: {'user_id': action.authorId},
+          queryParameters: {
+            'promo_action': json.encode(action.toJson()),
+          },
           extra: true,
         ),
       ),
@@ -282,6 +292,7 @@ class PostLargeView extends StatelessWidget {
                   VideoPlayerProvider.of(context).videoPlayerState;
 
               return VideoPlayerNotifierWidget(
+                type: videoPlayerType,
                 builder: (context, shouldPlay, child) {
                   final play = shouldPlay && isInView;
                   return ValueListenableBuilder(

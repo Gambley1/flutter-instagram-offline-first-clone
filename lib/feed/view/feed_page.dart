@@ -1,4 +1,5 @@
 import 'package:app_ui/app_ui.dart';
+import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:firebase_config/firebase_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -115,6 +116,7 @@ class _FeedViewState extends State<FeedView> {
     return AppScaffold(
       releaseFocus: true,
       body: NestedScrollView(
+        floatHeaderSlivers: true,
         controller: _nestedScrollController,
         headerSliverBuilder: (context, innerBoxIsScrolled) {
           return [
@@ -144,26 +146,20 @@ class _FeedBodyState extends State<FeedBody> {
   Widget build(BuildContext context) {
     final animationController = FeedPageController();
 
-    final feed = context.select((FeedBloc b) => b.state.feed.feed);
-    final hasMorePosts = context.select((FeedBloc b) => b.state.feed.hasMore);
-    final isFailure = context
-        .select((FeedBloc bloc) => bloc.state.status == FeedStatus.failure);
-
-    final user = context.select((AppBloc bloc) => bloc.state.user);
-
     return RefreshIndicator.adaptive(
       onRefresh: () async => Future.wait([
-        Future(
+        Future.microtask(
           () => context.read<FeedBloc>().add(const FeedRefreshRequested()),
         ),
-        Future(
-          () => context
-              .read<StoriesBloc>()
-              .add(StoriesFetchUserFollowingsStories(user.id)),
+        Future.microtask(
+          () => context.read<StoriesBloc>().add(
+                StoriesFetchUserFollowingsStories(
+                  context.read<AppBloc>().state.user.id,
+                ),
+              ),
         ),
       ]),
       child: InViewNotifierCustomScrollView(
-        shrinkWrap: true,
         initialInViewIds: const ['0'],
         isInViewPortCondition: (deltaTop, deltaBottom, vpHeight) {
           return deltaTop < (0.5 * vpHeight) + 80.0 &&
@@ -175,20 +171,38 @@ class _FeedBodyState extends State<FeedBody> {
           ),
           const StoriesCarousel(),
           const AppSliverDivider(),
-          SliverList.builder(
-            itemCount: feed.blocks.length,
-            itemBuilder: (context, index) {
-              final block = feed.blocks[index];
-              return _buildSliverItem(
-                context: context,
-                index: index,
-                feedLength: feed.totalBlocks,
-                block: block,
-                bloc: context.read<FeedBloc>(),
-                user: user,
-                controller: animationController,
-                hasMorePosts: hasMorePosts,
-                isFailure: isFailure,
+          BlocBuilder<FeedBloc, FeedState>(
+            buildWhen: (previous, current) {
+              if (previous.status == FeedStatus.populated &&
+                  areImmutableCollectionsWithEqualItems(
+                    previous.feed.feed.blocks.toIList(),
+                    current.feed.feed.blocks.toIList(),
+                  )) {
+                return false;
+              }
+              if (previous.status == current.status) return false;
+              return true;
+            },
+            builder: (context, state) {
+              final feed = state.feed.feed;
+              final hasMorePosts = state.feed.hasMore;
+              final isFailure = state.status == FeedStatus.failure;
+
+              return SliverList.builder(
+                itemCount: feed.blocks.length,
+                itemBuilder: (context, index) {
+                  final block = feed.blocks[index];
+                  return _buildBlock(
+                    context: context,
+                    index: index,
+                    feedLength: feed.totalBlocks,
+                    block: block,
+                    bloc: context.read<FeedBloc>(),
+                    controller: animationController,
+                    hasMorePosts: hasMorePosts,
+                    isFailure: isFailure,
+                  );
+                },
               );
             },
           ),
@@ -197,14 +211,13 @@ class _FeedBodyState extends State<FeedBody> {
     );
   }
 
-  Widget _buildSliverItem({
+  Widget _buildBlock({
     required BuildContext context,
     required int index,
     required int feedLength,
     required InstaBlock block,
     required FeedBloc bloc,
     required FeedPageController controller,
-    required User user,
     required bool hasMorePosts,
     required bool isFailure,
   }) {
@@ -258,6 +271,7 @@ class _FeedBodyState extends State<FeedBody> {
     }
     if (block is PostBlock) {
       return PostView(
+        key: ValueKey(block.id),
         block: block,
         postIndex: index,
       );

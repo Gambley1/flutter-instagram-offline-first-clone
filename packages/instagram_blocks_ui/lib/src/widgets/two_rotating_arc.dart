@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:shared/shared.dart';
 
 class TwoRotatingArc extends StatefulWidget {
   const TwoRotatingArc({
@@ -27,7 +28,7 @@ class _TwoRotatingArcState extends State<TwoRotatingArc>
     super.initState();
     _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 700),
+      duration: 700.ms,
     )..repeat(
         reverse: true,
       );

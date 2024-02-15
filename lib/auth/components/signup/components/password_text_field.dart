@@ -67,10 +67,6 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
               .withOpacity(isLoading ? .4 : 1),
         ),
       ),
-      border: outlinedBorder(
-        borderRadius: 4,
-        borderSide: BorderSide.none,
-      ),
     );
   }
 }

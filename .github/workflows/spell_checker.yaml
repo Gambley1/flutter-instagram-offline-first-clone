@@ -1,0 +1,19 @@
+name: spell_checker
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: zwaldowski/cspell-action@v1
+        with:
+          paths: "flutter_instagram_offline_first_clone/**/*.{md,dart}"
+          config: flutter_instagram_offline_first_clone/.vscode/cspell.json
+          exclude: ".gitignore"

@@ -206,8 +206,10 @@ abstract class ContentTextStyle {
 
   /// Headline 6 Text Style
   static final TextStyle headline6 = _baseTextStyle.copyWith(
+    fontFamily: 'Inter',
     fontSize: 24,
     height: 1.27,
+    fontWeight: AppFontWeight.bold,
   );
 
   /// Headline 7 Text Style
@@ -248,8 +250,6 @@ abstract class ContentTextStyle {
 
   /// Button Text Style
   static final TextStyle button = _baseTextStyle.copyWith(
-    // fontFamily: 'Montserrat',
-    fontFamily: 'Inter',
     fontSize: 14,
     fontWeight: AppFontWeight.bold,
     height: 1.42,
@@ -258,7 +258,6 @@ abstract class ContentTextStyle {
 
   /// Caption Text Style
   static final TextStyle caption = _baseTextStyle.copyWith(
-    fontFamily: 'Inter',
     fontSize: 12,
     height: 1.33,
     letterSpacing: 0.4,
@@ -266,7 +265,6 @@ abstract class ContentTextStyle {
 
   /// Overline Text Style
   static final TextStyle overline = _baseTextStyle.copyWith(
-    fontFamily: 'Inter',
     fontWeight: AppFontWeight.semiBold,
     fontSize: 12,
     height: 1.33,
@@ -275,7 +273,6 @@ abstract class ContentTextStyle {
 
   /// Label Small Text Style
   static final TextStyle labelSmall = _baseTextStyle.copyWith(
-    fontFamily: 'Inter',
     fontSize: 11,
     height: 1.45,
     letterSpacing: 0.5,
