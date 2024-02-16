@@ -16,6 +16,10 @@ migrate_working_dir/
 *.iws
 .idea/
 
+# Code gen
+*.g.dart
+*.freezed.dart
+
 # VSCode related
 .vscode/*
 

@@ -34,6 +34,7 @@ migrate_working_dir/
 pubspec.lock
 
 # Firebase related
+.firebase/
 lib/firebase_options_dev.dart
 lib/firebase_options_prod.dart
 lib/firebase_options_stg.dart
@@ -104,8 +105,26 @@ unlinked_spec.ds
 
 # Coverage
 coverage/
+.test_coverage.dart
+.test_runner.dart
+
+# Flutter repo-specific
+/bin/cache/
+/bin/mingit/
+/dev/benchmarks/mega_gallery/
+/dev/bots/.recipe_deps
+/dev/bots/android_tools/
+/dev/docs/doc/
+/dev/docs/flutter.docs.zip
+/dev/docs/lib/
+/dev/docs/pubspec.yaml
+/dev/integration_tests/**/xcuserdata
+/dev/integration_tests/**/Pods
+/packages/flutter/coverage/
+version
 
 # Submodules
+!pubspec.lock
 packages/**/pubspec.lock
 
 # Web related

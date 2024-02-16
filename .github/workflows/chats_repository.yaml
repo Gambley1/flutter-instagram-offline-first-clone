@@ -7,7 +7,7 @@ concurrency:
 on:
   pull_request:
     paths:
-      - "flutter_instagram_offline_first_clone/packages/chats_repository/**"
+      - "./packages/chats_repository/**"
       - ".github/workflows/chats_repository.yaml"
     branches:
       - main
@@ -17,4 +17,4 @@ jobs:
     uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/dart_package.yml@v1
     with:
       dart_sdk: 3.2.6
-      working_directory: flutter_instagram_offline_first_clone/packages/chats_repository
+      working_directory: ./packages/chats_repository

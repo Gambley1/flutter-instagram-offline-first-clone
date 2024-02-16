@@ -7,7 +7,7 @@ concurrency:
 on:
   pull_request:
     paths:
-      - "flutter_instagram_offline_first_clone/packages/shared/**"
+      - "./packages/shared/**"
       - ".github/workflows/shared.yaml"
     branches:
       - main
@@ -17,4 +17,5 @@ jobs:
     uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/flutter_package.yml@v1
     with:
       flutter_version: 3.16.9
-      working_directory: flutter_instagram_offline_first_clone/packages/shared
+      coverage_excludes: "**/*.g.dart **/*.freezed.dart"
+      working_directory: ./packages/shared
