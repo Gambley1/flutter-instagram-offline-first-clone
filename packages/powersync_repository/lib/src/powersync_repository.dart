@@ -146,14 +146,12 @@ class PowerSyncRepository {
   final bool isDev;
 
   bool _isInitialized = false;
-  bool _offlineMode = false;
 
   late final PowerSyncDatabase _db;
 
   /// Initializes database and opens a new instance of local database.
   Future<void> initialize({bool offlineMode = false}) async {
     if (!_isInitialized) {
-      _offlineMode = offlineMode;
       await _openDatabase();
       _isInitialized = true;
     }
@@ -175,11 +173,6 @@ class PowerSyncRepository {
   /// Whether user is logger in.
   bool isLoggedIn() {
     return Supabase.instance.client.auth.currentSession?.accessToken != null;
-  }
-
-  /// Id of the user currently logged in.
-  String? getUserId() {
-    return Supabase.instance.client.auth.currentSession?.user.id;
   }
 
   /// Local database relative directory.
@@ -228,25 +221,6 @@ class PowerSyncRepository {
     });
   }
 
-  /// Wether current mode is offline.
-  bool isOfflineMode() {
-    return _offlineMode;
-  }
-
-  /// Switches current mode to offline.
-  Future<void> switchToOfflineMode() async {
-    _offlineMode = true;
-    await _db.disconnect();
-  }
-
-  /// Switched current mode to online.
-  Future<void> switchToOnlineMode() async {
-    _offlineMode = false;
-    if (isLoggedIn()) {
-      _db.connect(connector: SupabaseConnector(_db, isDev: isDev));
-    }
-  }
-
   /// Broadcasts the [Supabase] auth state changes, whenever user signs/logs in,
   /// logs out, or when refresh token refreshes.
   Stream<AuthState> authStateChanges() =>
@@ -255,10 +229,4 @@ class PowerSyncRepository {
   /// Updates the user app metadata.
   Future<void> updateUser(Object? data) =>
       Supabase.instance.client.auth.updateUser(UserAttributes(data: data));
-
-  /// Getting current connection status
-  SyncStatus get currentStatus => _db.currentStatus;
-
-  /// Current PowerSync database status.
-  Stream<SyncStatus> get statusStream => _db.statusStream;
 }
