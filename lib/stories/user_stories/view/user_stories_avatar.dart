@@ -7,6 +7,7 @@ import 'package:flutter_instagram_offline_first_clone/app/bloc/app_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/stories/user_stories/user_stories.dart';
 import 'package:go_router/go_router.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
+import 'package:shared/shared.dart';
 import 'package:stories_repository/stories_repository.dart';
 import 'package:user_repository/user_repository.dart';
 
@@ -15,6 +16,7 @@ typedef OnAvatarTapCallback = void Function(String? avatarUrl);
 class UserStoriesAvatar extends StatelessWidget {
   const UserStoriesAvatar({
     required this.author,
+    this.stories = const [],
     this.onAvatarTap,
     this.withAddButton = false,
     this.onLongPress,
@@ -34,6 +36,7 @@ class UserStoriesAvatar extends StatelessWidget {
   });
 
   final User author;
+  final List<Story> stories;
   final OnAvatarTapCallback? onAvatarTap;
   final bool withAddButton;
   final VoidCallback? onLongPress;
@@ -54,29 +57,34 @@ class UserStoriesAvatar extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = context.select((AppBloc bloc) => bloc.state.user);
 
+    final avatar = ProfileAvatar(
+      author: author,
+      stories: stories,
+      onAvatarTap: onAvatarTap,
+      withAddButton: withAddButton,
+      animationEffect: animationEffect,
+      showStories: showStories,
+      showWhenSeen: showWhenSeen,
+      isLarge: isLarge,
+      isImagePicker: isImagePicker,
+      onImagePick: onImagePick,
+      enableUnactiveBorder: enableUnactiveBorder,
+      withShimmerPlaceholder: withShimmerPlaceholder,
+      onLongPress: onLongPress,
+      onAddButtonTap: onAddButtonTap,
+      radius: radius,
+      scaleStrength: scaleStrength,
+      withAdaptiveBorder: withAdaptiveBorder,
+    );
+
+    if (stories.isNotEmpty) return avatar;
+
     return BlocProvider(
       create: (context) => UserStoriesBloc(
         author: author,
         storiesRepository: context.read<StoriesRepository>(),
       )..add(UserStoriesSubscriptionRequested(user.id)),
-      child: ProfileAvatar(
-        author: author,
-        onAvatarTap: onAvatarTap,
-        withAddButton: withAddButton,
-        animationEffect: animationEffect,
-        showStories: showStories,
-        showWhenSeen: showWhenSeen,
-        isLarge: isLarge,
-        isImagePicker: isImagePicker,
-        onImagePick: onImagePick,
-        enableUnactiveBorder: enableUnactiveBorder,
-        withShimmerPlaceholder: withShimmerPlaceholder,
-        onLongPress: onLongPress,
-        onAddButtonTap: onAddButtonTap,
-        radius: radius,
-        scaleStrength: scaleStrength,
-        withAdaptiveBorder: withAdaptiveBorder,
-      ),
+      child: avatar,
     );
   }
 }
@@ -84,6 +92,7 @@ class UserStoriesAvatar extends StatelessWidget {
 class ProfileAvatar extends StatelessWidget {
   const ProfileAvatar({
     required this.author,
+    required this.stories,
     required this.onAvatarTap,
     required this.withAddButton,
     required this.animationEffect,
@@ -103,6 +112,7 @@ class ProfileAvatar extends StatelessWidget {
   });
 
   final User author;
+  final List<Story> stories;
   final OnAvatarTapCallback? onAvatarTap;
   final bool withAddButton;
   final VoidCallback? onLongPress;
@@ -121,8 +131,9 @@ class ProfileAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final stories =
-        context.select((UserStoriesBloc bloc) => bloc.state.stories);
+    final stories = this.stories.isNotEmpty
+        ? this.stories
+        : context.select((UserStoriesBloc bloc) => bloc.state.stories);
     final showStories =
         context.select((UserStoriesBloc bloc) => bloc.state.showStories);
 

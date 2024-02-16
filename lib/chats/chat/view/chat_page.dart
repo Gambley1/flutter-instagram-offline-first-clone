@@ -411,9 +411,7 @@ class ChatBackground extends StatelessWidget {
             stops: [0, .33, .66, .99],
           ).createShader(bounds);
         },
-        child: Assets.images.chatBackground2.image(
-          fit: BoxFit.cover,
-        ),
+        child: Assets.images.chatBackground.image(fit: BoxFit.cover),
       ),
     );
   }

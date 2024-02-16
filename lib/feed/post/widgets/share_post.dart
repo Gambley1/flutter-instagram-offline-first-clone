@@ -105,8 +105,6 @@ class _SharPostState extends State<SharePostView> with SafeSetStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    const backgroundColor = Color.fromARGB(255, 32, 30, 30);
-
     final followers =
         context.select((UserProfileBloc bloc) => bloc.state.followers);
     final followings =
@@ -116,40 +114,12 @@ class _SharPostState extends State<SharePostView> with SafeSetStateMixin {
     return AppScaffold(
       releaseFocus: true,
       resizeToAvoidBottomInset: true,
-      backgroundColor: backgroundColor,
-      appBar: AppBar(
-        surfaceTintColor: backgroundColor,
-        backgroundColor: backgroundColor,
-        automaticallyImplyLeading: false,
-        title: UserSearchField(
-          users: followersAndFollowings.toList(),
-          searchController: _searchController,
-          focusNode: _focusNode,
-          onUsersFound: (users, query) {
-            final existedUsers = query.trim().isEmpty
-                ? <User>[]
-                : followersAndFollowings
-                    .where(
-                      (user) => user.username!
-                          .toLowerCase()
-                          .trim()
-                          .contains(query.toLowerCase().trim()),
-                    )
-                    .toList();
-            if (existedUsers.isNotEmpty) {
-              final foundUsers = <User>[];
-              for (final user in users) {
-                if (existedUsers.any((existed) => existed.id == user.id)) {
-                  continue;
-                }
-                foundUsers.add(user);
-              }
-              _foundUsers.value = {...existedUsers, ...foundUsers};
-            } else {
-              _foundUsers.value = {...users};
-            }
-          },
-        ),
+      backgroundColor: AppColors.background,
+      appBar: SearchAppBar(
+        followersAndFollowings: followersAndFollowings,
+        searchController: _searchController,
+        focusNode: _focusNode,
+        onUsersFound: (users) => _foundUsers.value = users,
       ),
       bottomNavigationBar: _selectedUsers.value.isEmpty
           ? null
@@ -184,6 +154,62 @@ class _SharPostState extends State<SharePostView> with SafeSetStateMixin {
       ),
     );
   }
+}
+
+class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
+  const SearchAppBar({
+    required this.followersAndFollowings,
+    required this.searchController,
+    required this.focusNode,
+    required this.onUsersFound,
+    super.key,
+  });
+
+  final Set<User> followersAndFollowings;
+  final TextEditingController searchController;
+  final FocusNode focusNode;
+  final ValueSetter<Set<User>> onUsersFound;
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      surfaceTintColor: AppColors.background,
+      backgroundColor: AppColors.background,
+      automaticallyImplyLeading: false,
+      title: UserSearchField(
+        users: followersAndFollowings.toList(),
+        searchController: searchController,
+        focusNode: focusNode,
+        onUsersFound: (users, query) {
+          final existedUsers = query.trim().isEmpty
+              ? <User>[]
+              : followersAndFollowings
+                  .where(
+                    (user) => user.username!
+                        .toLowerCase()
+                        .trim()
+                        .contains(query.toLowerCase().trim()),
+                  )
+                  .toList();
+          if (existedUsers.isNotEmpty) {
+            final foundUsers = <User>[];
+            for (final user in users) {
+              if (existedUsers.any((existed) => existed.id == user.id)) {
+                continue;
+              }
+              foundUsers.add(user);
+            }
+            onUsersFound.call({...existedUsers, ...foundUsers});
+          } else {
+            onUsersFound.call({...users});
+          }
+        },
+      ),
+    );
+  }
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
 
 class SharePostButton extends StatefulWidget {
@@ -236,95 +262,99 @@ class _SharePostButtonState extends State<SharePostButton> {
     final user = context.select((AppBloc bloc) => bloc.state.user);
     return Padding(
       padding: EdgeInsets.only(bottom: context.viewInsets.bottom),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          const AppDivider(),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-            child: AppTextField(
-              focusNode: _focusNode,
-              textController: _messageController,
-              onChanged: (message) => _messageController.text = message,
-              contentPadding: EdgeInsets.zero,
-              border: InputBorder.none,
-              filled: false,
-              textInputType: TextInputType.text,
-              textInputAction: TextInputAction.done,
-              textCapitalization: TextCapitalization.sentences,
-              hintText: 'Add a message...',
+      child: SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            const AppDivider(),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+              child: AppTextField(
+                focusNode: _focusNode,
+                textController: _messageController,
+                onChanged: (message) => _messageController.text = message,
+                contentPadding: EdgeInsets.zero,
+                border: InputBorder.none,
+                filled: false,
+                textInputType: TextInputType.text,
+                textInputAction: TextInputAction.done,
+                textCapitalization: TextCapitalization.sentences,
+                hintText: 'Add a message...',
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(
-              left: AppSpacing.lg,
-              right: AppSpacing.lg,
-              bottom: AppSpacing.md,
-            ),
-            child: Tappable(
-              onTap: () async {
-                void pop() => context.pop();
+            Padding(
+              padding: const EdgeInsets.only(
+                left: AppSpacing.lg,
+                right: AppSpacing.lg,
+                bottom: AppSpacing.md,
+              ),
+              child: Tappable(
+                onTap: () async {
+                  void pop() => context.pop();
 
-                openSnackbar(const SnackbarMessage.loading());
-                final postShareFutures = widget.selectedUsers.map(
-                  (receiver) => Future(
-                    () => context.read<PostBloc>().add(
-                          PostShareRequested(
-                            sender: user,
-                            receiver: receiver,
-                            postAuthor: widget.block.author,
-                            message: Message(
-                              message: _messageController.text,
-                              sender: PostAuthor(
-                                id: user.id,
-                                avatarUrl: user.avatarUrl!,
-                                username: user.username!,
+                  openSnackbar(const SnackbarMessage.loading());
+                  final postShareFutures = widget.selectedUsers.map(
+                    (receiver) => Future(
+                      () => context.read<PostBloc>().add(
+                            PostShareRequested(
+                              sender: user,
+                              receiver: receiver,
+                              postAuthor: widget.block.author,
+                              message: Message(
+                                message: _messageController.text,
+                                sender: PostAuthor(
+                                  id: user.id,
+                                  avatarUrl: user.avatarUrl!,
+                                  username: user.username!,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                  ),
-                );
-                try {
-                  await Future.wait(postShareFutures).whenComplete(() {
-                    pop.call();
-                    openSnackbar(
-                      const SnackbarMessage.success(
-                        title: 'Successfully shared post!',
-                      ),
-                    );
-                  });
-                } catch (error, stackTrace) {
-                  logE(
-                    'Failed to share post.',
-                    error: error,
-                    stackTrace: stackTrace,
-                  );
-                  openSnackbar(
-                    const SnackbarMessage.error(
-                      title: 'Failed to share post.',
                     ),
                   );
-                }
-              },
-              child: Container(
-                decoration: const BoxDecoration(
-                  color: Colors.blue,
-                  borderRadius: BorderRadius.all(Radius.circular(6)),
-                ),
-                alignment: Alignment.center,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.md,
-                  vertical: AppSpacing.md,
-                ),
-                child: Text(
-                  widget.selectedUsers.length == 1 ? 'Send' : 'Send separately',
-                  style: context.bodyLarge?.apply(color: Colors.white),
+                  try {
+                    await Future.wait(postShareFutures).whenComplete(() {
+                      pop.call();
+                      openSnackbar(
+                        const SnackbarMessage.success(
+                          title: 'Successfully shared post!',
+                        ),
+                      );
+                    });
+                  } catch (error, stackTrace) {
+                    logE(
+                      'Failed to share post.',
+                      error: error,
+                      stackTrace: stackTrace,
+                    );
+                    openSnackbar(
+                      const SnackbarMessage.error(
+                        title: 'Failed to share post.',
+                      ),
+                    );
+                  }
+                },
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: Colors.blue,
+                    borderRadius: BorderRadius.all(Radius.circular(6)),
+                  ),
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.md,
+                    vertical: AppSpacing.md,
+                  ),
+                  child: Text(
+                    widget.selectedUsers.length == 1
+                        ? 'Send'
+                        : 'Send separately',
+                    style: context.bodyLarge?.apply(color: Colors.white),
+                  ),
                 ),
               ),
             ),
-          ),
-        ].insertBetween(const SizedBox(height: AppSpacing.md)),
+          ].insertBetween(const SizedBox(height: AppSpacing.md)),
+        ),
       ),
     );
   }
@@ -460,7 +490,7 @@ class UsersListView extends StatelessWidget {
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 3,
-                      mainAxisExtent: 140,
+                      mainAxisExtent: 160,
                       crossAxisSpacing: AppSpacing.xlg,
                       mainAxisSpacing: AppSpacing.lg,
                     ),
@@ -503,6 +533,7 @@ class UsersListView extends StatelessWidget {
                               user.displayFullName,
                               style: context.bodyMedium,
                               textAlign: TextAlign.center,
+                              maxLines: 3,
                             ),
                           ],
                         ),

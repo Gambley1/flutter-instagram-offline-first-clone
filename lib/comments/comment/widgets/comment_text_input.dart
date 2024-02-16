@@ -21,13 +21,12 @@ class CommentTextField extends StatefulWidget {
 }
 
 class _CommentTextFieldState extends State<CommentTextField> {
-  late TextEditingController _commentTextController;
+  final _commentTextController = TextEditingController();
   late FocusNode _focusNode;
 
   @override
   void initState() {
     super.initState();
-    _commentTextController = TextEditingController();
     context.read<CommentsController>().commentTextController =
         _commentTextController;
 
@@ -116,59 +115,60 @@ class _CommentTextFieldState extends State<CommentTextField> {
                 )
                 .toList(),
           ),
-          ListTile(
-            contentPadding: const EdgeInsets.only(
-              bottom: AppSpacing.lg,
-              right: AppSpacing.xs,
-            ),
-            titleAlignment: ListTileTitleAlignment.titleHeight,
-            leading: UserProfileAvatar(
-              enableBorder: false,
-              isLarge: false,
-              onTap: (_) {},
-              avatarUrl: user.avatarUrl,
-              withShimmerPlaceholder: true,
-            ),
-            subtitle: AppTextField(
-              textController: _commentTextController,
-              onChanged: (val) {
-                setState(() {
-                  _commentTextController.text = val;
-                });
-              },
-              hintText: 'Add a comment',
-              textInputType: TextInputType.text,
-              textInputAction: TextInputAction.newline,
-              focusNode: _focusNode,
-              border: const UnderlineInputBorder(
-                borderSide: BorderSide.none,
+          SafeArea(
+            child: ListTile(
+              contentPadding: EdgeInsets.zero,
+              titleAlignment: ListTileTitleAlignment.titleHeight,
+              horizontalTitleGap: AppSpacing.md,
+              leading: UserProfileAvatar(
+                enableBorder: false,
+                isLarge: false,
+                onTap: (_) {},
+                avatarUrl: user.avatarUrl,
+                withShimmerPlaceholder: true,
+                withAdaptiveBorder: false,
               ),
-            ),
-            trailing: _commentTextController.text.isEmpty
-                ? null
-                : Tappable(
-                    fadeStrength: FadeStrength.medium,
-                    onTap: () {
-                      if (_commentTextController.value.text.isEmpty) return;
-                      context.read<CommentsBloc>().add(
-                            CommentsCommentCreateRequested(
-                              userId: user.id,
-                              content: _commentTextController.value.text,
-                              repliedToCommentId:
-                                  commentsController.commentReplyingToCommentId,
-                            ),
-                          );
-                      if (commentsController.isReplying) {
-                        commentsController.clearReplying();
-                      }
-                      setState(_commentTextController.clear);
-                    },
-                    child: Text(
-                      'Publish',
-                      style: context.bodyLarge
-                          ?.copyWith(color: Colors.blue.shade500),
+              subtitle: AppTextField(
+                textController: _commentTextController,
+                focusNode: _focusNode,
+                onChanged: (val) {
+                  _commentTextController.text = val;
+                },
+                contentPadding: EdgeInsets.zero,
+                hintText: 'Add a comment',
+                textInputType: TextInputType.text,
+                textInputAction: TextInputAction.newline,
+                autofillHints: const [AutofillHints.username],
+                border: const UnderlineInputBorder(
+                  borderSide: BorderSide.none,
+                ),
+              ),
+              trailing: _commentTextController.text.isEmpty
+                  ? null
+                  : Tappable(
+                      fadeStrength: FadeStrength.medium,
+                      onTap: () {
+                        if (_commentTextController.value.text.isEmpty) return;
+                        context.read<CommentsBloc>().add(
+                              CommentsCommentCreateRequested(
+                                userId: user.id,
+                                content: _commentTextController.value.text,
+                                repliedToCommentId: commentsController
+                                    .commentReplyingToCommentId,
+                              ),
+                            );
+                        if (commentsController.isReplying) {
+                          commentsController.clearReplying();
+                        }
+                        setState(_commentTextController.clear);
+                      },
+                      child: Text(
+                        'Publish',
+                        style: context.bodyLarge
+                            ?.copyWith(color: Colors.blue.shade500),
+                      ),
                     ),
-                  ),
+            ),
           ),
         ],
       ),

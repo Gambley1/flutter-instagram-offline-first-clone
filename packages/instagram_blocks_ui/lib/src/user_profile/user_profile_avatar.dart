@@ -160,11 +160,12 @@ class UserProfileAvatar extends StatelessWidget {
             ? 42.0
             : withAdaptiveBorder
                 ? 22.0
-                : 19.0);
+                : 18.0);
+    late final height = radius * 2;
+    late final width = radius * 2;
     final hasStories = stories.isNotEmpty;
 
     BoxDecoration? border() {
-      if (avatarUrl == null || (avatarUrl!.isEmpty)) return null;
       if (!hasStories) return null;
       if (!enableUnactiveBorder && !showStories) return null;
       if (showStories && hasStories) return _gradientBorderDecoration;
@@ -175,7 +176,6 @@ class UserProfileAvatar extends StatelessWidget {
     }
 
     Gradient? gradient() {
-      if (avatarUrl == null || (avatarUrl!.isEmpty)) return null;
       if (!hasStories) return null;
       if (!enableUnactiveBorder && !showStories) return null;
       if (showStories && hasStories) return _defaultGradient;
@@ -198,40 +198,10 @@ class UserProfileAvatar extends StatelessWidget {
                   radius: radius,
                 );
 
-    final image = CachedNetworkImage(
-      imageUrl: avatarUrl ?? '',
-      fit: BoxFit.cover,
-      cacheKey: avatarUrl,
-      memCacheHeight: (radius * 2 + 12).toInt(),
-      memCacheWidth: (radius * 2 + 12).toInt(),
-      errorWidget: (_, __, ___) => CircleAvatar(
-        backgroundColor: context.customReversedAdaptiveColor(
-          light: Colors.white60,
-        ),
-        radius: radius,
-      ),
-      placeholder: placeholder,
-      imageBuilder: (context, imageProvider) => CircleAvatar(
-        radius: radius,
-        backgroundImage: imageProvider,
-      ),
-    );
-    if (!withAdaptiveBorder) {
-      avatar = GradientCircleContainer(
-        strokeWidth: strokeWidth ?? 2,
-        radius: radius * 2 + 12,
-        gradient: gradient(),
-        child: DecoratedBox(
-          decoration: const BoxDecoration(shape: BoxShape.circle),
-          child: avatarUrl == null || (avatarUrl?.isEmpty ?? true)
-              ? const SizedBox.shrink()
-              : image,
-        ),
-      );
-    } else {
+    if (avatarUrl == null || (avatarUrl?.trim().isEmpty ?? true)) {
       avatar = Container(
-        height: radius * 2 + 12,
-        width: radius * 2 + 12,
+        height: height + 12,
+        width: width + 12,
         decoration: border(),
         child: Stack(
           alignment: Alignment.center,
@@ -242,13 +212,63 @@ class UserProfileAvatar extends StatelessWidget {
                       ? _blackBorderDecoration
                       : _whiteBorderDecoration
                   : null,
-              child: avatarUrl == null || (avatarUrl?.isEmpty ?? true)
-                  ? const SizedBox.shrink()
-                  : image,
+              child: CircleAvatar(
+                radius: radius,
+                backgroundColor: AppColors.white,
+                foregroundImage: Assets.images.profilePhoto.provider(),
+              ),
             ),
           ],
         ),
       );
+    } else {
+      final image = CachedNetworkImage(
+        imageUrl: avatarUrl!,
+        fit: BoxFit.cover,
+        cacheKey: avatarUrl,
+        height: height,
+        width: width,
+        memCacheHeight: height.toInt(),
+        memCacheWidth: width.toInt(),
+        errorWidget: (_, __, ___) => CircleAvatar(
+          backgroundColor: context.customReversedAdaptiveColor(
+            light: Colors.white60,
+          ),
+          radius: radius,
+        ),
+        placeholder: placeholder,
+        imageBuilder: (context, imageProvider) => CircleAvatar(
+          radius: radius,
+          backgroundImage: imageProvider,
+        ),
+      );
+      if (!withAdaptiveBorder) {
+        avatar = GradientCircleContainer(
+          strokeWidth: strokeWidth ?? 2,
+          radius: radius,
+          gradient: gradient(),
+          child: image,
+        );
+      } else {
+        avatar = Container(
+          height: height + 12,
+          width: width + 12,
+          decoration: border(),
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Container(
+                decoration: border() != null
+                    ? context.isDark
+                        ? _blackBorderDecoration
+                        : _whiteBorderDecoration
+                    : null,
+                child: image,
+              ),
+            ],
+          ),
+        );
+      }
     }
 
     if (withAddButton) {
@@ -276,19 +296,14 @@ class UserProfileAvatar extends StatelessWidget {
           ),
         ),
       );
-      avatar = Stack(
-        children: [
-          avatar,
-          plusCircularIcon,
-        ],
-      );
+      avatar = Stack(children: [avatar, plusCircularIcon]);
     }
 
     return Tappable(
       onTap: onTap == null
           ? !onTapPickImage
               ? null
-              : () => _pickImage(context)
+              : () => _pickImage.call(context)
           : () => onTap?.call(avatarUrl),
       onLongPress: isImagePicker ? () => _pickImage.call(context) : onLongPress,
       animationEffect: animationEffect,
@@ -322,6 +337,9 @@ class GradientCircleContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final height = _radius * 2;
+    final width = _radius * 2;
+
     Widget child;
     if (_painter == null) {
       child = this.child;
@@ -334,8 +352,8 @@ class GradientCircleContainer extends StatelessWidget {
     return CustomPaint(
       painter: _painter,
       child: SizedBox(
-        height: _radius,
-        width: _radius,
+        height: height,
+        width: width,
         child: child,
       ),
     );

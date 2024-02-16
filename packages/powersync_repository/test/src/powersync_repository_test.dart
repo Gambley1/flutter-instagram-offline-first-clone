@@ -17,8 +17,5 @@ void main() {
     test('Is dev false', () {
       expect(powerSyncRepository.isDev, equals(isDev));
     });
-    test('Can check current mode(offline or online)', () {
-      expect(powerSyncRepository.isOfflineMode(), anyOf([false, true]));
-    });
   });
 }

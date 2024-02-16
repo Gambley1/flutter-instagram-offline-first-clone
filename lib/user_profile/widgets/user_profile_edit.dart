@@ -14,7 +14,13 @@ class UserProfileEdit extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const UserProfileEditView();
+    return BlocProvider(
+      create: (context) => UserProfileBloc(
+        userRepository: context.read<UserRepository>(),
+        postsRepository: context.read<PostsRepository>(),
+      ),
+      child: const UserProfileEditView(),
+    );
   }
 }
 
@@ -70,6 +76,11 @@ class _UserProfileEditViewState extends State<UserProfileEditView> {
                       animationEffect: TappableAnimationEffect.scale,
                       withAdaptiveBorder: false,
                       scaleStrength: ScaleStrength.xxs,
+                      onImagePick: (imageUrl) {
+                        context.read<UserProfileBloc>().add(
+                              UserProfileUpdateRequested(avatarUrl: imageUrl),
+                            );
+                      },
                     ),
                     const SizedBox(height: AppSpacing.md),
                     Text(

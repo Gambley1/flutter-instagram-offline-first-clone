@@ -99,7 +99,7 @@ class UserProfileHeader extends StatelessWidget {
                   animationEffect: TappableAnimationEffect.scale,
                   showWhenSeen: true,
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.md),
                 UserProfileListStatistics(
                   onSubscribersTap: () => _navigateToSubscribersPage(context),
                   onSubscribesTap: () => _navigateToSubscriptionsPage(context),

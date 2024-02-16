@@ -136,7 +136,6 @@ class PostLargeView extends StatelessWidget {
             onAvatarTap: onAvatarTap,
             enableUnactiveBorder: false,
             withAdaptiveBorder: false,
-            radius: 16,
           );
         },
         postOptionsSettings: const PostOptionsSettings.viewer(),
@@ -247,7 +246,6 @@ class PostLargeView extends StatelessWidget {
           onAvatarTap: onAvatarTap,
           enableUnactiveBorder: false,
           withAdaptiveBorder: false,
-          radius: 14,
         );
       },
       postOptionsSettings: isOwner

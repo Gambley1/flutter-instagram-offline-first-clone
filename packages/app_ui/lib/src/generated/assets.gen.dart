@@ -72,13 +72,9 @@ class $AssetsIconsGen {
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
-  /// File path: assets/images/chat_background.jpg
+  /// File path: assets/images/chat_background.jpeg
   AssetGenImage get chatBackground =>
-      const AssetGenImage('assets/images/chat_background.jpg');
-
-  /// File path: assets/images/chat_background2.jpeg
-  AssetGenImage get chatBackground2 =>
-      const AssetGenImage('assets/images/chat_background2.jpeg');
+      const AssetGenImage('assets/images/chat_background.jpeg');
 
   /// File path: assets/images/instagram_text_logo.svg
   SvgGenImage get instagramTextLogo =>
@@ -88,9 +84,13 @@ class $AssetsImagesGen {
   AssetGenImage get placeholder =>
       const AssetGenImage('assets/images/placeholder.png');
 
+  /// File path: assets/images/profile_photo.png
+  AssetGenImage get profilePhoto =>
+      const AssetGenImage('assets/images/profile_photo.png');
+
   /// List of all assets
   List<dynamic> get values =>
-      [chatBackground, chatBackground2, instagramTextLogo, placeholder];
+      [chatBackground, instagramTextLogo, placeholder, profilePhoto];
 }
 
 class Assets {

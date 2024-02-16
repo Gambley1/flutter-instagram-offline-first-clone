@@ -45,7 +45,6 @@ class SearchView extends StatelessWidget {
                       author: user,
                       withAdaptiveBorder: false,
                       enableUnactiveBorder: false,
-                      radius: 16,
                     ),
                     title: Text(user.displayUsername),
                     subtitle: Text(

@@ -7,7 +7,6 @@ export 'post_sponsored.dart';
 export 'promo_floating_action.dart';
 export 'running_text.dart';
 export 'shimmer_placeholder.dart';
-export 'story_avatar.dart';
 export 'subscribe_button.dart';
 export 'swipeable.dart';
 export 'time_ago.dart';

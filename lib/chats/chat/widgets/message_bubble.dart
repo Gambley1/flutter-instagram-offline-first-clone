@@ -277,7 +277,6 @@ class MessageBubbleContent extends StatelessWidget {
                                   ),
                                   leading: UserProfileAvatar(
                                     avatarUrl: sharedPost.author.avatarUrl,
-                                    radius: 16,
                                     isLarge: false,
                                     withAdaptiveBorder: false,
                                   ),
@@ -345,6 +344,7 @@ class MessageBubbleContent extends StatelessWidget {
                                 leading: UserProfileAvatar(
                                   avatarUrl: sharedPost.author.avatarUrl,
                                   isLarge: false,
+                                  withAdaptiveBorder: false,
                                 ),
                                 title: Text(
                                   sharedPost.author.username,

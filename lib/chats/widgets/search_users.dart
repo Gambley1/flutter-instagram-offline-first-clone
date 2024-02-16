@@ -75,7 +75,6 @@ class _SearchUsersState extends State<SearchUsers> with SafeSetStateMixin {
                   author: user,
                   enableUnactiveBorder: false,
                   withAdaptiveBorder: false,
-                  radius: 14,
                 ),
                 title: Text(user.displayFullName),
               );
