@@ -49,7 +49,7 @@ class _LoginFormState extends State<LoginForm> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           EmailTextField(),
-          SizedBox(height: 12),
+          SizedBox(height: AppSpacing.md),
           PasswordTextField(),
         ],
       ),

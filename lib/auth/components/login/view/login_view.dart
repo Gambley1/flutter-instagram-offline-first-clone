@@ -17,9 +17,7 @@ class LoginView extends StatelessWidget {
       body: LayoutBuilder(
         builder: (context, constraints) {
           return SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 24,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xlg),
             child: ConstrainedBox(
               constraints: BoxConstraints(
                 minWidth: constraints.maxWidth,
@@ -29,11 +27,9 @@ class LoginView extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SizedBox(
-                      height: 124,
-                    ),
+                    SizedBox(height: AppSpacing.xxxlg + AppSpacing.xxxlg),
                     AppLogo(
-                      height: 74,
+                      height: AppSpacing.xxxlg,
                       fit: BoxFit.fitHeight,
                       width: double.infinity,
                     ),
@@ -43,7 +39,10 @@ class LoginView extends StatelessWidget {
                         children: [
                           LoginForm(),
                           Padding(
-                            padding: EdgeInsets.only(bottom: 12, top: 4),
+                            padding: EdgeInsets.only(
+                              bottom: AppSpacing.md,
+                              top: AppSpacing.xs,
+                            ),
                             child: Align(
                               alignment: Alignment.centerRight,
                               child: ForgotPasswordButton(),
@@ -51,15 +50,16 @@ class LoginView extends StatelessWidget {
                           ),
                           SigninButton(),
                           Padding(
-                            padding: EdgeInsets.symmetric(vertical: 8),
+                            padding:
+                                EdgeInsets.symmetric(vertical: AppSpacing.md),
                             child: AppDivider(withText: true),
                           ),
-                          AuthProviderSigninButton(
+                          AuthProviderSignInButton(
                             provider: AuthProvider.google,
                             // TODO(googlesignin): Implement google sign in
                             onPressed: showCurrentlyUnavailableFeature,
                           ),
-                          AuthProviderSigninButton(
+                          AuthProviderSignInButton(
                             provider: AuthProvider.facebook,
                             // TODO(facebooksignin): Implement facebook sign in
                             onPressed: showCurrentlyUnavailableFeature,

@@ -68,13 +68,13 @@ class UserComment extends StatelessWidget {
             context,
             comment.author.toUser,
             (_) => onAvatarTap.call(),
-            !isReplied ? AppSize.iconSizeSmall : AppSize.iconSizeXSmall,
+            !isReplied ? AppSize.iconSizeSmall : 16,
           ) ??
           UserProfileAvatar(
+            onTap: (_) => onAvatarTap.call(),
             isLarge: false,
             radius: !isReplied ? AppSize.iconSizeSmall : AppSize.iconSizeXSmall,
             avatarUrl: comment.author.avatarUrl,
-            onTap: (_) => onAvatarTap.call(),
             withShimmerPlaceholder: true,
           ),
       title: Row(

@@ -1,8 +1,8 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 
-class AuthProviderSigninButton extends StatelessWidget {
-  const AuthProviderSigninButton({
+class AuthProviderSignInButton extends StatelessWidget {
+  const AuthProviderSignInButton({
     required this.provider,
     required this.onPressed,
     super.key,

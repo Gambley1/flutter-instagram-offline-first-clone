@@ -7,7 +7,6 @@ import 'package:flutter_instagram_offline_first_clone/stories/create_stories/cre
 import 'package:flutter_instagram_offline_first_clone/stories/stories.dart';
 import 'package:flutter_instagram_offline_first_clone/stories/user_stories/user_stories.dart';
 import 'package:go_router/go_router.dart';
-import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:shared/shared.dart';
 
 class StoriesCarousel extends StatelessWidget {
@@ -54,8 +53,7 @@ class StoriesListView extends StatelessWidget {
                       key: ValueKey(following?.id ?? user.id),
                       author: following ?? user,
                       isMine: isMine,
-                      username:
-                          following?.username ?? following?.fullName ?? '',
+                      username: following?.displayUsername ?? '',
                       myStoryLabel: context.l10n.yourStoryLabel,
                       onTap: (_) {
                         if (!canCreateStory) return;
@@ -91,10 +89,17 @@ class StoriesListView extends StatelessWidget {
                         );
                       },
                       onLongPress: isMine ? null : () {},
-                      avatarBuilder:
-                          (context, author, onAvatarTap, isMine, onLongPress) {
+                      avatarBuilder: (
+                        context,
+                        author,
+                        onAvatarTap,
+                        isMine,
+                        stories,
+                        onLongPress,
+                      ) {
                         return UserStoriesAvatar(
                           isLarge: true,
+                          stories: stories,
                           author: author,
                           onAvatarTap: onAvatarTap,
                           withAddButton: isMine,

@@ -22,7 +22,6 @@ export 'src/widgets/widgets.dart'
         PromoFloatingAction,
         RunningText,
         ShimmerPlaceholder,
-        StoryAvatar,
         SwipeDirection,
         Swipeable,
         TimeAgo,

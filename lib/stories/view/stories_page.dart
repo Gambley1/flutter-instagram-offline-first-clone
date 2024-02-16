@@ -288,7 +288,7 @@ class StoriesAuthorListTile extends StatelessWidget {
         AppSpacing.sm,
         0,
       ),
-      horizontalTitleGap: 8,
+      horizontalTitleGap: AppSpacing.sm,
       leading: UserProfileAvatar(
         isLarge: false,
         avatarUrl: author.avatarUrl,

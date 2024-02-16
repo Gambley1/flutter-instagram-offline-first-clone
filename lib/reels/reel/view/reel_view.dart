@@ -347,7 +347,6 @@ class ReelAuthorListTile extends StatelessWidget {
         UserStoriesAvatar(
           author: author.toUser,
           withAdaptiveBorder: false,
-          radius: 18,
           enableUnactiveBorder: false,
         ),
         Flexible(
