@@ -76,75 +76,6 @@ GoRouter router(AppBloc appBloc) => GoRouter(
           },
         ),
         GoRoute(
-          path: '/user/statistics',
-          name: 'user_statistics',
-          pageBuilder: (context, state) {
-            String? userId() {
-              final uid = state.uri.queryParameters['user_id'];
-              if (uid == null) return null;
-              if (uid.isEmpty) return null;
-              return uid;
-            }
-
-            final tabIndex = (state.extra! as String).parse.toInt();
-
-            return CustomTransitionPage(
-              key: state.pageKey,
-              child: BlocProvider(
-                create: (context) => UserProfileBloc(
-                  userRepository: context.read<UserRepository>(),
-                  postsRepository: context.read<PostsRepository>(),
-                  userId: userId(),
-                )
-                  ..add(const UserProfileFetchFollowersRequested())
-                  ..add(const UserProfileFetchFollowingsRequested()),
-                child: UserProfileStatistics(tabIndex: tabIndex),
-              ),
-              transitionsBuilder:
-                  (context, animation, secondaryAnimation, child) {
-                return SharedAxisTransition(
-                  animation: animation,
-                  secondaryAnimation: secondaryAnimation,
-                  transitionType: SharedAxisTransitionType.horizontal,
-                  child: child,
-                );
-              },
-            );
-          },
-        ),
-        GoRoute(
-          path: '/user/posts',
-          name: 'user_posts',
-          pageBuilder: (context, state) {
-            final userId = state.uri.queryParameters['user_id']!;
-            final index = (state.uri.queryParameters['index']!).parse.toInt();
-
-            return CustomTransitionPage(
-              key: state.pageKey,
-              child: BlocProvider(
-                create: (context) => UserProfileBloc(
-                  userRepository: context.read<UserRepository>(),
-                  postsRepository: context.read<PostsRepository>(),
-                  userId: userId,
-                ),
-                child: UserProfilePosts(
-                  userId: userId,
-                  index: index,
-                ),
-              ),
-              transitionsBuilder:
-                  (context, animation, secondaryAnimation, child) {
-                return SharedAxisTransition(
-                  animation: animation,
-                  secondaryAnimation: secondaryAnimation,
-                  transitionType: SharedAxisTransitionType.horizontal,
-                  child: child,
-                );
-              },
-            );
-          },
-        ),
-        GoRoute(
           path: '/chat/:chat_id',
           name: 'chat',
           parentNavigatorKey: _rootNavigatorKey,
@@ -473,6 +404,82 @@ GoRouter router(AppBloc appBloc) => GoRouter(
                         ),
                       ],
                     ),
+                    GoRoute(
+                      path: 'posts',
+                      name: 'user_posts',
+                      parentNavigatorKey: _rootNavigatorKey,
+                      pageBuilder: (context, state) {
+                        final userId = state.uri.queryParameters['user_id']!;
+                        final index =
+                            (state.uri.queryParameters['index']!).parse.toInt();
+
+                        return CustomTransitionPage(
+                          key: state.pageKey,
+                          child: BlocProvider(
+                            create: (context) => UserProfileBloc(
+                              userRepository: context.read<UserRepository>(),
+                              postsRepository: context.read<PostsRepository>(),
+                              userId: userId,
+                            ),
+                            child: UserProfilePosts(
+                              userId: userId,
+                              index: index,
+                            ),
+                          ),
+                          transitionsBuilder:
+                              (context, animation, secondaryAnimation, child) {
+                            return SharedAxisTransition(
+                              animation: animation,
+                              secondaryAnimation: secondaryAnimation,
+                              transitionType:
+                                  SharedAxisTransitionType.horizontal,
+                              child: child,
+                            );
+                          },
+                        );
+                      },
+                    ),
+                    GoRoute(
+                      path: 'statistics',
+                      name: 'user_statistics',
+                      parentNavigatorKey: _rootNavigatorKey,
+                      pageBuilder: (context, state) {
+                        String? userId() {
+                          final uid = state.uri.queryParameters['user_id'];
+                          if (uid == null) return null;
+                          if (uid.isEmpty) return null;
+                          return uid;
+                        }
+
+                        final tabIndex = (state.extra! as String).parse.toInt();
+
+                        return CustomTransitionPage(
+                          key: state.pageKey,
+                          child: BlocProvider(
+                            create: (context) => UserProfileBloc(
+                              userRepository: context.read<UserRepository>(),
+                              postsRepository: context.read<PostsRepository>(),
+                              userId: userId(),
+                            )
+                              ..add(const UserProfileFetchFollowersRequested())
+                              ..add(
+                                const UserProfileFetchFollowingsRequested(),
+                              ),
+                            child: UserProfileStatistics(tabIndex: tabIndex),
+                          ),
+                          transitionsBuilder:
+                              (context, animation, secondaryAnimation, child) {
+                            return SharedAxisTransition(
+                              animation: animation,
+                              secondaryAnimation: secondaryAnimation,
+                              transitionType:
+                                  SharedAxisTransitionType.horizontal,
+                              child: child,
+                            );
+                          },
+                        );
+                      },
+                    ),
                   ],
                 ),
               ],
@@ -484,12 +491,8 @@ GoRouter router(AppBloc appBloc) => GoRouter(
         final authenticated = appBloc.state.status == AppStatus.authenticated;
         final authenticating = state.matchedLocation == '/auth';
 
-        if (!authenticated) {
-          return '/auth';
-        }
-        if (authenticating) {
-          return '/feed';
-        }
+        if (!authenticated) return '/auth';
+        if (authenticating) return '/feed';
 
         return null;
       },
