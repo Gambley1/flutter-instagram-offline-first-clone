@@ -16,6 +16,9 @@ migrate_working_dir/
 *.iws
 .idea/
 
+# Generated related
+./generated/
+
 # VSCode related
 .vscode/*
 
