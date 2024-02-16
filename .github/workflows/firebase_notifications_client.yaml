@@ -7,7 +7,7 @@ concurrency:
 on:
   pull_request:
     paths:
-      - "flutter_instagram_offline_first_clone/packages/notifications_client/firebase_notifications_client/**"
+      - "./packages/notifications_client/firebase_notifications_client/**"
       - ".github/workflows/firebase_notifications_client.yaml"
     branches:
       - main
@@ -17,4 +17,4 @@ jobs:
     uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/flutter_package.yml@v1
     with:
       flutter_version: 3.16.9
-      working_directory: flutter_instagram_offline_first_clone/packages/notifications_client/firebase_notifications_client
+      working_directory: ./packages/notifications_client/firebase_notifications_client

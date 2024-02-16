@@ -7,7 +7,7 @@ concurrency:
 on:
   pull_request:
     paths:
-      - "flutter_instagram_offline_first_clone/packages/remote_config/firebase_remote_config/**"
+      - "./packages/remote_config/firebase_remote_config/**"
       - ".github/workflows/firebase_remote_config.yaml"
     branches:
       - main
@@ -17,4 +17,4 @@ jobs:
     uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/flutter_package.yml@v1
     with:
       flutter_version: 3.16.9
-      working_directory: flutter_instagram_offline_first_clone/packages/remote_config/firebase_remote_config
+      working_directory: ./packages/remote_config/firebase_remote_config

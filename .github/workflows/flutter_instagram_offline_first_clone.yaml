@@ -9,10 +9,10 @@ on:
     - cron: "0 0 * * *"
   pull_request:
     paths:
-      - "flutter_instagram_offline_first_clone/lib/**"
-      - "flutter_instagram_offline_first_clone/test/**"
-      - "flutter_instagram_offline_first_clone/packages/**"
-      - "flutter_instagram_offline_first_clone/pubspec.yaml"
+      - "./lib/**"
+      - "./test/**"
+      - "./packages/**"
+      - "./pubspec.yaml"
       - ".github/workflows/flutter_instagram_offline_first_clone.yaml"
     branches:
       - main
@@ -21,7 +21,7 @@ jobs:
   build:
     defaults:
       run:
-        working-directory: flutter_instagram_offline_first_clone
+        working-directory: /
 
     runs-on: ubuntu-latest
 
@@ -56,8 +56,12 @@ jobs:
       - name: Run tests
         run: very_good test -x presubmit-only --coverage --test-randomize-ordering-seed random
 
-      - name: Check Code Coverage
+      - name: Check for existing and non-empty coverage file
+        id: test_coverage_file
+        run: if [ -s "/coverage/lcov.info" ]; then echo "result=true" >> $GITHUB_OUTPUT ; else echo "result=false" >> $GITHUB_OUTPUT; fi
+        
+      - name: Very Good Coverage
+        if: steps.test_coverage_file.outputs.result == 'true'
         uses: VeryGoodOpenSource/very_good_coverage@v2
         with:
-          exclude: "**/*.g.dart **/*.gen.dart **/l10n/*.dart **/l10n/**/*.dart **/main/bootstrap.dart"
-          path: flutter_instagram_offline_first_clone/coverage/lcov.info
+          path: '/coverage/lcov.info'

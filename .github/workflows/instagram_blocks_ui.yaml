@@ -7,7 +7,7 @@ concurrency:
 on:
   pull_request:
     paths:
-      - "flutter_instagram_offline_first_clone/packages/instagram_blocks_ui/**"
+      - "./packages/instagram_blocks_ui/**"
       - ".github/workflows/instagram_blocks_ui.yaml"
     branches:
       - main
@@ -17,4 +17,4 @@ jobs:
     uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/flutter_package.yml@v1
     with:
       flutter_version: 3.16.9
-      working_directory: flutter_instagram_offline_first_clone/packages/instagram_blocks_ui
+      working_directory: ./packages/instagram_blocks_ui

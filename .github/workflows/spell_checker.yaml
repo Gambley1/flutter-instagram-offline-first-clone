@@ -14,6 +14,6 @@ jobs:
       - uses: actions/checkout@v4
       - uses: zwaldowski/cspell-action@v1
         with:
-          paths: "flutter_instagram_offline_first_clone/**/*.{md,dart}"
-          config: flutter_instagram_offline_first_clone/.vscode/cspell.json
+          paths: "**/*.{md,dart}"
+          config: .vscode/cspell.json
           exclude: ".gitignore"
