@@ -133,6 +133,9 @@ class TextFieldWidget extends StatelessWidget {
       keyboardType: TextInputType.multiline,
       maxLines: null,
       decoration: null,
+      onChanged: (value) {
+        editorNotifier.text = value;
+      },
     );
   }
 }
