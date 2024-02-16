@@ -48,7 +48,6 @@ class _SearchUsersState extends State<SearchUsers> with SafeSetStateMixin {
         title: AppTextField(
           textController: _queryController,
           onChanged: (query) {
-            _queryController.text = query;
             _debouncer.run(() async {
               final users = await searchRepository.searchUsers(query: query);
               _users.value = users;

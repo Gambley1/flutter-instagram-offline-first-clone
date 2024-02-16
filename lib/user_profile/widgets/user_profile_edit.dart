@@ -215,10 +215,7 @@ class _ProfileInfoInputState extends State<ProfileInfoInput> {
       labelText: widget.label,
       labelStyle: context.bodyLarge?.apply(color: AppColors.grey),
       contentPadding: EdgeInsets.zero,
-      onChanged: (value) {
-        _textController.text = value;
-        widget.onChanged?.call(value);
-      },
+      onChanged: widget.onChanged,
       floatingLabelBehaviour: FloatingLabelBehavior.auto,
       border: const UnderlineInputBorder(),
     );

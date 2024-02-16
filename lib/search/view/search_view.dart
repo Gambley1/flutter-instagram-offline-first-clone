@@ -156,7 +156,6 @@ class SearchInputField extends StatelessWidget {
       onChanged: textController == null
           ? null
           : (query) {
-              textController?.text = query;
               onChanged?.call(query);
             },
       constraints: const BoxConstraints.tightFor(height: 40),

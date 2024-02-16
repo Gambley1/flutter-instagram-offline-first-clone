@@ -272,7 +272,6 @@ class _SharePostButtonState extends State<SharePostButton> {
               child: AppTextField(
                 focusNode: _focusNode,
                 textController: _messageController,
-                onChanged: (message) => _messageController.text = message,
                 contentPadding: EdgeInsets.zero,
                 border: InputBorder.none,
                 filled: false,
@@ -423,7 +422,6 @@ class _UserSearchFieldState extends State<UserSearchField> {
           textController: searchController,
           focusNode: widget.focusNode,
           onChanged: (query) => _debouncer.run(() async {
-            searchController.text = query;
             if (query.trim().isEmpty) {
               _noUsersFound();
               return;
