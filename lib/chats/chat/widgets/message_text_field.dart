@@ -232,8 +232,6 @@ class _ChatMessageTextFieldInputState extends State<ChatMessageTextFieldInput>
                       onSendMessage: onSend,
                     ),
               onFieldSubmitted: (_) => onSend.call(),
-              onChanged: (value) =>
-                  setState(() => _effectiveController.text = value),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(32),
                 borderSide: BorderSide.none,

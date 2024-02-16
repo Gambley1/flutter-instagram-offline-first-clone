@@ -153,11 +153,6 @@ class _CreatePostViewState extends State<CreatePostView>
                           Icons.cancel,
                         ),
                       ),
-                onChanged: (value) {
-                  safeSetState(() {
-                    _captionController.text = value;
-                  });
-                },
               ),
               const SizedBox(height: AppSpacing.sm),
               Padding(

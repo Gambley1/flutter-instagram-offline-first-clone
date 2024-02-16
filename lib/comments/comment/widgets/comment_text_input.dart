@@ -131,9 +131,6 @@ class _CommentTextFieldState extends State<CommentTextField> {
               subtitle: AppTextField(
                 textController: _commentTextController,
                 focusNode: _focusNode,
-                onChanged: (val) {
-                  _commentTextController.text = val;
-                },
                 contentPadding: EdgeInsets.zero,
                 hintText: 'Add a comment',
                 textInputType: TextInputType.text,
