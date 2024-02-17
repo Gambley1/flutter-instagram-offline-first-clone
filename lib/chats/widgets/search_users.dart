@@ -59,6 +59,7 @@ class _SearchUsersState extends State<SearchUsers> with SafeSetStateMixin {
         valueListenable: _users,
         builder: (context, users, _) {
           return ListView.builder(
+            cacheExtent: 2760,
             itemCount: users.length,
             itemBuilder: (context, index) {
               final user = users[index];

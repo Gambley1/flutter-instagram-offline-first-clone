@@ -79,6 +79,24 @@
     },
     "followersText": "Подписчики",
     "followingsText": "Подписки",
+    "followersCountText": "{count, plural, other{Подписчики: {count}}}",
+    "@followersCountText": {
+        "placeholders": {
+            "count": {
+              "type": "int",
+              "example": "1" 
+            }
+        }
+    },
+    "followingsCountText": "{count, plural, other{Подписки: {count}}}",
+    "@followingsCountText": {
+        "placeholders": {
+            "count": {
+              "type": "int",
+              "example": "1" 
+            }
+        }
+    },
     "postsCount": "{count, plural, =1{Публикация} few{Публикации} other{Публикаций}}",
     "@postsCount": {
         "description": "Текст показыващий кол-во публикаций пользователя",

@@ -1172,10 +1172,11 @@ packages:
   inview_notifier_list:
     dependency: "direct main"
     description:
-      name: inview_notifier_list
-      sha256: "1ca80ee39aa585e84a4b9dc1fe7211c5f64614ce3064b0007d9396073e852e14"
-      url: "https://pub.dev"
-    source: hosted
+      path: "."
+      ref: HEAD
+      resolved-ref: "8b27aa2dcfda32af8b0da76f8230c3ca1af3cb6c"
+      url: "https://github.com/Gambley1/inview_notifier_list"
+    source: git
     version: "3.0.0"
   io:
     dependency: transitive

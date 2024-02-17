@@ -218,13 +218,21 @@ class UserRepository implements UserBaseRepository {
 
   @override
   Future<void> follow({
-    required String followerId,
     required String followToId,
+    String? followerId,
   }) =>
       _client.follow(
-        followerId: followerId,
         followToId: followToId,
+        followerId: followerId,
       );
+
+  @override
+  Future<void> removeFollower({required String id}) =>
+      _client.removeFollower(id: id);
+
+  @override
+  Future<void> unfollow({required String unfollowId, String? unfollowerId}) =>
+      _client.unfollow(unfollowId: unfollowId, unfollowerId: unfollowerId);
 
   @override
   Future<bool> isFollowed({
@@ -235,8 +243,8 @@ class UserRepository implements UserBaseRepository {
 
   @override
   Stream<bool> followingStatus({
-    required String followerId,
     required String userId,
+    String? followerId,
   }) =>
       _client.followingStatus(followerId: followerId, userId: userId);
 

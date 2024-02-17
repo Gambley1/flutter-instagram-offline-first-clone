@@ -42,10 +42,18 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
     on<UserProfileDeletePostRequested>(_onDeletePost);
     on<UserProfileFetchFollowersRequested>(_onFollowersFetch);
     on<UserProfileFetchFollowingsRequested>(_onFollowingsFetch);
+    on<UserProfileFollowersSubscriptionRequested>(
+      _onFollowersSubscriptionRequested,
+      transformer: throttleDroppable(),
+    );
     on<UserProfileFollowingsSubscriptionRequested>(
       _onFollowingsSubscriptionRequested,
+      transformer: throttleDroppable(),
     );
     on<UserProfileFollowUserRequested>(_onFollowUser);
+    on<UserProfileRemoveFollowerRequested>(
+      _onUserProfileRemoveFollowerRequested,
+    );
   }
 
   Future<void> _onUserProfileSubscriptionRequested(
@@ -193,6 +201,7 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
     UserProfileFetchFollowersRequested event,
     Emitter<UserProfileState> emit,
   ) async {
+    if (_currentUserId == null) return;
     final followers = await _userRepository.getFollowers(
       userId: _userId ?? _currentUserId!,
     );
@@ -203,16 +212,29 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
     UserProfileFetchFollowingsRequested event,
     Emitter<UserProfileState> emit,
   ) async {
+    if (_currentUserId == null) return;
     final followings = await _userRepository.getFollowings(
       userId: _userId ?? _currentUserId!,
     );
     emit(state.copyWith(followings: followings));
   }
 
+  Future<void> _onFollowersSubscriptionRequested(
+    UserProfileFollowersSubscriptionRequested event,
+    Emitter<UserProfileState> emit,
+  ) async {
+    if (_currentUserId == null) return;
+    await emit.forEach(
+      _userRepository.streamFollowers(userId: _userId ?? _currentUserId!),
+      onData: (followers) => state.copyWith(followers: followers),
+    );
+  }
+
   Future<void> _onFollowingsSubscriptionRequested(
     UserProfileFollowingsSubscriptionRequested event,
     Emitter<UserProfileState> emit,
   ) async {
+    if (_currentUserId == null) return;
     await emit.forEach(
       _userRepository.streamFollowings(userId: _userId ?? _currentUserId!),
       onData: (followings) => state.copyWith(followings: followings),
@@ -223,8 +245,17 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
     UserProfileFollowUserRequested event,
     Emitter<UserProfileState> emit,
   ) =>
-      _userRepository.follow(
-        followerId: _currentUserId!,
-        followToId: event.userId,
-      );
+      _userRepository.follow(followToId: event.userId);
+
+  Future<void> _onUserProfileRemoveFollowerRequested(
+    UserProfileRemoveFollowerRequested event,
+    Emitter<UserProfileState> emit,
+  ) async {
+    try {
+      await _userRepository.removeFollower(id: event.userId);
+    } catch (error, stackTrace) {
+      logE('Failed to remove follower.', error: error, stackTrace: stackTrace);
+      addError(error, stackTrace);
+    }
+  }
 }

@@ -140,7 +140,7 @@ class Message extends Equatable {
       id: row['id'] as String,
       sender: PostAuthor.confirmed(
         id: row['from_id'] as String,
-        avatarUrl: row['avatar_url'] as String,
+        avatarUrl: row['avatar_url'] as String?,
         username: row['username'] as String,
       ),
       type: (row['type'] as String).toMessageType ?? MessageType.text,

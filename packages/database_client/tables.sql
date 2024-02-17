@@ -337,7 +337,7 @@ create policy "Only authenticated users can subscribe to other users." on public
 create policy "Only authentiaceted users can unsubscribe from other users." on public.subscriptions 
   for delete to authenticated
     using (
-      auth.uid() = subscriber_id
+      auth.uid() = subscribed_to_id OR auth.uid() = subscriber_id
     );
 
 create type conversation_type as enum('one-on-one', 'group');
@@ -395,7 +395,7 @@ create policy "Everybody can see messages in the conversation." on public.messag
   for select using (true);
 
 create policy "Only owner can update the message." on public.messages
-  for update to authenticated with check(auth.uid() = from_id);
+  for update to authenticated with check true;
 
 create policy "Only authenticated users can create message in the conversations with other users." 
   on public.messages

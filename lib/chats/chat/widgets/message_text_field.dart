@@ -7,11 +7,12 @@ import 'package:flutter_instagram_offline_first_clone/attachments/widgets/thumna
 import 'package:flutter_instagram_offline_first_clone/chats/chat/bloc/chat_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/chats/chat/widgets/message_input_controller.dart';
 import 'package:ogp_data_extract/ogp_data_extract.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:shared/shared.dart';
 
 class ChatMessageTextField extends StatelessWidget {
   const ChatMessageTextField({
-    required this.scrollController,
+    required this.itemScrollController,
     required this.focusNode,
     required this.chat,
     this.messageInputController,
@@ -21,7 +22,7 @@ class ChatMessageTextField extends StatelessWidget {
 
   final MessageInputController? messageInputController;
   final FocusNode focusNode;
-  final ScrollController scrollController;
+  final ItemScrollController itemScrollController;
   final String? restorationId;
   final ChatInbox chat;
 
@@ -38,7 +39,7 @@ class ChatMessageTextField extends StatelessWidget {
                 child: ChatMessageTextFieldInput(
                   messageInputController: messageInputController,
                   focusNode: focusNode,
-                  scrollController: scrollController,
+                  itemScrollController: itemScrollController,
                   chat: chat,
                 ),
               ),
@@ -53,7 +54,7 @@ class ChatMessageTextField extends StatelessWidget {
 class ChatMessageTextFieldInput extends StatefulWidget {
   const ChatMessageTextFieldInput({
     required this.focusNode,
-    required this.scrollController,
+    required this.itemScrollController,
     required this.chat,
     this.messageInputController,
     this.restorationId,
@@ -62,7 +63,7 @@ class ChatMessageTextFieldInput extends StatefulWidget {
 
   final MessageInputController? messageInputController;
   final FocusNode focusNode;
-  final ScrollController scrollController;
+  final ItemScrollController itemScrollController;
   final String? restorationId;
   final ChatInbox chat;
 
@@ -201,8 +202,8 @@ class _ChatMessageTextFieldInputState extends State<ChatMessageTextFieldInput>
       setState(_effectiveController.resetAll);
       widget.focusNode.requestFocus();
       if (!wasEditing) {
-        widget.scrollController.animateTo(
-          widget.scrollController.position.minScrollExtent,
+        widget.itemScrollController.scrollTo(
+          index: 0,
           duration: 250.ms,
           curve: Curves.easeIn,
         );
@@ -341,6 +342,7 @@ class _ChatMessageTextFieldInputState extends State<ChatMessageTextFieldInput>
         _effectiveController.setOGAttachment(attachment);
       },
       onError: (error, stackTrace) {
+        logE('Failed to enrich url.', error: error, stackTrace: stackTrace);
         _effectiveController.clearOGAttachment();
       },
     );

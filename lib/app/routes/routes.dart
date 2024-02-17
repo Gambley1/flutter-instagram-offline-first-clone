@@ -1,3 +1,5 @@
+// ignore_for_file: lines_longer_than_80_chars
+
 import 'dart:async';
 import 'dart:convert';
 
@@ -30,7 +32,7 @@ final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 
 GoRouter router(AppBloc appBloc) => GoRouter(
       navigatorKey: _rootNavigatorKey,
-      initialLocation: '/feed',
+      initialLocation: '/profile',
       routes: [
         GoRoute(
           path: '/auth',
@@ -417,9 +419,9 @@ GoRouter router(AppBloc appBloc) => GoRouter(
                           key: state.pageKey,
                           child: BlocProvider(
                             create: (context) => UserProfileBloc(
+                              userId: userId,
                               userRepository: context.read<UserRepository>(),
                               postsRepository: context.read<PostsRepository>(),
-                              userId: userId,
                             ),
                             child: UserProfilePosts(
                               userId: userId,
@@ -457,13 +459,16 @@ GoRouter router(AppBloc appBloc) => GoRouter(
                           key: state.pageKey,
                           child: BlocProvider(
                             create: (context) => UserProfileBloc(
+                              userId: userId(),
                               userRepository: context.read<UserRepository>(),
                               postsRepository: context.read<PostsRepository>(),
-                              userId: userId(),
                             )
-                              ..add(const UserProfileFetchFollowersRequested())
+                              ..add(const UserProfileSubscriptionRequested())
                               ..add(
-                                const UserProfileFetchFollowingsRequested(),
+                                const UserProfileFollowingsCountSubscriptionRequested(),
+                              )
+                              ..add(
+                                const UserProfileFollowersCountSubscriptionRequested(),
                               ),
                             child: UserProfileStatistics(tabIndex: tabIndex),
                           ),

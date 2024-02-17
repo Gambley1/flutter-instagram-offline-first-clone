@@ -57,11 +57,8 @@ class _CommentTextFieldState extends State<CommentTextField> {
     final commentsController = context.read<CommentsController>();
 
     return Padding(
-      padding: EdgeInsets.only(
-        bottom: MediaQuery.of(context).viewInsets.bottom,
-        left: AppSpacing.md,
-        right: AppSpacing.md,
-      ),
+      padding:
+          EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -90,81 +87,98 @@ class _CommentTextFieldState extends State<CommentTextField> {
               );
             },
           ),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: commentEmojies
-                .map(
-                  (emoji) => Flexible(
-                    child: FittedBox(
-                      child: TextEmoji(
-                        emoji: emoji,
-                        onEmojiTap: (emoji) {
-                          setState(() {
-                            _commentTextController
-                              ..text = _commentTextController.text + emoji
-                              ..selection = TextSelection.fromPosition(
-                                TextPosition(
-                                  offset: _commentTextController.text.length,
-                                ),
-                              );
-                          });
-                        },
+          const SizedBox(height: AppSpacing.md),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: commentEmojies
+                      .map(
+                        (emoji) => Flexible(
+                          child: FittedBox(
+                            child: TextEmoji(
+                              emoji: emoji,
+                              onEmojiTap: (emoji) {
+                                setState(() {
+                                  _commentTextController
+                                    ..text = _commentTextController.text + emoji
+                                    ..selection = TextSelection.fromPosition(
+                                      TextPosition(
+                                        offset:
+                                            _commentTextController.text.length,
+                                      ),
+                                    );
+                                });
+                              },
+                            ),
+                          ),
+                        ),
+                      )
+                      .toList(),
+                ),
+                SafeArea(
+                  child: ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    titleAlignment: ListTileTitleAlignment.titleHeight,
+                    horizontalTitleGap: AppSpacing.md,
+                    leading: UserProfileAvatar(
+                      enableBorder: false,
+                      isLarge: false,
+                      onTap: (_) {},
+                      avatarUrl: user.avatarUrl,
+                      withShimmerPlaceholder: true,
+                      withAdaptiveBorder: false,
+                    ),
+                    subtitle: AppTextField(
+                      textController: _commentTextController,
+                      focusNode: _focusNode,
+                      contentPadding: EdgeInsets.zero,
+                      hintText: 'Add a comment',
+                      textInputType: TextInputType.text,
+                      textInputAction: TextInputAction.newline,
+                      autofillHints: const [AutofillHints.username],
+                      border: const UnderlineInputBorder(
+                        borderSide: BorderSide.none,
                       ),
+                    ),
+                    trailing: AnimatedBuilder(
+                      animation: Listenable.merge([_commentTextController]),
+                      builder: (context, child) {
+                        if (_commentTextController.text.trim().isEmpty) {
+                          return const SizedBox.shrink();
+                        }
+                        return Tappable(
+                          fadeStrength: FadeStrength.medium,
+                          onTap: () {
+                            if (_commentTextController.value.text.isEmpty) {
+                              return;
+                            }
+                            context.read<CommentsBloc>().add(
+                                  CommentsCommentCreateRequested(
+                                    userId: user.id,
+                                    content: _commentTextController.value.text,
+                                    repliedToCommentId: commentsController
+                                        .commentReplyingToCommentId,
+                                  ),
+                                );
+                            if (commentsController.isReplying) {
+                              commentsController.clearReplying();
+                            }
+                            setState(_commentTextController.clear);
+                          },
+                          child: Text(
+                            'Publish',
+                            style: context.bodyLarge
+                                ?.copyWith(color: Colors.blue.shade500),
+                          ),
+                        );
+                      },
                     ),
                   ),
-                )
-                .toList(),
-          ),
-          SafeArea(
-            child: ListTile(
-              contentPadding: EdgeInsets.zero,
-              titleAlignment: ListTileTitleAlignment.titleHeight,
-              horizontalTitleGap: AppSpacing.md,
-              leading: UserProfileAvatar(
-                enableBorder: false,
-                isLarge: false,
-                onTap: (_) {},
-                avatarUrl: user.avatarUrl,
-                withShimmerPlaceholder: true,
-                withAdaptiveBorder: false,
-              ),
-              subtitle: AppTextField(
-                textController: _commentTextController,
-                focusNode: _focusNode,
-                contentPadding: EdgeInsets.zero,
-                hintText: 'Add a comment',
-                textInputType: TextInputType.text,
-                textInputAction: TextInputAction.newline,
-                autofillHints: const [AutofillHints.username],
-                border: const UnderlineInputBorder(
-                  borderSide: BorderSide.none,
                 ),
-              ),
-              trailing: _commentTextController.text.isEmpty
-                  ? null
-                  : Tappable(
-                      fadeStrength: FadeStrength.medium,
-                      onTap: () {
-                        if (_commentTextController.value.text.isEmpty) return;
-                        context.read<CommentsBloc>().add(
-                              CommentsCommentCreateRequested(
-                                userId: user.id,
-                                content: _commentTextController.value.text,
-                                repliedToCommentId: commentsController
-                                    .commentReplyingToCommentId,
-                              ),
-                            );
-                        if (commentsController.isReplying) {
-                          commentsController.clearReplying();
-                        }
-                        setState(_commentTextController.clear);
-                      },
-                      child: Text(
-                        'Publish',
-                        style: context.bodyLarge
-                            ?.copyWith(color: Colors.blue.shade500),
-                      ),
-                    ),
+              ],
             ),
           ),
         ],

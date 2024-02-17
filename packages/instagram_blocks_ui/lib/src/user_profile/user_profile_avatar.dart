@@ -65,9 +65,7 @@ class UserProfileAvatar extends StatelessWidget {
     required double radius,
   }) =>
       CircleAvatar(
-        backgroundColor: context.customReversedAdaptiveColor(
-          light: Colors.white60,
-        ),
+        backgroundColor: AppColors.grey,
         radius: radius,
       );
 
@@ -240,13 +238,12 @@ class UserProfileAvatar extends StatelessWidget {
         width: width,
         memCacheHeight: height.toInt(),
         memCacheWidth: width.toInt(),
-        errorWidget: (_, __, ___) => CircleAvatar(
-          backgroundColor: context.customReversedAdaptiveColor(
-            light: Colors.white60,
-          ),
-          radius: radius,
-        ),
         placeholder: placeholder,
+        errorWidget: (_, __, ___) => CircleAvatar(
+          backgroundColor: AppColors.white,
+          radius: radius,
+          foregroundImage: Assets.images.profilePhoto.provider(),
+        ),
         imageBuilder: (context, imageProvider) => CircleAvatar(
           radius: radius,
           backgroundImage: imageProvider,
