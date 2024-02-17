@@ -75,7 +75,7 @@ class PostAuthor {
   /// Deserialize [shared] into a [PostAuthor] instance.
   factory PostAuthor.fromShared(Map<String, dynamic> shared) => PostAuthor(
         id: shared['shared_post_author_id'] as String,
-        avatarUrl: shared['shared_post_author_avatar_url'] as String,
+        avatarUrl: shared['shared_post_author_avatar_url'] as String? ?? '',
         username: shared['shared_post_author_username'] as String,
       );
 
