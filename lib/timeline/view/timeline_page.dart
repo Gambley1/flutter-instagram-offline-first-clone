@@ -72,39 +72,6 @@ class TimelineView extends StatelessWidget {
                   return const TimelineError();
                 }
                 if (state.status == TimelineStatus.populated) {
-                  final mockVideos = List.generate(10, (index) {
-                    return PostSmallBlock(
-                      id: '$index',
-                      author: const PostAuthor.confirmed(),
-                      createdAt: DateTime.now(),
-                      media: <Media>[
-                        VideoMedia(
-                          id: '${index + 1}',
-                          url:
-                              'https://cdn.pixabay.com/vimeo/849610807/ocean-173530.mp4?width=360&hash=de6ae525ac689219f1ab32778c2da557e12a4070',
-                          firstFrameUrl: '',
-                          blurHash: 'LF3]7j%Ot6jD%j%Ot6jD%jx_t6jD',
-                        ),
-                      ],
-                      caption: '',
-                    );
-                  });
-                  final mockImages = List.generate(20, (index) {
-                    return PostSmallBlock(
-                      id: '$index',
-                      author: const PostAuthor.confirmed(),
-                      createdAt: DateTime.now(),
-                      media: <Media>[
-                        ImageMedia(
-                          id: '${index + 1}',
-                          url:
-                              'https://img.freepik.com/free-photo/view-dam-during-daytime_414077-44.jpg?size=626&ext=jpg',
-                          blurHash: 'LyGm0?%2sokB?wkCozoLNKRif6fk',
-                        ),
-                      ],
-                      caption: '',
-                    );
-                  });
                   final imageBlocks = <PostBlock>[];
                   final videoBlocks = <PostBlock>[];
 

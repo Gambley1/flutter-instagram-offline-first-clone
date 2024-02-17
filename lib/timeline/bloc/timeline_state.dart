@@ -9,7 +9,9 @@ class TimelineState extends Equatable {
 
   const TimelineState.intital()
       : this._(
-            status: TimelineStatus.initial, timeline: const FeedPage.empty(),);
+          status: TimelineStatus.initial,
+          timeline: const FeedPage.empty(),
+        );
 
   final TimelineStatus status;
   final FeedPage timeline;
