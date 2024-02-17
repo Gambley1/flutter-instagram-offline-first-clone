@@ -53,7 +53,7 @@ class UserProfileHeader extends StatelessWidget {
               children: [
                 UserStoriesAvatar(
                   author: user,
-                  isImagePicker: true,
+                  isImagePicker: isOwner,
                   onImagePick: (imageUrl) {
                     context
                         .read<UserProfileBloc>()

@@ -199,28 +199,38 @@ class UserProfileAvatar extends StatelessWidget {
                 );
 
     if (avatarUrl == null || (avatarUrl?.trim().isEmpty ?? true)) {
-      avatar = Container(
-        height: height + 12,
-        width: width + 12,
-        decoration: border(),
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            Container(
-              decoration: border() != null
-                  ? context.isDark
-                      ? _blackBorderDecoration
-                      : _whiteBorderDecoration
-                  : null,
-              child: CircleAvatar(
-                radius: radius,
-                backgroundColor: AppColors.white,
-                foregroundImage: Assets.images.profilePhoto.provider(),
-              ),
-            ),
-          ],
-        ),
+      final circleAvatar = CircleAvatar(
+        radius: radius,
+        backgroundColor: AppColors.white,
+        foregroundImage: Assets.images.profilePhoto.provider(),
       );
+      if (!withAdaptiveBorder) {
+        avatar = GradientCircleContainer(
+          strokeWidth: strokeWidth ?? 2,
+          radius: radius,
+          gradient: gradient(),
+          child: circleAvatar,
+        );
+      } else {
+        avatar = Container(
+          height: height + 12,
+          width: width + 12,
+          decoration: border(),
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Container(
+                decoration: border() != null
+                    ? context.isDark
+                        ? _blackBorderDecoration
+                        : _whiteBorderDecoration
+                    : null,
+                child: circleAvatar,
+              ),
+            ],
+          ),
+        );
+      }
     } else {
       final image = CachedNetworkImage(
         imageUrl: avatarUrl!,

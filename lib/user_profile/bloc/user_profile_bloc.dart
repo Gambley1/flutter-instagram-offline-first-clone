@@ -106,7 +106,6 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
   late final _currentUserId = _userRepository.currentUserId;
 
   bool get isOwner {
-    if (_userId == null) return true;
     if (_userId == _currentUserId) return true;
     return false;
   }
