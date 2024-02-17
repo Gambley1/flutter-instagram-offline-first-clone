@@ -64,10 +64,10 @@ class UserProfileStatisticsAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final subscribers =
-        context.select((UserProfileBloc b) => b.state.followers.length);
-    final subscriptions =
-        context.select((UserProfileBloc b) => b.state.followings.length);
+    final followers =
+        context.select((UserProfileBloc b) => b.state.followersCount);
+    final followings =
+        context.select((UserProfileBloc b) => b.state.followingsCount);
     final user = context.select((UserProfileBloc b) => b.state.user);
 
     return SliverAppBar(
@@ -78,13 +78,15 @@ class UserProfileStatisticsAppBar extends StatelessWidget {
         indicatorWeight: 1,
         indicatorSize: TabBarIndicatorSize.tab,
         controller: controller,
+        labelColor: AppColors.white,
+        labelStyle: context.bodyLarge,
+        labelPadding: EdgeInsets.zero,
+        indicator: const UnderlineTabIndicator(),
+        unselectedLabelStyle: context.bodyLarge,
+        unselectedLabelColor: AppColors.grey,
         tabs: [
-          Tab(
-            text: '${context.l10n.followersText}: $subscribers',
-          ),
-          Tab(
-            text: '${context.l10n.followingsText}: $subscriptions',
-          ),
+          Tab(text: context.l10n.followersCountText(followers)),
+          Tab(text: context.l10n.followingsCountText(followings)),
         ],
       ),
     );

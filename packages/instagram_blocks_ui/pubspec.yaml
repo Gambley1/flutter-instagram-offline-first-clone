@@ -19,7 +19,8 @@ dependencies:
   flutter_blurhash: ^0.8.2
   insta_blocks:
     path: ../insta_blocks
-  inview_notifier_list: ^3.0.0
+  inview_notifier_list: 
+    git: https://github.com/Gambley1/inview_notifier_list
   marquee: ^2.2.3
   octo_image: ^2.0.0
   path_provider: ^2.1.2

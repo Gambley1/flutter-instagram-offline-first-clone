@@ -1,4 +1,5 @@
 import 'package:app_ui/app_ui.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
@@ -202,27 +203,21 @@ class _PostsPageState extends State<PostsPage>
 
     super.build(context);
     return CustomScrollView(
+      cacheExtent: 2760,
       slivers: [
         SliverOverlapInjector(
           handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
         ),
-        StreamBuilder<List<PostBlock>>(
-          stream: bloc.userPosts(),
-          builder: (context, snapshot) {
-            final loading = snapshot.connectionState == ConnectionState.waiting;
-            final blocks = snapshot.data;
-            final showNothing = loading || blocks == null;
-            final showEmpty = blocks != null && blocks.isEmpty;
-            if (showNothing) {
-              return const SliverToBoxAdapter(child: SizedBox.shrink());
-            }
-            if (showEmpty) {
-              return SliverFillRemaining(
-                child: Center(
-                  child: Text('No posts', style: context.headlineSmall),
-                ),
-              );
-            }
+        BetterStreamBuilder<List<PostBlock>>(
+          stream:
+              bloc.userPosts(),
+          noDataBuilder: (_) => SliverFillRemaining(
+            child: Center(
+              child: Text('No posts', style: context.headlineSmall),
+            ),
+          ),
+          comparator: const ListEquality<PostBlock>().equals,
+          builder: (context, blocks) {
             return SliverGrid.builder(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,

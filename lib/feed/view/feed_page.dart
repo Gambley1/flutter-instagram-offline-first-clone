@@ -1,5 +1,5 @@
 import 'package:app_ui/app_ui.dart';
-import 'package:fast_immutable_collections/fast_immutable_collections.dart';
+import 'package:collection/collection.dart';
 import 'package:firebase_config/firebase_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -160,6 +160,7 @@ class _FeedBodyState extends State<FeedBody> {
         ),
       ]),
       child: InViewNotifierCustomScrollView(
+        cacheExtent: 2760,
         initialInViewIds: const ['0'],
         isInViewPortCondition: (deltaTop, deltaBottom, vpHeight) {
           return deltaTop < (0.5 * vpHeight) + 80.0 &&
@@ -174,9 +175,9 @@ class _FeedBodyState extends State<FeedBody> {
           BlocBuilder<FeedBloc, FeedState>(
             buildWhen: (previous, current) {
               if (previous.status == FeedStatus.populated &&
-                  areImmutableCollectionsWithEqualItems(
-                    previous.feed.feed.blocks.toIList(),
-                    current.feed.feed.blocks.toIList(),
+                  const ListEquality<InstaBlock>().equals(
+                    previous.feed.feed.blocks,
+                    current.feed.feed.blocks,
                   )) {
                 return false;
               }

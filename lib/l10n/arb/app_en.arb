@@ -87,6 +87,24 @@
     "@followingsText": {
         "description": "Text displaying static Followings text"
     },
+    "followersCountText": "{count, plural, =1{{count} follower} other{{count} followers}}",
+    "@followersCountText": {
+        "placeholders": {
+            "count": {
+              "type": "int",
+              "example": "1" 
+            }
+        }
+    },
+    "followingsCountText": "{count, plural, other{{count} following}}",
+    "@followingsCountText": {
+        "placeholders": {
+            "count": {
+              "type": "int",
+              "example": "1" 
+            }
+        }
+    },
     "postsCount": "{count, plural, =1{Post} other{Posts}}",
     "@postsCount": {
         "description": "Text describing the count of posts",

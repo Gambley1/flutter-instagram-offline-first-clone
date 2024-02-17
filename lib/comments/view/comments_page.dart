@@ -102,6 +102,7 @@ class CommentsListView extends StatelessWidget {
     final comments = context.select((CommentsBloc bloc) => bloc.state.comments);
 
     return CustomScrollView(
+      cacheExtent: 2760,
       controller: scrollController,
       slivers: [
         if (comments.isNotEmpty)

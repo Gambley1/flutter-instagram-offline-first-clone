@@ -162,7 +162,7 @@ class _PostPopupState extends State<PopupModal>
 
   @override
   Widget build(BuildContext context) {
-    final user = context.select((AppBloc bloc) => bloc.state.user);
+    final user = context.read<AppBloc>().state.user;
 
     return ValueListenableBuilder<bool>(
       valueListenable: _isLiked,

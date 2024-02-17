@@ -17,6 +17,9 @@ abstract class AppColors {
   /// The blue primary color and swatch.
   static const Color blue = Color(0xFF3898EC);
 
+  /// The deep blue color.
+  static const Color deepBlue = Color(0xff337eff);
+
   /// The border outline color.
   static const Color borderOutline = Color.fromARGB(45, 250, 250, 250);
 

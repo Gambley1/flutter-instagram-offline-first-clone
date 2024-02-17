@@ -3,6 +3,7 @@ library instagram_blocks_ui;
 
 export 'package:video_player/video_player.dart';
 
+export 'src/better_stream_builder.dart';
 export 'src/media_carousel_settings.dart';
 export 'src/post_large/index.dart';
 export 'src/post_small/index.dart';

@@ -14,8 +14,10 @@ class UserProfileStatistic extends StatelessWidget {
   final int value;
   final VoidCallback onTap;
 
-  static const _statitisticsPadding =
-      EdgeInsets.symmetric(horizontal: 6, vertical: 6);
+  static const _statitisticsPadding = EdgeInsets.symmetric(
+    horizontal: AppSpacing.sm - AppSpacing.xxs,
+    vertical: AppSpacing.sm - AppSpacing.xxs,
+  );
 
   @override
   Widget build(BuildContext context) {

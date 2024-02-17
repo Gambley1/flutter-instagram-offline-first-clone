@@ -35,10 +35,11 @@ class TimelineView extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppScaffold(
       releaseFocus: true,
-      body: RefreshIndicator(
+      body: RefreshIndicator.adaptive(
         onRefresh: () async =>
             context.read<TimelineBloc>().add(const TimelineRefreshRequested()),
         child: InViewNotifierCustomScrollView(
+          cacheExtent: 2760,
           initialInViewIds: const ['2', '5'],
           isInViewPortCondition: (deltaTop, deltaBottom, vpHeight) =>
               deltaTop < (0.5 * vpHeight) + 220.0 &&
@@ -166,6 +167,8 @@ class _TimelineGridViewState extends State<TimelineGridView> {
 
   @override
   Widget build(BuildContext context) {
+    final user = context.read<AppBloc>().state.user;
+
     return SliverGrid.builder(
       gridDelegate: SliverQuiltedGridDelegate(
         crossAxisCount: 3,
@@ -184,50 +187,44 @@ class _TimelineGridViewState extends State<TimelineGridView> {
       itemBuilder: (context, index) {
         _structurePostDisplay(index);
         final multiMedia = _block.media.length > 1;
+        final isOwner = _block.author.id == user.id;
 
-        return BlocBuilder<AppBloc, AppState>(
-          builder: (context, state) {
-            final user = state.user;
-            final isOwner = _block.author.id == user.id;
-
-            return PostPopup(
-              key: ValueKey(_block.id),
-              block: _block,
-              index: index,
-              showComments: false,
-              builder: (_) => PostSmall(
-                isOwner: isOwner,
-                pinned: false,
-                isReel: _block.isReel,
-                multiMedia: multiMedia,
-                mediaUrl: _block.firstMediaUrl!,
-                imageThumbnailBuilder: (_, url) => _block.isReel
-                    ? VideoPlayerNotifierWidget(
-                        type: VideoPlayerType.timeline,
-                        id: '$index',
-                        checkIsInView: true,
-                        builder: (context, shouldPlay, child) {
-                          return VideoPlay(
-                            url: _block.firstMedia!.url,
-                            play: shouldPlay,
-                            withSound: false,
-                            expand: true,
-                            blurHash: _block.firstMedia!.blurHash,
-                            withSoundButton: false,
-                            withPlayControll: false,
-                            videoPlayerOptions: VideoPlayerOptions(
-                              mixWithOthers: true,
-                            ),
-                          );
-                        },
-                      )
-                    : ImageAttachmentThumbnail(
-                        image: Attachment(imageUrl: url),
-                        fit: BoxFit.cover,
-                      ),
-              ),
-            );
-          },
+        return PostPopup(
+          key: ValueKey(_block.id),
+          block: _block,
+          index: index,
+          showComments: false,
+          builder: (_) => PostSmall(
+            isOwner: isOwner,
+            pinned: false,
+            isReel: _block.isReel,
+            multiMedia: multiMedia,
+            mediaUrl: _block.firstMediaUrl!,
+            imageThumbnailBuilder: (_, url) => _block.isReel
+                ? VideoPlayerNotifierWidget(
+                    type: VideoPlayerType.timeline,
+                    id: '$index',
+                    checkIsInView: true,
+                    builder: (context, shouldPlay, child) {
+                      return VideoPlay(
+                        url: _block.firstMedia!.url,
+                        play: shouldPlay,
+                        withSound: false,
+                        expand: true,
+                        blurHash: _block.firstMedia!.blurHash,
+                        withSoundButton: false,
+                        withPlayControll: false,
+                        videoPlayerOptions: VideoPlayerOptions(
+                          mixWithOthers: true,
+                        ),
+                      );
+                    },
+                  )
+                : ImageAttachmentThumbnail(
+                    image: Attachment(imageUrl: url),
+                    fit: BoxFit.cover,
+                  ),
+          ),
         );
       },
     );

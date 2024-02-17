@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:isolate';
-import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:env/env.dart';
+import 'package:flutter/foundation.dart';
 import 'package:powersync_repository/powersync_repository.dart';
 import 'package:shared/shared.dart';
 import 'package:user_repository/user_repository.dart';
@@ -38,9 +38,15 @@ abstract class UserBaseRepository {
   /// Follows to the user by provided [followToId]. [followerId] is the id
   /// of currently authenticated user.
   Future<void> follow({
-    required String followerId,
     required String followToId,
+    String? followerId,
   });
+
+  /// Unfollows from user profile, identified by [unfollowId].
+  Future<void> unfollow({required String unfollowId, String? unfollowerId});
+
+  /// Removes follower from followers of current users.
+  Future<void> removeFollower({required String id});
 
   /// Check if the user identified by [followerId] is followed to
   /// the user identified by [userId].
@@ -52,8 +58,8 @@ abstract class UserBaseRepository {
   /// Returns realtime stream of followings status of the user identified by
   /// [followerId] to the user identified by [userId].
   Stream<bool> followingStatus({
-    required String followerId,
     required String userId,
+    String? followerId,
   });
 
   /// Returns followings count of the user identified by [userId].
@@ -630,27 +636,53 @@ WHERE posts.id = ?
 
   @override
   Future<void> follow({
-    required String followerId,
     required String followToId,
+    String? followerId,
   }) async {
     if (currentUserId == null) return;
     if (followToId == currentUserId) return;
-    final exists = await isFollowed(followerId: followerId, userId: followToId);
+    final exists = await isFollowed(
+      followerId: followerId ?? currentUserId!,
+      userId: followToId,
+    );
     if (!exists) {
       await _powerSyncRepository.db().execute(
         '''
           INSERT INTO subscriptions(id, subscriber_id, subscribed_to_id)
             VALUES(uuid(), ?, ?)
       ''',
-        [followerId, followToId],
+        [followerId ?? currentUserId!, followToId],
       );
       return;
     }
+    await unfollow(
+      unfollowId: followToId,
+      unfollowerId: followerId ?? currentUserId!,
+    );
+  }
+
+  @override
+  Future<void> unfollow({
+    required String unfollowId,
+    String? unfollowerId,
+  }) async {
+    if (currentUserId == null) return;
     await _powerSyncRepository.db().execute(
       '''
           DELETE FROM subscriptions WHERE subscriber_id = ? AND subscribed_to_id = ?
       ''',
-      [followerId, followToId],
+      [unfollowerId ?? currentUserId, unfollowId],
+    );
+  }
+
+  @override
+  Future<void> removeFollower({required String id}) async {
+    if (currentUserId == null) return;
+    await _powerSyncRepository.db().execute(
+      '''
+          DELETE FROM subscriptions WHERE subscriber_id = ? AND subscribed_to_id = ?
+      ''',
+      [id, currentUserId],
     );
   }
 
@@ -688,20 +720,26 @@ WHERE posts.id = ?
 
   @override
   Stream<List<User>> streamFollowers({required String userId}) async* {
-    final followersId = _powerSyncRepository.db().watch(
+    final streamResult = _powerSyncRepository.db().watch(
       'SELECT subscriber_id FROM subscriptions WHERE subscribed_to_id = ? ',
       parameters: [userId],
     );
-    if (await followersId.isEmpty) yield [];
-    await for (final followerId in followersId) {
-      yield* _powerSyncRepository
-          .db()
-          .watch(
-            'SELECT * FROM profiles WHERE id = ?',
-            parameters:
-                followerId.map((element) => element['subscriber_id']).toList(),
-          )
-          .map((event) => event.map(User.fromJson).toList());
+    await for (final result in streamResult) {
+      final followers = <User>[];
+      final followersFutures = await Future.wait(
+        result.where((row) => row.isNotEmpty).map(
+              (row) => _powerSyncRepository.db().getOptional(
+                'SELECT * FROM profiles WHERE id = ?',
+                [row['subscriber_id']],
+              ),
+            ),
+      );
+      for (final user in followersFutures) {
+        if (user == null) continue;
+        final follower = User.fromJson(user);
+        followers.add(follower);
+      }
+      yield followers;
     }
   }
 
@@ -728,18 +766,26 @@ WHERE posts.id = ?
 
   @override
   Stream<List<User>> streamFollowings({required String userId}) async* {
-    final followingsUserId = _powerSyncRepository.db().watch(
+    final streamResult = _powerSyncRepository.db().watch(
       'SELECT subscribed_to_id FROM subscriptions WHERE subscriber_id = ? ',
       parameters: [userId],
-    ).asBroadcastStream();
-    if (await followingsUserId.isEmpty) yield [];
-    await for (final result in followingsUserId) {
-      for (final row in result) {
-        yield* _powerSyncRepository.db().watch(
-          'SELECT * FROM profiles WHERE id = ?',
-          parameters: [row['subscribed_to_id']],
-        ).map((event) => event.map(User.fromJson).toList());
+    );
+    await for (final result in streamResult) {
+      final followings = <User>[];
+      final followingsFutures = await Future.wait(
+        result.where((row) => row.isNotEmpty).map(
+              (row) => _powerSyncRepository.db().getOptional(
+                'SELECT * FROM profiles WHERE id = ?',
+                [row['subscribed_to_id']],
+              ),
+            ),
+      );
+      for (final user in followingsFutures) {
+        if (user == null) continue;
+        final following = User.fromJson(user);
+        followings.add(following);
       }
+      yield followings;
     }
   }
 
@@ -759,15 +805,17 @@ WHERE posts.id = ?
 
   @override
   Stream<bool> followingStatus({
-    required String followerId,
     required String userId,
-  }) =>
-      _powerSyncRepository.db().watch(
-        '''
+    String? followerId,
+  }) async* {
+    if (followerId == null && currentUserId == null) return;
+    yield* _powerSyncRepository.db().watch(
+      '''
     SELECT 1 FROM subscriptions WHERE subscriber_id = ? AND subscribed_to_id = ?
     ''',
-        parameters: [followerId, userId],
-      ).map((event) => event.isNotEmpty);
+      parameters: [followerId ?? currentUserId, userId],
+    ).map((event) => event.isNotEmpty);
+  }
 
   @override
   Stream<int> commentsAmountOf({required String postId}) =>
@@ -1575,8 +1623,8 @@ WHERE id IN (
     AND EXISTS (
         SELECT *
         FROM subscriptions f
-        WHERE f.subscriber_id = l.user_Id
-        AND f.subscribed_to_id = ?2
+        WHERE f.subscribed_to_id = l.user_Id
+        AND f.subscriber_id = ?2
     ) AND id <> ?2
 )
 LIMIT ?3 OFFSET ?4

@@ -126,11 +126,12 @@ class UserProfileHeader extends StatelessWidget {
                   ].separatedBy(
                     const SizedBox(width: AppSpacing.sm),
                   )
-                else
+                else ...[
                   Flexible(
                     flex: 3,
-                    child: UserProfileSubscribeUserButton(userId: userId),
+                    child: UserProfileFollowUserButton(userId: userId),
                   ),
+                ],
               ],
             ),
           ],
@@ -296,8 +297,8 @@ class _ShowSuggestedPeopleButtonState extends State<ShowSuggestedPeopleButton> {
   }
 }
 
-class UserProfileSubscribeUserButton extends StatelessWidget {
-  const UserProfileSubscribeUserButton({required this.userId, super.key});
+class UserProfileFollowUserButton extends StatelessWidget {
+  const UserProfileFollowUserButton({required this.userId, super.key});
 
   final String? userId;
 
@@ -306,17 +307,13 @@ class UserProfileSubscribeUserButton extends StatelessWidget {
     final bloc = context.read<UserProfileBloc>();
     final user = context.select((UserProfileBloc b) => b.state.user);
 
-    return StreamBuilder<bool>(
+    return BetterStreamBuilder<bool>(
       stream: bloc.followingStatus(userId: userId!),
-      builder: (context, snapshot) {
-        final isSubscribed = snapshot.data;
-        if (isSubscribed == null) {
-          return const SizedBox.shrink();
-        }
+      builder: (context, isFollowed) {
         return Tappable(
           animationEffect: TappableAnimationEffect.none,
           borderRadius: 6,
-          color: isSubscribed
+          color: isFollowed
               ? context.customReversedAdaptiveColor(
                   light: Colors.grey.shade300,
                   dark: const Color.fromARGB(255, 40, 37, 37).withOpacity(.9),
@@ -325,7 +322,7 @@ class UserProfileSubscribeUserButton extends StatelessWidget {
                   light: Colors.blue.shade300,
                   dark: Colors.blue.shade500,
                 ),
-          onTap: isSubscribed
+          onTap: isFollowed
               ? () async {
                   void callback(ModalOption option) =>
                       option.onTap.call(context);
@@ -351,8 +348,9 @@ class UserProfileSubscribeUserButton extends StatelessWidget {
               vertical: AppSpacing.sm,
             ),
             child: Text(
-              isSubscribed ? 'Following ▼' : 'Follow',
+              isFollowed ? 'Following ▼' : 'Follow',
               style: context.labelLarge,
+              maxLines: 1,
             ),
           ),
         );

@@ -27,10 +27,11 @@ typedef MessageBuilder = Widget Function(
   BuildContext,
   Message message,
   List<Message>,
-  MessageBubble defaultMessageWidget,
-);
+  MessageBubble defaultMessageWidget, {
+  EdgeInsets? padding,
+});
 
-class MessageBubble extends StatefulWidget {
+class MessageBubble extends StatelessWidget {
   const MessageBubble({
     required this.message,
     required this.onMessageTap,
@@ -82,13 +83,8 @@ class MessageBubble extends StatefulWidget {
       !message.createdAt.isAtSameMomentAs(message.updatedAt);
 
   @override
-  State<MessageBubble> createState() => _MessageBubbleState();
-}
-
-class _MessageBubbleState extends State<MessageBubble> {
-  @override
   Widget build(BuildContext context) {
-    final message = widget.message;
+    final message = this.message;
 
     final user = context.select((AppBloc bloc) => bloc.state.user);
     final isMine = message.sender?.id == user.id;
@@ -98,8 +94,8 @@ class _MessageBubbleState extends State<MessageBubble> {
       key: ValueKey(message.id),
       onVisibilityChanged: (info) {
         if (info.visibleBounds.isEmpty) return;
+        if (isMine) return;
         if (message.isRead) return;
-        if (message.sender?.id == user.id) return;
         context.read<ChatBloc>().add(ChatMessageSeen(message.id));
       },
       child: Tappable(
@@ -109,9 +105,9 @@ class _MessageBubbleState extends State<MessageBubble> {
             title: 'Delete message',
             content: 'Are you sure you want to delete this message?',
             yesText: 'Delete',
-            fn: () => widget.onDeleteTap?.call(message),
+            fn: () => this.onDeleteTap?.call(message),
           );
-          final option = await widget.onMessageTap.call(
+          final option = await onMessageTap.call(
             details,
             message.id,
             isMine: isMine,
@@ -120,8 +116,8 @@ class _MessageBubbleState extends State<MessageBubble> {
           if (option == null) return;
           void action() => switch (option) {
                 MessageAction.delete => onDeleteTap,
-                MessageAction.edit => widget.onEditTap?.call(message),
-                MessageAction.reply => widget.onReplyTap?.call(message),
+                MessageAction.edit => onEditTap?.call(message),
+                MessageAction.reply => onReplyTap?.call(message),
               };
           action();
         },
@@ -133,17 +129,17 @@ class _MessageBubbleState extends State<MessageBubble> {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
               child: ClipRRect(
-                borderRadius: widget.borderRadius?.call(isMine) ??
+                borderRadius: borderRadius?.call(isMine) ??
                     const BorderRadius.all(Radius.circular(22)),
                 child: RepaintBoundary(
                   child: MessageBubbleContent(
                     isMine: isMine,
                     message: message,
-                    hasRepliedComment: widget.hasRepliedComment,
-                    displayBottomStatuses: widget.displayBottomStatuses,
-                    hasAttachments: widget.hasAttachments,
-                    isEdited: widget.isEdited,
-                    onReplyTap: widget.onReplyTap,
+                    hasRepliedComment: hasRepliedComment,
+                    displayBottomStatuses: displayBottomStatuses,
+                    hasAttachments: hasAttachments,
+                    isEdited: isEdited,
+                    onReplyTap: onReplyTap,
                   ),
                 ),
               ),
@@ -336,7 +332,7 @@ class MessageBubbleContent extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               ListTile(
-                                horizontalTitleGap: 0,
+                                horizontalTitleGap: AppSpacing.sm,
                                 contentPadding: const EdgeInsets.symmetric(
                                   horizontal: AppSpacing.sm,
                                   vertical: AppSpacing.xs,
@@ -731,10 +727,10 @@ class RepliedMessageBubble extends StatelessWidget {
     final repliedMessageUsername = message.replyMessageUsername;
     final replyMessageAttachmentUrl = message.replyMessageAttachmentUrl;
     final repliedMessageSharedPostDeleted =
-        (replyMessageAttachmentUrl?.isEmpty ?? true) ||
+        (replyMessageAttachmentUrl?.isEmpty ?? true) &&
             message.sharedPostId == null;
 
-    final accentColor = isMine ? Colors.white : const Color(0xff337eff);
+    final accentColor = isMine ? AppColors.white : AppColors.deepBlue;
 
     const imageHeight = 46.0;
     const imageWidth = 46.0;
@@ -744,7 +740,10 @@ class RepliedMessageBubble extends StatelessWidget {
       animationEffect: TappableAnimationEffect.scale,
       scaleStrength: ScaleStrength.xxxxs,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.sm,
+        ),
         decoration: BoxDecoration(
           gradient: LinearGradient(
             stops: const [0.02, 0.02],
@@ -752,34 +751,40 @@ class RepliedMessageBubble extends StatelessWidget {
           ),
           borderRadius: const BorderRadius.all(Radius.circular(10)),
         ),
-        child: ListTile(
-          contentPadding: EdgeInsets.zero,
-          horizontalTitleGap: AppSpacing.sm - AppSpacing.xxs,
-          titleAlignment: ListTileTitleAlignment.titleHeight,
-          leading: repliedMessageSharedPostDeleted
-              ? null
-              : ImageAttachmentThumbnail(
-                  image: Attachment(imageUrl: replyMessageAttachmentUrl),
-                  width: imageWidth,
-                  height: imageHeight,
-                  fit: BoxFit.cover,
-                  borderRadius: 4,
-                  withAdaptiveColors: false,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (!repliedMessageSharedPostDeleted)
+              ImageAttachmentThumbnail(
+                image: Attachment(imageUrl: replyMessageAttachmentUrl),
+                width: imageWidth,
+                height: imageHeight,
+                fit: BoxFit.cover,
+                borderRadius: 4,
+                withAdaptiveColors: false,
+              ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Text(
+                  repliedMessageUsername ?? 'Unknown',
+                  style: context.bodyLarge?.copyWith(
+                    color: accentColor,
+                    fontWeight: AppFontWeight.bold,
+                  ),
+                  overflow: TextOverflow.visible,
                 ),
-          title: Text(
-            repliedMessageUsername ?? 'Unknown',
-            style: context.bodyLarge
-                ?.copyWith(color: accentColor, fontWeight: AppFontWeight.bold),
-            overflow: TextOverflow.visible,
-          ),
-          subtitle: repliedMessage?.message.isEmpty ?? true
-              ? null
-              : Text(
-                  repliedMessage!.message,
-                  style: context.bodyMedium?.apply(color: Colors.white),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
+                if (!(repliedMessage?.message.isEmpty ?? true))
+                  Text(
+                    repliedMessage!.message,
+                    style: context.bodyMedium?.apply(color: Colors.white),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+              ],
+            ),
+          ].insertBetween(const SizedBox(width: AppSpacing.xs)),
         ),
       ),
     );

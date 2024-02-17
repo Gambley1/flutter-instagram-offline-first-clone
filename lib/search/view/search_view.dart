@@ -34,6 +34,7 @@ class SearchView extends StatelessWidget {
         valueListenable: users,
         builder: (context, users, _) {
           return CustomScrollView(
+            cacheExtent: 2760,
             keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
             slivers: [
               SliverList.builder(

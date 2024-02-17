@@ -56,20 +56,7 @@ class PostFooter extends StatelessWidget {
     final likersInFollowings = block is! PostLargeBlock ||
             (block as PostLargeBlock).likersInFollowings.isEmpty
         ? <User>[]
-        : (block as PostLargeBlock)
-            .likersInFollowings
-            .where((e) => e.avatarUrl != null)
-            .toList();
-
-    double avatarStackWidth() {
-      if (likersInFollowings.length case 1) {
-        return 28;
-      }
-      if (likersInFollowings.length case 2) {
-        return 44;
-      }
-      return 60;
-    }
+        : (block as PostLargeBlock).likersInFollowings.toList();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -159,23 +146,7 @@ class PostFooter extends StatelessWidget {
               Row(
                 children: [
                   if (likersInFollowings.isNotEmpty) ...[
-                    AvatarStack(
-                      height: 28,
-                      width: avatarStackWidth(),
-                      borderColor: context.reversedAdaptiveColor,
-                      settings: RestrictedPositions(
-                        laying: StackLaying.first,
-                      ),
-                      avatars: [
-                        for (var i = 0; i < likersInFollowings.length; i++)
-                          CachedNetworkImageProvider(
-                            maxWidth: 28,
-                            maxHeight: 28,
-                            likersInFollowings[i].avatarUrl!,
-                            cacheKey: likersInFollowings[i].avatarUrl,
-                          ),
-                      ],
-                    ),
+                    LikersInFollowings(likersInFollowings: likersInFollowings),
                     const SizedBox(width: AppSpacing.xs),
                   ],
                   RepaintBoundary(
@@ -215,6 +186,69 @@ class PostFooter extends StatelessWidget {
   }
 }
 
+class LikersInFollowings extends StatelessWidget {
+  const LikersInFollowings({
+    required this.likersInFollowings,
+    super.key,
+  });
+
+  final List<User> likersInFollowings;
+
+  double get _avatarStackWidth {
+      if (likersInFollowings.length case 1) return 28;
+      if (likersInFollowings.length case 2) return 44;
+      return 60;
+    }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 28,
+      width: _avatarStackWidth,
+      child: WidgetStack(
+        positions: RestrictedPositions(laying: StackLaying.first),
+        stackedWidgets: [
+          for (var i = 0; i < likersInFollowings.length; i++)
+            if (likersInFollowings[i].avatarUrl == null)
+              CircleAvatar(
+                backgroundColor: AppColors.black,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints.expand(),
+                  child: Padding(
+                    padding: const EdgeInsets.all(2),
+                    child: CircleAvatar(
+                      backgroundColor: AppColors.white,
+                      foregroundImage: Assets.images.profilePhoto.provider(),
+                    ),
+                  ),
+                ),
+              )
+            else
+              CachedNetworkImage(
+                imageUrl: likersInFollowings[i].avatarUrl!,
+                imageBuilder: (context, imageProvider) {
+                  return CircleAvatar(
+                    backgroundColor: AppColors.black,
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints.expand(),
+                      child: Padding(
+                        padding: const EdgeInsets.all(2),
+                        child: CircleAvatar(
+                          backgroundImage: imageProvider,
+                          backgroundColor: context.theme.colorScheme.background,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+        ],
+        buildInfoWidget: (_) => const SizedBox(),
+      ),
+    );
+  }
+}
+
 class SponsoredPostAction extends StatefulWidget {
   const SponsoredPostAction({
     required this.imageUrl,
@@ -237,9 +271,7 @@ class _SponsoredPostActionState extends State<SponsoredPostAction> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ColorScheme.fromImageProvider(
-        provider: NetworkImage(
-          widget.imageUrl,
-        ),
+        provider: NetworkImage(widget.imageUrl),
       ).then((value) {
         if (!mounted) return;
         setState(() => _colorScheme = value);
