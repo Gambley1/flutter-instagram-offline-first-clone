@@ -111,46 +111,63 @@ class _SharPostState extends State<SharePostView> with SafeSetStateMixin {
         context.select((UserProfileBloc bloc) => bloc.state.followings);
 
     final followersAndFollowings = {...followers, ...followings};
-    return AppScaffold(
-      releaseFocus: true,
-      resizeToAvoidBottomInset: true,
-      backgroundColor: AppColors.background,
-      appBar: SearchAppBar(
-        followersAndFollowings: followersAndFollowings,
-        searchController: _searchController,
-        focusNode: _focusNode,
-        onUsersFound: (users) => _foundUsers.value = users,
+    final backgroundColor = context.customReversedAdaptiveColor(
+      dark: AppColors.background,
+      light: AppColors.white,
+    );
+
+    return Theme(
+      data: context.theme.copyWith(
+        scaffoldBackgroundColor: backgroundColor,
+        appBarTheme: AppBarTheme(
+          backgroundColor: backgroundColor,
+          surfaceTintColor: backgroundColor,
+        ),
+        bottomSheetTheme: BottomSheetThemeData(
+          backgroundColor: backgroundColor,
+          surfaceTintColor: backgroundColor,
+        ),
       ),
-      bottomNavigationBar: _selectedUsers.value.isEmpty
-          ? null
-          : SharePostButton(
-              block: widget.block,
+      child: AppScaffold(
+        releaseFocus: true,
+        resizeToAvoidBottomInset: true,
+        appBar: SearchAppBar(
+          followersAndFollowings: followersAndFollowings,
+          searchController: _searchController,
+          focusNode: _focusNode,
+          onUsersFound: (users) => _foundUsers.value = users,
+        ),
+        bottomNavigationBar: _selectedUsers.value.isEmpty
+            ? null
+            : SharePostButton(
+                block: widget.block,
+                selectedUsers: _selectedUsers.value.toList(),
+                draggableScrollableController: widget.draggableScrollController,
+              ),
+        body: AnimatedBuilder(
+          animation: Listenable.merge([_foundUsers, _selectedUsers]),
+          builder: (context, _) {
+            return UsersListView(
+              users:
+                  {..._selectedUsers.value, ...followersAndFollowings}.toList(),
+              foundUsers: _foundUsers.value.toList(),
+              scrollController: widget.scrollController,
+              draggableScrollController: widget.draggableScrollController,
               selectedUsers: _selectedUsers.value.toList(),
-              draggableScrollableController: widget.draggableScrollController,
-            ),
-      body: AnimatedBuilder(
-        animation: Listenable.merge([_foundUsers, _selectedUsers]),
-        builder: (context, _) {
-          return UsersListView(
-            users:
-                {..._selectedUsers.value, ...followersAndFollowings}.toList(),
-            foundUsers: _foundUsers.value.toList(),
-            scrollController: widget.scrollController,
-            draggableScrollController: widget.draggableScrollController,
-            selectedUsers: _selectedUsers.value.toList(),
-            onUserSelected: (user, {clearQuery}) => safeSetState(() {
-              if (clearQuery ?? false) {
-                _searchController.clear();
-                _foundUsers.value.clear();
-              }
-              if (_selectedUsers.value.contains(user)) {
-                _selectedUsers.value.remove(user);
-              } else {
-                _selectedUsers.value.add(user);
-              }
-            }),
-          );
-        },
+              onUserSelected: (user, {clearQuery}) => safeSetState(() {
+                if (clearQuery ?? false) {
+                  _searchController.clear();
+                  _foundUsers.value.clear();
+                }
+                if (_selectedUsers.value.contains(user)) {
+                  _selectedUsers.value.remove(user);
+                } else {
+                  _selectedUsers.value.add(user);
+                }
+              }),
+            );
+          },
+        ),
       ),
     );
   }
@@ -173,8 +190,6 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      surfaceTintColor: AppColors.background,
-      backgroundColor: AppColors.background,
       automaticallyImplyLeading: false,
       title: UserSearchField(
         users: followersAndFollowings.toList(),

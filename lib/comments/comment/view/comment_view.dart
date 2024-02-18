@@ -99,12 +99,10 @@ class CommentGroup extends StatelessWidget {
           onCommentDelete: (_) => context.confirmAction(
             title: 'Delete comment',
             content: 'Are you sure you want to delete this comment?',
-            yesText: 'Delete',
+            yesText: context.l10n.delete,
             fn: () => bloc.add(const CommentDeleteRequested()),
           ),
           likesCount: likes,
-          likesText: context.l10n.likesCountTextShort,
-          createdAt: comment.createdAt.timeAgoShort(context),
         ),
         if (!isReplied) RepliedComments(comment: comment, post: post),
       ],

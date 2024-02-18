@@ -73,10 +73,12 @@
         "description": "Текст на главной странице под твоей историей"
     },
     "postsText": "Публикаций",
-    "allUserPostsAppBarTitle": "Публикации",
-    "@allUserPostsAppBarTitle":{
+    "profilePostsAppBarTitle": "Публикации",
+    "@profilePostsAppBarTitle":{
         "description": "Текст для заголовка страницы со всеми публикациями пользователя"
     },
+    "followUser": "Подписаться",
+    "followingUser": "Вы подписаны",
     "followersText": "Подписчики",
     "followingsText": "Подписки",
     "followersCountText": "{count, plural, other{Подписчики: {count}}}",
@@ -134,6 +136,7 @@
     "@sponsoredPostText": {
         "description": "Текст показывает что данный пост был продвинут автором как рекламный"
     },
+    "visitSponsoredInstagramProfile": "Посетить профиль Instagram",
     "visitSponsoredPostAuthorProfileText": "Открыть профиль Instagram",
     "@visitSponsoredPostAuthorProfileText": {
         "description": "Текст показанный на рекламном посте который сподвигает пользователя перейти на профиль автора"
@@ -172,6 +175,68 @@
             }
         }
     },
+    "search": "Поиск",
+    "addMessage": "Сообщение",
+    "message": "Сообщение",
+    "editPicture": "Изменить фото",
+    "editProfile": "Изменить профиль",
+    "requiredField": "Это поле обязательно",
+    "passwordLengthError": "Пароль должен содержать минимум {count, plural, =1{{count} символ} other{{count} символа}}",
+    "@passwordLengthError": {
+        "placeholders": {
+            "characters": {
+                "type": "int",
+                "example": "1"
+            }
+        }
+    },
+    "forgotPassword": "Забыли пароль",
+    "or": "Или",
+    "signInWith": "Зарегестрироваться через {provider}",
+    "@signInWith":{
+        "placeholders": {
+            "provider": {
+                "type": "String",
+                "example": "Google"
+            }
+        }
+    },
+    "noAccount": "Ещё нет аккаунта",
+    "alreadyHaveAccount": "Уже есть аккаунт",
+    "name": "Имя",
+    "username": "Имя пользователя",
+    "email": "Почта",
+    "password": "Пароль",
+    "logIn": "Войти",
+    "signUp": "Зарегестрироваться",
+    "bio": "Биография",
+    "postUnavailable": "Пост недоступен",
+    "postUnavailableDescription": "Этот пост недоступен",
+    "edit": "Редактировать",
+    "delete": "Удалить",
+    "reply": "Ответить",
+    "theme": "Тема",
+    "systemOption": "Системная",
+    "@systemOption": {
+        "description": "The option to use system-wide theme in the theme selector menu",
+        "type": "String",
+        "placeholders": {}
+    },
+    "lightModeOption": "Светлая",
+    "@lightModeOption": {
+        "description": "The option for light mode in the theme selector menu",
+        "type": "String",
+        "placeholders": {}
+    },
+    "darkModeOption": "Тёмная",
+    "@darkModeOption": {
+        "description": "The option for dark mode in the theme selector menu",
+        "type": "String",
+        "placeholders": {}
+    },
+    "language": "Язык",
+    "ruOption": "Русский",
+    "enOption": "Английский",
     "secondsAgo": "{seconds, plural, =1{{seconds} секунду назад} few{{seconds} секунды назад} other{{seconds} секунд назад}}",
     "@secondsAgo": {
         "description": "Секунд назад",

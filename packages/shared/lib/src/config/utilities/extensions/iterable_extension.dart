@@ -1,3 +1,5 @@
+import 'dart:developer' as dev;
+
 /// List extension
 extension IterableExtension<T> on Iterable<T> {
   /// Insert any item<T> inBetween the list items
@@ -17,6 +19,36 @@ extension IterableExtension<T> on Iterable<T> {
       }
     }
   }
+
+  /// Applies to each element in the iterable [toElement] function. If
+  /// try catch block caught an error, it will be logged and null will be
+  /// returned.
+  Iterable<E?> safeNullableMap<E>(
+    E Function(T element) toElement, {
+    bool logError = true,
+  }) =>
+      map((e) {
+        try {
+          return toElement(e);
+        } catch (e) {
+          if (logError) dev.log('Error in safeMap: $e');
+          return null;
+        }
+      });
+
+  /// Applies [toElement] function to each element in the iterable. If
+  /// try catch block caught an error, it will be logged and null will be
+  /// returned.
+  /// 
+  /// Filters any nullable results and will return only non-nullable objects.
+  Iterable<E> safeMap<E>(
+    E Function(T element) toElement, {
+    bool logError = true,
+  }) =>
+      safeNullableMap(
+        toElement,
+        logError: logError,
+      ).where((element) => element != null).cast<E>();
 }
 
 /// The extension that splits the original string and inserts the `text` between

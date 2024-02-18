@@ -56,10 +56,11 @@ class _BetterStreamBuilderState<T extends Object>
       }
     }
     final event = _lastEvent;
-    if (event == null) {
-      return widget.noDataBuilder?.call(context) ?? const SizedBox.shrink();
-    }
-    return widget.builder(context, event);
+    return switch (event) {
+      null =>
+         widget.noDataBuilder?.call(context) ?? const SizedBox.shrink(),
+      _ => widget.builder(context, event),
+    };
   }
 
   @override

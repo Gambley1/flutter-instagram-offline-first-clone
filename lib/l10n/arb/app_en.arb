@@ -73,19 +73,21 @@
     },
     "yourStoryLabel": "Your story",
     "@yourStoryLabel":{
-        "description": "Text shown under the first storie in stories list view marked as 'your story'"
+        "description": "Text shown under the first storie in stories list view marked as your story"
     },
     "postsText": "Posts",
     "@postsText": {
         "description": "Text displaying static Posts text"
     },
+    "followUser": "Follow",
+    "followingUser": "Following",
     "followersText": "Followers",
     "@followersText": {
         "description": "Text displaying static Followers text"
     },
-    "followingsText": "Followings",
+    "followingsText": "Following",
     "@followingsText": {
-        "description": "Text displaying static Followings text"
+        "description": "Text displaying static Following text"
     },
     "followersCountText": "{count, plural, =1{{count} follower} other{{count} followers}}",
     "@followersCountText": {
@@ -115,8 +117,8 @@
             }
         }
     },
-    "allUserPostsAppBarTitle": "Posts",
-    "@allUserPostsAppBarTitle":{
+    "profilePostsAppBarTitle": "Posts",
+    "@profilePostsAppBarTitle":{
         "description": "Text shown in app bar in user's all posts screen"
     },
     "followersCount": "{count, plural, =1{Follower} other{Followers}}",
@@ -155,6 +157,10 @@
     "@sponsoredPostText": {
         "description": "Text shown on sponsored post indicating that the post is sponsored by author"
     },
+    "visitSponsoredInstagramProfile": "Visit Instagram Profile",
+    "@visitSponsoredInstagramProfile": {
+        "description": "Text shown on sponsored post telling that this action will navigate user to author's instagram profile"
+    },
     "visitSponsoredPostAuthorProfileText": "Visit Instagram Profile",
     "@visitSponsoredPostAuthorProfileText": {
         "description": "Text shown on sponsored post telling that this action will navigate user to author profile"
@@ -171,11 +177,11 @@
     "@cancelFollowingText": {
         "description": "Text shown in modal bottom sheet to cancel current following to user"
     },
-    "haveSeenAllRecentPosts": "You're all caught up",
+    "haveSeenAllRecentPosts": "You''re all caught up",
     "@haveSeenAllRecentPosts": {
         "description": "Header text shown in divider block when user have seen all recent posts"
     },
-    "haveSeenAllRecentPostsInPast3Days": "You've seen all new posts from the past 3 days.",
+    "haveSeenAllRecentPostsInPast3Days": "You''ve seen all new posts from the past 3 days.",
     "@haveSeenAllRecentPostsInPast3Days": {
         "description": "Body text shown in divider block when user have seen all recent posts in past 3 days"
     },
@@ -193,6 +199,68 @@
             }
         }
     },
+    "search": "Search",
+    "addMessage": "Add message",
+    "message": "Message",
+    "editPicture": "Edit picture",
+    "editProfile": "Edit profile",
+    "requiredField": "This field is required",
+    "passwordLengthError": "Password should contain at least {count} characters",
+    "@passwordLengthError": {
+        "placeholders": {
+            "characters": {
+                "type": "int",
+                "example": "1"
+            }
+        }
+    },
+    "forgotPassword": "Forgot password",
+    "or": "Or",
+    "signInWith": "Sign in with {provider}",
+    "@signInWith":{
+        "placeholders": {
+            "provider": {
+                "type": "String",
+                "example": "Google"
+            }
+        }
+    },
+    "noAccount": "Don''t have an account",
+    "alreadyHaveAccount": "Alrady have an account",
+    "name": "Name",
+    "username": "Username",
+    "email": "Email",
+    "password": "Password",
+    "logIn": "Login",
+    "signUp": "Sign up",
+    "bio": "Bio",
+    "postUnavailable": "Post unavailable",
+    "postUnavailableDescription": "This post is unavailable",
+    "edit": "Edit",
+    "delete": "Delete",
+    "reply": "Reply",
+    "theme": "Тема",
+    "systemOption": "System",
+    "@systemOption": {
+        "description": "The option to use system-wide theme in the theme selector menu",
+        "type": "String",
+        "placeholders": {}
+    },
+    "lightModeOption": "Light",
+    "@lightModeOption": {
+        "description": "The option for light mode in the theme selector menu",
+        "type": "String",
+        "placeholders": {}
+    },
+    "darkModeOption": "Dark",
+    "@darkModeOption": {
+        "description": "The option for dark mode in the theme selector menu",
+        "type": "String",
+        "placeholders": {}
+    },
+    "language": "Language",
+    "ruOption": "Russian",
+    "enOption": "English",
     "secondsAgo": "{seconds, plural, =1{1 second ago} other{{seconds} seconds ago}}",
     "@secondsAgo": {
         "description": "Represents a text of seconds ago",

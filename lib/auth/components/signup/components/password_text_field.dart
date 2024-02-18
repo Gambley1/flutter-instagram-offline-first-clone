@@ -2,6 +2,7 @@ import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/auth/components/signup/cubit/signup_cubit.dart';
+import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:shared/shared.dart';
 
 class PasswordTextField extends StatefulWidget {
@@ -43,12 +44,11 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
     return AppTextField(
       filled: true,
       focusNode: _focusNode,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 12),
       textInputAction: TextInputAction.done,
       textInputType: TextInputType.visiblePassword,
       autofillHints: const [AutofillHints.password],
       onFieldSubmitted: (_) => context.read<SignupCubit>().onSubmit(),
-      hintText: 'Password',
+      hintText: context.l10n.password,
       enabled: !isLoading,
       obscureText: !showPassword,
       onChanged: (v) => _debouncer.run(

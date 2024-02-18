@@ -48,7 +48,7 @@ class PostPopupDialog extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
             color: context.customReversedAdaptiveColor(
-              light: Colors.grey.shade300,
+              light: AppColors.brightGrey,
               dark: context.theme.splashColor,
             ),
           ),
@@ -214,15 +214,15 @@ class PopupDialogFooter extends StatelessWidget {
             child: showComments
                 ? Assets.icons.chatCircle.svg(
                     height: 28,
-                    colorFilter: const ColorFilter.mode(
-                      Colors.white,
+                    colorFilter: ColorFilter.mode(
+                      context.adaptiveColor,
                       BlendMode.srcIn,
                     ),
                   )
                 : Assets.icons.user.svg(
                     height: 28,
-                    colorFilter: const ColorFilter.mode(
-                      Colors.white,
+                    colorFilter: ColorFilter.mode(
+                      context.adaptiveColor,
                       BlendMode.srcIn,
                     ),
                   ),

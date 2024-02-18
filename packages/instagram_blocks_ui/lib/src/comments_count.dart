@@ -1,10 +1,9 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:sprung/sprung.dart';
-
-typedef CommentsText = String Function(int count);
 
 /// {@template comments_count}
 /// Renders the comment count with animation.
@@ -13,11 +12,9 @@ class CommentsCount extends StatefulWidget {
   const CommentsCount({
     required this.count,
     required this.onTap,
-    required this.commentsText,
     super.key,
   });
 
-  final CommentsText commentsText;
   final int count;
   final VoidCallback onTap;
 
@@ -42,10 +39,8 @@ class _CommentsCountState extends State<CommentsCount>
         animationEffect: TappableAnimationEffect.none,
         onTap: widget.onTap,
         child: Text(
-          widget.commentsText(count),
-          style: context.bodyLarge?.copyWith(
-            color: Colors.grey.shade500,
-          ),
+          context.l10n.seeAllComments(count),
+          style: context.bodyLarge?.copyWith(color: AppColors.grey),
         ),
       ),
     );

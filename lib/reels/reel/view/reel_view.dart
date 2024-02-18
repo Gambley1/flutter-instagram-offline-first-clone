@@ -7,6 +7,7 @@ import 'package:flutter_instagram_offline_first_clone/app/bloc/app_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/comments/comments.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/post/post.dart';
 import 'package:flutter_instagram_offline_first_clone/home/home.dart';
+import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:flutter_instagram_offline_first_clone/reels/reel/reel.dart';
 import 'package:flutter_instagram_offline_first_clone/reels/reels.dart';
 import 'package:flutter_instagram_offline_first_clone/stories/user_stories/user_stories.dart';
@@ -279,11 +280,11 @@ class VerticalButtons extends StatelessWidget {
                       final option = await context.showListOptionsModal(
                         options: [
                           ModalOption(
-                            name: 'Delete',
+                            name: context.l10n.delete,
                             actionTitle: 'Delete reel',
                             actionContent:
                                 'Are you sure you want to delete this reel?',
-                            actionYesText: 'Delete',
+                            actionYesText: context.l10n.delete,
                             child: Assets.icons.trash.svg(
                               colorFilter: const ColorFilter.mode(
                                 AppColors.red,
@@ -342,6 +343,9 @@ class ReelAuthorListTile extends StatelessWidget {
     final user = context.select((AppBloc bloc) => bloc.state.user);
     final isFollowed = context.select((PostBloc bloc) => bloc.state.isFollowed);
     final isOwner = context.select((PostBloc bloc) => bloc.state.isOwner);
+
+    final l10n = context.l10n;
+
     return Row(
       children: <Widget>[
         UserStoriesAvatar(
@@ -390,7 +394,9 @@ class ReelAuthorListTile extends StatelessWidget {
                     ),
                     child: Align(
                       child: Text(
-                        isFollowed ?? false ? 'Following' : 'Follow',
+                        isFollowed ?? false
+                            ? l10n.followingUser
+                            : l10n.followUser,
                         style: context.bodyLarge?.copyWith(
                           color: AppColors.white,
                           fontWeight: AppFontWeight.bold,
@@ -485,12 +491,7 @@ class ReelParticipants extends StatelessWidget {
                     dark: const Color.fromARGB(165, 58, 58, 58),
                   ),
                   border: Border.all(
-                    color: const Color.fromARGB(
-                      45,
-                      250,
-                      250,
-                      250,
-                    ),
+                    color: const Color.fromARGB(45,250,250,250),
                   ),
                   borderRadius: const BorderRadius.all(Radius.circular(16)),
                 ),

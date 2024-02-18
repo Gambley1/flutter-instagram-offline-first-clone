@@ -14,21 +14,21 @@ extension BuildContextX on BuildContext {
   bool get isDark => !isLight;
 
   /// Defines an adaptive [Color], depending on current theme brightness.
-  Color get adaptiveColor => isDark ? Colors.white : Colors.black;
+  Color get adaptiveColor => isDark ? AppColors.white : AppColors.black;
 
   /// Defines a reversed adaptive [Color], depending on current theme
   /// brightness.
-  Color get reversedAdaptiveColor => isDark ? Colors.black : Colors.white;
+  Color get reversedAdaptiveColor => isDark ? AppColors.black : AppColors.white;
 
   /// Defines a customisable adaptive [Color]. If [light] or [dark] is not
   /// provided default colors are used.
   Color customAdaptiveColor({Color? light, Color? dark}) =>
-      isDark ? (light ?? Colors.white) : (dark ?? Colors.black);
+      isDark ? (light ?? AppColors.white) : (dark ?? AppColors.black);
 
   /// Defines a customisable reversed adaptive [Color]. If [light] or [dark]
   /// is not provided default reversed colors are used.
   Color customReversedAdaptiveColor({Color? light, Color? dark}) =>
-      isDark ? (dark ?? Colors.black) : (light ?? Colors.white);
+      isDark ? (dark ?? AppColors.black) : (light ?? AppColors.white);
 
   /// Defines [MediaQueryData] based on provided context.
   Size get size => MediaQuery.sizeOf(this);

@@ -3,6 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/bloc/app_bloc.dart';
+import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:flutter_instagram_offline_first_clone/stories/user_stories/user_stories.dart';
 import 'package:flutter_instagram_offline_first_clone/user_profile/user_profile.dart';
 import 'package:go_router/go_router.dart';
@@ -55,7 +56,12 @@ class _UserProfileListTileState extends State<UserProfileListTile> {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    final profile = context.select((UserProfileBloc bloc) => bloc.state.user);
+    final me = context.select((AppBloc bloc) => bloc.state.user);
+    final isMe = widget.user.id == me.id;
+    final isMine = me.id == profile.id;
+
+    return Tappable(
       onTap: () => context.pushNamed(
         'user_profile',
         pathParameters: {'user_id': widget.user.id},
@@ -94,7 +100,7 @@ class _UserProfileListTileState extends State<UserProfileListTile> {
                                   overflow: TextOverflow.ellipsis,
                                 ),
                               ),
-                              if (widget.follower)
+                              if (widget.follower && isMine)
                                 FollowTextButton(
                                   wasFollowed: _isFollowed,
                                   user: widget.user,
@@ -119,22 +125,29 @@ class _UserProfileListTileState extends State<UserProfileListTile> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        UserActionButton(
-                          user: widget.user,
-                          follower: widget.follower,
-                          onTap: () => widget.follower
-                              ? _removeFollower(context)
-                              : _follow(context),
-                        ),
-                        const SizedBox(width: AppSpacing.md),
-                        Flexible(
-                          child: Tappable(
-                            onTap: widget.follower
-                                ? null
-                                : () => _removeFollower(context),
-                            child: const Icon(Icons.more_vert),
+                        if (!(isMe && !isMine))
+                          UserActionButton(
+                            user: widget.user,
+                            follower: widget.follower,
+                            isMine: isMine,
+                            isMe: isMe,
+                            onTap: () => widget.follower
+                                ? !isMine
+                                    ? _follow(context)
+                                    : _removeFollower(context)
+                                : _follow(context),
                           ),
-                        ),
+                        if (isMine) ...[
+                          const SizedBox(width: AppSpacing.md),
+                          Flexible(
+                            child: Tappable(
+                              onTap: !widget.follower
+                                  ? () {}
+                                  : () => _removeFollower(context),
+                              child: const Icon(Icons.more_vert),
+                            ),
+                          ),
+                        ],
                       ],
                     ),
                   ),
@@ -151,76 +164,68 @@ class _UserProfileListTileState extends State<UserProfileListTile> {
 class UserActionButton extends StatelessWidget {
   const UserActionButton({
     required this.user,
+    required this.isMe,
+    required this.isMine,
     required this.follower,
     required this.onTap,
     super.key,
   });
 
   final User user;
+  final bool isMe;
+  final bool isMine;
   final bool follower;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    late final Widget followerRemoveButton = Tappable(
-      fadeStrength: FadeStrength.medium,
+    final l10n = context.l10n;
+    const padding = EdgeInsets.symmetric(
+      horizontal: AppSpacing.lg,
+      vertical: AppSpacing.xs,
+    );
+    final textStyle =
+        context.bodyLarge?.copyWith(fontWeight: AppFontWeight.semiBold);
+    const fadeStrength = FadeStrength.medium;
+
+    late final Widget followerRemoveButton = UserProfileButton(
       onTap: onTap,
-      borderRadius: 6,
-      color: context.customReversedAdaptiveColor(
-        light: Colors.grey.shade300,
-        dark: const Color.fromARGB(255, 40, 37, 37).withOpacity(.9),
-      ),
-      child: const FittedBox(
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: AppSpacing.xlg,
-            vertical: AppSpacing.xs,
-          ),
-          child: Align(child: Text('Remove', maxLines: 1)),
-        ),
-      ),
+      label: 'Remove',
+      padding: padding,
+      textStyle: textStyle,
+      fadeStrength: fadeStrength,
     );
     late final Widget followingButton = BetterStreamBuilder(
       stream: context.read<UserRepository>().followingStatus(userId: user.id),
       builder: (context, isFollowed) {
-        return Tappable(
-          fadeStrength: FadeStrength.medium,
+        return UserProfileButton(
           onTap: onTap,
-          borderRadius: 6,
+          label: isFollowed ? l10n.followingUser : l10n.followUser,
+          padding: padding,
+          textStyle: textStyle,
+          fadeStrength: fadeStrength,
           color: isFollowed
-              ? context.customReversedAdaptiveColor(
-                  light: Colors.grey.shade300,
-                  dark: const Color.fromARGB(255, 40, 37, 37).withOpacity(.9),
-                )
+              ? null
               : context.customReversedAdaptiveColor(
-                  light: Colors.blue.shade300,
-                  dark: Colors.blue.shade500,
+                  light: AppColors.lightBlue,
+                  dark: AppColors.blue,
                 ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.lg,
-              vertical: AppSpacing.xs,
-            ),
-            child: Align(
-              child: Text(
-                isFollowed ? 'Following' : 'Follow',
-                maxLines: 1,
-              ),
-            ),
-          ),
         );
       },
     );
-    return DefaultTextStyle(
-      style: context.bodyLarge!.copyWith(
-        overflow: TextOverflow.ellipsis,
-        fontWeight: AppFontWeight.semiBold,
-      ),
-      child: Flexible(
-        flex: 8,
-        child: follower ? followerRemoveButton : followingButton,
-      ),
-    );
+
+    final child = switch ((follower, isMine, isMe)) {
+      (true, true, false) => followerRemoveButton,
+      (true, false, false) => followingButton,
+      (false, true, false) => followingButton,
+      (false, false, false) => followingButton,
+      _ => null,
+    };
+
+    return switch (child) {
+      null => const SizedBox.shrink(),
+      final Widget child => Flexible(flex: 9, child: child),
+    };
   }
 }
 
@@ -236,6 +241,8 @@ class FollowTextButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+
     return FutureBuilder<bool>(
       future: wasFollowed,
       builder: (context, snapshot) {
@@ -260,7 +267,7 @@ class FollowTextButton extends StatelessWidget {
                     style: context.bodyLarge,
                   ),
                   TextSpan(
-                    text: followed ? 'Following' : 'Follow',
+                    text: followed ? l10n.followingUser : l10n.followUser,
                     style: context.bodyLarge?.copyWith(
                       fontWeight: AppFontWeight.semiBold,
                       color: followed ? AppColors.white : AppColors.blue,

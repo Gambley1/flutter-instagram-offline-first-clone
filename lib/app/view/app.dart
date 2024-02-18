@@ -5,6 +5,7 @@ import 'package:firebase_notifications_client/firebase_notifications_client.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
+import 'package:flutter_instagram_offline_first_clone/selector/selector.dart';
 import 'package:posts_repository/posts_repository.dart';
 import 'package:search_repository/search_repository.dart';
 import 'package:stories_repository/stories_repository.dart';
@@ -51,12 +52,18 @@ class App extends StatelessWidget {
         RepositoryProvider.value(value: notificationsClient),
         RepositoryProvider.value(value: remoteConfig),
       ],
-      child: BlocProvider(
-        create: (context) => AppBloc(
-          userRepository: context.read<UserRepository>(),
-          user: user,
-          notificationsClient: notificationsClient,
-        )..add(const AppOpened()),
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => AppBloc(
+              user: user,
+              userRepository: userRepository,
+              notificationsClient: notificationsClient,
+            )..add(const AppOpened()),
+          ),
+          BlocProvider(create: (_) => LocaleBloc()),
+          BlocProvider(create: (_) => ThemeModeBloc()),
+        ],
         child: const AppView(),
       ),
     );

@@ -1,6 +1,7 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_instagram_offline_first_clone/app/view/view.dart';
+import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 
 class ForgotPasswordButton extends StatelessWidget {
   const ForgotPasswordButton({super.key});
@@ -11,8 +12,8 @@ class ForgotPasswordButton extends StatelessWidget {
       // TODO(forgotpassword): Implement forgot password feature
       onTap: showCurrentlyUnavailableFeature,
       child: Text(
-        'Forgot password?',
-        style: context.titleSmall?.copyWith(color: Colors.blue.shade500),
+        '${context.l10n.forgotPassword}?',
+        style: context.titleSmall?.copyWith(color: AppColors.blue),
       ),
     );
   }

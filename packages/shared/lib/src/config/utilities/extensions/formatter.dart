@@ -168,7 +168,7 @@ extension CompactFormatter on num {
     final compactFormatter = NumberFormat.compact(locale: locale.languageCode);
     return this <= 9999
         ? format(context: context)
-        : compactFormatter.format(this).replaceAll('.', ',');
+        : compactFormatter.format(this).replaceAll(',', '.');
   }
 }
 

@@ -22,6 +22,7 @@ class AppButton extends StatelessWidget {
     this.height,
     this.width,
     this.icon,
+    this.maxLines,
     this.outlined = false,
     this.textStyle,
   });
@@ -102,6 +103,9 @@ class AppButton extends StatelessWidget {
   /// The style of the text on the button.
   final TextStyle? textStyle;
 
+  /// The maximum amount of lines text can take.
+  final int? maxLines;
+
   /// The icon of the button. If this is not null, the button will be an
   /// [ElevatedButton.icon].
   final Widget? icon;
@@ -120,6 +124,13 @@ class AppButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final text = _Text(
+      text: this.text!,
+      style: textStyle,
+      maxLines: maxLines,
+    );
+    final effectiveChild = child ?? text;
+
     final loading = icon != null;
     final platform = context.theme.platform;
     final isIOS = platform == TargetPlatform.iOS;
@@ -132,11 +143,7 @@ class AppButton extends StatelessWidget {
               onPressed: onPressed,
               isDefaultAction: isDefaultAction,
               isDestructiveAction: isDestructiveAction,
-              child: child ??
-                  Text(
-                    text!,
-                    style: textStyle,
-                  ),
+              child: effectiveChild,
             );
           } else {
             return TextButton(
@@ -148,72 +155,37 @@ class AppButton extends StatelessWidget {
                   ),
                 ),
               ),
-              child: Text(
-                text!,
-                style: textStyle,
-              ),
+              child: effectiveChild,
             );
           }
         }
         if (loading) {
-          return SizedBox(
-            width: width ?? double.infinity,
-            height: height,
-            child: ElevatedButton.icon(
-              onPressed: onPressed,
-              icon: icon!,
-              style: style,
-              label: child ??
-                  _Text(
-                    text: text!,
-                    style: textStyle,
-                  ),
-            ),
+          return ElevatedButton.icon(
+            onPressed: onPressed,
+            icon: icon!,
+            style: style,
+            label: effectiveChild,
           );
         }
         if (outlined) {
-          return SizedBox(
-            width: width ?? double.infinity,
-            height: height,
-            child: OutlinedButton(
-              style: style,
-              onPressed: onPressed,
-              child: child ??
-                  _Text(
-                    text: text!,
-                    style: textStyle,
-                  ),
-            ),
+          return OutlinedButton(
+            style: style,
+            onPressed: onPressed,
+            child: effectiveChild,
           );
         }
         if (outlined && loading) {
-          return SizedBox(
-            width: width ?? double.infinity,
-            height: height,
-            child: OutlinedButton.icon(
-              style: style,
-              onPressed: onPressed,
-              icon: icon!,
-              label: child ??
-                  _Text(
-                    text: text!,
-                    style: textStyle,
-                  ),
-            ),
-          );
-        }
-        return SizedBox(
-          width: width ?? double.infinity,
-          height: height,
-          child: ElevatedButton(
+          return OutlinedButton.icon(
             style: style,
             onPressed: onPressed,
-            child: child ??
-                _Text(
-                  text: text!,
-                  style: textStyle,
-                ),
-          ),
+            icon: icon!,
+            label: effectiveChild,
+          );
+        }
+        return ElevatedButton(
+          style: style,
+          onPressed: onPressed,
+          child: effectiveChild,
         );
       },
     );
@@ -221,18 +193,18 @@ class AppButton extends StatelessWidget {
 }
 
 class _Text extends StatelessWidget {
-  const _Text({required this.text, this.style});
-
-  final TextStyle? style;
+  const _Text({required this.text, this.style, this.maxLines});
 
   final String text;
+  final TextStyle? style;
+  final int? maxLines;
 
   @override
   Widget build(BuildContext context) {
     return DefaultTextStyle.merge(
-      overflow: TextOverflow.visible,
       style: style,
-      child: Text(text),
+      overflow: TextOverflow.ellipsis,
+      child: Text(text, maxLines: maxLines),
     );
   }
 }

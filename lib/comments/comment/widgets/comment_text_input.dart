@@ -76,7 +76,7 @@ class _CommentTextFieldState extends State<CommentTextField> {
                     ),
                   ),
                   trailing: Tappable(
-                    onTap: () => setState(commentsController.clearReplying),
+                    onTap: () => commentsController.clearReplying,
                     animationEffect: TappableAnimationEffect.none,
                     child: Icon(
                       Icons.cancel,
@@ -101,16 +101,14 @@ class _CommentTextFieldState extends State<CommentTextField> {
                             child: TextEmoji(
                               emoji: emoji,
                               onEmojiTap: (emoji) {
-                                setState(() {
-                                  _commentTextController
-                                    ..text = _commentTextController.text + emoji
-                                    ..selection = TextSelection.fromPosition(
-                                      TextPosition(
-                                        offset:
-                                            _commentTextController.text.length,
-                                      ),
-                                    );
-                                });
+                                _commentTextController
+                                  ..text = _commentTextController.text + emoji
+                                  ..selection = TextSelection.fromPosition(
+                                    TextPosition(
+                                      offset:
+                                          _commentTextController.text.length,
+                                    ),
+                                  );
                               },
                             ),
                           ),
@@ -166,7 +164,7 @@ class _CommentTextFieldState extends State<CommentTextField> {
                             if (commentsController.isReplying) {
                               commentsController.clearReplying();
                             }
-                            setState(_commentTextController.clear);
+                            _commentTextController.clear();
                           },
                           child: Text(
                             'Publish',

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:intl/intl.dart';
-import 'package:shared/shared.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class EnCustomShortMessages extends timeago.LookupMessages {
@@ -41,25 +39,13 @@ class EnCustomShortMessages extends timeago.LookupMessages {
 
 extension TimeAgo on DateTime {
   String timeAgo(BuildContext context) {
+    timeago.setLocaleMessages('ru', timeago.RuMessages());
     final locale = Localizations.localeOf(context);
     final now = DateTime.now();
     final difference = now.difference(this);
 
     if (difference.inDays < 6) {
       return timeago.format(this, locale: locale.languageCode);
-      // if (difference.inSeconds < 60) {
-      //   final seconds = difference.inSeconds;
-      //   return context.l10n.secondsAgo(seconds);
-      // } else if (difference.inMinutes < 60) {
-      //   final minutes = difference.inMinutes;
-      //   return context.l10n.minutesAgo(minutes);
-      // } else if (difference.inHours < 24) {
-      //   final hours = difference.inHours;
-      //   return context.l10n.hoursAgo(hours);
-      // } else {
-      //   final days = difference.inDays;
-      //   return context.l10n.daysAgo(days);
-      // }
     } else {
       late DateFormat formatter;
       if (now.year == year) {

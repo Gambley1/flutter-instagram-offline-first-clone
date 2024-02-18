@@ -1,6 +1,5 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:inview_notifier_list/inview_notifier_list.dart';
 import 'package:shared/shared.dart';
@@ -60,19 +59,12 @@ class TestPageInViewNotifier extends StatelessWidget {
                     likePost: () {},
                     likesCount: 100,
                     commentsCount: 48,
-                    createdAt: block.createdAt.timeAgo(context),
                     isFollowed: true,
                     wasFollowed: true,
                     follow: () {},
                     enableFollowButton: true,
                     onCommentsTap: (value) {},
                     onPostShareTap: (p0, p1) {},
-                    likesText: (count) {
-                      return 'Likes: $count';
-                    },
-                    commentsText: (count) {
-                      return 'Comments: $count';
-                    },
                     onPressed: (action, avatarUrl) {},
                     withInViewNotifier: true,
                     videoPlayerBuilder:

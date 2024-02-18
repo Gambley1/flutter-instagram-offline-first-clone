@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/chats/chats.dart';
+import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:flutter_instagram_offline_first_clone/stories/user_stories/user_stories.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared/shared.dart';
@@ -18,7 +19,7 @@ class ChatInboxTile extends StatelessWidget {
     final user = context.select((AppBloc bloc) => bloc.state.user);
 
     return ListTile(
-      horizontalTitleGap: 12,
+      horizontalTitleGap: AppSpacing.md,
       contentPadding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
       onTap: () => context.pushNamed(
         'chat',
@@ -28,7 +29,7 @@ class ChatInboxTile extends StatelessWidget {
       onLongPress: () => context.confirmAction(
         title: 'Delete conversation',
         content: 'Are you sure you want to delete this conversation?',
-        yesText: 'Delete',
+        yesText: context.l10n.delete,
         fn: () => context
             .read<ChatsBloc>()
             .add(ChatsDeleteChatRequested(chatId: chat.id, userId: user.id)),

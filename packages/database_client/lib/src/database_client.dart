@@ -349,7 +349,8 @@ SELECT id FROM profiles WHERE id = ?
     ''',
         parameters: [userId],
       ).map(
-        (event) => event.map((element) => element['posts_count']).first as int,
+        (event) =>
+            event.safeMap((element) => element['posts_count']).first as int,
       );
 
   @override
@@ -372,7 +373,7 @@ ORDER BY created_at DESC
         parameters: [currentUserId],
       ).map(
         (event) => event
-            .map((row) => Post.fromJson(Map<String, dynamic>.from(row)))
+            .safeMap((row) => Post.fromJson(Map<String, dynamic>.from(row)))
             .toList(growable: false),
       );
     }
@@ -391,7 +392,7 @@ ORDER BY created_at DESC
       parameters: [userId],
     ).map(
       (event) => event
-          .map((row) => Post.fromJson(Map<String, dynamic>.from(row)))
+          .safeMap((row) => Post.fromJson(Map<String, dynamic>.from(row)))
           .toList(growable: false),
     );
   }
@@ -536,13 +537,6 @@ ORDER BY created_at DESC LIMIT ?1 OFFSET ?2
   @override
   Stream<int> likesOf({required String id, bool post = true}) {
     final statement = post ? 'post_id' : 'comment_id';
-    // return _powerSyncRepository.db().watch(
-    //   'SELECT COUNT(*) AS likes_count FROM likes '
-    //   'WHERE $statement = ? AND $statement IS NOT NULL',
-    //   parameters: [id],
-    // ).map(
-    //   (event) => event.map((element) => element['likes_count']).first as int,
-    // );
     return _powerSyncRepository.db().watch(
       '''
 SELECT COUNT(*) AS total_likes
@@ -550,7 +544,7 @@ FROM likes
 WHERE $statement = ? AND $statement IS NOT NULL
 ''',
       parameters: [id],
-    ).map((result) => result.map((row) => row['total_likes']).first as int);
+    ).map((result) => result.safeMap((row) => row['total_likes']).first as int);
   }
 
   @override
@@ -630,8 +624,9 @@ WHERE posts.id = ?
         'WHERE subscribed_to_id = ?',
         parameters: [userId],
       ).map(
-        (event) =>
-            event.map((element) => element['subscription_count']).first as int,
+        (event) => event
+            .safeMap((element) => element['subscription_count'])
+            .first as int,
       );
 
   @override
@@ -693,8 +688,9 @@ WHERE posts.id = ?
         'WHERE subscriber_id = ?',
         parameters: [userId],
       ).map(
-        (event) =>
-            event.map((element) => element['subscription_count']).first as int,
+        (event) => event
+            .safeMap((element) => element['subscription_count'])
+            .first as int,
       );
 
   @override
@@ -727,7 +723,7 @@ WHERE posts.id = ?
     await for (final result in streamResult) {
       final followers = <User>[];
       final followersFutures = await Future.wait(
-        result.where((row) => row.isNotEmpty).map(
+        result.where((row) => row.isNotEmpty).safeMap(
               (row) => _powerSyncRepository.db().getOptional(
                 'SELECT * FROM profiles WHERE id = ?',
                 [row['subscriber_id']],
@@ -773,7 +769,7 @@ WHERE posts.id = ?
     await for (final result in streamResult) {
       final followings = <User>[];
       final followingsFutures = await Future.wait(
-        result.where((row) => row.isNotEmpty).map(
+        result.where((row) => row.isNotEmpty).safeMap(
               (row) => _powerSyncRepository.db().getOptional(
                 'SELECT * FROM profiles WHERE id = ?',
                 [row['subscribed_to_id']],
@@ -852,7 +848,7 @@ ORDER BY created_at ASC
 ''',
         parameters: [postId],
       ).map(
-        (result) => result.map(Comment.fromRow).toList(growable: false),
+        (result) => result.safeMap(Comment.fromRow).toList(growable: false),
       );
 
   @override
@@ -986,7 +982,7 @@ ORDER BY created_at ASC
 ''',
         parameters: [commentId],
       ).map(
-        (result) => result.map(Comment.fromRow).toList(),
+        (result) => result.safeMap(Comment.fromRow).toList(growable: false),
       );
 
   @override
@@ -1030,7 +1026,9 @@ where
   and pt2.user_id != ?1
 ''',
         parameters: [userId],
-      ).map((event) => event.map(ChatInbox.fromRow).toList(growable: false));
+      ).map(
+        (event) => event.safeMap(ChatInbox.fromRow).toList(growable: false),
+      );
 
   @override
   Future<ChatInbox> getChat({
@@ -1105,7 +1103,7 @@ order by created_at asc
 ''',
         parameters: [chatId],
       ).map(
-        (event) => event.map(Message.fromRow).toList(growable: false),
+        (event) => event.safeMap(Message.fromRow).toList(growable: false),
       );
 
   @override
@@ -1499,8 +1497,7 @@ LIMIT ?2 OFFSET ?3
       [userId, limit, offset],
     );
 
-    final users = result.map(User.fromJson).toList();
-    return users;
+    return result.safeMap(User.fromJson).toList(growable: false);
   }
 
   @override
@@ -1550,7 +1547,7 @@ FROM stories s
 WHERE user_id = ? AND expires_at > current_timestamp
 ''',
         parameters: [userId],
-      ).map((event) => event.map(Story.fromJson).toList(growable: false));
+      ).map((event) => event.safeMap(Story.fromJson).toList(growable: false));
 
   @override
   Future<Story> getStory({required String id}) async {
@@ -1603,7 +1600,7 @@ LIMIT ? OFFSET ?
       [postId, limit, offset],
     );
     if (result.isEmpty) return [];
-    return result.map<User>(User.fromJson).toList();
+    return result.safeMap(User.fromJson).toList(growable: false);
   }
 
   @override
@@ -1632,6 +1629,6 @@ LIMIT ?3 OFFSET ?4
       [postId, currentUserId, limit, offset],
     );
     if (result.isEmpty) return [];
-    return result.map(User.fromJson).toList();
+    return result.safeMap(User.fromJson).toList(growable: false);
   }
 }

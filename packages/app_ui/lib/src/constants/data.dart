@@ -67,7 +67,7 @@ enum PremiumGradient {
 }
 
 List<String> get commentEmojies =>
-    ['❤', '🙌', '🔥', '👏🏻', '😢', '😍', '😮', '😂'];
+    ['🩷', '🙌', '🔥', '👏🏻', '😢', '😍', '😮', '😂'];
 
 List<ModalOption> createMediaModalOptions({
   required String reelLabel,
@@ -98,14 +98,8 @@ List<ModalOption> createMediaModalOptions({
         ),
     ];
 
-List<ModalOption> subscriberModalOptions({
-  required String cancelSubscriptionLabel,
-  required VoidCallback cancelSubscription,
-  ValueSetter<String>? goTo,
+List<ModalOption> followerModalOptions({
+  required String unfollowLabel,
+  required VoidCallback onUnfollowTap,
 }) =>
-    <ModalOption>[
-      ModalOption(
-        name: cancelSubscriptionLabel,
-        onTap: cancelSubscription,
-      ),
-    ];
+    <ModalOption>[ModalOption(name: unfollowLabel, onTap: onUnfollowTap)];

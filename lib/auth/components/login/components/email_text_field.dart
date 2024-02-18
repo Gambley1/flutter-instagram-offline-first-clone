@@ -2,6 +2,7 @@ import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/auth/components/login/cubit/login_cubit.dart';
+import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:shared/shared.dart';
 
 class EmailTextField extends StatefulWidget {
@@ -47,7 +48,7 @@ class _EmailTextFieldState extends State<EmailTextField> {
       key: const ValueKey('loginEmailTextField'),
       filled: true,
       focusNode: _focusNode,
-      hintText: 'Email',
+      hintText: context.l10n.email,
       enabled: !isLoading,
       textInputAction: TextInputAction.next,
       textInputType: TextInputType.emailAddress,

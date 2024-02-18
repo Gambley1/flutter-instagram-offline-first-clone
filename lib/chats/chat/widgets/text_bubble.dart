@@ -8,6 +8,7 @@ class TextBubble extends StatelessWidget {
   const TextBubble({
     required this.message,
     required this.isOnlyEmoji,
+    required this.isMine,
     super.key,
     this.textBuilder,
     this.onLinkTap,
@@ -17,6 +18,8 @@ class TextBubble extends StatelessWidget {
   final Message message;
 
   final bool isOnlyEmoji;
+
+  final bool isMine;
 
   final Widget Function(BuildContext, Message)? textBuilder;
 
@@ -33,6 +36,7 @@ class TextBubble extends StatelessWidget {
             onLinkTap: onLinkTap,
             message: message,
             isOnlyEmoji: isOnlyEmoji,
+            isMine: isMine,
             onMentionTap: onMentionTap,
           );
   }

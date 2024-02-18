@@ -20,7 +20,7 @@ class UserProfileHeader extends StatelessWidget {
 
   void _navigateToSubscribersPage(BuildContext context) => context.pushNamed(
         'user_statistics',
-        extra: '0',
+        extra: 0,
         queryParameters: {
           'user_id': userId,
         },
@@ -28,7 +28,7 @@ class UserProfileHeader extends StatelessWidget {
 
   void _navigateToSubscriptionsPage(BuildContext context) => context.pushNamed(
         'user_statistics',
-        extra: '1',
+        extra: 1,
         queryParameters: {
           'user_id': userId,
         },
@@ -100,34 +100,35 @@ class UserProfileHeader extends StatelessWidget {
                   showWhenSeen: true,
                 ),
                 const SizedBox(width: AppSpacing.md),
-                UserProfileListStatistics(
-                  onSubscribersTap: () => _navigateToSubscribersPage(context),
-                  onSubscribesTap: () => _navigateToSubscriptionsPage(context),
+                Expanded(
+                  child: UserProfileStatisticsCounts(
+                    onSubscribersTap: () => _navigateToSubscribersPage(context),
+                    onSubscribesTap: () =>
+                        _navigateToSubscriptionsPage(context),
+                  ),
                 ),
               ],
             ),
             Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                user.fullName ?? '',
-                style:
-                    context.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+                user.displayFullName,
+                style: context.titleMedium
+                    ?.copyWith(fontWeight: AppFontWeight.semiBold),
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.md),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (isOwner)
                   ...<Widget>[
-                    const Expanded(flex: 3, child: EditProfileButton()),
-                    const Expanded(flex: 3, child: ShareProfileButton()),
-                    const Expanded(child: ShowSuggestedPeopleButton()),
-                  ].separatedBy(
-                    const SizedBox(width: AppSpacing.sm),
-                  )
+                    const Flexible(flex: 3, child: EditProfileButton()),
+                    const Flexible(flex: 3, child: ShareProfileButton()),
+                    const Flexible(child: ShowSuggestedPeopleButton()),
+                  ].separatedBy(const SizedBox(width: AppSpacing.sm))
                 else ...[
-                  Flexible(
+                  Expanded(
                     flex: 3,
                     child: UserProfileFollowUserButton(userId: userId),
                   ),
@@ -141,8 +142,8 @@ class UserProfileHeader extends StatelessWidget {
   }
 }
 
-class UserProfileListStatistics extends StatelessWidget {
-  const UserProfileListStatistics({
+class UserProfileStatisticsCounts extends StatelessWidget {
+  const UserProfileStatisticsCounts({
     required this.onSubscribersTap,
     required this.onSubscribesTap,
     super.key,
@@ -162,39 +163,30 @@ class UserProfileListStatistics extends StatelessWidget {
     final followingsCount =
         context.select((UserProfileBloc bloc) => bloc.state.followingsCount);
 
-    return Expanded(
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Flexible(
-            child: FittedBox(
-              child: UserProfileStatistic(
-                name: l10n.postsCount(postsCount),
-                value: postsCount,
-                onTap: () {},
-              ),
-            ),
+    return Row(
+      children: <Widget>[
+        Expanded(
+          child: UserProfileStatistic(
+            name: l10n.postsCount(postsCount),
+            value: postsCount,
+            onTap: () {},
           ),
-          Flexible(
-            child: FittedBox(
-              child: UserProfileStatistic(
-                name: l10n.followersText,
-                value: followersCount,
-                onTap: onSubscribersTap,
-              ),
-            ),
+        ),
+        Expanded(
+          child: UserProfileStatistic(
+            name: l10n.followersText,
+            value: followersCount,
+            onTap: onSubscribersTap,
           ),
-          Flexible(
-            child: FittedBox(
-              child: UserProfileStatistic(
-                name: l10n.followingsText,
-                value: followingsCount,
-                onTap: onSubscribesTap,
-              ),
-            ),
+        ),
+        Expanded(
+          child: UserProfileStatistic(
+            name: l10n.followingsText,
+            value: followingsCount,
+            onTap: onSubscribesTap,
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -204,27 +196,9 @@ class EditProfileButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Tappable(
-      fadeStrength: FadeStrength.small,
-      borderRadius: 6,
-      color: context.customReversedAdaptiveColor(
-        light: Colors.grey.shade300,
-        dark: const Color.fromARGB(255, 40, 37, 37).withOpacity(.9),
-      ),
+    return UserProfileButton(
+      label: context.l10n.editProfileText,
       onTap: () => context.pushNamed('edit_profile'),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.md,
-          vertical: AppSpacing.sm,
-        ),
-        child: Align(
-          alignment: Alignment.topCenter,
-          child: Text(
-            context.l10n.editProfileText,
-            style: context.labelLarge,
-          ),
-        ),
-      ),
     );
   }
 }
@@ -234,27 +208,9 @@ class ShareProfileButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Tappable(
-      fadeStrength: FadeStrength.small,
-      borderRadius: 6,
-      color: context.customReversedAdaptiveColor(
-        light: Colors.grey.shade300,
-        dark: const Color.fromARGB(255, 40, 37, 37).withOpacity(.9),
-      ),
+    return UserProfileButton(
+      label: context.l10n.shareProfileText,
       onTap: () {},
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.md,
-          vertical: AppSpacing.sm,
-        ),
-        child: Align(
-          alignment: Alignment.topCenter,
-          child: Text(
-            context.l10n.shareProfileText,
-            style: context.labelLarge,
-          ),
-        ),
-      ),
     );
   }
 }
@@ -268,30 +224,15 @@ class ShowSuggestedPeopleButton extends StatefulWidget {
 }
 
 class _ShowSuggestedPeopleButtonState extends State<ShowSuggestedPeopleButton> {
-  bool _showPeople = false;
+  var _showPeople = false;
 
   @override
   Widget build(BuildContext context) {
-    return Tappable(
-      fadeStrength: FadeStrength.small,
-      borderRadius: 6,
-      color: context.customReversedAdaptiveColor(
-        light: Colors.grey.shade300,
-        dark: const Color.fromARGB(255, 40, 37, 37).withOpacity(.9),
-      ),
+    return UserProfileButton(
       onTap: () => setState(() => _showPeople = !_showPeople),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.md,
-          vertical: AppSpacing.sm,
-        ),
-        child: Align(
-          alignment: Alignment.topCenter,
-          child: Icon(
-            _showPeople ? Icons.person_add_rounded : Icons.person_add_outlined,
-            size: 20,
-          ),
-        ),
+      child: Icon(
+        _showPeople ? Icons.person_add_rounded : Icons.person_add_outlined,
+        size: 20,
       ),
     );
   }
@@ -305,22 +246,20 @@ class UserProfileFollowUserButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bloc = context.read<UserProfileBloc>();
-    final user = context.select((UserProfileBloc b) => b.state.user);
+    final user = context.select((UserProfileBloc bloc) => bloc.state.user);
+
+    final l10n = context.l10n;
 
     return BetterStreamBuilder<bool>(
       stream: bloc.followingStatus(userId: userId!),
       builder: (context, isFollowed) {
-        return Tappable(
-          animationEffect: TappableAnimationEffect.none,
-          borderRadius: 6,
+        return UserProfileButton(
+          label: isFollowed ? '${l10n.followingUser} ▼' : l10n.followUser,
           color: isFollowed
-              ? context.customReversedAdaptiveColor(
-                  light: Colors.grey.shade300,
-                  dark: const Color.fromARGB(255, 40, 37, 37).withOpacity(.9),
-                )
+              ? null
               : context.customReversedAdaptiveColor(
-                  light: Colors.blue.shade300,
-                  dark: Colors.blue.shade500,
+                  light: AppColors.lightBlue,
+                  dark: AppColors.blue,
                 ),
           onTap: isFollowed
               ? () async {
@@ -329,30 +268,16 @@ class UserProfileFollowUserButton extends StatelessWidget {
 
                   final option = await context.showListOptionsModal(
                     title: user.username,
-                    options: subscriberModalOptions(
-                      cancelSubscriptionLabel: context.l10n.cancelFollowingText,
-                      cancelSubscription: () => context
-                          .read<UserProfileBloc>()
-                          .add(UserProfileFollowUserRequested(userId!)),
+                    options: followerModalOptions(
+                      unfollowLabel: context.l10n.cancelFollowingText,
+                      onUnfollowTap: () =>
+                          bloc.add(UserProfileFollowUserRequested(userId!)),
                     ),
                   );
                   if (option == null) return;
                   callback.call(option);
                 }
-              : () => context.read<UserProfileBloc>().add(
-                    UserProfileFollowUserRequested(userId!),
-                  ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.md,
-              vertical: AppSpacing.sm,
-            ),
-            child: Text(
-              isFollowed ? 'Following ▼' : 'Follow',
-              style: context.labelLarge,
-              maxLines: 1,
-            ),
-          ),
+              : () => bloc.add(UserProfileFollowUserRequested(userId!)),
         );
       },
     );

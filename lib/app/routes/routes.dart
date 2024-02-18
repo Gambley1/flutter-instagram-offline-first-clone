@@ -184,10 +184,10 @@ GoRouter router(AppBloc appBloc) => GoRouter(
                       child: const FeedPage(),
                       transitionsBuilder:
                           (context, animation, secondaryAnimation, child) {
-                        return FadeTransition(
-                          opacity: CurveTween(
-                            curve: Curves.easeInOut,
-                          ).animate(animation),
+                        return SharedAxisTransition(
+                          animation: animation,
+                          secondaryAnimation: secondaryAnimation,
+                          transitionType: SharedAxisTransitionType.horizontal,
                           child: child,
                         );
                       },
@@ -453,7 +453,7 @@ GoRouter router(AppBloc appBloc) => GoRouter(
                           return uid;
                         }
 
-                        final tabIndex = (state.extra! as String).parse.toInt();
+                        final tabIndex = state.extra! as int;
 
                         return CustomTransitionPage(
                           key: state.pageKey,

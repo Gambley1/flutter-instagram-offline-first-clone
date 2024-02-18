@@ -21,12 +21,11 @@ class AppDivider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dividerColor = context.customReversedAdaptiveColor(
-      dark: Colors.grey[900],
-      light: Colors.grey[300],
+      dark: AppColors.emphasizeDarkGrey,
+      light: AppColors.brightGrey,
     );
 
     if (!withText) {
-      // return Divider(indent: 72, height: 0, color: dividerColor);
       return Container(
         margin:
             padding != null ? EdgeInsets.symmetric(horizontal: padding!) : null,
@@ -39,8 +38,8 @@ class AppDivider extends StatelessWidget {
         Expanded(
           child: Container(
             margin: const EdgeInsets.only(
-              left: 10,
-              right: 6,
+              left: AppSpacing.md,
+              right: AppSpacing.sm,
             ),
             child: const Divider(
               color: Colors.white,
@@ -55,11 +54,11 @@ class AppDivider extends StatelessWidget {
         Expanded(
           child: Container(
             margin: const EdgeInsets.only(
-              left: 6,
-              right: 10,
+              left: AppSpacing.sm,
+              right: AppSpacing.md,
             ),
             child: const Divider(
-              color: Colors.white,
+              color: AppColors.white,
               height: 36,
             ),
           ),
@@ -88,55 +87,8 @@ class AppSliverDivider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dividerColor = context.customReversedAdaptiveColor(
-      dark: Colors.grey[900],
-      light: Colors.grey[300],
-    );
-
-    if (!withText) {
-      return SliverToBoxAdapter(
-        child: Container(
-          margin: padding != null
-              ? EdgeInsets.symmetric(horizontal: padding!)
-              : null,
-          height: 1,
-          color: dividerColor,
-        ),
-      );
-    }
     return SliverToBoxAdapter(
-      child: Row(
-        children: <Widget>[
-          Expanded(
-            child: Container(
-              margin: const EdgeInsets.only(
-                left: 10,
-                right: 6,
-              ),
-              child: const Divider(
-                color: Colors.white,
-                height: 36,
-              ),
-            ),
-          ),
-          Text(
-            'OR',
-            style: context.titleMedium,
-          ),
-          Expanded(
-            child: Container(
-              margin: const EdgeInsets.only(
-                left: 6,
-                right: 10,
-              ),
-              child: const Divider(
-                color: Colors.white,
-                height: 36,
-              ),
-            ),
-          ),
-        ],
-      ),
+      child: AppDivider(padding: padding, withText: withText),
     );
   }
 }

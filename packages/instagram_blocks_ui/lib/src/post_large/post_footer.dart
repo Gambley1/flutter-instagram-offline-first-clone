@@ -2,7 +2,9 @@ import 'package:app_ui/app_ui.dart';
 import 'package:avatar_stack/avatar_stack.dart';
 import 'package:avatar_stack/positions.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:instagram_blocks_ui/src/carousel_dot_indicator.dart';
 import 'package:instagram_blocks_ui/src/carousel_indicator_controller.dart';
@@ -26,9 +28,6 @@ class PostFooter extends StatelessWidget {
     required this.onAvatarTap,
     required this.onCommentsTap,
     required this.onPostShareTap,
-    required this.likesText,
-    required this.commentsText,
-    required this.createdAt,
     this.likesCountBuilder,
     super.key,
   });
@@ -39,13 +38,10 @@ class PostFooter extends StatelessWidget {
   final int likesCount;
   final int commentsCount;
   final LikeCallback likePost;
-  final LikesText likesText;
-  final CommentsText commentsText;
   final List<String> imagesUrl;
   final OnAvatarTapCallback onAvatarTap;
   final ValueSetter<bool> onCommentsTap;
   final void Function(String, PostAuthor) onPostShareTap;
-  final String createdAt;
   final Widget? Function(String? name, String? userId, int count)?
       likesCountBuilder;
 
@@ -57,6 +53,9 @@ class PostFooter extends StatelessWidget {
             (block as PostLargeBlock).likersInFollowings.isEmpty
         ? <User>[]
         : (block as PostLargeBlock).likersInFollowings.toList();
+
+    final l10n = context.l10n;
+    final t = context.t;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -152,13 +151,38 @@ class PostFooter extends StatelessWidget {
                   RepaintBoundary(
                     child: LikesCount(
                       key: ValueKey(block.id),
-                      likesText: likesText,
-                      likesCount: likesCount,
-                      textBuilder: (count) => likesCountBuilder?.call(
-                        likersInFollowings.firstOrNull?.username,
-                        likersInFollowings.firstOrNull?.id,
-                        count,
-                      ),
+                      count: likesCount,
+                      textBuilder: (count) {
+                        final name = likersInFollowings
+                            .firstWhere(
+                              (user) => user.username != null,
+                              orElse: () => User.anonymous,
+                            )
+                            .username;
+                        final userId = likersInFollowings.firstOrNull?.id;
+                        if (name == null || name.trim().isEmpty) return null;
+
+                        return Text.rich(
+                          t.likedBy(
+                            name: TextSpan(
+                              text: name,
+                              style: context.titleMedium
+                                  ?.copyWith(fontWeight: AppFontWeight.bold),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = userId == null
+                                    ? null
+                                    : () => onAvatarTap(userId),
+                            ),
+                            and: TextSpan(text: count < 1 ? '' : l10n.and),
+                            others: TextSpan(
+                              text: l10n.others(count),
+                              style: context.titleMedium
+                                  ?.copyWith(fontWeight: AppFontWeight.bold),
+                            ),
+                          ),
+                          style: context.titleMedium,
+                        );
+                      },
                     ),
                   ),
                 ],
@@ -173,10 +197,9 @@ class PostFooter extends StatelessWidget {
                 child: CommentsCount(
                   count: commentsCount,
                   onTap: () => onCommentsTap.call(false),
-                  commentsText: commentsText,
                 ),
               ),
-              if (!isSponsored) TimeAgo(createdAt: createdAt),
+              if (!isSponsored) TimeAgo(createdAt: block.createdAt),
               const SizedBox(height: AppSpacing.sm),
             ],
           ),
@@ -195,10 +218,10 @@ class LikersInFollowings extends StatelessWidget {
   final List<User> likersInFollowings;
 
   double get _avatarStackWidth {
-      if (likersInFollowings.length case 1) return 28;
-      if (likersInFollowings.length case 2) return 44;
-      return 60;
-    }
+    if (likersInFollowings.length case 1) return 28;
+    if (likersInFollowings.length case 2) return 44;
+    return 60;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -211,7 +234,7 @@ class LikersInFollowings extends StatelessWidget {
           for (var i = 0; i < likersInFollowings.length; i++)
             if (likersInFollowings[i].avatarUrl == null)
               CircleAvatar(
-                backgroundColor: AppColors.black,
+                backgroundColor: context.reversedAdaptiveColor,
                 child: ConstrainedBox(
                   constraints: const BoxConstraints.expand(),
                   child: Padding(
@@ -228,7 +251,7 @@ class LikersInFollowings extends StatelessWidget {
                 imageUrl: likersInFollowings[i].avatarUrl!,
                 imageBuilder: (context, imageProvider) {
                   return CircleAvatar(
-                    backgroundColor: AppColors.black,
+                    backgroundColor: context.reversedAdaptiveColor,
                     child: ConstrainedBox(
                       constraints: const BoxConstraints.expand(),
                       child: Padding(
@@ -302,10 +325,9 @@ class _SponsoredPostActionState extends State<SponsoredPostAction> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Visit Instagram Profile',
-              style: context.titleMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+              context.l10n.visitSponsoredInstagramProfile,
+              style: context.titleMedium
+                  ?.copyWith(fontWeight: AppFontWeight.semiBold),
             ),
             const Icon(
               Icons.arrow_forward_ios_rounded,

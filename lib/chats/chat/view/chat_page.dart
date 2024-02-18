@@ -7,6 +7,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/chats/chat/chat.dart';
+import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:flutter_instagram_offline_first_clone/stories/user_stories/user_stories.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:shared/shared.dart';
@@ -78,22 +79,22 @@ class _ChatViewState extends State<ChatView> {
         localOffset.dy,
       ),
       items: <PopupMenuEntry<MessageAction>>[
-        const PopupMenuItem(
+        PopupMenuItem(
           value: MessageAction.reply,
           child: ListTile(
             contentPadding: EdgeInsets.zero,
-            leading: Icon(Icons.reply_rounded),
-            title: Text('Reply'),
+            leading: const Icon(Icons.reply_rounded),
+            title: Text(context.l10n.reply),
           ),
         ),
         if (isMine) ...[
           if (!hasSharedPost)
-            const PopupMenuItem(
+            PopupMenuItem(
               value: MessageAction.edit,
               child: ListTile(
                 contentPadding: EdgeInsets.zero,
-                leading: Icon(Icons.edit_outlined),
-                title: Text('Edit'),
+                leading: const Icon(Icons.edit_outlined),
+                title: Text(context.l10n.edit),
               ),
             ),
           PopupMenuItem(
@@ -108,7 +109,7 @@ class _ChatViewState extends State<ChatView> {
                   BlendMode.srcIn,
                 ),
               ),
-              title: const Text('Delete'),
+              title: Text(context.l10n.delete),
             ),
           ),
         ],
@@ -433,22 +434,27 @@ class ChatBackground extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Positioned.fill(
-      child: ShaderMask(
-        shaderCallback: (bounds) {
-          return const LinearGradient(
-            begin: FractionalOffset.topCenter,
-            end: FractionalOffset.bottomCenter,
-            colors: [
-              ui.Color.fromARGB(255, 119, 69, 121),
-              ui.Color.fromARGB(255, 141, 124, 189),
-              ui.Color.fromARGB(255, 50, 94, 170),
-              ui.Color.fromARGB(255, 111, 156, 189),
-            ],
-            stops: [0, .33, .66, .99],
-          ).createShader(bounds);
-        },
-        child: Assets.images.chatBackground.image(fit: BoxFit.cover),
-      ),
+      child: switch (context.isLight) {
+        true =>
+          Assets.images.chatBackgroundLightOverlay.image(fit: BoxFit.cover),
+        false => ShaderMask(
+            shaderCallback: (bounds) {
+              return const LinearGradient(
+                begin: FractionalOffset.topCenter,
+                end: FractionalOffset.bottomCenter,
+                colors: [
+                  ui.Color.fromARGB(255, 119, 69, 121),
+                  ui.Color.fromARGB(255, 141, 124, 189),
+                  ui.Color.fromARGB(255, 50, 94, 170),
+                  ui.Color.fromARGB(255, 111, 156, 189),
+                ],
+                stops: [0, .33, .66, .99],
+              ).createShader(bounds);
+            },
+            child:
+                Assets.images.chatBackgroundDarkMask.image(fit: BoxFit.cover),
+          ),
+      },
     );
   }
 }
@@ -468,16 +474,17 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
       leadingWidth: 24,
       title: ListTile(
         contentPadding: EdgeInsets.zero,
-        title: Text(participant.username ?? participant.fullName ?? ''),
+        title: Text(participant.displayUsername),
         subtitle: const Text('online'),
         leading: UserStoriesAvatar(
           author: participant,
           enableUnactiveBorder: false,
           withAdaptiveBorder: false,
+          radius: 26,
         ),
       ),
       bottom: const PreferredSize(
-        preferredSize: Size.fromHeight(2),
+        preferredSize: Size.fromHeight(AppSpacing.xxs),
         child: AppDivider(),
       ),
     );
@@ -501,13 +508,10 @@ class ScrollToBottomButton extends StatelessWidget {
       shape: const CircleBorder(),
       onPressed: scrollToBottom,
       backgroundColor: context.customReversedAdaptiveColor(
-        light: const ui.Color.fromARGB(255, 105, 111, 123),
-        dark: const ui.Color(0xff1c1e22),
+        light: AppColors.white,
+        dark: AppColors.emphasizeDarkGrey,
       ),
-      child: const Icon(
-        Icons.arrow_downward_rounded,
-        color: Colors.white,
-      ),
+      child: const Icon(Icons.arrow_downward_rounded),
     );
   }
 }

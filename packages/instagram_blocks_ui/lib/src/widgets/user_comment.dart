@@ -3,6 +3,7 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:instagram_blocks_ui/src/like_button.dart';
 import 'package:instagram_blocks_ui/src/likes_count.dart';
@@ -28,8 +29,6 @@ class UserComment extends StatelessWidget {
     required this.isLikedByOwner,
     required this.onLikeComment,
     required this.likesCount,
-    required this.likesText,
-    required this.createdAt,
     required this.onCommentDelete,
     this.onReplyButtonTap,
     this.avatarBuilder,
@@ -43,12 +42,10 @@ class UserComment extends StatelessWidget {
   final bool isLiked;
   final bool isLikedByOwner;
   final int likesCount;
-  final LikesText likesText;
   final LikeCallback onLikeComment;
   final VoidCallback onAvatarTap;
   final ValueSetter<String>? onReplyButtonTap;
   final ValueSetter<String> onCommentDelete;
-  final String createdAt;
   final CommentUserAvatarBuilder? avatarBuilder;
 
   @override
@@ -88,7 +85,7 @@ class UserComment extends StatelessWidget {
               style: context.labelLarge,
             ),
           ),
-          TimeAgo(createdAt: '$createdAt '),
+          TimeAgo(createdAt: comment.createdAt, short: true),
           if (isLikedByOwner)
             CommentOwnerLikedAvatar(avatarUrl: post.author.avatarUrl),
         ],
@@ -104,7 +101,7 @@ class UserComment extends StatelessWidget {
             onTap: () => onReplyButtonTap?.call(comment.author.username),
             animationEffect: TappableAnimationEffect.none,
             child: Text(
-              'Reply',
+              context.l10n.reply,
               style: context.labelMedium?.copyWith(color: Colors.grey.shade500),
             ),
           ),
@@ -123,10 +120,10 @@ class UserComment extends StatelessWidget {
           ),
           RepaintBoundary(
             child: LikesCount(
-              likesCount: likesCount,
-              likesText: likesText,
-              size: 14,
+              short: true,
               hideCount: false,
+              size: 14,
+              count: likesCount,
               color: Colors.grey.shade500,
             ),
           ),

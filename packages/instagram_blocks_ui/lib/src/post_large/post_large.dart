@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:instagram_blocks_ui/src/carousel_indicator_controller.dart';
-import 'package:instagram_blocks_ui/src/comments_count.dart';
 import 'package:instagram_blocks_ui/src/like_button.dart';
-import 'package:instagram_blocks_ui/src/likes_count.dart';
 import 'package:instagram_blocks_ui/src/media_carousel_settings.dart';
 import 'package:instagram_blocks_ui/src/post_large/post_footer.dart';
 import 'package:instagram_blocks_ui/src/post_large/post_header.dart';
@@ -17,19 +15,15 @@ class PostLarge extends StatelessWidget {
     required this.likePost,
     required this.likesCount,
     required this.commentsCount,
-    required this.createdAt,
     required this.isFollowed,
     required this.wasFollowed,
     required this.follow,
     required this.enableFollowButton,
     required this.onCommentsTap,
     required this.onPostShareTap,
-    required this.likesText,
-    required this.commentsText,
     required this.onPressed,
     required this.withInViewNotifier,
     required this.postOptionsSettings,
-    this.sponsoredText,
     this.postAuthorAvatarBuilder,
     this.videoPlayerBuilder,
     this.postIndex,
@@ -38,47 +32,22 @@ class PostLarge extends StatelessWidget {
   });
 
   final PostBlock block;
-
   final bool isOwner;
-
   final bool wasFollowed;
-
   final bool isFollowed;
-
   final VoidCallback follow;
-
   final bool isLiked;
-
   final LikeCallback likePost;
-
   final int likesCount;
-
   final int commentsCount;
-
-  final LikesText likesText;
-
-  final CommentsText commentsText;
-
-  final String createdAt;
-
   final bool enableFollowButton;
-
   final void Function(BlockAction? action, String? avatarUrl) onPressed;
-
   final ValueSetter<bool> onCommentsTap;
-
   final void Function(String, PostAuthor) onPostShareTap;
-
-  final String? sponsoredText;
-
   final PostOptionsSettings postOptionsSettings;
-
   final AvatarBuilder? postAuthorAvatarBuilder;
-
   final VideoPlayerBuilder? videoPlayerBuilder;
-
   final int? postIndex;
-
   final bool withInViewNotifier;
 
   final Widget? Function(String? name, String? userId, int count)?
@@ -106,7 +75,6 @@ class PostLarge extends StatelessWidget {
           isOwner: isOwner,
           isSponsored: isSponsored,
           isFollowed: isFollowed,
-          sponsoredText: sponsoredText,
           wasFollowed: wasFollowed,
           enableFollowButton: enableFollowButton,
           postAuthorAvatarBuilder: postAuthorAvatarBuilder,
@@ -136,14 +104,11 @@ class PostLarge extends StatelessWidget {
           imagesUrl: block.mediaUrls,
           isLiked: isLiked,
           likePost: likePost,
-          createdAt: createdAt,
           likesCount: likesCount,
           commentsCount: commentsCount,
           onAvatarTap: (avatarUrl) => onPressed(block.action, avatarUrl),
           onCommentsTap: onCommentsTap,
           onPostShareTap: onPostShareTap,
-          likesText: likesText,
-          commentsText: commentsText,
           likesCountBuilder: likesCountBuilder,
         ),
       ],

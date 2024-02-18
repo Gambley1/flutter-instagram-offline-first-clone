@@ -2,6 +2,7 @@ import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
+import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:flutter_instagram_offline_first_clone/user_profile/user_profile.dart';
 import 'package:go_router/go_router.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
@@ -92,14 +93,14 @@ class _UserProfileEditViewState extends State<UserProfileEditView> {
                       children: <Widget>[
                         ProfileInfoInput(
                           value: user.fullName,
-                          label: 'Name',
+                          label: context.l10n.name,
                           description:
                               ProfileInfoEditView.fullNameEditDescription,
                           infoType: ProfileEditInfoType.fullName,
                         ),
                         ProfileInfoInput(
                           value: user.username,
-                          label: 'Username',
+                          label: context.l10n.username,
                           description:
                               ProfileInfoEditView.usernameEditDescription(
                             user.username!,
@@ -108,7 +109,7 @@ class _UserProfileEditViewState extends State<UserProfileEditView> {
                         ),
                         ProfileInfoInput(
                           value: '',
-                          label: 'Bio',
+                          label: context.l10n.bio,
                           infoType: ProfileEditInfoType.bio,
                           onTap: () {},
                         ),
