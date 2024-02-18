@@ -278,9 +278,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     if (!hasMore) {
       return blocks.followedBy([
         if (blocks.isNotEmpty) DividerHorizontalBlock(),
-        SectionHeaderBlock(
-          title: 'Suggested for you',
-        ),
+        const SectionHeaderBlock(sectionType: SectionHeaderBlockType.suggested),
       ]).toList();
     }
 

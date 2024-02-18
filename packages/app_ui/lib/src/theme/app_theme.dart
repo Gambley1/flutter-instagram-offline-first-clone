@@ -30,25 +30,30 @@ class AppTheme {
         useMaterial3ErrorColors: true,
       ).copyWith(
         textTheme: const AppTheme().textTheme,
-        iconTheme: const IconThemeData(color: Colors.black),
+        iconTheme: const IconThemeData(color: AppColors.black),
         inputDecorationTheme: const InputDecorationTheme(
           contentPadding: EdgeInsets.symmetric(horizontal: AppSpacing.md),
           border: OutlineInputBorder(borderSide: BorderSide.none),
         ),
-        appBarTheme: const AppBarTheme(surfaceTintColor: Colors.white),
+        appBarTheme: const AppBarTheme(
+          elevation: 0,
+          surfaceTintColor: AppColors.white,
+          backgroundColor: AppColors.white,
+        ),
         bottomNavigationBarTheme: const BottomNavigationBarThemeData(
           type: BottomNavigationBarType.fixed,
         ),
         bottomSheetTheme: const BottomSheetThemeData(
           showDragHandle: true,
-          surfaceTintColor: Colors.white,
+          surfaceTintColor: AppColors.white,
+          backgroundColor: AppColors.white,
         ),
       );
 
   /// Defines light SystemUiOverlayStyle.
   static const SystemUiOverlayStyle lightSystemBarTheme = SystemUiOverlayStyle(
     statusBarBrightness: Brightness.dark,
-    statusBarColor: Colors.transparent,
+    statusBarColor: AppColors.transparent,
     statusBarIconBrightness: Brightness.light,
     systemNavigationBarIconBrightness: Brightness.dark,
   );
@@ -56,7 +61,7 @@ class AppTheme {
   /// Defines dart SystemUiOverlayStyle.
   static const SystemUiOverlayStyle darkSystemBarTheme = SystemUiOverlayStyle(
     statusBarBrightness: Brightness.light,
-    statusBarColor: Colors.transparent,
+    statusBarColor: AppColors.transparent,
     statusBarIconBrightness: Brightness.light,
     systemNavigationBarIconBrightness: Brightness.light,
   );
@@ -81,9 +86,9 @@ class AppTheme {
     bodySmall: ContentTextStyle.caption,
     labelSmall: ContentTextStyle.overline,
   ).apply(
-    bodyColor: Colors.black,
-    displayColor: Colors.black,
-    decorationColor: Colors.black,
+    bodyColor: AppColors.black,
+    displayColor: AppColors.black,
+    decorationColor: AppColors.black,
   );
 
   /// The UI text theme based on [UITextStyle].
@@ -102,9 +107,9 @@ class AppTheme {
     bodySmall: UITextStyle.caption,
     labelSmall: UITextStyle.overline,
   ).apply(
-    bodyColor: Colors.black,
-    displayColor: Colors.black,
-    decorationColor: Colors.black,
+    bodyColor: AppColors.black,
+    displayColor: AppColors.black,
+    decorationColor: AppColors.black,
   );
 }
 
@@ -127,9 +132,9 @@ class AppDarkTheme extends AppTheme {
   @override
   TextTheme get textTheme {
     return AppTheme.contentTextTheme.apply(
-      bodyColor: Colors.white,
-      displayColor: Colors.white,
-      decorationColor: Colors.white,
+      bodyColor: AppColors.white,
+      displayColor: AppColors.white,
+      decorationColor: AppColors.white,
     );
   }
 
@@ -153,6 +158,7 @@ class AppDarkTheme extends AppTheme {
           border: OutlineInputBorder(borderSide: BorderSide.none),
         ),
         appBarTheme: const AppBarTheme(
+          elevation: 0,
           backgroundColor: AppColors.black,
           surfaceTintColor: AppColors.black,
         ),
@@ -162,6 +168,7 @@ class AppDarkTheme extends AppTheme {
         bottomSheetTheme: const BottomSheetThemeData(
           surfaceTintColor: AppColors.background,
           backgroundColor: AppColors.background,
+          modalBackgroundColor: AppColors.background,
         ),
       );
 }

@@ -60,12 +60,10 @@ Future<void> bootstrap(
       );
 
       HydratedBloc.storage = await HydratedStorage.build(
-        storageDirectory: await getApplicationSupportDirectory(),
+        storageDirectory: kIsWeb
+            ? HydratedStorage.webStorageDirectory
+            : await getTemporaryDirectory(),
       );
-
-      if (kDebugMode) {
-        await HydratedBloc.storage.clear();
-      }
 
       final powerSyncRepository = PowerSyncRepository(isDev: isDev);
       await powerSyncRepository.initialize();

@@ -1,5 +1,6 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 
 class AuthProviderSignInButton extends StatelessWidget {
   const AuthProviderSignInButton({
@@ -14,13 +15,21 @@ class AuthProviderSignInButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppButton(
-      icon: const Icon(Icons.wordpress_outlined),
-      text: 'Sign in with ${provider.value}',
-      style: ElevatedButton.styleFrom(
-        shape: LinearBorder.none,
+    return ConstrainedBox(
+      constraints: BoxConstraints(
+        minWidth: switch (context.screenWidth) {
+          > 600 => context.screenWidth * .6,
+          _ => context.screenWidth,
+        },
       ),
-      onPressed: onPressed,
+      child: AppButton(
+        icon: const Icon(Icons.wordpress_outlined),
+        text: context.l10n.signInWith(provider.value),
+        textStyle:
+            context.labelLarge?.copyWith(overflow: TextOverflow.ellipsis),
+        style: ElevatedButton.styleFrom(shape: LinearBorder.none),
+        onPressed: onPressed,
+      ),
     );
   }
 }

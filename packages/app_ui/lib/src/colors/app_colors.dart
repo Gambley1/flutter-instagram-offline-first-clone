@@ -14,6 +14,9 @@ abstract class AppColors {
   /// Transparent
   static const Color transparent = Color(0x00000000);
 
+  /// The light blue color.
+  static const Color lightBlue = Color.fromARGB(255, 100, 181, 246);
+
   /// The blue primary color and swatch.
   static const Color blue = Color(0xFF3898EC);
 
@@ -27,17 +30,23 @@ abstract class AppColors {
   static const Color lightDark = Color.fromARGB(164, 120, 119, 119);
 
   /// Dark.
-  static const Color dark = Color.fromARGB(165, 58, 58, 58);
+  static const Color dark = Color.fromARGB(255, 58, 58, 58);
 
   /// Grey.
   static const MaterialColor grey = Colors.grey;
 
   /// The bright grey color.
-  static const Color brightGrey = Color.fromARGB(255, 238, 238, 238);
+  static const Color brightGrey = Color.fromARGB(255, 224, 224, 224);
 
   /// The dark grey color.
   static const Color darkGrey = Color.fromARGB(255, 66, 66, 66);
 
-  /// Red.
+  /// The emphasize grey color.
+  static const Color emphasizeGrey = Color.fromARGB(255, 97, 97, 97);
+
+  /// The emphasize dark grey color.
+  static const Color emphasizeDarkGrey = Color.fromARGB(255, 40, 37, 37);
+
+  /// Red material color.
   static const MaterialColor red = Colors.red;
 }

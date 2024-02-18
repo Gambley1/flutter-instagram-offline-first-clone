@@ -8,6 +8,7 @@ import 'package:flutter_instagram_offline_first_clone/chats/chats.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/feed.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/post/post.dart';
 import 'package:flutter_instagram_offline_first_clone/home/home.dart';
+import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:flutter_instagram_offline_first_clone/network_error/network_error.dart';
 import 'package:flutter_instagram_offline_first_clone/stories/stories.dart';
 import 'package:flutter_instagram_offline_first_clone/user_profile/user_profile.dart';
@@ -226,23 +227,29 @@ class _FeedBodyState extends State<FeedBody> {
       return DividerBlock(feedAnimationController: controller);
     }
     if (block is SectionHeaderBlock) {
-      return Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            child: Row(
-              children: [
-                Text(
-                  block.title,
-                  style: context.headlineSmall
-                      ?.copyWith(fontWeight: FontWeight.w700),
+      return switch (block.sectionType) {
+        SectionHeaderBlockType.suggested => Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.md,
+                  vertical: AppSpacing.sm,
                 ),
-              ],
-            ),
+                child: Row(
+                  children: [
+                    Text(
+                      context.l10n.suggestedForYouText,
+                      style: context.headlineSmall,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+              const AppDivider(),
+            ],
           ),
-          const AppDivider(),
-        ],
-      );
+      };
     }
     if (index + 1 == feedLength) {
       if (isFailure) {
@@ -256,9 +263,7 @@ class _FeedBodyState extends State<FeedBody> {
         );
       } else {
         return Padding(
-          padding: EdgeInsets.only(
-            top: feedLength == 0 ? 12 : 0,
-          ),
+          padding: EdgeInsets.only(top: feedLength == 0 ? AppSpacing.md : 0),
           child: FeedLoaderItem(
             key: ValueKey(index),
             onPresented: () => hasMorePosts
@@ -271,13 +276,9 @@ class _FeedBodyState extends State<FeedBody> {
       }
     }
     if (block is PostBlock) {
-      return PostView(
-        key: ValueKey(block.id),
-        block: block,
-        postIndex: index,
-      );
+      return PostView(key: ValueKey(block.id), block: block, postIndex: index);
     }
 
-    return const Text('Unknown block');
+    return Text('Unknown block type: ${block.type}');
   }
 }

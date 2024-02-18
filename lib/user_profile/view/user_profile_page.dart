@@ -7,6 +7,7 @@ import 'package:flutter_instagram_offline_first_clone/attachments/attachments.da
 import 'package:flutter_instagram_offline_first_clone/feed/post/widgets/post_popup.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:flutter_instagram_offline_first_clone/reels/reels.dart';
+import 'package:flutter_instagram_offline_first_clone/selector/selector.dart';
 import 'package:flutter_instagram_offline_first_clone/stories/create_stories/create_stories.dart';
 import 'package:flutter_instagram_offline_first_clone/user_profile/bloc/user_profile_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/user_profile/widgets/user_profile_header.dart';
@@ -209,15 +210,17 @@ class _PostsPageState extends State<PostsPage>
           handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
         ),
         BetterStreamBuilder<List<PostBlock>>(
-          stream:
-              bloc.userPosts(),
-          noDataBuilder: (_) => SliverFillRemaining(
-            child: Center(
-              child: Text('No posts', style: context.headlineSmall),
-            ),
-          ),
+          initialData: const <PostBlock>[],
+          stream: bloc.userPosts(),
           comparator: const ListEquality<PostBlock>().equals,
           builder: (context, blocks) {
+            if (blocks.isEmpty) {
+              return SliverFillRemaining(
+                child: Center(
+                  child: Text('No posts', style: context.headlineSmall),
+                ),
+              );
+            }
             return SliverGrid.builder(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
@@ -327,7 +330,7 @@ class UserProfileAppBar extends StatelessWidget {
                 const UserProfileAddMediaButton(),
                 if (ModalRoute.of(context)!.isFirst) ...const [
                   SizedBox(width: AppSpacing.md),
-                  UserProfileLogoutButton(),
+                  UserProfileSettingsButton(),
                 ],
               ],
       ),
@@ -347,8 +350,8 @@ class UserProfileActions extends StatelessWidget {
   }
 }
 
-class UserProfileLogoutButton extends StatelessWidget {
-  const UserProfileLogoutButton({super.key});
+class UserProfileSettingsButton extends StatelessWidget {
+  const UserProfileSettingsButton({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -358,6 +361,14 @@ class UserProfileLogoutButton extends StatelessWidget {
 
         final option = await context.showListOptionsModal(
           options: [
+            ModalOption(
+              name: context.l10n.language,
+              child: const LocaleSelector(),
+            ),
+            ModalOption(
+              name: context.l10n.theme,
+              child: const ThemeSelector(),
+            ),
             ModalOption(
               name: 'Log out',
               actionTitle: 'Log out',

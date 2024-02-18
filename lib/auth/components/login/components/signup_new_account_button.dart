@@ -2,6 +2,7 @@ import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/auth/cubit/auth_cubit.dart';
+import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 
 /// {@template signup_widget}
 /// Signup widget that contains signup button.
@@ -15,25 +16,15 @@ class SignupNewAccountButton extends StatelessWidget {
     final cubit = context.read<AuthCubit>();
     return Tappable(
       onTap: () => cubit.changeAuth(showLogin: false),
-      child: RichText(
-        maxLines: 1,
+      child: Text.rich(
         overflow: TextOverflow.ellipsis,
-        text: TextSpan(
+        style: context.bodyMedium,
+        TextSpan(
           children: [
+            TextSpan(text: '${context.l10n.noAccount}? '),
             TextSpan(
-              text: "Don't have an account?",
-              style: context.bodyMedium,
-            ),
-            WidgetSpan(
-              child: SizedBox(
-                width: context.textSpacing,
-              ),
-            ),
-            TextSpan(
-              text: 'Sign up.',
-              style: context.bodyMedium?.copyWith(
-                color: Colors.blue.shade500,
-              ),
+              text: '${context.l10n.signUp}.',
+              style: context.bodyMedium?.copyWith(color: AppColors.blue),
             ),
           ],
         ),

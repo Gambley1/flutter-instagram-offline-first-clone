@@ -1,15 +1,14 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:sprung/sprung.dart';
 
-typedef LikesText = String Function(int count);
-
 class LikesCount extends StatefulWidget {
   const LikesCount({
-    required this.likesCount,
-    this.likesText,
+    required this.count,
+    this.short = false,
     this.textBuilder,
     this.color,
     this.size,
@@ -17,8 +16,8 @@ class LikesCount extends StatefulWidget {
     super.key,
   });
 
-  final LikesText? likesText;
-  final int likesCount;
+  final int count;
+  final bool short;
   final Color? color;
   final double? size;
   final Widget? Function(int count)? textBuilder;
@@ -33,7 +32,7 @@ class _LikesCountState extends State<LikesCount>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final count = widget.likesCount;
+    final count = widget.count;
     final isVisible = !widget.hideCount || count != 0;
 
     return AnimatedVisibility(
@@ -43,7 +42,9 @@ class _LikesCountState extends State<LikesCount>
       curve: Sprung.criticallyDamped,
       child: widget.textBuilder?.call(count != 0 ? count - 1 : 0) ??
           Text(
-            widget.likesText!.call(count),
+            widget.short
+                ? context.l10n.likesCountTextShort(count)
+                : context.l10n.likesCountText(count),
             style: context.titleMedium?.copyWith(
               color: widget.color,
               fontSize: widget.size,

@@ -2,6 +2,7 @@ import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/auth/cubit/auth_cubit.dart';
+import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 
 /// {@template signup_widget}
 /// Signup widget that contains signup button.
@@ -21,7 +22,7 @@ class SigninIntoAccountButton extends StatelessWidget {
         text: TextSpan(
           children: [
             TextSpan(
-              text: 'Already have an account?',
+              text: '${context.l10n.alreadyHaveAccount}?',
               style: context.bodyMedium,
             ),
             WidgetSpan(
@@ -30,7 +31,7 @@ class SigninIntoAccountButton extends StatelessWidget {
               ),
             ),
             TextSpan(
-              text: 'Sign in.',
+              text: '${context.l10n.logIn}.',
               style: context.bodyMedium?.copyWith(
                 color: Colors.blue.shade500,
               ),

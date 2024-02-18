@@ -10,6 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/attachments/widgets/thumnail/thumbnail.dart';
 import 'package:flutter_instagram_offline_first_clone/chats/chat/chat.dart';
+import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:go_router/go_router.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:intl/intl.dart';
@@ -104,7 +105,7 @@ class MessageBubble extends StatelessWidget {
           late final onDeleteTap = context.confirmAction(
             title: 'Delete message',
             content: 'Are you sure you want to delete this message?',
-            yesText: 'Delete',
+            yesText: context.l10n.delete,
             fn: () => this.onDeleteTap?.call(message),
           );
           final option = await onMessageTap.call(
@@ -178,11 +179,17 @@ class MessageBubbleContent extends StatelessWidget {
 
     late final sharedPost = message.sharedPost;
 
+    final effectiveTextColor = switch ((isMine, context.isLight)) {
+      (true, _) => AppColors.white,
+      (false, true) => AppColors.black,
+      (false, false) => AppColors.white,
+    };
+
     return BubbleBackground(
       colors: [
         if (!isMine) ...[
           context.customReversedAdaptiveColor(
-            light: const ui.Color.fromARGB(255, 105, 111, 123),
+            light: AppColors.white,
             dark: const ui.Color(0xff1c1e22),
           ),
         ] else ...const [
@@ -194,27 +201,26 @@ class MessageBubbleContent extends StatelessWidget {
       ],
       child: message.sharedPostId == null && message.message.trim().isEmpty
           ? Padding(
-              padding: const EdgeInsets.fromLTRB(
-                AppSpacing.md,
-                AppSpacing.md,
-                AppSpacing.xxlg,
-                AppSpacing.md,
-              ),
+              padding: const EdgeInsets.all(AppSpacing.md),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Post unavailable',
+                    context.l10n.postUnavailable,
                     style: context.bodyLarge?.copyWith(
                       fontWeight: AppFontWeight.bold,
-                      color: Colors.white,
+                      color: effectiveTextColor,
                     ),
                   ),
-                  Text(
-                    'This post is unavailable.',
-                    style: context.bodyLarge?.apply(
-                      color: Colors.white,
+                  TextMessageWidget(
+                    text: '${context.l10n.postUnavailableDescription}.',
+                    spacing: 12,
+                    textStyle:
+                        context.bodyLarge?.apply(color: effectiveTextColor),
+                    child: MessageStatuses(
+                      isEdited: isEdited,
+                      message: message,
                     ),
                   ),
                 ],
@@ -280,14 +286,14 @@ class MessageBubbleContent extends StatelessWidget {
                                     sharedPost.author.username,
                                     style: context.bodyLarge?.copyWith(
                                       fontWeight: AppFontWeight.bold,
-                                      color: Colors.white,
+                                      color: effectiveTextColor,
                                     ),
                                   ),
                                   trailing: Container(
                                     decoration: const BoxDecoration(
                                       boxShadow: [
                                         BoxShadow(
-                                          color: Colors.black26,
+                                          color: AppColors.dark,
                                           blurRadius: 15,
                                           offset: Offset(2, 2),
                                         ),
@@ -297,7 +303,7 @@ class MessageBubbleContent extends StatelessWidget {
                                       height: 36,
                                       width: 36,
                                       colorFilter: const ColorFilter.mode(
-                                        Colors.white,
+                                        AppColors.white,
                                         BlendMode.srcIn,
                                       ),
                                     ),
@@ -346,6 +352,7 @@ class MessageBubbleContent extends StatelessWidget {
                                   sharedPost.author.username,
                                   style: context.bodyLarge?.copyWith(
                                     fontWeight: AppFontWeight.bold,
+                                    color: effectiveTextColor,
                                   ),
                                 ),
                               ),
@@ -370,7 +377,7 @@ class MessageBubbleContent extends StatelessWidget {
                                             decoration: const BoxDecoration(
                                               boxShadow: [
                                                 BoxShadow(
-                                                  color: Colors.black26,
+                                                  color: AppColors.dark,
                                                   blurRadius: 15,
                                                   offset: Offset(2, 2),
                                                 ),
@@ -382,7 +389,7 @@ class MessageBubbleContent extends StatelessWidget {
                                               width: 36,
                                               colorFilter:
                                                   const ColorFilter.mode(
-                                                Colors.white,
+                                                AppColors.white,
                                                 BlendMode.srcIn,
                                               ),
                                             ),
@@ -424,6 +431,7 @@ class MessageBubbleContent extends StatelessWidget {
                                           text: sharedPost.author.username,
                                           style: context.bodyLarge?.copyWith(
                                             fontWeight: AppFontWeight.bold,
+                                            color: effectiveTextColor,
                                           ),
                                         ),
                                         const WidgetSpan(
@@ -431,7 +439,9 @@ class MessageBubbleContent extends StatelessWidget {
                                         ),
                                         TextSpan(
                                           text: sharedPost.caption,
-                                          style: context.bodyLarge,
+                                          style: context.bodyLarge?.apply(
+                                            color: effectiveTextColor,
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -474,6 +484,7 @@ class MessageBubbleContent extends StatelessWidget {
                                     ),
                               child: TextBubble(
                                 message: message,
+                                isMine: isMine,
                                 isOnlyEmoji: message.message.isOnlyEmoji,
                               ),
                             )
@@ -481,8 +492,8 @@ class MessageBubbleContent extends StatelessWidget {
                             TextMessageWidget(
                               text: message.message,
                               spacing: 12,
-                              textStyle:
-                                  context.bodyLarge?.apply(color: Colors.white),
+                              textStyle: context.bodyLarge
+                                  ?.apply(color: effectiveTextColor),
                               child: MessageStatuses(
                                 isEdited: isEdited,
                                 message: message,
@@ -529,41 +540,44 @@ class MessageStatuses extends StatelessWidget {
     final user = context.select((AppBloc bloc) => bloc.state.user);
     final isMine = message.sender?.id == user.id;
 
+    final effectiveSecondaryTextColor = switch (isMine) {
+      true => AppColors.white,
+      false => AppColors.grey,
+    };
+
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         if (isEdited)
           Text(
             'edited',
-            style: context.bodySmall?.apply(color: Colors.white),
+            style: context.bodySmall?.apply(color: effectiveSecondaryTextColor),
           ),
         Text(
           message.createdAt.format(
             context,
             dateFormat: DateFormat.Hm,
           ),
-          style: context.bodySmall?.apply(color: Colors.white),
+          style: context.bodySmall?.apply(color: effectiveSecondaryTextColor),
         ),
         if (isMine) ...[
           if (message.isRead)
             Assets.icons.check.svg(
               height: AppSize.iconSizeSmall,
               width: AppSize.iconSizeSmall,
-              colorFilter: const ColorFilter.mode(
-                Colors.white,
+              colorFilter: ColorFilter.mode(
+                effectiveSecondaryTextColor,
                 BlendMode.srcIn,
               ),
             )
           else
-            const Icon(
+            Icon(
               Icons.check,
               size: AppSize.iconSizeSmall,
-              color: Colors.white,
+              color: effectiveSecondaryTextColor,
             ),
         ],
-      ].insertBetween(
-        const SizedBox(width: AppSpacing.xs),
-      ),
+      ].insertBetween(const SizedBox(width: AppSpacing.xs)),
     );
   }
 }
@@ -763,26 +777,30 @@ class RepliedMessageBubble extends StatelessWidget {
                 borderRadius: 4,
                 withAdaptiveColors: false,
               ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Text(
-                  repliedMessageUsername ?? 'Unknown',
-                  style: context.bodyLarge?.copyWith(
-                    color: accentColor,
-                    fontWeight: AppFontWeight.bold,
-                  ),
-                  overflow: TextOverflow.visible,
-                ),
-                if (!(repliedMessage?.message.isEmpty ?? true))
+            const SizedBox(width: AppSpacing.xs),
+            Flexible(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
                   Text(
-                    repliedMessage!.message,
-                    style: context.bodyMedium?.apply(color: Colors.white),
+                    repliedMessageUsername ?? 'Unknown',
+                    style: context.bodyLarge?.copyWith(
+                      color: accentColor,
+                      fontWeight: AppFontWeight.bold,
+                    ),
                     maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                    overflow: TextOverflow.visible,
                   ),
-              ],
+                  if (!(repliedMessage?.message.isEmpty ?? true))
+                    Text(
+                      repliedMessage!.message,
+                      style: context.bodyMedium?.apply(color: AppColors.white),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                ],
+              ),
             ),
           ].insertBetween(const SizedBox(width: AppSpacing.xs)),
         ),
@@ -951,7 +969,7 @@ class MessageDateTimeSeparator extends StatelessWidget {
         ),
         child: Text(
           date.format(context, dateFormat: DateFormat.MMMMd),
-          style: context.bodyMedium?.apply(color: Colors.white),
+          style: context.bodyMedium?.apply(color: AppColors.white),
         ),
       ),
     );

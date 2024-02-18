@@ -48,21 +48,26 @@ class LoginView extends StatelessWidget {
                               child: ForgotPasswordButton(),
                             ),
                           ),
-                          SigninButton(),
+                          Align(child: SignInButton()),
                           Padding(
-                            padding:
-                                EdgeInsets.symmetric(vertical: AppSpacing.md),
+                            padding: EdgeInsets.symmetric(
+                              vertical: AppSpacing.md,
+                            ),
                             child: AppDivider(withText: true),
                           ),
-                          AuthProviderSignInButton(
-                            provider: AuthProvider.google,
-                            // TODO(googlesignin): Implement google sign in
-                            onPressed: showCurrentlyUnavailableFeature,
+                          Align(
+                            child: AuthProviderSignInButton(
+                              provider: AuthProvider.google,
+                              // TODO(googlesignin): Implement google sign in
+                              onPressed: showCurrentlyUnavailableFeature,
+                            ),
                           ),
-                          AuthProviderSignInButton(
-                            provider: AuthProvider.facebook,
-                            // TODO(facebooksignin): Implement facebook sign in
-                            onPressed: showCurrentlyUnavailableFeature,
+                          Align(
+                            child: AuthProviderSignInButton(
+                              provider: AuthProvider.facebook,
+                              // TODO(facebooksignin): Implement facebook login
+                              onPressed: showCurrentlyUnavailableFeature,
+                            ),
                           ),
                         ],
                       ),

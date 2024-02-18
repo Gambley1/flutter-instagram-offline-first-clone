@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
+import 'package:flutter_instagram_offline_first_clone/l10n/time_ago.dart';
 import 'package:flutter_instagram_offline_first_clone/stories/stories.dart';
 import 'package:go_router/go_router.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
@@ -218,7 +219,7 @@ class StoryOptions extends StatelessWidget {
                   name: 'Delete story',
                   actionTitle: 'Delete story',
                   actionContent: 'Are you sure you want to delete this story?',
-                  actionYesText: 'Delete',
+                  actionYesText: context.l10n.delete,
                   child: Assets.icons.trash.svg(
                     height: AppSize.iconSize,
                     colorFilter:

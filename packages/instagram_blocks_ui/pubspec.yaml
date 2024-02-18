@@ -17,9 +17,11 @@ dependencies:
     sdk: flutter
   flutter_animate: ^4.4.0
   flutter_blurhash: ^0.8.2
+  flutter_instagram_offline_first_clone:
+    path: ../../
   insta_blocks:
     path: ../insta_blocks
-  inview_notifier_list: 
+  inview_notifier_list:
     git: https://github.com/Gambley1/inview_notifier_list
   marquee: ^2.2.3
   octo_image: ^2.0.0

@@ -2,6 +2,7 @@ import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/auth/components/signup/cubit/signup_cubit.dart';
+import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:shared/shared.dart';
 
 class FullNameTextField extends StatefulWidget {
@@ -42,8 +43,7 @@ class _FullNameTextFieldState extends State<FullNameTextField> {
     return AppTextField(
       filled: true,
       focusNode: _focusNode,
-      hintText: 'Name',
-      contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+      hintText: context.l10n.name,
       textInputAction: TextInputAction.next,
       textCapitalization: TextCapitalization.words,
       autofillHints: const [AutofillHints.givenName],

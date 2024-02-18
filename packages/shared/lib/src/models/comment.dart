@@ -33,7 +33,7 @@ class Comment extends Equatable {
         postId: row['post_id'] as String,
         author: PostAuthor(
           id: row['user_id'] as String,
-          avatarUrl: row['avatar_url'] as String,
+          avatarUrl: row['avatar_url'] as String? ?? '',
           username: row['username'] as String,
         ),
         content: row['content'] as String,

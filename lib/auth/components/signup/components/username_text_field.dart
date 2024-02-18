@@ -2,6 +2,7 @@ import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/auth/components/signup/cubit/signup_cubit.dart';
+import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:shared/shared.dart';
 
 class UsernameTextField extends StatefulWidget {
@@ -41,10 +42,9 @@ class _UsernameTextFieldState extends State<UsernameTextField> {
     return AppTextField(
       filled: true,
       focusNode: _focusNode,
-      hintText: 'Username',
+      hintText: context.l10n.username,
       textInputAction: TextInputAction.next,
       enabled: !isLoading,
-      contentPadding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
       onChanged: (v) => _debouncer.run(
         () => context.read<SignupCubit>().onUsernameChanged(v),
       ),

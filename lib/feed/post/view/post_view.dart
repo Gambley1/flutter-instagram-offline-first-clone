@@ -1,15 +1,12 @@
 import 'dart:convert';
 
 import 'package:app_ui/app_ui.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/comments/comments.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/post/post.dart';
 import 'package:flutter_instagram_offline_first_clone/home/home.dart';
-import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
-import 'package:flutter_instagram_offline_first_clone/l10n/slang/translations.g.dart';
 import 'package:flutter_instagram_offline_first_clone/stories/user_stories/user_stories.dart';
 import 'package:go_router/go_router.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
@@ -94,9 +91,6 @@ class PostLargeView extends StatelessWidget {
     final commentsCount =
         context.select((PostBloc bloc) => bloc.state.commentsCount);
 
-    final t = context.t;
-    final l10n = context.l10n;
-
     if (block is PostSponsoredBlock) {
       return PostSponsored(
         key: ValueKey(block.id),
@@ -105,8 +99,7 @@ class PostLargeView extends StatelessWidget {
         isLiked: isLiked,
         likePost: () => bloc.add(PostLikeRequested(user.id)),
         likesCount: likesCount,
-        createdAt: block.createdAt.timeAgo(context),
-        isFollowed: isOwner || (isFollowed ?? false),
+        isFollowed: isOwner || (isFollowed ?? true),
         wasFollowed: true,
         follow: () => bloc.add(
           PostAuthorFollowRequested(
@@ -126,10 +119,7 @@ class PostLargeView extends StatelessWidget {
         ),
         postIndex: postIndex,
         withInViewNotifier: withInViewNotifier,
-        sponsoredText: context.l10n.sponsoredPostText,
         commentsCount: commentsCount,
-        likesText: l10n.likesCountText,
-        commentsText: l10n.seeAllComments,
         postAuthorAvatarBuilder: (context, author, onAvatarTap) {
           return UserStoriesAvatar(
             author: author.toUser,
@@ -200,8 +190,7 @@ class PostLargeView extends StatelessWidget {
       isLiked: isLiked,
       likePost: () => bloc.add(PostLikeRequested(user.id)),
       likesCount: likesCount,
-      createdAt: block.createdAt.timeAgo(context),
-      isFollowed: isOwner || (isFollowed ?? false),
+      isFollowed: isOwner || (isFollowed ?? true),
       wasFollowed: true,
       follow: () => bloc.add(
         PostAuthorFollowRequested(
@@ -211,35 +200,8 @@ class PostLargeView extends StatelessWidget {
       ),
       enableFollowButton: true,
       commentsCount: commentsCount,
-      likesText: l10n.likesCountText,
-      commentsText: l10n.seeAllComments,
       postIndex: postIndex,
       withInViewNotifier: withInViewNotifier,
-      likesCountBuilder: (name, userId, count) => name == null
-          ? null
-          : Text.rich(
-              t.likedBy(
-                name: TextSpan(
-                  text: name,
-                  style: context.titleMedium
-                      ?.copyWith(fontWeight: AppFontWeight.bold),
-                  recognizer: TapGestureRecognizer()
-                    ..onTap = userId == null
-                        ? null
-                        : () => context.pushNamed(
-                              'user_profile',
-                              pathParameters: {'user_id': userId},
-                            ),
-                ),
-                and: TextSpan(text: count < 1 ? '' : l10n.and),
-                others: TextSpan(
-                  text: l10n.others(count),
-                  style: context.titleMedium
-                      ?.copyWith(fontWeight: AppFontWeight.bold),
-                ),
-              ),
-              style: context.titleMedium,
-            ),
       postAuthorAvatarBuilder: (context, author, onAvatarTap) {
         return UserStoriesAvatar(
           author: author.toUser,

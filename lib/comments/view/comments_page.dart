@@ -55,7 +55,10 @@ class CommentsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const backgroundColor = Color.fromARGB(255, 32, 30, 30);
+    final backgroundColor = context.customReversedAdaptiveColor(
+      dark: AppColors.background,
+      light: AppColors.white,
+    );
 
     return AppScaffold(
       releaseFocus: true,
@@ -64,8 +67,7 @@ class CommentsView extends StatelessWidget {
       appBar: AppBar(
         elevation: 0,
         automaticallyImplyLeading: false,
-        backgroundColor: Colors.transparent,
-        surfaceTintColor: AppColors.background,
+        backgroundColor: backgroundColor,
         centerTitle: true,
         toolbarHeight: 24,
         title: Text(
@@ -73,6 +75,10 @@ class CommentsView extends StatelessWidget {
           style: context.titleLarge?.copyWith(
             color: Colors.grey.shade500,
           ),
+        ),
+        bottom: const PreferredSize(
+          preferredSize: Size.fromRadius(AppSpacing.md),
+          child: SizedBox.shrink(),
         ),
       ),
       bottomNavigationBar: CommentTextField(

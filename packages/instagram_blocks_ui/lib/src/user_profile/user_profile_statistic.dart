@@ -14,32 +14,23 @@ class UserProfileStatistic extends StatelessWidget {
   final int value;
   final VoidCallback onTap;
 
-  static const _statitisticsPadding = EdgeInsets.symmetric(
-    horizontal: AppSpacing.sm - AppSpacing.xxs,
-    vertical: AppSpacing.sm - AppSpacing.xxs,
-  );
-
   @override
   Widget build(BuildContext context) {
     return Tappable(
       animationEffect: TappableAnimationEffect.none,
       onTap: onTap,
-      child: Padding(
-        padding: _statitisticsPadding,
-        child: ConstrainedBox(
-          constraints: const BoxConstraints.tightFor(width: 99),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              StatisticValue(value: value),
-              Text(
-                name,
-                style: context.bodyLarge,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          StatisticValue(value: value),
+          Text(
+            name.toLowerCase(),
+            style: context.bodyLarge,
+            maxLines: 1,
+            textScaler: TextScaler.noScaling,
+            overflow: TextOverflow.ellipsis,
           ),
-        ),
+        ],
       ),
     );
   }
@@ -52,9 +43,16 @@ class StatisticValue extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final applyLargeFont = value <= 9999;
+    final effectiveTextStyle = applyLargeFont
+        ? context.titleLarge?.copyWith(fontSize: 20)
+        : context.bodyLarge;
+
     return Text(
-      value.compact(context),
-      style: context.titleLarge?.copyWith(fontWeight: AppFontWeight.bold),
+      value.compactShort(context),
+      style: effectiveTextStyle?.copyWith(fontWeight: AppFontWeight.bold),
+      maxLines: 1,
+      textScaler: TextScaler.noScaling,
       overflow: TextOverflow.ellipsis,
       textAlign: TextAlign.center,
     );

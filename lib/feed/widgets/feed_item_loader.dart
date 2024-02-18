@@ -1,3 +1,4 @@
+import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
@@ -17,13 +18,13 @@ class _FeedLoaderItemState extends State<FeedLoaderItem> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(1.seconds, () => widget.onPresented?.call());
+    Future.delayed(4000.ms, () => widget.onPresented?.call());
   }
 
   @override
   Widget build(BuildContext context) {
     return const Padding(
-      padding: EdgeInsets.symmetric(vertical: 12),
+      padding: EdgeInsets.symmetric(vertical: AppSpacing.md),
       child: Center(
         child: CircularProgressIndicator(),
       ),

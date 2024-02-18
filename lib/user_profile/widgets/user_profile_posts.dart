@@ -2,6 +2,7 @@ import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/post/post.dart';
+import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:flutter_instagram_offline_first_clone/user_profile/user_profile.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:inview_notifier_list/inview_notifier_list.dart';
@@ -94,21 +95,20 @@ class UserProfilePostsAppBar extends StatelessWidget {
       centerTitle: false,
       pinned: true,
       actions: [
-        StreamBuilder<bool>(
+        BetterStreamBuilder<bool>(
           stream: bloc.followingStatus(userId: userId),
-          builder: (context, snapshot) {
-            final isSubscribed = snapshot.data;
-            if (isSubscribed == null) return const SizedBox.shrink();
+          builder: (context, isFollowed) {
+            if (isFollowed) return const SizedBox.shrink();
             if (isOwner) return const SizedBox.shrink();
 
-            final subscribeText = Padding(
+            final followText = Padding(
               padding: const EdgeInsets.only(right: 16),
               child: Tappable(
-                onTap: isSubscribed
+                onTap: isFollowed
                     ? null
                     : () => bloc.add(UserProfileFollowUserRequested(userId)),
                 child: Text(
-                  'Subscribe',
+                  context.l10n.followUser,
                   style: context.titleLarge?.copyWith(
                     color: Colors.blue.shade500,
                   ),
@@ -118,7 +118,7 @@ class UserProfilePostsAppBar extends StatelessWidget {
             return AnimatedSwitcher(
               switchInCurve: Curves.easeIn,
               duration: 550.ms,
-              child: isSubscribed ? const SizedBox.shrink() : subscribeText,
+              child: isFollowed ? const SizedBox.shrink() : followText,
               transitionBuilder: (child, animation) {
                 return FadeTransition(
                   opacity: CurvedAnimation(
@@ -132,7 +132,7 @@ class UserProfilePostsAppBar extends StatelessWidget {
           },
         ),
       ],
-      title: const Text('Publications'),
+      title: Text(context.l10n.profilePostsAppBarTitle),
     );
   }
 }

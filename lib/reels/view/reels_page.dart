@@ -258,10 +258,10 @@ class _ReelsViewState extends State<ReelsView> {
                 },
               );
             },
-            child: const Icon(
+            child: Icon(
               Icons.camera_alt_outlined,
               size: AppSize.iconSize,
-              color: Colors.white,
+              color: context.adaptiveColor,
             ),
           ),
         ),

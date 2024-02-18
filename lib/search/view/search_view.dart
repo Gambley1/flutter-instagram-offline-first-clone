@@ -41,27 +41,10 @@ class SearchView extends StatelessWidget {
                 itemCount: users.length,
                 itemBuilder: (context, index) {
                   final user = users[index];
-                  return ListTile(
-                    leading: UserStoriesAvatar(
-                      author: user,
-                      withAdaptiveBorder: false,
-                      enableUnactiveBorder: false,
-                    ),
-                    title: Text(user.displayUsername),
-                    subtitle: Text(
-                      user.displayFullName,
-                      style: context.labelLarge?.copyWith(
-                        fontWeight: AppFontWeight.medium,
-                        color: AppColors.grey,
-                      ),
-                    ),
-                    trailing: const Icon(Icons.keyboard_arrow_right),
-                    onTap: () => withResult
-                        ? context.pop(user.id)
-                        : context.pushNamed(
-                            'user_profile',
-                            pathParameters: {'user_id': user.id},
-                          ),
+                  return UserListTile(
+                    key: ValueKey(user.id),
+                    user: user,
+                    withResult: withResult,
                   );
                 },
               ),
@@ -69,6 +52,44 @@ class SearchView extends StatelessWidget {
           );
         },
       ),
+    );
+  }
+}
+
+class UserListTile extends StatelessWidget {
+  const UserListTile({
+    required this.user,
+    required this.withResult,
+    super.key,
+  });
+
+  final User user;
+  final bool withResult;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: UserStoriesAvatar(
+        author: user,
+        withAdaptiveBorder: false,
+        enableUnactiveBorder: false,
+        radius: 26,
+      ),
+      title: Text(user.displayUsername),
+      subtitle: Text(
+        user.displayFullName,
+        style: context.labelLarge?.copyWith(
+          fontWeight: AppFontWeight.medium,
+          color: AppColors.grey,
+        ),
+      ),
+      trailing: const Icon(Icons.keyboard_arrow_right),
+      onTap: () => withResult
+          ? context.pop(user.id)
+          : context.pushNamed(
+              'user_profile',
+              pathParameters: {'user_id': user.id},
+            ),
     );
   }
 }
@@ -145,8 +166,8 @@ class SearchInputField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const activeColor = AppColors.white;
-    const unactiveColor = AppColors.darkGrey;
+    final activeColor = context.adaptiveColor;
+    const unactiveColor = AppColors.grey;
 
     final search = AppTextField(
       textController: textController,

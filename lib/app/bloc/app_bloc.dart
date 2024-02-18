@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -66,8 +67,10 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   Future<void> _onAppOpened(AppOpened event, Emitter<AppState> emit) async {
     await _notificationsClient.requestPermission();
 
-    // final newPushToken = await _notificationsClient.getToken();
-    // await _userRepository.updateUser(pushToken: newPushToken);
+    if (!Platform.isIOS) {
+      final newPushToken = await _notificationsClient.getToken();
+      await _userRepository.updateUser(pushToken: newPushToken);
+    }
 
     _pushTokenSubscription =
         _notificationsClient.onTokenRefresh().listen((pushToken) async {
