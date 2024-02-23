@@ -21,7 +21,7 @@ class MediaPickerParamsModel {
       this.gridViewPhysics,
       this.selectedBackgroundColor = Colors.white,
       this.selectedCheckColor = Colors.white,
-      this.thumbnailBoxFix = BoxFit.cover,
+      this.thumbnailBoxFit = BoxFit.cover,
       this.selectedCheckBackgroundColor = Colors.white,
       this.onlyImages = true,
       this.onlyVideos = false,
@@ -85,7 +85,7 @@ class MediaPickerParamsModel {
   final Color selectedCheckColor;
 
   /// thumbnail box fit
-  final BoxFit thumbnailBoxFix;
+  final BoxFit thumbnailBoxFit;
 
   /// selected Check Background Color
   final Color selectedCheckBackgroundColor;

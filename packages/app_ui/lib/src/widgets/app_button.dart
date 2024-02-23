@@ -22,6 +22,8 @@ class AppButton extends StatelessWidget {
     this.height,
     this.width,
     this.icon,
+    this.loading = false,
+    this.iconScale = 1.0,
     this.maxLines,
     this.outlined = false,
     this.textStyle,
@@ -59,17 +61,16 @@ class AppButton extends StatelessWidget {
         );
 
   /// {@macro app_button}
-  AppButton.inProgress({
+  const AppButton.inProgress({
     double scale = 0.6,
     Key? key,
     ButtonStyle? style,
   }) : this(
           text: '',
           style: style,
-          icon: Transform.scale(
-            scale: scale,
-            child: const CircularProgressIndicator(),
-          ),
+          iconScale: scale,
+          loading: true,
+          icon: const CircularProgressIndicator(),
           key: key,
         );
 
@@ -110,6 +111,12 @@ class AppButton extends StatelessWidget {
   /// [ElevatedButton.icon].
   final Widget? icon;
 
+  /// Optional scaling of icon. Default to 1.0.
+  final double? iconScale;
+
+  /// Whether display button as loading with circular progress indicator.
+  final bool loading;
+
   /// Whether the button is outlined.
   final bool outlined;
 
@@ -129,9 +136,14 @@ class AppButton extends StatelessWidget {
       style: textStyle,
       maxLines: maxLines,
     );
+    final effectiveIcon = icon == null
+        ? null
+        : Transform.scale(
+            scale: iconScale,
+            child: icon,
+          );
     final effectiveChild = child ?? text;
 
-    final loading = icon != null;
     final platform = context.theme.platform;
     final isIOS = platform == TargetPlatform.iOS;
 
@@ -159,10 +171,10 @@ class AppButton extends StatelessWidget {
             );
           }
         }
-        if (loading) {
+        if (effectiveIcon != null) {
           return ElevatedButton.icon(
             onPressed: onPressed,
-            icon: icon!,
+            icon: effectiveIcon,
             style: style,
             label: effectiveChild,
           );
@@ -174,11 +186,11 @@ class AppButton extends StatelessWidget {
             child: effectiveChild,
           );
         }
-        if (outlined && loading) {
+        if (outlined && effectiveIcon != null) {
           return OutlinedButton.icon(
             style: style,
             onPressed: onPressed,
-            icon: icon!,
+            icon: effectiveIcon,
             label: effectiveChild,
           );
         }

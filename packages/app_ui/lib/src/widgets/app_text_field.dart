@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_multiple_declarations_per_line, inference_failure_on_untyped_parameter, lines_longer_than_80_chars, public_member_api_docs
 
+import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'
     show MaxLengthEnforcement, TextInputFormatter;
@@ -15,7 +16,7 @@ class AppTextField extends StatelessWidget {
     this.enableSuggestion = true,
     this.expands = false,
     this.obscuringCharacter = '•',
-    this.scrollPadding = const EdgeInsets.all(20),
+    this.scrollPadding = const EdgeInsets.all(AppSpacing.lg),
     this.textAlign = TextAlign.start,
     super.key,
     this.hintText,
@@ -94,7 +95,7 @@ class AppTextField extends StatelessWidget {
     void Function(String)? onChanged,
     TextInputAction? textInputAction,
     bool obscureText = false,
-    bool autoCorrect = false,
+    bool autoCorrect = true,
     bool enabled = true,
     bool autofocus = false,
     Widget? suffixIcon,
@@ -133,7 +134,7 @@ class AppTextField extends StatelessWidget {
     String? restorationId,
     ScrollController? scrollController,
     BoxConstraints? constraints,
-    EdgeInsets scrollPadding = const EdgeInsets.all(20),
+    EdgeInsets scrollPadding = const EdgeInsets.all(AppSpacing.lg),
     ScrollPhysics? scrollPhysics,
     bool? showCursor,
     TextSelectionControls? selectionsControls,

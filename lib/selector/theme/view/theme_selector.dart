@@ -46,3 +46,15 @@ class ThemeSelector extends StatelessWidget {
     );
   }
 }
+
+class ThemeSelectorModalOption extends StatelessWidget {
+  const ThemeSelectorModalOption({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: const ThemeSelector(),
+      title: Text(context.l10n.theme),
+    );
+  }
+}

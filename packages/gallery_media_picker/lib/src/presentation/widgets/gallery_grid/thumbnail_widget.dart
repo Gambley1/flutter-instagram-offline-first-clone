@@ -14,11 +14,13 @@ class ThumbnailWidget extends StatelessWidget {
 
   /// image provider
   final GalleryMediaPickerController provider;
-  const ThumbnailWidget(
-      {super.key,
-      required this.index,
-      required this.asset,
-      required this.provider});
+  
+  const ThumbnailWidget({
+    super.key,
+    required this.index,
+    required this.asset,
+    required this.provider,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -42,12 +44,13 @@ class ThumbnailWidget extends StatelessWidget {
                   height: double.infinity,
                   child: Image(
                     image: DecodeImage(
-                        provider.pathList[
-                            provider.pathList.indexOf(provider.currentAlbum!)],
-                        thumbSize: provider.paramsModel!.thumbnailQuality,
-                        index: index),
+                      provider.pathList[
+                          provider.pathList.indexOf(provider.currentAlbum!)],
+                      thumbSize: provider.paramsModel!.thumbnailQuality,
+                      index: index,
+                    ),
                     gaplessPlayback: true,
-                    fit: provider.paramsModel!.thumbnailBoxFix,
+                    fit: provider.paramsModel!.thumbnailBoxFit,
                     filterQuality: FilterQuality.high,
                   ),
                 );

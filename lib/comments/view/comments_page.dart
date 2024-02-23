@@ -72,9 +72,9 @@ class CommentsView extends StatelessWidget {
         toolbarHeight: 24,
         title: Text(
           'Comments',
-          style: context.titleLarge?.copyWith(
-            color: Colors.grey.shade500,
-          ),
+          style: context.titleLarge?.apply(color: AppColors.grey),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
         ),
         bottom: const PreferredSize(
           preferredSize: Size.fromRadius(AppSpacing.md),

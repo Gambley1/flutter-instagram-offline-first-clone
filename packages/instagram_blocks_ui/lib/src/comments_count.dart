@@ -1,7 +1,6 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:sprung/sprung.dart';
 
@@ -39,7 +38,9 @@ class _CommentsCountState extends State<CommentsCount>
         animationEffect: TappableAnimationEffect.none,
         onTap: widget.onTap,
         child: Text(
-          context.l10n.seeAllComments(count),
+          BlockSettings.instance.commentTextDelegate.seeAllCommentsText(count),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
           style: context.bodyLarge?.copyWith(color: AppColors.grey),
         ),
       ),

@@ -77,11 +77,11 @@ class AppLoadingIndeterminateState extends State<ApplLoadingIndeterminate> {
                       ),
                       child: LinearProgressIndicator(
                         color: Color.alphaBlend(
-                          Colors.black.withOpacity(.5),
+                          AppColors.black.withOpacity(.5),
                           context.theme.colorScheme.primary,
                         ),
                         backgroundColor: Color.alphaBlend(
-                          Colors.black.withOpacity(.45),
+                          AppColors.black.withOpacity(.45),
                           context.theme.colorScheme.secondaryContainer,
                         ),
                         minHeight: 3,

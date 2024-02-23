@@ -47,5 +47,18 @@ class PostSponsoredBlock extends PostBlock {
   }
 
   @override
+  PostBlock merge({PostBlock? other}) {
+    if (other is! PostSponsoredBlock) return this;
+    return copyWith(
+      id: other.id,
+      author: other.author,
+      createdAt: other.createdAt,
+      media: other.media,
+      caption: other.caption,
+      action: other.action,
+    );
+  }
+
+  @override
   Map<String, dynamic> toJson() => _$PostSponsoredBlockToJson(this);
 }

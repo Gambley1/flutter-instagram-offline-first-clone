@@ -22,14 +22,32 @@ typedef VideoPlayerBuilder = Widget Function(
 
 class MediaCarouselSettings {
   const MediaCarouselSettings._({
-    required this.aspectRatio,
-    required this.viewportFraction,
-    required this.enableInfiniteScroll,
-    required this.fit,
-    required this.withInViewNotifier,
+    this.aspectRatio,
+    this.viewportFraction,
+    this.enableInfiniteScroll,
+    this.fit,
+    this.withInViewNotifier,
     this.onPageChanged,
     this.videoPlayerBuilder,
   });
+
+  const MediaCarouselSettings.empty({
+    double? aspectRatio,
+    double? viewportFraction,
+    bool? enableInfiniteScroll,
+    BoxFit? fit,
+    PageChangedCallback? onPageChanged,
+    VideoPlayerBuilder? videoPlayerBuilder,
+    bool? withInViewNotifier,
+  }) : this._(
+          aspectRatio: aspectRatio,
+          viewportFraction: viewportFraction,
+          enableInfiniteScroll: enableInfiniteScroll,
+          fit: fit,
+          onPageChanged: onPageChanged,
+          videoPlayerBuilder: videoPlayerBuilder,
+          withInViewNotifier: withInViewNotifier,
+        );
 
   const MediaCarouselSettings.create({
     double? aspectRatio,
@@ -49,13 +67,13 @@ class MediaCarouselSettings {
           withInViewNotifier: withInViewNotifier ?? true,
         );
 
-  final double aspectRatio;
-  final double viewportFraction;
-  final bool enableInfiniteScroll;
-  final BoxFit fit;
+  final double? aspectRatio;
+  final double? viewportFraction;
+  final bool? enableInfiniteScroll;
+  final BoxFit? fit;
   final PageChangedCallback? onPageChanged;
   final VideoPlayerBuilder? videoPlayerBuilder;
-  final bool withInViewNotifier;
+  final bool? withInViewNotifier;
 
   MediaCarouselSettings copyWith({
     double? aspectRatio,
@@ -74,6 +92,21 @@ class MediaCarouselSettings {
       onPageChanged: onPageChanged ?? this.onPageChanged,
       videoPlayerBuilder: videoPlayerBuilder ?? this.videoPlayerBuilder,
       withInViewNotifier: withInViewNotifier ?? this.withInViewNotifier,
+    );
+  }
+
+  MediaCarouselSettings merge({MediaCarouselSettings? other}) {
+    return copyWith(
+      fit: other?.fit,
+      aspectRatio: other?.aspectRatio,
+      enableInfiniteScroll: other?.enableInfiniteScroll,
+      onPageChanged: (index, reason) {
+        onPageChanged?.call(index, reason);
+        other?.onPageChanged?.call(index, reason);
+      },
+      videoPlayerBuilder: other?.videoPlayerBuilder,
+      viewportFraction: other?.viewportFraction,
+      withInViewNotifier: other?.withInViewNotifier,
     );
   }
 }

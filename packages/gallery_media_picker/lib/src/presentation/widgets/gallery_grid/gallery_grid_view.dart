@@ -29,20 +29,11 @@ class GalleryGridView extends StatefulWidget {
 }
 
 class GalleryGridViewState extends State<GalleryGridView> {
-  static Map<int?, AssetEntity?> _createMap() {
-    return {};
-  }
-
   /// create cache for images
-  var cacheMap = _createMap();
+  final cacheMap = ValueNotifier(<int?, AssetEntity?>{});
 
   /// notifier for scroll events
   final scrolling = ValueNotifier(false);
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,31 +75,36 @@ class GalleryGridViewState extends State<GalleryGridView> {
 
   Widget _buildItem(
       BuildContext context, index, GalleryMediaPickerController provider) {
-    return GestureDetector(
-      /// on tap thumbnail
-      onTap: () async {
-        var asset = cacheMap[index];
-        if (asset != null &&
-            asset.type != AssetType.audio &&
-            asset.type != AssetType.other) {
-          asset = (await widget.path!
-              .getAssetListRange(start: index, end: index + 1))[0];
-          cacheMap[index] = asset;
-          widget.onAssetItemClick?.call(asset, index);
-        }
-      },
+    return AnimatedBuilder(
+        animation: Listenable.merge([cacheMap]),
+        builder: (context, _) {
+          return GestureDetector(
+            /// on tap thumbnail
+            onTap: () async {
+              var asset = cacheMap.value[index];
+              if (asset != null &&
+                  asset.type != AssetType.audio &&
+                  asset.type != AssetType.other) {
+                asset = (await widget.path!
+                    .getAssetListRange(start: index, end: index + 1))[0];
+                cacheMap.value[index] = asset;
+                widget.onAssetItemClick?.call(asset, index);
+              }
+            },
 
-      /// render thumbnail
-      child: _buildScrollItem(context, index, provider),
-    );
+            /// render thumbnail
+            child: _buildScrollItem(context, index, provider),
+          );
+        });
   }
 
   Widget _buildScrollItem(
       BuildContext context, int index, GalleryMediaPickerController provider) {
     /// load cache images
-    final asset = cacheMap[index];
+    final asset = cacheMap.value[index];
     if (asset != null) {
       return ThumbnailWidget(
+        key: ValueKey(asset.relativePath),
         asset: asset,
         provider: provider,
         index: index,
@@ -126,10 +122,11 @@ class GalleryGridViewState extends State<GalleryGridView> {
             );
           }
           final asset = snapshot.data![0];
-          cacheMap[index] = asset;
+          cacheMap.value[index] = asset;
 
           /// thumbnail widget
           return ThumbnailWidget(
+            key: ValueKey(asset.relativePath),
             asset: asset,
             index: index,
             provider: provider,
@@ -154,7 +151,7 @@ class GalleryGridViewState extends State<GalleryGridView> {
   void didUpdateWidget(GalleryGridView oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.path != widget.path) {
-      cacheMap.clear();
+      cacheMap.value.clear();
       scrolling.value = false;
       if (mounted) {
         setState(() {});

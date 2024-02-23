@@ -50,16 +50,9 @@ class AppTheme {
         ),
       );
 
-  /// Defines light SystemUiOverlayStyle.
-  static const SystemUiOverlayStyle lightSystemBarTheme = SystemUiOverlayStyle(
-    statusBarBrightness: Brightness.dark,
-    statusBarColor: AppColors.transparent,
-    statusBarIconBrightness: Brightness.light,
-    systemNavigationBarIconBrightness: Brightness.dark,
-  );
-
-  /// Defines dart SystemUiOverlayStyle.
-  static const SystemUiOverlayStyle darkSystemBarTheme = SystemUiOverlayStyle(
+  /// Defines iOS dart SystemUiOverlayStyle.
+  static const SystemUiOverlayStyle iOSDarkSystemBarTheme =
+      SystemUiOverlayStyle(
     statusBarBrightness: Brightness.light,
     statusBarColor: AppColors.transparent,
     statusBarIconBrightness: Brightness.light,
@@ -171,4 +164,46 @@ class AppDarkTheme extends AppTheme {
           modalBackgroundColor: AppColors.background,
         ),
       );
+}
+
+/// Theme for the [SystemUiOverlayStyle]
+class SystemUiOverlayTheme {
+  /// {@macro system_ui_overlay_theme}
+  const SystemUiOverlayTheme();
+
+  /// Defines iOS light SystemUiOverlayStyle.
+  static const SystemUiOverlayStyle iOSLightSystemBarTheme =
+      SystemUiOverlayStyle(
+    statusBarBrightness: Brightness.dark,
+    statusBarColor: AppColors.transparent,
+    statusBarIconBrightness: Brightness.light,
+    systemNavigationBarIconBrightness: Brightness.dark,
+  );
+
+  /// Defines iOS dark SystemUiOverlayStyle.
+  static const SystemUiOverlayStyle iOSDarkSystemBarTheme =
+      SystemUiOverlayStyle(
+    statusBarBrightness: Brightness.light,
+    statusBarColor: AppColors.transparent,
+    statusBarIconBrightness: Brightness.light,
+    systemNavigationBarIconBrightness: Brightness.light,
+  );
+
+  /// Defines Android light SystemUiOverlayStyle.
+  static const SystemUiOverlayStyle androidLightSystemBarTheme =
+      SystemUiOverlayStyle(
+    statusBarBrightness: Brightness.light,
+    statusBarColor: AppColors.white,
+    statusBarIconBrightness: Brightness.dark,
+    systemNavigationBarIconBrightness: Brightness.dark,
+  );
+
+  /// Defines light SystemUiOverlayStyle.
+  static const SystemUiOverlayStyle androidDarkSystemBarTheme =
+      SystemUiOverlayStyle(
+    statusBarBrightness: Brightness.dark,
+    statusBarColor: AppColors.black,
+    statusBarIconBrightness: Brightness.light,
+    systemNavigationBarIconBrightness: Brightness.light,
+  );
 }

@@ -471,7 +471,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       centerTitle: false,
-      leadingWidth: 24,
+      leadingWidth: 36,
       title: ListTile(
         contentPadding: EdgeInsets.zero,
         title: Text(participant.displayUsername),

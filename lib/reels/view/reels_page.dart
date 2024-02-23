@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:app_ui/app_ui.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
@@ -6,7 +9,7 @@ import 'package:flutter_instagram_offline_first_clone/home/home.dart';
 import 'package:flutter_instagram_offline_first_clone/reels/reel/reel.dart';
 import 'package:flutter_instagram_offline_first_clone/reels/reels.dart';
 import 'package:posts_repository/posts_repository.dart';
-import 'package:powersync_repository/powersync_repository.dart';
+import 'package:powersync_repository/powersync_repository.dart' hide Row;
 import 'package:shared/shared.dart';
 
 class ReelsPage extends StatelessWidget {
@@ -53,19 +56,23 @@ class _ReelsViewState extends State<ReelsView> {
   @override
   Widget build(BuildContext context) {
     final videoPlayer = VideoPlayerProvider.of(context).videoPlayerState;
-    final blocks =
-        context.select((ReelsBloc bloc) => bloc.state.blocks).cast<PostBlock>();
     final user = context.select((AppBloc bloc) => bloc.state.user);
 
     return Stack(
       fit: StackFit.expand,
       children: [
         AppScaffold(
-          body: AnimatedBuilder(
-            animation: Listenable.merge(
-              [videoPlayer.shouldPlayReels, videoPlayer.withSound],
-            ),
-            builder: (context, child) {
+          body: BlocBuilder<ReelsBloc, ReelsState>(
+            buildWhen: (previous, current) {
+              if (const ListEquality<PostBlock>()
+                  .equals(previous.blocks, current.blocks)) {
+                return false;
+              }
+              if (previous.status == current.status) return false;
+              return true;
+            },
+            builder: (context, state) {
+              final blocks = state.blocks;
               if (blocks.isEmpty) {
                 return SizedBox.expand(
                   child: Center(
@@ -89,9 +96,8 @@ class _ReelsViewState extends State<ReelsView> {
                                 borderRadius: const BorderRadius.all(
                                   Radius.circular(22),
                                 ),
-                                border: Border.all(
-                                  color: context.adaptiveColor,
-                                ),
+                                border:
+                                    Border.all(color: context.adaptiveColor),
                               ),
                               child: Align(
                                 child: Padding(
@@ -123,10 +129,12 @@ class _ReelsViewState extends State<ReelsView> {
               return RefreshIndicator.adaptive(
                 onRefresh: () async {
                   context.read<ReelsBloc>().add(const ReelsPageRequested());
-                  await _pageController.animateToPage(
-                    0,
-                    duration: 150.ms,
-                    curve: Curves.easeIn,
+                  unawaited(
+                    _pageController.animateToPage(
+                      0,
+                      duration: 150.ms,
+                      curve: Curves.easeIn,
+                    ),
                   );
                 },
                 child: PageView.builder(
@@ -137,10 +145,16 @@ class _ReelsViewState extends State<ReelsView> {
                   onPageChanged: (index) => _currentIndex.value = index,
                   controller: _pageController,
                   itemBuilder: (context, index) {
-                    return ValueListenableBuilder<int>(
-                      valueListenable: _currentIndex,
-                      builder: (context, currentIndex, _) {
-                        final isCurrent = index == currentIndex;
+                    return AnimatedBuilder(
+                      animation: Listenable.merge(
+                        [
+                          videoPlayer.shouldPlayReels,
+                          videoPlayer.withSound,
+                          _currentIndex,
+                        ],
+                      ),
+                      builder: (context, _) {
+                        final isCurrent = index == _currentIndex.value;
                         final block = blocks[index];
                         return ReelView(
                           key: ValueKey(block.id),
@@ -162,19 +176,19 @@ class _ReelsViewState extends State<ReelsView> {
           child: Tappable(
             onTap: () async {
               void uploadReel({
-                required String postId,
+                required String id,
                 required List<Map<String, dynamic>> media,
               }) =>
                   context.read<ReelsBloc>().add(
                         ReelsCreateReelRequested(
-                          postId: postId,
+                          id: id,
                           userId: user.id,
                           caption: '',
                           media: media,
                         ),
                       );
 
-              await PickImage.pickVideo(
+              await PickImage.instance.pickVideo(
                 context,
                 onMediaPicked: (context, selectedFiles) async {
                   try {
@@ -197,7 +211,8 @@ class _ReelsViewState extends State<ReelsView> {
                         ))
                             ?.file ??
                         selectedFile.selectedFile;
-                    final compressedVideoBytes = await PickImage.imageBytes(
+                    final compressedVideoBytes =
+                        await PickImage.instance.imageBytes(
                       file: compressedVideo,
                     );
                     final attachment = AttachmentFile(
@@ -237,7 +252,7 @@ class _ReelsViewState extends State<ReelsView> {
                         'first_frame_url': firstFrameUrl,
                       }
                     ];
-                    uploadReel(media: media, postId: postId);
+                    uploadReel(media: media, id: postId);
                     openSnackbar(
                       const SnackbarMessage.success(
                         title: 'Successfully created reel!',

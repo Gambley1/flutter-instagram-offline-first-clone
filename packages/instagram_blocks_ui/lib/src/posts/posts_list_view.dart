@@ -1,3 +1,4 @@
+import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:shared/shared.dart';
@@ -115,13 +116,18 @@ class _PostsItemControllerState extends State<_PostsItemController> {
 class _EmptyPosts extends StatelessWidget {
   const _EmptyPosts();
 
-  static const _noPostsText = 'No Posts';
+  static const _noPostsText = 'No posts';
+
+  Widget child(BuildContext context) => Center(
+        child: Text(
+          _noPostsText,
+          style: context.headlineSmall,
+        ),
+      );
 
   @override
   Widget build(BuildContext context) {
-    const noPostsWidget = Center(child: Text(_noPostsText));
-
-    return const SliverFillRemaining(child: noPostsWidget);
+    return SliverFillRemaining(child: child(context));
   }
 }
 

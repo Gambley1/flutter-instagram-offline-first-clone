@@ -25,9 +25,7 @@ class _SignupViewState extends State<SignupView> {
       body: LayoutBuilder(
         builder: (context, constraints) {
           return SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 24,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xlg),
             child: ConstrainedBox(
               constraints: BoxConstraints(
                 minWidth: constraints.maxWidth,
@@ -36,14 +34,8 @@ class _SignupViewState extends State<SignupView> {
               child: IntrinsicHeight(
                 child: Column(
                   children: [
-                    const SizedBox(
-                      height: 84,
-                    ),
-                    const AppLogo(
-                      height: 74,
-                      fit: BoxFit.fitHeight,
-                      width: double.infinity,
-                    ),
+                    const SizedBox(height: AppSpacing.xxxlg + AppSpacing.xlg),
+                    const AppLogo(fit: BoxFit.fitHeight),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -59,10 +51,12 @@ class _SignupViewState extends State<SignupView> {
                               },
                             ),
                           ),
-                          const SizedBox(height: 12),
+                          const SizedBox(height: AppSpacing.md),
                           const SignupForm(),
                           Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 24),
+                            padding: const EdgeInsets.symmetric(
+                              vertical: AppSpacing.xlg,
+                            ),
                             child: SignupButton(
                               avatarFile: _avatarFile,
                             ),

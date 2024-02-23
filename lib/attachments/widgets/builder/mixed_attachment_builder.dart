@@ -12,7 +12,7 @@ part of 'attachment_widget_builder.dart';
 class MixedAttachmentBuilder extends AttachmentWidgetBuilder {
   /// {@macro mixedAttachmentBuilder}
   MixedAttachmentBuilder({
-    this.padding = const EdgeInsets.all(4),
+    this.padding = const EdgeInsets.all(AppSpacing.xxs),
     AttachmentWidgetTapCallback? onAttachmentTap,
   })  : _imageAttachmentBuilder = ImageAttachmentBuilder(
           padding: EdgeInsets.zero,

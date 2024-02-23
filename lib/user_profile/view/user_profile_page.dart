@@ -14,7 +14,7 @@ import 'package:flutter_instagram_offline_first_clone/user_profile/widgets/user_
 import 'package:go_router/go_router.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:posts_repository/posts_repository.dart';
-import 'package:powersync_repository/powersync_repository.dart';
+import 'package:powersync_repository/powersync_repository.dart' hide Row;
 import 'package:shared/shared.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 import 'package:user_repository/user_repository.dart';
@@ -361,20 +361,14 @@ class UserProfileSettingsButton extends StatelessWidget {
 
         final option = await context.showListOptionsModal(
           options: [
-            ModalOption(
-              name: context.l10n.language,
-              child: const LocaleSelector(),
-            ),
-            ModalOption(
-              name: context.l10n.theme,
-              child: const ThemeSelector(),
-            ),
+            ModalOption(child: const LocaleModalOption()),
+            ModalOption(child: const ThemeSelectorModalOption()),
             ModalOption(
               name: 'Log out',
               actionTitle: 'Log out',
               actionYesText: 'Log out',
               actionContent: 'Are you sure you want to log out?',
-              icon: Icons.logout_rounded,
+              iconData: Icons.logout_rounded,
               distractive: true,
               onTap: () =>
                   context.read<AppBloc>().add(const AppLogoutRequested()),
@@ -446,19 +440,19 @@ class UserProfileAddMediaButton extends StatelessWidget {
             },
             onCreateReelTap: () async {
               void uploadReel({
-                required String postId,
+                required String id,
                 required List<Map<String, dynamic>> media,
               }) =>
                   context.read<ReelsBloc>().add(
                         ReelsCreateReelRequested(
-                          postId: postId,
+                          id: id,
                           userId: user.id,
                           caption: '',
                           media: media,
                         ),
                       );
 
-              await PickImage.pickVideo(
+              await PickImage.instance.pickVideo(
                 context,
                 onMediaPicked: (context, selectedFiles) async {
                   try {
@@ -481,7 +475,8 @@ class UserProfileAddMediaButton extends StatelessWidget {
                         ))
                             ?.file ??
                         selectedFile.selectedFile;
-                    final compressedVideoBytes = await PickImage.imageBytes(
+                    final compressedVideoBytes =
+                        await PickImage.instance.imageBytes(
                       file: compressedVideo,
                     );
                     final attachment = AttachmentFile(
@@ -521,7 +516,7 @@ class UserProfileAddMediaButton extends StatelessWidget {
                         'first_frame_url': firstFrameUrl,
                       }
                     ];
-                    uploadReel(media: media, postId: postId);
+                    uploadReel(media: media, id: postId);
                     openSnackbar(
                       const SnackbarMessage.success(
                         title: 'Successfully created reel!',

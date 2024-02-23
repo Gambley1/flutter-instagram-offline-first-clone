@@ -201,7 +201,7 @@ class PowerSyncRepository {
       // If the user is already logged in, connect immediately.
       // Otherwise, connect once logged in.
       currentConnector = SupabaseConnector(_db, isDev: isDev);
-      _db.connect(connector: currentConnector);
+      await _db.connect(connector: currentConnector);
     }
 
     Supabase.instance.client.auth.onAuthStateChange.listen((data) async {
@@ -209,7 +209,7 @@ class PowerSyncRepository {
       if (event == AuthChangeEvent.signedIn) {
         // Connect to PowerSync when the user is signed in
         currentConnector = SupabaseConnector(_db, isDev: isDev);
-        _db.connect(connector: currentConnector!);
+        await _db.connect(connector: currentConnector!);
       } else if (event == AuthChangeEvent.signedOut) {
         // Implicit sign out - disconnect, but don't delete data
         currentConnector = null;

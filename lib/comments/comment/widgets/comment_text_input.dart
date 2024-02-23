@@ -68,20 +68,18 @@ class _CommentTextFieldState extends State<CommentTextField> {
               return Offstage(
                 offstage: !isReplying,
                 child: ListTile(
-                  tileColor: Colors.grey.shade900,
+                  tileColor: context.customReversedAdaptiveColor(
+                    light: AppColors.brightGrey,
+                    dark: AppColors.background,
+                  ),
                   title: Text(
                     'Reply to ${commentsController.commentReplyingToUsername}',
-                    style: context.bodyMedium?.copyWith(
-                      color: Colors.grey.shade500,
-                    ),
+                    style: context.bodyMedium?.apply(color: AppColors.grey),
                   ),
                   trailing: Tappable(
                     onTap: () => commentsController.clearReplying,
                     animationEffect: TappableAnimationEffect.none,
-                    child: Icon(
-                      Icons.cancel,
-                      color: Colors.grey.shade500,
-                    ),
+                    child: const Icon(Icons.cancel, color: AppColors.grey),
                   ),
                 ),
               );
@@ -168,8 +166,8 @@ class _CommentTextFieldState extends State<CommentTextField> {
                           },
                           child: Text(
                             'Publish',
-                            style: context.bodyLarge
-                                ?.copyWith(color: Colors.blue.shade500),
+                            style:
+                                context.bodyLarge?.apply(color: AppColors.blue),
                           ),
                         );
                       },

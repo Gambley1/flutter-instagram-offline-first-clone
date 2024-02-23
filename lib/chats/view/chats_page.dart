@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/bloc/app_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/chats/bloc/chats_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/chats/widgets/chat_inbox_tile.dart';
+import 'package:flutter_instagram_offline_first_clone/home/home.dart';
 import 'package:go_router/go_router.dart';
 
 class ChatsPage extends StatelessWidget {
@@ -27,8 +28,12 @@ class ChatsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const AppScaffold(
-      body: CustomScrollView(
+    return AppScaffold(
+      onPopInvoked: (didPop) {
+        if (didPop) return;
+        HomeProvider.instance.animateToPage(1);
+      },
+      body: const CustomScrollView(
         slivers: [
           ChatsAppBar(),
           ChatsListView(),
@@ -46,6 +51,13 @@ class ChatsAppBar extends StatelessWidget {
     final user = context.select((AppBloc bloc) => bloc.state.user);
 
     return SliverAppBar(
+      leading: IconButton(
+        onPressed: () => HomeProvider.instance.animateToPage(1),
+        icon: Icon(
+          Icons.adaptive.arrow_back,
+          size: AppSize.iconSizeMedium,
+        ),
+      ),
       centerTitle: false,
       pinned: true,
       title: Text(

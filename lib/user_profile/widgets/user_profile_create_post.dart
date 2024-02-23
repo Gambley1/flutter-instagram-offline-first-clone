@@ -7,31 +7,30 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/attachments/attachments.dart';
-import 'package:flutter_instagram_offline_first_clone/user_profile/user_profile.dart';
+import 'package:flutter_instagram_offline_first_clone/feed/bloc/feed_bloc.dart';
+import 'package:flutter_instagram_offline_first_clone/feed/feed.dart';
+import 'package:flutter_instagram_offline_first_clone/home/home.dart';
+import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:go_router/go_router.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
-import 'package:posts_repository/posts_repository.dart';
 import 'package:powersync_repository/powersync_repository.dart';
 import 'package:shared/shared.dart';
-import 'package:user_repository/user_repository.dart';
 
 class UserProfileCreatePost extends StatelessWidget {
-  const UserProfileCreatePost({super.key});
+  const UserProfileCreatePost({this.onPopInvoked, super.key});
+
+  final VoidCallback? onPopInvoked;
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => UserProfileBloc(
-        userRepository: context.read<UserRepository>(),
-        postsRepository: context.read<PostsRepository>(),
-      ),
-      child: const CreatePostView(),
-    );
+    return CreatePostView(onPopInvoked: onPopInvoked);
   }
 }
 
 class CreatePostView extends StatefulWidget {
-  const CreatePostView({super.key});
+  const CreatePostView({required this.onPopInvoked, super.key});
+
+  final VoidCallback? onPopInvoked;
 
   @override
   State<CreatePostView> createState() => _CreatePostViewState();
@@ -40,8 +39,6 @@ class CreatePostView extends StatefulWidget {
 class _CreatePostViewState extends State<CreatePostView>
     with SafeSetStateMixin {
   final _captionController = TextEditingController();
-  // List<Uint8List>? _imagesBytes;
-  // List<File>? _imagesFile;
   List<SelectedByte>? _selectedFiles;
   bool _busy = false;
 
@@ -59,9 +56,20 @@ class _CreatePostViewState extends State<CreatePostView>
       onPopInvoked: (didPop) {
         if (didPop) return;
         if (_busy) return;
-        context.pop();
+        if (widget.onPopInvoked == null) {
+          context.pop();
+        } else {
+          widget.onPopInvoked!.call();
+        }
       },
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.clear, size: AppSize.iconSize),
+          onPressed: () {
+            _selectedFiles?.clear();
+            HomeProvider.instance.animateToPage(1);
+          },
+        ),
         title: const Text('Create post'),
         actions: [
           if (_selectedFiles != null && (_selectedFiles?.isNotEmpty ?? false))
@@ -91,7 +99,7 @@ class _CreatePostViewState extends State<CreatePostView>
                   onPressed: _busy
                       ? null
                       : () async {
-                          await PickImage.pickAssetsFromBoth(
+                          await PickImage.instance.pickAssetsFromBoth(
                             context,
                             onMediaPicked: (context, details) async {
                               final selectedFiles = <SelectedByte>[];
@@ -107,7 +115,7 @@ class _CreatePostViewState extends State<CreatePostView>
                                   selectedFile.selectedFile,
                                 );
                                 final compressedByte =
-                                    await PickImage.imageBytes(
+                                    await PickImage.instance.imageBytes(
                                   file: compressedFile != null
                                       ? File(compressedFile.path)
                                       : selectedFile.selectedFile,
@@ -140,8 +148,10 @@ class _CreatePostViewState extends State<CreatePostView>
                 filled: true,
                 enabled: !_busy,
                 textController: _captionController,
-                contentPadding: const EdgeInsets.symmetric(horizontal: 12),
-                hintText: 'Description',
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+                labelText: context.l10n.captionText,
+                labelStyle: context.bodyLarge?.apply(color: AppColors.grey),
                 textInputAction: TextInputAction.done,
                 textInputType: TextInputType.text,
                 textCapitalization: TextCapitalization.sentences,
@@ -163,10 +173,21 @@ class _CreatePostViewState extends State<CreatePostView>
                           (_selectedFiles?.isEmpty ?? true)
                       ? null
                       : () async {
+                          void pop() {
+                            if (context.canPop()) {
+                              context.pop();
+                            } else {
+                              HomeProvider.instance.animateToPage(1);
+                            }
+                          }
+
                           try {
                             safeSetState(() {
                               _busy = true;
                             });
+                            loadingIndeterminateKey.currentState
+                                ?.setVisibility(visible: true);
+
                             late final storage =
                                 Supabase.instance.client.storage.from('posts');
 
@@ -212,7 +233,7 @@ class _CreatePostViewState extends State<CreatePostView>
                                       await VideoPlus.compressVideo(
                                     selectedFile,
                                   );
-                                  bytes = await PickImage.imageBytes(
+                                  bytes = await PickImage.instance.imageBytes(
                                     file: compressedVideo!.file!,
                                   );
                                 } catch (error, stackTrace) {
@@ -273,8 +294,8 @@ class _CreatePostViewState extends State<CreatePostView>
                             }
                             if (!mounted) return;
                             await Future.microtask(
-                              () => context.read<UserProfileBloc>().add(
-                                    UserProfilePostCreateRequested(
+                              () => context.read<FeedBloc>().add(
+                                    FeedPostCreateRequested(
                                       postId: postId,
                                       userId: user.id,
                                       caption: _captionController.text,
@@ -286,12 +307,12 @@ class _CreatePostViewState extends State<CreatePostView>
                               _busy = false;
                             });
                             if (mounted) {
-                              if (context.canPop()) context.pop();
-                              // _imagesBytes?.clear();
-                              // _imagesFile?.clear();
+                              pop();
                               _selectedFiles?.clear();
                               _captionController.clear();
                             }
+                            loadingIndeterminateKey.currentState
+                                ?.setVisibility(visible: false);
                             openSnackbar(
                               const SnackbarMessage.success(
                                 title: 'Successfully created post!',
@@ -315,8 +336,6 @@ class _CreatePostViewState extends State<CreatePostView>
                       _selectedFiles!.map((e) => e.selectedByte).toList(),
                   onImageDelete: (bytes, index) {
                     safeSetState(() {
-                      // _imagesBytes?.removeWhere((e) => e == bytes);
-                      // _imagesFile?.removeAt(index);
                       _selectedFiles?.removeAt(index);
                     });
                   },
@@ -372,7 +391,7 @@ class ImagesCarouselPreview extends StatelessWidget {
                     child: const Icon(
                       Icons.cancel,
                       size: AppSize.iconSizeBig,
-                      color: Colors.white,
+                      color: AppColors.white,
                     ),
                   ),
                 ),
@@ -402,10 +421,15 @@ class CreatePostButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (busy) return AppButton.inProgress(scale: .5);
-    return AppButton.outlined(
-      onPressed: onPostCreate,
-      text: 'Create',
-    );
+    Widget button;
+    if (busy) {
+      button = const AppButton.inProgress(scale: .5);
+    } else {
+      button = AppButton.outlined(
+        onPressed: onPostCreate,
+        text: 'Create',
+      );
+    }
+    return SizedBox(width: double.infinity, child: button);
   }
 }

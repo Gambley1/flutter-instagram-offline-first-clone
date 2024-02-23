@@ -5,6 +5,11 @@ import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:shared/shared.dart';
 
+/// AvatarImagePicker displays a circular avatar image that can be uploaded
+/// from the device.
+///
+/// Tapping the avatar opens an image picker to select a new image.
+/// Provides option to compress images before uploading.
 class AvatarImagePicker extends StatelessWidget {
   const AvatarImagePicker({
     this.compress = true,
@@ -25,8 +30,12 @@ class AvatarImagePicker extends StatelessWidget {
   final double placeholderSize;
   final bool withPlaceholder;
 
+  /// Picks an image from the device's gallery or camera and passes the image 
+  /// bytes and file to the provided callback.
+  /// 
+  /// Handles compressing the image before returning it.
   Future<void> _pickImage(BuildContext context) async {
-    final file = await PickImage.pickImage(
+    final file = await PickImage.instance.pickImage(
       context,
       source: ImageSource.both,
     );
@@ -40,7 +49,7 @@ class AvatarImagePicker extends StatelessWidget {
     final newFile = compressedFile ?? selectedFile.selectedFile;
     final compressedBytes = compressedFile == null
         ? null
-        : await PickImage.imageBytes(file: compressedFile);
+        : await PickImage.instance.imageBytes(file: compressedFile);
     final bytes = compressedBytes ?? selectedFile.selectedByte;
     onUpload?.call(bytes, newFile);
   }

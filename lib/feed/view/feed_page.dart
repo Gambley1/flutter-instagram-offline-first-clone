@@ -1,19 +1,15 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:collection/collection.dart';
-import 'package:firebase_config/firebase_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
-import 'package:flutter_instagram_offline_first_clone/chats/chats.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/feed.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/post/post.dart';
-import 'package:flutter_instagram_offline_first_clone/home/home.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:flutter_instagram_offline_first_clone/network_error/network_error.dart';
 import 'package:flutter_instagram_offline_first_clone/stories/stories.dart';
 import 'package:flutter_instagram_offline_first_clone/user_profile/user_profile.dart';
 import 'package:inview_notifier_list/inview_notifier_list.dart';
-import 'package:posts_repository/posts_repository.dart';
 import 'package:shared/shared.dart';
 import 'package:stories_repository/stories_repository.dart';
 import 'package:user_repository/user_repository.dart';
@@ -24,10 +20,10 @@ class FeedPage extends StatefulWidget {
   final int initialPage;
 
   @override
-  State<FeedPage> createState() => _FeedPageState();
+  State<FeedPage> createState() => FeedPageState();
 }
 
-class _FeedPageState extends State<FeedPage> with RouteAware {
+class FeedPageState extends State<FeedPage> with RouteAware {
   late PageController _controller;
 
   @override
@@ -47,35 +43,16 @@ class _FeedPageState extends State<FeedPage> with RouteAware {
 
   @override
   Widget build(BuildContext context) {
-    final videoPlayer = VideoPlayerProvider.of(context);
-
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) => FeedBloc(
-            postsRepository: context.read<PostsRepository>(),
-            remoteConfig: context.read<FirebaseConfig>(),
-          )..add(const FeedPageRequested(page: 0)),
+    return BlocProvider(
+      create: (context) => StoriesBloc(
+        storiesRepository: context.read<StoriesRepository>(),
+        userRepository: context.read<UserRepository>(),
+      )..add(
+          StoriesFetchUserFollowingsStories(
+            context.read<AppBloc>().state.user.id,
+          ),
         ),
-        BlocProvider(
-          create: (context) => StoriesBloc(
-            storiesRepository: context.read<StoriesRepository>(),
-            userRepository: context.read<UserRepository>(),
-          )..add(
-              StoriesFetchUserFollowingsStories(
-                context.read<AppBloc>().state.user.id,
-              ),
-            ),
-        ),
-      ],
-      child: PageView(
-        controller: videoPlayer.pageController,
-        children: const [
-          UserProfileCreatePost(),
-          FeedView(),
-          ChatsPage(),
-        ],
-      ),
+      child: const FeedView(),
     );
   }
 }
@@ -97,6 +74,8 @@ class _FeedViewState extends State<FeedView> {
   @override
   void initState() {
     super.initState();
+    context.read<FeedBloc>().add(const FeedPageRequested(page: 0));
+
     _nestedScrollController = ScrollController();
     _feedScrollController = ScrollController();
     FeedPageController.init(
@@ -235,15 +214,11 @@ class _FeedBodyState extends State<FeedBody> {
                   horizontal: AppSpacing.md,
                   vertical: AppSpacing.sm,
                 ),
-                child: Row(
-                  children: [
-                    Text(
-                      context.l10n.suggestedForYouText,
-                      style: context.headlineSmall,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
+                child: Text(
+                  context.l10n.suggestedForYouText,
+                  style: context.headlineSmall,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
               const AppDivider(),

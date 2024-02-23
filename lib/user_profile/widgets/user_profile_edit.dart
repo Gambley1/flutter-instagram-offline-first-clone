@@ -56,7 +56,7 @@ class _UserProfileEditViewState extends State<UserProfileEditView> {
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
         elevation: 0,
-        title: const Text('Edit profile'),
+        title: Text(context.l10n.editProfileText),
         centerTitle: false,
       ),
       body: LayoutBuilder(
@@ -186,7 +186,7 @@ class _ProfileInfoInputState extends State<ProfileInfoInput> {
 
   @override
   Widget build(BuildContext context) {
-    return AppTextField(
+    return AppTextField.underlineBorder(
       textController: _textController,
       focusNode: _focusNode,
       filled: false,
@@ -218,7 +218,6 @@ class _ProfileInfoInputState extends State<ProfileInfoInput> {
       contentPadding: EdgeInsets.zero,
       onChanged: widget.onChanged,
       floatingLabelBehaviour: FloatingLabelBehavior.auto,
-      border: const UnderlineInputBorder(),
     );
   }
 }

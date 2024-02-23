@@ -13,15 +13,27 @@ final class ReelsPageRequested extends ReelsEvent {
   final int page;
 }
 
+final class ReelsUpdateRequested extends ReelsEvent {
+  const ReelsUpdateRequested({
+    required this.block,
+    this.isCreate = false,
+    this.isDelete = false,
+  });
+
+  final PostBlock block;
+  final bool isCreate;
+  final bool isDelete;
+}
+
 final class ReelsCreateReelRequested extends ReelsEvent {
   const ReelsCreateReelRequested({
-    required this.postId,
+    required this.id,
     required this.userId,
     required this.caption,
     required this.media,
   });
 
-  final String postId;
+  final String id;
   final String userId;
   final String caption;
   final List<Map<String, dynamic>> media;

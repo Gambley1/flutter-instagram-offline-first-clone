@@ -1,6 +1,5 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:shared/shared.dart';
 
@@ -60,6 +59,8 @@ class PostHeader extends StatelessWidget {
             children: [
               Text(
                 '${author.username} ',
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
                 style: context.titleMedium?.apply(color: color),
               ),
               Assets.icons.verifiedUser.svg(
@@ -70,6 +71,8 @@ class PostHeader extends StatelessWidget {
           )
         : Text(
             author.username,
+            overflow: TextOverflow.ellipsis,
+                maxLines: 1,
             style: context.titleMedium?.apply(color: color),
           );
 
@@ -105,7 +108,10 @@ class PostHeader extends StatelessWidget {
                     children: [
                       username,
                       Text(
-                        context.l10n.sponsoredPostText,
+                        BlockSettings
+                            .instance.postTextDelegate.sponsoredPostText,
+                        overflow: TextOverflow.ellipsis,
+                maxLines: 1,
                         style: context.bodyMedium?.apply(color: color),
                       ),
                     ],
@@ -190,16 +196,16 @@ class PostOptionsButton extends StatelessWidget {
     }) =>
         <ModalOption>[
           ModalOption(
-            name: context.l10n.edit,
-            icon: Icons.edit,
+            name: BlockSettings.instance.postTextDelegate.editText,
+            iconData: Icons.edit,
             onTap: onPostEditTap,
           ),
           ModalOption(
-            name: context.l10n.delete,
+            name: BlockSettings.instance.postTextDelegate.deleteText,
             actionTitle: 'Delete post',
             actionContent: 'Are you sure you want to delete this post?',
-            actionYesText: context.l10n.delete,
-            child: Assets.icons.trash.svg(
+            actionYesText: BlockSettings.instance.postTextDelegate.deleteText,
+            icon: Assets.icons.trash.svg(
               colorFilter:
                   const ColorFilter.mode(AppColors.red, BlendMode.srcIn),
             ),
@@ -215,7 +221,7 @@ class PostOptionsButton extends StatelessWidget {
         <ModalOption>[
           ModalOption(
             name: "Don't show again",
-            icon: Icons.remove_circle_outline_sharp,
+            iconData: Icons.remove_circle_outline_sharp,
             onTap: onPostDontShowAgainTap,
           ),
           ModalOption(
@@ -223,7 +229,7 @@ class PostOptionsButton extends StatelessWidget {
             actionTitle: 'Block author',
             actionContent: 'Are you sure you want to block this author?',
             actionYesText: 'Block',
-            icon: Icons.block,
+            iconData: Icons.block,
             distractive: true,
             onTap: onPostBlockAuthorTap,
           ),
@@ -239,10 +245,10 @@ class PostOptionsButton extends StatelessWidget {
         ),
         child: icon,
       ),
-      owner: (onPostDelete) => Tappable(
+      owner: (onPostDelete, onPostEdit) => Tappable(
         onTap: () => showOptionsSheet(
           ownerOptions(
-            onPostEditTap: () {},
+            onPostEditTap: () => onPostEdit.call(block),
             onPostDeleteTap: () => onPostDelete.call(block.id),
           ),
         ),

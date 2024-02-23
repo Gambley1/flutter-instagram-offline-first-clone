@@ -13,27 +13,36 @@ class PickImage {
   /// {@macro image_picker}
   const PickImage._();
 
+  static const PickImage _internal = PickImage._();
+
+  static PickImage get instance => _internal;
+
+  static late TabsTexts _tabsTexts;
+
+  // ignore: use_setters_to_change_properties
+  void init(TabsTexts tabsTexts) {
+    _tabsTexts = tabsTexts;
+  }
+
   static final _defaultFilterOption = FilterOptionGroup(
     videoOption: FilterOption(
       durationConstraint: DurationConstraint(max: 3.minutes),
     ),
   );
 
-  static AppTheme _appTheme(BuildContext context) => AppTheme(
+  AppTheme _appTheme(BuildContext context) => AppTheme(
         focusColor: context.adaptiveColor,
         primaryColor: context.customReversedAdaptiveColor(),
       );
 
-  static TabsTexts _tabsTexts(BuildContext context) => TabsTexts();
-
-  static SliverGridDelegateWithFixedCrossAxisCount _sliverGridDelegate() =>
+  SliverGridDelegateWithFixedCrossAxisCount _sliverGridDelegate() =>
       const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 4,
         crossAxisSpacing: 1.7,
         mainAxisSpacing: 1.5,
       );
 
-  static Future<List<AssetEntity>?> pickAssets(
+  Future<List<AssetEntity>?> pickAssets(
     BuildContext context, {
     required ValueSetter<Stream<InstaAssetsExportDetails>> onCompleted,
     int maxAssets = 10,
@@ -47,7 +56,7 @@ class PickImage {
         closeOnComplete: closeOnComplete,
       );
 
-  static Future<void> pickAssetsFromBoth(
+  Future<void> pickAssetsFromBoth(
     BuildContext context, {
     required Future<void> Function(
       BuildContext context,
@@ -66,13 +75,13 @@ class PickImage {
           maximumSelection: maxSelection,
           showImagePreview: showPreview,
           cropImage: cropImage,
-          tabsTexts: _tabsTexts(context),
+          tabsTexts: _tabsTexts,
           appTheme: _appTheme(context),
           callbackFunction: (details) => onMediaPicked.call(context, details),
         ),
       );
 
-  static Future<SelectedImagesDetails?> pickImage(
+  Future<SelectedImagesDetails?> pickImage(
     BuildContext context, {
     ImageSource source = ImageSource.gallery,
     int maxSelection = 1,
@@ -83,17 +92,18 @@ class PickImage {
       context.pickImage(
         source: source,
         multiImages: multiImages,
+        filterOption: _defaultFilterOption,
         galleryDisplaySettings: GalleryDisplaySettings(
           cropImage: cropImage,
           maximumSelection: maxSelection,
           showImagePreview: showPreview,
-          tabsTexts: _tabsTexts(context),
+          tabsTexts: _tabsTexts,
           appTheme: _appTheme(context),
           gridDelegate: _sliverGridDelegate(),
         ),
       );
 
-  static Future<void> pickVideo(
+  Future<void> pickVideo(
     BuildContext context, {
     required Future<void> Function(
       BuildContext context,
@@ -112,13 +122,13 @@ class PickImage {
           showImagePreview: showPreview,
           cropImage: cropImage,
           maximumSelection: maxSelection,
-          tabsTexts: _tabsTexts(context),
+          tabsTexts: _tabsTexts,
           appTheme: _appTheme(context),
           callbackFunction: (details) => onMediaPicked.call(context, details),
         ),
       );
 
   /// Reads image as bytes.
-  static Future<Uint8List> imageBytes({required File file}) =>
+  Future<Uint8List> imageBytes({required File file}) =>
       compute((file) => file.readAsBytes(), file);
 }

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:bloc/bloc.dart';
+import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_config/firebase_config.dart';
 import 'package:flutter/foundation.dart';
@@ -29,6 +30,8 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       _onFeedRecommenedPostsPageRequested,
       transformer: throttleDroppable(),
     );
+    on<FeedPostCreateRequested>(_onFeedPostCreateRequested);
+    on<FeedUpdateRequested>(_onFeedUpdateRequested);
   }
 
   final _recommenedPosts = <PostLargeBlock>[
@@ -289,7 +292,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     FeedPageRequested event,
     Emitter<FeedState> emit,
   ) async {
-    emit(state.copyWith(status: FeedStatus.loading));
+    emit(state.loading());
     try {
       final currentPage = event.page ?? state.feed.page;
       final posts = await _postsRepository.getPage(
@@ -326,12 +329,17 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         ),
       );
 
-      emit(state.copyWith(status: FeedStatus.populated, feed: feed));
+      emit(state.populated(feed: feed));
 
       if (!hasMore) add(const FeedRecommenedPostsPageRequested());
-    } catch (e, stack) {
-      addError(e, stack);
-      emit(state.copyWith(status: FeedStatus.failure));
+    } catch (error, stackTrace) {
+      logE(
+        'Failed to request feed page.',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      addError(error, stackTrace);
+      emit(state.failure());
     }
   }
 
@@ -339,7 +347,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     FeedRefreshRequested event,
     Emitter<FeedState> emit,
   ) async {
-    emit(state.copyWith(status: FeedStatus.loading));
+    emit(state.loading());
     try {
       const page = 0;
       final posts = await _postsRepository.getPage(
@@ -370,12 +378,17 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         hasMore: hasMore,
       );
 
-      emit(state.copyWith(status: FeedStatus.populated, feed: feed));
+      emit(state.populated(feed: feed));
 
       if (!hasMore) add(const FeedRecommenedPostsPageRequested());
-    } catch (e, stack) {
-      addError(e, stack);
-      emit(state.copyWith(status: FeedStatus.failure));
+    } catch (error, stackTrace) {
+      logE(
+        'Failed to refresh feed page.',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      addError(error, stackTrace);
+      emit(state.failure());
     }
   }
 
@@ -388,7 +401,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     FeedRecommenedPostsPageRequested event,
     Emitter<FeedState> emit,
   ) async {
-    emit(state.copyWith(status: FeedStatus.loading));
+    emit(state.loading());
     try {
       final recommenedBlocks = <InstaBlock>[..._recommenedPosts..shuffle()];
       final blocks = insertSponsoredBlocks(
@@ -406,12 +419,91 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         ),
       );
 
-      emit(state.copyWith(feed: feed, status: FeedStatus.populated));
+      emit(state.populated(feed: feed));
     } catch (error, stackTrace) {
       addError(error, stackTrace);
-      emit(state.copyWith(status: FeedStatus.failure));
+      emit(state.failure());
     }
   }
+
+  Future<void> _onFeedPostCreateRequested(
+    FeedPostCreateRequested event,
+    Emitter<FeedState> emit,
+  ) async {
+    emit(state.loading());
+    try {
+      final newPost = await _postsRepository.createPost(
+        id: event.postId,
+        userId: event.userId,
+        caption: event.caption,
+        media: json.encode(event.media),
+      );
+      if (newPost != null) {
+        add(
+          FeedUpdateRequested(
+            block: newPost.toPostLargeBlock(),
+            isCreate: true,
+          ),
+        );
+      }
+      emit(state.populated());
+    } catch (error, stackTrace) {
+      logE('Failed to create post.', error: error, stackTrace: stackTrace);
+      addError(error, stackTrace);
+      emit(state.failure());
+    }
+  }
+
+  Future<void> _onFeedUpdateRequested(
+    FeedUpdateRequested event,
+    Emitter<FeedState> emit,
+  ) async {
+    emit(state.loading());
+    final oldFeed = state.feed.feed;
+
+    try {
+      final feedPost = oldFeed.blocks.firstWhereOrNull(
+        (block) =>
+            (block.type == PostLargeBlock.identifier ||
+                block.type == PostSponsoredBlock.identifier) &&
+            (block is PostBlock) &&
+            block.id == event.block.id,
+      ) as PostBlock?;
+      if (feedPost == null && !event.isCreate) {
+        emit(state.populated());
+        return;
+      }
+      final updatedBlocks = _updateBlocks(
+        blocks: oldFeed.blocks.whereType<PostBlock>().toList(),
+        newBlock: event.block,
+        isDelete: event.isDelete,
+      );
+
+      final feed = state.feed.copyWith(
+        feed: state.feed.feed
+            .copyWith(blocks: updatedBlocks, totalBlocks: updatedBlocks.length),
+      );
+
+      emit(state.populated(feed: feed));
+    } catch (error, stackTrace) {
+      logE('Failed to update feed post.', error: error, stackTrace: stackTrace);
+      addError(error, stackTrace);
+      emit(state.failure());
+    }
+  }
+
+  List<PostBlock> _updateBlocks({
+    required List<PostBlock> blocks,
+    required PostBlock newBlock,
+    required bool isDelete,
+  }) =>
+      blocks.updateWith<PostLargeBlock>(
+        newItem: newBlock,
+        findCallback: (block, newBlock) => block.id == newBlock.id,
+        onUpdate: (block, newBlock) =>
+            block.copyWith(caption: newBlock.caption),
+        isDelete: isDelete,
+      );
 }
 
 extension PostX on Post {

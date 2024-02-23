@@ -120,6 +120,7 @@
         }
     },
     "editProfileText": "Редактировать профиль",
+    "editPostText": "Редактировать публикацию",
     "shareProfileText": "Поделиться профилем",
     "addStoryText": "Добавить",
     "followingsCount": "{count, plural, =1{Подписка} few{Подписки} other{Подписок}}",
@@ -175,11 +176,21 @@
             }
         }
     },
+    "captionText": "Описание",
+    "noCameraFound": "Камера не найдена!",
+    "videoText": "ВИДЕО",
+    "photoText": "ФОТО",
+    "clearImagesText": "Очистить выбранные изображения",
+    "galleryText": "ГАЛЕРЕЯ",
+    "deletingText": "УДАЛИТЬ",
+    "notFoundingCameraText": "Дополнительная камера не найдена",
+    "holdButtonText": "Нажмите и удерживайте, чтобы записать",
+    "noImagesFounded": "Нет изображений",
+    "acceptAllPermissions": "Примите все необходимые разрешения!",
     "search": "Поиск",
     "addMessage": "Сообщение",
     "message": "Сообщение",
     "editPicture": "Изменить фото",
-    "editProfile": "Изменить профиль",
     "requiredField": "Это поле обязательно",
     "passwordLengthError": "Пароль должен содержать минимум {count, plural, =1{{count} символ} other{{count} символа}}",
     "@passwordLengthError": {

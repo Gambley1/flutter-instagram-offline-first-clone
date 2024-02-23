@@ -1,6 +1,5 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_instagram_offline_first_clone/home/home.dart';
 
 class FeedAppBar extends StatelessWidget {
@@ -10,8 +9,6 @@ class FeedAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final videoProvider = VideoPlayerProvider.of(context);
-
     return SliverPadding(
       padding: const EdgeInsets.only(right: AppSpacing.md),
       sliver: SliverAppBar(
@@ -22,10 +19,8 @@ class FeedAppBar extends StatelessWidget {
         snap: true,
         actions: [
           Tappable(
-            onTap: () {
-              videoProvider.pageController
-                  .animateToPage(2, curve: Curves.easeInOut, duration: 150.ms);
-            },
+            onTap: () =>
+              HomeProvider.instance.animateToPage(2),
             animationEffect: TappableAnimationEffect.scale,
             child: Assets.icons.chatCircle.svg(
               height: AppSize.iconSize,

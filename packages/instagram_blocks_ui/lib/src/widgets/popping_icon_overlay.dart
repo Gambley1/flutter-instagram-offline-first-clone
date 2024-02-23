@@ -5,14 +5,14 @@ import 'package:sprung/sprung.dart';
 class PoppingIconAnimationOverlay extends StatefulWidget {
   const PoppingIconAnimationOverlay({
     required this.child,
-    required this.onTap,
+    this.onTap,
     this.isLiked,
     this.icon,
     super.key,
   });
 
   final Widget child;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
   final bool? isLiked;
   final IconData? icon;
 
@@ -55,16 +55,16 @@ class _PoppingIconAnimationOverlayState
       _controller
         ..reset()
         ..loop(count: 1);
-      widget.onTap();
+      widget.onTap?.call();
       return;
     }
     _controller.loop(count: 1);
-    widget.onTap();
+    widget.onTap?.call();
   }
 
   void _likePost({required bool isLiked}) {
     if (isLiked) return;
-    widget.onTap();
+    widget.onTap?.call();
   }
 
   @override

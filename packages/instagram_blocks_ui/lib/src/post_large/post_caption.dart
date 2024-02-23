@@ -18,6 +18,8 @@ class PostCaption extends StatelessWidget {
   Widget build(BuildContext context) {
     if (caption.isEmpty) return const SizedBox.shrink();
     return Text.rich(
+      maxLines: 2,
+      overflow: TextOverflow.ellipsis,
       TextSpan(
         children: [
           TextSpan(

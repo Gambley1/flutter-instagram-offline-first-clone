@@ -62,11 +62,11 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
       ),
       errorText: passwordError,
       suffixIcon: Tappable(
-        color: Colors.transparent,
+        color: AppColors.transparent,
         onTap: context.read<LoginCubit>().changePasswordVisibility,
         child: Icon(
           !showPassword ? Icons.visibility : Icons.visibility_off,
-          color: context.customAdaptiveColor(light: Colors.white60),
+          color: context.customAdaptiveColor(light: AppColors.grey),
         ),
       ),
     );

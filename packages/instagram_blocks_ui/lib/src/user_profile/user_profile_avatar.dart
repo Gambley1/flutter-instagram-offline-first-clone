@@ -70,14 +70,7 @@ class UserProfileAvatar extends StatelessWidget {
       );
 
   static const _defaultGradient = SweepGradient(
-    colors: [
-      Color(0xFF833AB4), // Purple
-      Color(0xFFF77737), // Orange
-      Color(0xFFE1306C), // Red-pink
-      Color(0xFFC13584), // Red-purple
-      Color(0xFF833AB4), // Duplicate of the first color
-    ],
-    // Adjust the stops to create a smoother transition
+    colors: AppColors.primaryGradient,
     stops: [0.0, 0.25, 0.5, 0.75, 1.0],
   );
 
@@ -113,7 +106,7 @@ class UserProfileAvatar extends StatelessWidget {
         precacheImage(CachedNetworkImageProvider(url), context);
 
     final imageFile =
-        await PickImage.pickImage(context, source: ImageSource.both);
+        await PickImage.instance.pickImage(context, source: ImageSource.both);
     if (imageFile == null) return;
 
     final selectedFile = imageFile.selectedFiles.firstOrNull;
@@ -124,7 +117,7 @@ class UserProfileAvatar extends StatelessWidget {
     final file = compressedFile ?? selectedFile.selectedFile;
     final compressedBytes = compressedFile == null
         ? null
-        : await PickImage.imageBytes(file: compressedFile);
+        : await PickImage.instance.imageBytes(file: compressedFile);
     final bytes = compressedBytes ?? selectedFile.selectedByte;
     final avatarsStorage = Supabase.instance.client.storage.from('avatars');
 

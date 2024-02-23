@@ -55,9 +55,14 @@ class BottomNavBar extends StatelessWidget {
     return BottomNavigationBar(
       currentIndex: navigationShell.currentIndex,
       onTap: (index) {
-        if ([0, 1, 3].contains(index)) {
+        HomeProvider.instance.togglePageView(enable: index == 0);
+        if ([0, 1, 2, 3].contains(index)) {
           if (index case 0) videoPlayer.videoPlayerState.playFeed();
           if (index case 1) videoPlayer.videoPlayerState.playTimeline();
+          if (index case 2) {
+            HomeProvider.instance.animateToPage(0);
+            HomeProvider.instance.togglePageView();
+          }
           if (index case 3) videoPlayer.videoPlayerState.playReels();
         } else {
           videoPlayer.videoPlayerState.stopAll();

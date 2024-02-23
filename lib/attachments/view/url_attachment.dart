@@ -41,11 +41,11 @@ class UrlAttachment extends StatelessWidget {
     final user = context.select((AppBloc bloc) => bloc.state.user);
     final isMine = message.sender?.id == user.id;
 
-    final accentColor = isMine ? Colors.white : const Color(0xff337eff);
+    final accentColor = isMine ? AppColors.white : const Color(0xff337eff);
 
     return Container(
       padding: const EdgeInsets.fromLTRB(
-        AppSpacing.md + AppSpacing.xs,
+        AppSpacing.lg,
         AppSpacing.md,
         AppSpacing.md,
         AppSpacing.md,
@@ -63,8 +63,12 @@ class UrlAttachment extends StatelessWidget {
         children: [
           Text(
             hostDisplayName,
-            style: context.bodyLarge
-                ?.copyWith(fontWeight: AppFontWeight.bold, color: Colors.white),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: context.bodyLarge?.copyWith(
+              fontWeight: AppFontWeight.bold,
+              color: AppColors.white,
+            ),
           ),
           if (urlAttachment.title == null ||
               urlAttachment.title != hostDisplayName)
@@ -75,7 +79,7 @@ class UrlAttachment extends StatelessWidget {
                 fontWeight: AppFontWeight.bold,
                 height: 1.2,
                 wordSpacing: 0.5,
-                color: Colors.white,
+                color: AppColors.white,
               ),
               overflow: TextOverflow.ellipsis,
             ),
@@ -84,7 +88,7 @@ class UrlAttachment extends StatelessWidget {
               urlAttachment.text!,
               maxLines: 5,
               style: context.bodyMedium
-                  ?.copyWith(height: 1.3, color: Colors.white),
+                  ?.copyWith(height: 1.3, color: AppColors.white),
               overflow: TextOverflow.ellipsis,
             ),
           Padding(

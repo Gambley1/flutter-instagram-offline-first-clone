@@ -3,7 +3,6 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:instagram_blocks_ui/src/like_button.dart';
 import 'package:instagram_blocks_ui/src/likes_count.dart';
@@ -55,7 +54,7 @@ class UserComment extends StatelessWidget {
     return ListTile(
       contentPadding: EdgeInsets.only(
         right: AppSpacing.md,
-        left: isReplied ? 62 : AppSpacing.md,
+        left: isReplied ? AppSpacing.xxxlg : AppSpacing.md,
       ),
       horizontalTitleGap: AppSpacing.md,
       titleAlignment: ListTileTitleAlignment.titleHeight,
@@ -101,8 +100,8 @@ class UserComment extends StatelessWidget {
             onTap: () => onReplyButtonTap?.call(comment.author.username),
             animationEffect: TappableAnimationEffect.none,
             child: Text(
-              context.l10n.reply,
-              style: context.labelMedium?.copyWith(color: Colors.grey.shade500),
+              BlockSettings.instance.commentTextDelegate.replyText,
+              style: context.labelMedium?.copyWith(color: AppColors.grey),
             ),
           ),
         ],
@@ -115,7 +114,7 @@ class UserComment extends StatelessWidget {
             isLiked: isLiked,
             onLikedTap: onLikeComment,
             size: 22,
-            color: Colors.grey.shade500,
+            color: AppColors.grey,
             scaleStrength: ScaleStrength.md,
           ),
           RepaintBoundary(
@@ -124,7 +123,7 @@ class UserComment extends StatelessWidget {
               hideCount: false,
               size: 14,
               count: likesCount,
-              color: Colors.grey.shade500,
+              color: AppColors.grey,
             ),
           ),
         ],
@@ -145,7 +144,7 @@ class CommentOwnerLikedAvatar extends StatelessWidget {
       children: [
         const Icon(
           Icons.favorite,
-          color: Colors.red,
+          color: AppColors.red,
           size: AppSize.iconSizeSmall,
         ),
         const SizedBox(width: 4),
@@ -225,7 +224,7 @@ RichText buildHighlightedText(String text, BuildContext context) {
         TextSpan(
           text: '$value ',
           style: context.bodySmall?.copyWith(
-            color: Colors.blueAccent[100],
+            color: AppColors.lightBlue,
             fontWeight: AppFontWeight.bold,
           ),
           recognizer: TapGestureRecognizer()

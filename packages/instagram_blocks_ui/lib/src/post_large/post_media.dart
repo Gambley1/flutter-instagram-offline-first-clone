@@ -8,67 +8,87 @@ import 'package:shared/shared.dart';
 class PostMedia extends StatelessWidget {
   const PostMedia({
     required this.media,
-    required this.likePost,
-    required this.isLiked,
     required this.withInViewNotifier,
+    this.isLiked = false,
+    this.likePost,
     this.onPageChanged,
     this.videoPlayerBuilder,
+    this.mediaCarouselSettings,
     this.postIndex,
+    this.withLikeOverlay = true,
+    this.autoHideCurrentIndex = true,
     super.key,
   });
 
   final List<Media> media;
   final int? postIndex;
-  final LikeCallback likePost;
+  final LikeCallback? likePost;
   final bool isLiked;
   final ValueSetter<int>? onPageChanged;
   final VideoPlayerBuilder? videoPlayerBuilder;
+  final MediaCarouselSettings? mediaCarouselSettings;
+  final bool withLikeOverlay;
   final bool withInViewNotifier;
+  final bool autoHideCurrentIndex;
+
+  MediaCarouselSettings _defaultSettings(
+    ValueNotifier<bool> showImagesCountText,
+    ValueNotifier<int> currentIndex,
+  ) =>
+      MediaCarouselSettings.create(
+        videoPlayerBuilder: videoPlayerBuilder,
+        aspectRatio: media.isReel ? kDefaultVideoAspectRatio : null,
+        fit: media.hasVideo ? kDefaultVideoMediaBoxFit : null,
+        withInViewNotifier: withInViewNotifier,
+        onPageChanged: (index, _) {
+          showImagesCountText.value = true;
+          currentIndex.value = index;
+          onPageChanged?.call(index);
+        },
+      );
 
   @override
   Widget build(BuildContext context) {
     final currentIndex = ValueNotifier<int>(0);
-    final showImagesCountText = ValueNotifier(false);
+    final showImagesCountText = ValueNotifier(!autoHideCurrentIndex);
 
     final singleImage = media.length == 1;
     final showImagesCount = !singleImage && media.isNotEmpty;
 
+    final carousel = MediaCarousel(
+      media: media,
+      postIndex: postIndex,
+      settings: _defaultSettings(showImagesCountText, currentIndex)
+          .merge(other: mediaCarouselSettings),
+    );
+
     return Stack(
       children: [
-        RepaintBoundary(
-          child: PoppingIconAnimationOverlay(
-            isLiked: isLiked,
-            onTap: likePost,
-            child: MediaCarousel(
-              media: media,
-              postIndex: postIndex,
-              settings: MediaCarouselSettings.create(
-                videoPlayerBuilder: videoPlayerBuilder,
-                aspectRatio: media.hasVideo ? kDefaultVideoAspectRatio : null,
-                fit: media.hasVideo ? kDefaultVideoMediaBoxFit : null,
-                withInViewNotifier: withInViewNotifier,
-                onPageChanged: (index, _) {
-                  showImagesCountText.value = true;
-                  currentIndex.value = index;
-                  onPageChanged?.call(index);
-                },
-              ),
+        if (!withLikeOverlay)
+          carousel
+        else
+          RepaintBoundary(
+            child: PoppingIconAnimationOverlay(
+              isLiked: isLiked,
+              onTap: likePost,
+              child: carousel,
             ),
           ),
-        ),
         if (showImagesCount)
           Positioned(
-            top: 12,
-            right: 12,
+            top: AppSpacing.md,
+            right: AppSpacing.md,
             child: AnimatedBuilder(
               animation: Listenable.merge([showImagesCountText, currentIndex]),
               builder: (context, child) {
-                if (showImagesCountText.value) {
-                  void showImagesCount() {
-                    showImagesCountText.value = false;
-                  }
+                if (autoHideCurrentIndex) {
+                  if (showImagesCountText.value) {
+                    void showImagesCount() {
+                      showImagesCountText.value = false;
+                    }
 
-                  showImagesCount.deboune();
+                    showImagesCount.deboune(milliseconds: 5000);
+                  }
                 }
 
                 return RepaintBoundary(
@@ -105,17 +125,18 @@ class _CurrentPostImageInexOfTotal extends StatelessWidget {
       opacity: showText ? 1 : 0,
       duration: 150.ms,
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
+        padding: const EdgeInsets.symmetric(
+          vertical: AppSpacing.xxs,
+          horizontal: AppSpacing.md,
+        ),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(18),
           color: context.customAdaptiveColor(
-            light: Colors.black87,
-            dark: Colors.black45,
+            light: AppColors.black.withOpacity(.8),
+            dark: AppColors.black.withOpacity(.4),
           ),
         ),
-        child: Text(
-          text,
-        ),
+        child: Text(text, overflow: TextOverflow.ellipsis, maxLines: 1),
       ),
     );
   }

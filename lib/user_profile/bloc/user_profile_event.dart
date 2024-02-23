@@ -17,12 +17,6 @@ class UserProfileUpdated extends UserProfileEvent {
   List<Object> get props => [user];
 }
 
-final class ProfileFetch extends UserProfileEvent {
-  const ProfileFetch({this.id});
-
-  final String? id;
-}
-
 final class UserProfileUpdateRequested extends UserProfileEvent {
   const UserProfileUpdateRequested({
     this.fullName,
@@ -37,20 +31,6 @@ final class UserProfileUpdateRequested extends UserProfileEvent {
   final String? username;
   final String? avatarUrl;
   final String? pushToken;
-}
-
-final class UserProfilePostCreateRequested extends UserProfileEvent {
-  const UserProfilePostCreateRequested({
-    required this.postId,
-    required this.userId,
-    required this.caption,
-    required this.media,
-  });
-
-  final String postId;
-  final String userId;
-  final String caption;
-  final List<Map<String, dynamic>> media;
 }
 
 sealed class _PostEvent extends UserProfileEvent {
@@ -86,12 +66,6 @@ final class UserProfileFollowersCountSubscriptionRequested
 
 final class UserProfileLikePostRequested extends _PostEvent {
   const UserProfileLikePostRequested(super.postId);
-}
-
-final class UserProfileDeletePostRequested extends _PostEvent {
-  const UserProfileDeletePostRequested(super.postId, {this.onPostDeleted});
-
-  final ValueSetter<String?>? onPostDeleted;
 }
 
 final class UserProfileFetchFollowersRequested extends UserProfileEvent {

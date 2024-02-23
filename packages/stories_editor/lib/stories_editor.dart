@@ -15,7 +15,7 @@ import 'package:stories_editor/src/presentation/main_view/main_view.dart';
 
 export 'package:stories_editor/stories_editor.dart';
 
-class StoriesEditor extends StatefulWidget {
+class StoriesEditor extends StatelessWidget {
   /// editor custom font families
   final List<String>? fontFamilyList;
 
@@ -66,17 +66,6 @@ class StoriesEditor extends StatefulWidget {
   });
 
   @override
-  State<StoriesEditor> createState() => _StoriesEditorState();
-}
-
-class _StoriesEditorState extends State<StoriesEditor> {
-  @override
-  void initState() {
-    Paint.enableDithering = true;
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return NotificationListener<OverscrollIndicatorNotification>(
       onNotification: (overscroll) {
@@ -95,16 +84,16 @@ class _StoriesEditorState extends State<StoriesEditor> {
             ChangeNotifierProvider(create: (_) => TextEditingNotifier()),
           ],
           child: MainView(
-            onDone: widget.onDone,
-            fontFamilyList: widget.fontFamilyList,
-            isCustomFontList: widget.isCustomFontList,
-            middleBottomWidget: widget.middleBottomWidget,
-            gradientColors: widget.gradientColors,
-            colorList: widget.colorList,
-            onDoneButtonStyle: widget.onDoneButtonStyle,
-            onBackPress: widget.onBackPress,
-            editorBackgroundColor: widget.editorBackgroundColor,
-            galleryThumbnailQuality: widget.galleryThumbnailQuality,
+            onDone: onDone,
+            fontFamilyList: fontFamilyList,
+            isCustomFontList: isCustomFontList,
+            middleBottomWidget: middleBottomWidget,
+            gradientColors: gradientColors,
+            colorList: colorList,
+            onDoneButtonStyle: onDoneButtonStyle,
+            onBackPress: onBackPress,
+            editorBackgroundColor: editorBackgroundColor,
+            galleryThumbnailQuality: galleryThumbnailQuality,
           ),
         ),
       ),

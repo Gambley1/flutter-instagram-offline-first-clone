@@ -22,19 +22,12 @@ class SigninIntoAccountButton extends StatelessWidget {
         text: TextSpan(
           children: [
             TextSpan(
-              text: '${context.l10n.alreadyHaveAccount}?',
+              text: '${context.l10n.alreadyHaveAccount}? ',
               style: context.bodyMedium,
-            ),
-            WidgetSpan(
-              child: SizedBox(
-                width: context.textSpacing,
-              ),
             ),
             TextSpan(
               text: '${context.l10n.logIn}.',
-              style: context.bodyMedium?.copyWith(
-                color: Colors.blue.shade500,
-              ),
+              style: context.bodyMedium?.apply(color: AppColors.blue),
             ),
           ],
         ),

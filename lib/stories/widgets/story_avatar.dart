@@ -90,7 +90,7 @@ class AvatarView extends StatelessWidget {
             ? defaultTextStyle
             : !state.stories.every((e) => e.seen)
                 ? defaultTextStyle
-                : defaultTextStyle.copyWith(color: Colors.grey.shade500);
+                : defaultTextStyle.copyWith(color: AppColors.grey);
 
         return Column(
           children: [
@@ -111,7 +111,7 @@ class AvatarView extends StatelessWidget {
                   avatarUrl: author.avatarUrl,
                   scaleStrength: ScaleStrength.xxs,
                 ),
-            const SizedBox(height: 6),
+            const SizedBox(height: AppSpacing.sm - AppSpacing.xxs),
             DefaultTextStyle(
               style: style,
               child: Text(

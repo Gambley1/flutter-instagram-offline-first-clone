@@ -91,7 +91,7 @@ class ImageAttachment extends StatelessWidget {
               thumbnailCropType: imageThumbnailCropType,
             ),
             // Padding(
-            //   padding: const EdgeInsets.all(8),
+            //   padding: const EdgeInsets.all(AppSpacing.sm),
             //   child: StreamAttachmentUploadStateBuilder(
             //     message: message,
             //     attachment: image,

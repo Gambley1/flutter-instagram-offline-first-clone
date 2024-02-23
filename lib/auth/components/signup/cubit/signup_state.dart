@@ -96,11 +96,11 @@ extension SignUpFormFieldsTextError on SignupState {
       usernameValidationErrorMessage[_usernameValidationError];
 }
 
-/// {@start template signup_state}
+/// {@template signup_state}
 /// Defines signup state. It is used to store all the data, that is needed
 /// for signup form to work properly. It also stores signup submission status,
 /// that is used to manipulate with state, using Bloc, according to state.
-/// {@endtemplatae}
+/// {@endtemplate}
 class SignupState extends Equatable {
   const SignupState._({
     required this.fullName,

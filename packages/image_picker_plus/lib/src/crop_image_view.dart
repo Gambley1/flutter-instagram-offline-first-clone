@@ -5,7 +5,7 @@ import 'package:image_picker_plus/image_picker_plus.dart';
 import 'package:image_picker_plus/src/custom_crop.dart';
 
 class CropImageView extends StatefulWidget {
-  final ValueNotifier<GlobalKey<CustomCropState>> cropKey;
+  final GlobalKey<CustomCropState> cropKey;
   final ValueNotifier<List<int>> indexOfSelectedImages;
 
   final ValueNotifier<bool> multiSelectionMode;
@@ -75,11 +75,12 @@ class _CropImageViewState extends State<CropImageView> {
             : null,
         child: ValueListenableBuilder<File?>(
           valueListenable: widget.selectedImage,
-          builder: (context, selectedImageValue, child) {
-            if (selectedImageValue != null) {
-              return showSelectedImage(context, selectedImageValue);
+          child: Container(key: GlobalKey(debugLabel: "do not have")),
+          builder: (context, selectedImage, _) {
+            if (selectedImage != null) {
+              return showSelectedImage(context, selectedImage);
             } else {
-              return Container(key: GlobalKey(debugLabel: "do not have"));
+              return child!;
             }
           },
         ),
@@ -87,7 +88,7 @@ class _CropImageViewState extends State<CropImageView> {
     );
   }
 
-  Widget showSelectedImage(BuildContext context, File selectedImageValue) {
+  Widget showSelectedImage(BuildContext context, File selectedImage) {
     double width = MediaQuery.of(context).size.width;
     return Container(
       color: widget.whiteColor,
@@ -100,8 +101,8 @@ class _CropImageViewState extends State<CropImageView> {
             ValueListenableBuilder<bool>(
               valueListenable: widget.expandImage,
               builder: (context, expandMedia, _) => CropPreview(
-                selectedMedia: selectedImageValue,
-                cropKey: widget.cropKey.value,
+                selectedMedia: selectedImage,
+                cropKey: widget.cropKey,
                 expandMedia: expandMedia,
                 paintColor: widget.appTheme.primaryColor,
               ),

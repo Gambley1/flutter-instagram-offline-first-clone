@@ -8,7 +8,7 @@ import 'package:flutter_instagram_offline_first_clone/stories/user_stories/user_
 import 'package:flutter_instagram_offline_first_clone/user_profile/user_profile.dart';
 import 'package:go_router/go_router.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
-import 'package:shared/shared.dart';
+import 'package:shared/shared.dart' hide Switch;
 
 class UserProfileHeader extends StatelessWidget {
   const UserProfileHeader({
@@ -109,10 +109,13 @@ class UserProfileHeader extends StatelessWidget {
                 ),
               ],
             ),
+            const SizedBox(height: AppSpacing.md),
             Align(
               alignment: Alignment.centerLeft,
               child: Text(
                 user.displayFullName,
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
                 style: context.titleMedium
                     ?.copyWith(fontWeight: AppFontWeight.semiBold),
               ),
@@ -186,7 +189,7 @@ class UserProfileStatisticsCounts extends StatelessWidget {
             onTap: onSubscribesTap,
           ),
         ),
-      ],
+      ].insertBetween(const SizedBox(width: AppSpacing.sm)),
     );
   }
 }

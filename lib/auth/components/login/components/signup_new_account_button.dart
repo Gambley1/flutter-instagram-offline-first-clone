@@ -17,7 +17,7 @@ class SignupNewAccountButton extends StatelessWidget {
     return Tappable(
       onTap: () => cubit.changeAuth(showLogin: false),
       child: Text.rich(
-        overflow: TextOverflow.ellipsis,
+        overflow: TextOverflow.visible,
         style: context.bodyMedium,
         TextSpan(
           children: [
