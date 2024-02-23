@@ -4,9 +4,10 @@ import 'package:app_ui/app_ui.dart';
 import 'package:flutter/widgets.dart';
 
 class ModalOption {
-  final String name;
+  final String? name;
   final Color? nameColor;
-  final IconData? icon;
+  final Widget? icon;
+  final IconData? iconData;
   final Widget? child;
   final BuildContextCallback? noAction;
   final String? actionTitle;
@@ -16,8 +17,9 @@ class ModalOption {
   final bool distractive;
 
   ModalOption({
-    required this.name,
+    this.name,
     this.icon,
+    this.iconData,
     this.child,
     VoidCallback? onTap,
     this.noAction,
@@ -33,7 +35,7 @@ class ModalOption {
 
   void onTap(BuildContext context) => distractive
       ? context.confirmAction(
-          title: actionTitle ?? name,
+          title: actionTitle ?? name!,
           content: actionContent,
           noText: actionNoText ?? 'Cancel',
           yesText: actionYesText ?? 'Yes',
@@ -47,7 +49,8 @@ class ModalOption {
   ModalOption copyWith({
     String? name,
     Color? nameColor,
-    IconData? icon,
+    Widget? icon,
+    IconData? iconData,
     Widget? child,
     BuildContextCallback? noAction,
     String? actionTitle,
@@ -60,6 +63,7 @@ class ModalOption {
       name: name ?? this.name,
       nameColor: nameColor ?? this.nameColor,
       icon: icon ?? this.icon,
+      iconData: iconData ?? this.iconData,
       child: child ?? this.child,
       noAction: noAction ?? this.noAction,
       actionTitle: actionTitle ?? this.actionTitle,

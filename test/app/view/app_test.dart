@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared/shared.dart';
 
@@ -41,6 +42,33 @@ void main() {
       logI(merged);
 
       expect(merged.length, equals(2));
+    });
+    test('test `separated by` extension', () {
+      const mockWidgets = [
+        Text('Hello', key: ValueKey('helloTextKey')),
+        Text('World', key: ValueKey('worldTextKey')),
+      ];
+
+      const separator = SizedBox(height: 12, key: ValueKey('separatorKey'));
+
+      void separatedBy<T>(Iterable<T> items, T separator) {
+        final stopwatch = Stopwatch()..start();
+        items.separatedBy(separator);
+        stopwatch.stop();
+        logD('Separated by elapsed time: ${stopwatch.elapsed.inMicroseconds}');
+      }
+
+      void insertBetween<T>(List<T> items, T separator) {
+        final stopwatch = Stopwatch()..start();
+        items.insertBetween(separator);
+        stopwatch.stop();
+        logD(
+          'Insert between elapsed time: ${stopwatch.elapsed.inMicroseconds}',
+        );
+      }
+
+      separatedBy(mockWidgets, separator);
+      insertBetween(mockWidgets, separator);
     });
   });
 }

@@ -82,18 +82,18 @@ List<ModalOption> createMediaModalOptions({
     <ModalOption>[
       ModalOption(
         name: reelLabel,
-        icon: Icons.video_collection_outlined,
+        iconData: Icons.video_collection_outlined,
         onTap: onCreateReelTap,
       ),
       ModalOption(
         name: postLabel,
-        icon: Icons.outbox_outlined,
+        iconData: Icons.outbox_outlined,
         onTap: () => goTo('create_post'),
       ),
       if (enableStory)
         ModalOption(
           name: storyLabel,
-          icon: Icons.cameraswitch_outlined,
+          iconData: Icons.cameraswitch_outlined,
           onTap: () => goTo('create_stories', extra: storyExtra),
         ),
     ];

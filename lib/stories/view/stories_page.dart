@@ -65,8 +65,8 @@ class StoriesView extends StatefulWidget {
 }
 
 class _StoriesViewState extends State<StoriesView> with SafeSetStateMixin {
-  late StoryController _controller;
-  late List<StoryItem> _storyItems;
+  final StoryController _controller = StoryController();
+  final _storyItems = ValueNotifier(<StoryItem>[]);
 
   final _currentStory = ValueNotifier<Story>(Story.empty);
   final _createdAt = ValueNotifier<DateTime?>(null);
@@ -75,18 +75,14 @@ class _StoriesViewState extends State<StoriesView> with SafeSetStateMixin {
   @override
   void initState() {
     super.initState();
-    _controller = StoryController();
-    _storyItems = widget.stories.toStoryItems(_controller);
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    _storyItems.value = widget.stories.toStoryItems(_controller);
+    // });
+
     _controller.playbackNotifier.listen((state) {
       if (state != PlaybackState.pause) _showOverlay.value = true;
       if (state == PlaybackState.pause) _showOverlay.value = false;
     });
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
   }
 
   @override
@@ -106,28 +102,36 @@ class _StoriesViewState extends State<StoriesView> with SafeSetStateMixin {
               if (mounted) _controller.pause();
             }
           },
-          child: StoryView(
-            storyItems: _storyItems,
-            controller: _controller,
-            inline: true,
-            onStoryShow: (story) {
-              final storyIndex = _storyItems.indexOf(story);
-              _currentStory.value = widget.stories[storyIndex];
-              _createdAt.value = widget.stories[storyIndex].createdAt;
-              if (widget.onStorySeen != null) {
-                widget.onStorySeen!.call(storyIndex, widget.stories);
-              } else {
-                if (storyIndex == -1) return;
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  context.read<StoriesBloc>().add(
-                        StoriesStorySeen(widget.stories[storyIndex], user.id),
-                      );
-                });
-              }
-            },
-            onVerticalSwipeComplete: (_) => context.pop(),
-            onComplete: () {
-              if (context.canPop()) context.pop();
+          child: ValueListenableBuilder(
+            valueListenable: _storyItems,
+            builder: (context, storyItems, child) {
+              return StoryView(
+                storyItems: storyItems,
+                controller: _controller,
+                inline: true,
+                onStoryShow: (story, index) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    _currentStory.value = widget.stories[index];
+                    _createdAt.value = widget.stories[index].createdAt;
+                  });
+                  if (widget.onStorySeen != null) {
+                    widget.onStorySeen!.call(index, widget.stories);
+                  } else {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      context.read<StoriesBloc>().add(
+                            StoriesStorySeen(
+                              widget.stories[index],
+                              user.id,
+                            ),
+                          );
+                    });
+                  }
+                },
+                onVerticalSwipeComplete: (_) => context.pop(),
+                onComplete: () {
+                  if (context.canPop()) context.pop();
+                },
+              );
             },
           ),
         ),
@@ -145,8 +149,8 @@ class _StoriesViewState extends State<StoriesView> with SafeSetStateMixin {
           },
         ),
         Positioned(
-          right: 24,
-          bottom: 24,
+          right: AppSpacing.xlg,
+          bottom: AppSpacing.xlg,
           child: AnimatedBuilder(
             animation: Listenable.merge([_showOverlay, _currentStory]),
             builder: (context, _) {
@@ -160,19 +164,21 @@ class _StoriesViewState extends State<StoriesView> with SafeSetStateMixin {
                   onStoryDeleted: (story) {
                     final storyIndex = widget.stories.indexOf(story);
                     if (storyIndex == -1) return;
-                    if (_storyItems.length == 1) {
+                    if (_storyItems.value.length == 1) {
                       safeSetState(() {
-                        _storyItems
+                        _storyItems.value
                           ..addAll([Story.empty].toStoryItems(_controller))
                           ..removeAt(storyIndex);
                       });
                       _currentStory.value = Story.empty;
                       if (context.canPop()) context.pop();
                     } else {
-                      safeSetState(() => _storyItems.removeAt(storyIndex));
+                      safeSetState(
+                        () => _storyItems.value.removeAt(storyIndex),
+                      );
                       _controller.previous();
-                      _currentStory.value = widget
-                          .stories[min(storyIndex, _storyItems.length - 1)];
+                      _currentStory.value = widget.stories[
+                          min(storyIndex, _storyItems.value.length - 1)];
                     }
                   },
                 ),
@@ -210,22 +216,19 @@ class StoryOptions extends StatelessWidget {
       children: [
         Tappable(
           onTap: () async {
-            void callback(ModalOption option) => option.onTap.call(context);
-
             controller.pause();
-            final option = await context.showListOptionsModal(
+            await context.showListOptionsModal(
               options: [
                 ModalOption(
-                  name: 'Delete story',
+                  name: context.l10n.delete,
                   actionTitle: 'Delete story',
                   actionContent: 'Are you sure you want to delete this story?',
                   actionYesText: context.l10n.delete,
-                  child: Assets.icons.trash.svg(
+                  icon: Assets.icons.trash.svg(
                     height: AppSize.iconSize,
                     colorFilter:
-                        const ColorFilter.mode(Colors.red, BlendMode.srcIn),
+                        const ColorFilter.mode(AppColors.red, BlendMode.srcIn),
                   ),
-                  nameColor: Colors.red,
                   distractive: true,
                   noAction: (context) {
                     context.pop(false);
@@ -241,12 +244,13 @@ class StoryOptions extends StatelessWidget {
                       ),
                 ),
               ],
-            );
-            if (option == null) {
-              controller.play();
-              return;
-            }
-            callback(option);
+            ).then((option) {
+              if (option == null) {
+                controller.play();
+                return;
+              }
+              option.onTap(context);
+            });
           },
           child: Column(
             children: [
@@ -335,12 +339,13 @@ class StoriesAuthorListTile extends StatelessWidget {
 }
 
 extension on List<Story> {
-  List<StoryItem> toStoryItems(StoryController controller) => map(
+  List<StoryItem> toStoryItems(StoryController controller) => safeMap(
         (story) => switch (story.contentType) {
           StoryContentType.image => StoryItem.inlineImage(
               url: story.contentUrl,
               shown: story.seen,
               controller: controller,
+              duration: 5.seconds,
               roundedTop: false,
             ),
           StoryContentType.video => StoryItem.pageVideo(

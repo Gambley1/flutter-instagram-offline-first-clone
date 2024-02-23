@@ -6,11 +6,43 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/bloc/app_bloc.dart';
+import 'package:flutter_instagram_offline_first_clone/chats/chats.dart';
 import 'package:flutter_instagram_offline_first_clone/navigation/navigation.dart';
 import 'package:flutter_instagram_offline_first_clone/stories/create_stories/create_stories.dart';
+import 'package:flutter_instagram_offline_first_clone/user_profile/user_profile.dart';
 import 'package:go_router/go_router.dart';
 import 'package:inview_notifier_list/inview_notifier_list.dart';
+import 'package:shared/shared.dart';
 import 'package:stories_repository/stories_repository.dart';
+
+class HomeProvider extends ChangeNotifier {
+  HomeProvider._();
+
+  static final _iternal = HomeProvider._();
+
+  static HomeProvider get instance => _iternal;
+
+  late PageController pageController;
+
+  void setPageController(PageController controller) {
+    pageController = controller;
+    notifyListeners();
+  }
+
+  void animateToPage(int page) =>
+      HomeProvider.instance.pageController.animateToPage(
+        page,
+        curve: Easing.legacy,
+        duration: 150.ms,
+      );
+
+  bool enablePageView = true;
+
+  void togglePageView({bool enable = true}) {
+    enablePageView = enable;
+    notifyListeners();
+  }
+}
 
 /// {@template home_view}
 /// Main view of the application. It contains the [navigationShell] that will
@@ -57,6 +89,10 @@ class _HomeViewState extends State<HomeView> {
     _pageController = PageController(initialPage: 1)
       ..addListener(_onPageScroll);
     _videoPlayerState = VideoPlayerState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      HomeProvider.instance.setPageController(_pageController);
+    });
   }
 
   void _onPageScroll() {
@@ -64,13 +100,37 @@ class _HomeViewState extends State<HomeView> {
   }
 
   void _isPageScrolling() {
-    if (_pageController.position.isScrollingNotifier.value == true) {
-      _videoPlayerState.shouldPlayFeed.value = false;
-      _videoPlayerState.shouldPlayReels.value = false;
-    } else if (_pageController.position.isScrollingNotifier.value == false &&
-        _pageController.page == 1) {
-      _videoPlayerState.shouldPlayFeed.value = true;
-      _videoPlayerState.shouldPlayReels.value = false;
+    final isScrolling =
+        _pageController.position.isScrollingNotifier.value == true;
+    final mainPageView = _pageController.page == 1;
+    final navigationBarIndex = widget.navigationShell.currentIndex;
+    final isFeed = !isScrolling && mainPageView && navigationBarIndex == 0;
+    final isTimeline = !isScrolling && mainPageView && navigationBarIndex == 1;
+    final isReels = !isScrolling && mainPageView && navigationBarIndex == 3;
+
+    if (isScrolling) {
+      _videoPlayerState.stopAll();
+    }
+    switch ((isFeed, isTimeline, isReels)) {
+      case (true, false, false):
+        _videoPlayerState.playFeed();
+      case (false, true, false):
+        _videoPlayerState.playTimeline();
+      case (false, false, true):
+        _videoPlayerState.playReels();
+      case _:
+        _videoPlayerState.stopAll();
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (widget.navigationShell.currentIndex == 0 &&
+        !HomeProvider.instance.enablePageView) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        HomeProvider.instance.togglePageView();
+      });
     }
   }
 
@@ -89,11 +149,36 @@ class _HomeViewState extends State<HomeView> {
       )..add(const CreateStoriesIsFeatureAvaiableSubscriptionRequested()),
       child: VideoPlayerProvider(
         videoPlayerState: _videoPlayerState,
-        pageController: _pageController,
-        child: AppScaffold(
-          body: widget.navigationShell,
-          bottomNavigationBar:
-              BottomNavBar(navigationShell: widget.navigationShell),
+        child: AnimatedBuilder(
+          animation: Listenable.merge([HomeProvider.instance]),
+          builder: (context, child) {
+            return PageView.builder(
+              itemCount: 3,
+              controller: _pageController,
+              physics: HomeProvider.instance.enablePageView
+                  ? null
+                  : const NeverScrollableScrollPhysics(),
+              onPageChanged: (page) {
+                if (page == 1 && widget.navigationShell.currentIndex != 0) {
+                  HomeProvider.instance.togglePageView(enable: false);
+                }
+              },
+              itemBuilder: (context, index) {
+                return switch (index) {
+                  0 => UserProfileCreatePost(
+                      onPopInvoked: () =>
+                          HomeProvider.instance.animateToPage(1),
+                    ),
+                  2 => const ChatsPage(),
+                  _ => AppScaffold(
+                      body: widget.navigationShell,
+                      bottomNavigationBar:
+                          BottomNavBar(navigationShell: widget.navigationShell),
+                    ),
+                };
+              },
+            );
+          },
         ),
       ),
     );
@@ -103,18 +188,15 @@ class _HomeViewState extends State<HomeView> {
 class VideoPlayerProvider extends InheritedWidget {
   const VideoPlayerProvider({
     required this.videoPlayerState,
-    required this.pageController,
     required super.child,
     super.key,
   });
 
   final VideoPlayerState videoPlayerState;
-  final PageController pageController;
 
   @override
   bool updateShouldNotify(VideoPlayerProvider oldWidget) =>
-      videoPlayerState != oldWidget.videoPlayerState ||
-      pageController != oldWidget.pageController;
+      videoPlayerState != oldWidget.videoPlayerState;
 
   static VideoPlayerProvider of(BuildContext context) {
     final provider =
@@ -130,10 +212,16 @@ class VideoPlayerProvider extends InheritedWidget {
 class VideoPlayerState {
   VideoPlayerState();
 
+  final enablePageView = ValueNotifier(true);
   final shouldPlayFeed = ValueNotifier(true);
   final shouldPlayReels = ValueNotifier(true);
   final shouldPlayTimeline = ValueNotifier(true);
   final withSound = ValueNotifier(false);
+
+  // ignore: use_setters_to_change_properties
+  void togglePageView({bool enable = true}) {
+    enablePageView.value = enable;
+  }
 
   void playFeed() {
     shouldPlayFeed.value = true;

@@ -16,7 +16,7 @@ class ImageAttachmentBuilder extends AttachmentWidgetBuilder {
   /// {@macro imageAttachmentBuilder}
   const ImageAttachmentBuilder({
     this.shape,
-    this.padding = const EdgeInsets.all(2),
+    this.padding = const EdgeInsets.all(AppSpacing.xxs),
     this.constraints = _kDefaultImageConstraints,
     this.onAttachmentTap,
   });

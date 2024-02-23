@@ -4,7 +4,6 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:animations/animations.dart';
-import 'package:app_ui/app_ui.dart';
 import 'package:firebase_config/firebase_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -32,7 +31,7 @@ final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 
 GoRouter router(AppBloc appBloc) => GoRouter(
       navigatorKey: _rootNavigatorKey,
-      initialLocation: '/profile',
+      initialLocation: '/feed',
       routes: [
         GoRoute(
           path: '/auth',
@@ -124,7 +123,7 @@ GoRouter router(AppBloc appBloc) => GoRouter(
           },
         ),
         GoRoute(
-          path: '/posts/details/:id',
+          path: '/post/details/:id',
           name: 'post_details',
           parentNavigatorKey: _rootNavigatorKey,
           pageBuilder: (context, state) {
@@ -143,6 +142,16 @@ GoRouter router(AppBloc appBloc) => GoRouter(
                 );
               },
             );
+          },
+        ),
+        GoRoute(
+          path: '/post/edit',
+          name: 'post_edit',
+          parentNavigatorKey: _rootNavigatorKey,
+          pageBuilder: (context, state) {
+            final post = state.extra! as PostBlock;
+
+            return NoTransitionPage(child: PostEditPage(post: post));
           },
         ),
         GoRoute(
@@ -219,6 +228,7 @@ GoRouter router(AppBloc appBloc) => GoRouter(
                     GoRoute(
                       name: 'search',
                       path: 'search',
+                      parentNavigatorKey: _rootNavigatorKey,
                       pageBuilder: (context, state) {
                         final withResult = state.extra as bool?;
 
@@ -236,36 +246,7 @@ GoRouter router(AppBloc appBloc) => GoRouter(
               routes: [
                 GoRoute(
                   path: '/navigate_create_media',
-                  pageBuilder: (context, state) {
-                    return CustomTransitionPage(
-                      child: AppScaffold(
-                        body: Column(
-                          children: [
-                            const Text('Todo'),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: AppSpacing.md,
-                              ),
-                              child: AppButton.outlined(
-                                text: 'Navigate to profile',
-                                onPressed: () => context.push('/profile'),
-                              ),
-                            ),
-                            const SizedBox(height: AppSpacing.sm),
-                          ],
-                        ),
-                      ),
-                      transitionsBuilder:
-                          (context, animation, secondaryAnimation, child) {
-                        return FadeTransition(
-                          opacity: CurveTween(
-                            curve: Curves.easeInOut,
-                          ).animate(animation),
-                          child: child,
-                        );
-                      },
-                    );
-                  },
+                  redirect: (context, state) => null,
                 ),
               ],
             ),
@@ -513,9 +494,13 @@ class GoRouterAppBlocRefreshStream extends ChangeNotifier {
   GoRouterAppBlocRefreshStream(Stream<AppState> stream) {
     notifyListeners();
     _subscription = stream.asBroadcastStream().listen((appState) {
+      if (_appState == appState) return;
+      _appState = appState;
       notifyListeners();
     });
   }
+
+  AppState _appState = const AppState.unauthenticated();
 
   late final StreamSubscription<dynamic> _subscription;
 

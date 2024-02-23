@@ -17,6 +17,7 @@ class ReelsBloc extends Bloc<ReelsEvent, ReelsState> {
       _onReelsPageRequested,
       transformer: throttleDroppable(),
     );
+    on<ReelsUpdateRequested>(_onReelsUpdateRequested);
     on<ReelsCreateReelRequested>(_onReelsCreateReelRequested);
   }
 
@@ -30,7 +31,7 @@ class ReelsBloc extends Bloc<ReelsEvent, ReelsState> {
     try {
       final posts =
           await _postsRepository.getPage(offset: 0, limit: 10, onlyReels: true);
-      final instaBlocks = <InstaBlock>[];
+      final instaBlocks = <PostBlock>[];
 
       for (final post in posts
           .where((element) => element.media.firstOrNull is VideoMedia?)) {
@@ -39,20 +40,85 @@ class ReelsBloc extends Bloc<ReelsEvent, ReelsState> {
       }
       emit(state.copyWith(blocks: instaBlocks));
     } catch (error, stackTrace) {
-      logE('Reels fetching failed.', error: error, stackTrace: stackTrace);
+      logE(
+        '[ReelsBloc] Reels fetching failed.',
+        error: error,
+        stackTrace: stackTrace,
+      );
       addError(error, stackTrace);
       emit(state.copyWith(status: ReelsStatus.failure));
+    }
+  }
+
+  Future<void> _onReelsUpdateRequested(
+    ReelsUpdateRequested event,
+    Emitter<ReelsState> emit,
+  ) async {
+    emit(state.loading());
+    try {
+      final blocks = _updateBlocks(
+        blocks: state.blocks.whereType<PostBlock>().toList(),
+        newBlock: event.block,
+        isDelete: event.isDelete,
+        isCreate: event.isCreate,
+      );
+      emit(state.populated(blocks: blocks));
+    } catch (error, stackTrace) {
+      logE(
+        '[ReelsBloc] Failed to update reels.',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      addError(error, stackTrace);
+      emit(state.failure());
     }
   }
 
   Future<void> _onReelsCreateReelRequested(
     ReelsCreateReelRequested event,
     Emitter<ReelsState> emit,
-  ) =>
-      _postsRepository.createPost(
-        id: event.postId,
+  ) async {
+    emit(state.loading());
+    try {
+      final newBlock = await _postsRepository.createPost(
+        id: event.id,
         userId: event.userId,
         caption: event.caption,
-        media: json.encode(event.media),
+        media: jsonEncode(event.media),
+      );
+      if (newBlock == null) {
+        emit(state.populated());
+        return;
+      }
+      add(
+        ReelsUpdateRequested(
+          block: newBlock.toPostReelBlock,
+          isCreate: true,
+        ),
+      );
+    } catch (error, stackTrace) {
+      logE(
+        '[ReelsBloc] Failed to create reel.',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      addError(error, stackTrace);
+      emit(state.failure());
+    }
+  }
+
+  List<PostBlock> _updateBlocks({
+    required List<PostBlock> blocks,
+    required PostBlock newBlock,
+    required bool isDelete,
+    required bool isCreate,
+  }) =>
+      blocks.updateWith<PostReelBlock>(
+        newItem: newBlock,
+        findCallback: (block, newBlock) => block.id == newBlock.id,
+        onUpdate: (block, newBlock) =>
+            block.copyWith(caption: newBlock.caption),
+        isDelete: isDelete,
+        insertIfNotFound: isCreate,
       );
 }

@@ -326,7 +326,7 @@ class AppSnackbarState extends State<AppSnackbar>
                   );
                 },
                 child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 15),
+                  margin: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
                   decoration: BoxDecoration(
                     boxShadow: [
                       BoxShadow(
@@ -335,7 +335,7 @@ class AppSnackbarState extends State<AppSnackbar>
                         //     ? getColor(context, 'shadowColorLight')
                         //     : getColor(context, 'shadowColor').withOpacity(0.
                         // 1),
-                        color: Colors.black.withOpacity(.1),
+                        color: AppColors.black.withOpacity(.1),
                         blurRadius: 15,
                         spreadRadius: 2,
                       ),
@@ -350,8 +350,7 @@ class AppSnackbarState extends State<AppSnackbar>
                     },
                     borderRadius: 13,
                     // color: context.theme.colorScheme.secondaryContainer,
-                    color:
-                        currentMessage?.backgroundColor ?? Colors.blue.shade500,
+                    color: currentMessage?.backgroundColor ?? AppColors.blue,
                     // color: appStateSettings['materialYou']
                     //     ? dynamicPastel(
                     //         context,
@@ -362,8 +361,8 @@ class AppSnackbarState extends State<AppSnackbar>
                     //     : getColor(context, 'lightDarkAccent'),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 8,
+                        horizontal: AppSpacing.md,
+                        vertical: AppSpacing.sm,
                       ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -376,7 +375,9 @@ class AppSnackbarState extends State<AppSnackbar>
                                 const SizedBox.shrink()
                               else
                                 Padding(
-                                  padding: const EdgeInsets.only(right: 10),
+                                  padding: const EdgeInsets.only(
+                                    right: AppSpacing.md - AppSpacing.xxs,
+                                  ),
                                   child: Icon(
                                     currentMessage?.icon,
                                     size: currentMessage?.iconSize ??
@@ -389,7 +390,9 @@ class AppSnackbarState extends State<AppSnackbar>
                               else if (currentMessage?.isLoading != null &&
                                   currentMessage!.isLoading == true)
                                 const Padding(
-                                  padding: EdgeInsets.only(right: 10),
+                                  padding: EdgeInsets.only(
+                                    right: AppSpacing.md - AppSpacing.xxs,
+                                  ),
                                   child: SizedBox(
                                     height: 20,
                                     width: 20,

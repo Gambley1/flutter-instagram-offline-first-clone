@@ -13,12 +13,12 @@ dependencies:
   
   flutter:
     sdk: flutter
-  path: ">=1.8.3 <1.9.0"
+  path: ">=1.8.3 <=1.9.0"
   path_provider: ^2.1.2
-  powersync: ^1.1.0
+  powersync: ^1.2.2
   shared:
     path: ../shared
-  supabase_flutter: ^2.2.0
+  supabase_flutter: ^2.3.4
 
 dev_dependencies:
   flutter_test:

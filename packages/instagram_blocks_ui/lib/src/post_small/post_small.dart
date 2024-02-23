@@ -66,13 +66,10 @@ class _PostThumbnailImage extends StatelessWidget {
           cacheKey: mediaUrl,
           memCacheHeight: 225,
           memCacheWidth: 225,
-          imageBuilder: (context, imageProvider) => Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: imageProvider,
-                fit: BoxFit.cover,
-              ),
-            ),
+          imageBuilder: (context, imageProvider) => Image(
+            image: imageProvider,
+            filterQuality: FilterQuality.high,
+            fit: BoxFit.cover,
           ),
         );
 

@@ -19,6 +19,7 @@ class VideoPlay extends StatefulWidget {
     this.aspectRatio = 4 / 5,
     this.expand = false,
     this.id,
+    this.initDelay = Duration.zero,
     this.controller,
     this.onSoundToggled,
     this.withSoundButton = true,
@@ -38,6 +39,7 @@ class VideoPlay extends StatefulWidget {
   final bool fromMemory;
   final bool play;
   final bool withSound;
+  final Duration initDelay;
   final VideoPlayerController? controller;
   final ValueSetter<bool>? onSoundToggled;
   final bool withSoundButton;
@@ -67,9 +69,12 @@ class _VideoPlayState extends State<VideoPlay>
   void didUpdateWidget(VideoPlay oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.play) {
-      _controller
-        ..play()
-        ..setLooping(true);
+      Future<void>.delayed(
+        widget.initDelay,
+        () => _controller
+          ..play()
+          ..setLooping(true),
+      );
       if (!oldWidget.withSound && widget.withSound) {
         _controller.setVolume(1);
       } else {
@@ -345,7 +350,7 @@ class SoundToggleButton extends StatelessWidget {
                 controller.volume == 1
                     ? Icons.volume_up_rounded
                     : Icons.volume_off_rounded,
-                color: Colors.white,
+                color: AppColors.white,
                 size: AppSize.iconSizeSmall,
               ),
             ),

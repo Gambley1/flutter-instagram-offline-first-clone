@@ -10,7 +10,7 @@ environment:
 dependencies:
   app_ui:
     path: ../app_ui
-  bloc_concurrency: ^0.2.3
+  bloc_concurrency: ^0.2.4
   blurhash: ^1.1.1
   dio: ^5.4.0
   equatable: ^2.0.5
@@ -31,7 +31,7 @@ dependencies:
   jiffy: ">=6.2.1 <6.2.2"
   json_annotation: ^4.8.1
   logger: ^2.0.2+1
-  meta: ">=1.10.0 <1.11.0"
+  meta: ">=1.10.0 <=1.12.0"
   mime: ^1.0.4
   ogp_data_extract: ^0.1.4
   powersync: ^1.1.0

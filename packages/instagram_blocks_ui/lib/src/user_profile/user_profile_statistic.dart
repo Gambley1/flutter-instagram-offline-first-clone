@@ -27,7 +27,6 @@ class UserProfileStatistic extends StatelessWidget {
             name.toLowerCase(),
             style: context.bodyLarge,
             maxLines: 1,
-            textScaler: TextScaler.noScaling,
             overflow: TextOverflow.ellipsis,
           ),
         ],
@@ -52,7 +51,6 @@ class StatisticValue extends StatelessWidget {
       value.compactShort(context),
       style: effectiveTextStyle?.copyWith(fontWeight: AppFontWeight.bold),
       maxLines: 1,
-      textScaler: TextScaler.noScaling,
       overflow: TextOverflow.ellipsis,
       textAlign: TextAlign.center,
     );

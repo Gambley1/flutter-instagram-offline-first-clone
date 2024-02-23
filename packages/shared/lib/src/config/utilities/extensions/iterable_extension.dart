@@ -1,6 +1,8 @@
 import 'dart:developer' as dev;
 
-/// List extension
+import 'package:shared/shared.dart';
+
+/// Iterable extensions
 extension IterableExtension<T> on Iterable<T> {
   /// Insert any item<T> inBetween the list items
   List<T> insertBetween(T item) => expand((e) sync* {
@@ -31,7 +33,7 @@ extension IterableExtension<T> on Iterable<T> {
         try {
           return toElement(e);
         } catch (e) {
-          if (logError) dev.log('Error in safeMap: $e');
+          if (logError) logE('Error in safeMap: $e');
           return null;
         }
       });
@@ -39,34 +41,18 @@ extension IterableExtension<T> on Iterable<T> {
   /// Applies [toElement] function to each element in the iterable. If
   /// try catch block caught an error, it will be logged and null will be
   /// returned.
-  /// 
+  ///
   /// Filters any nullable results and will return only non-nullable objects.
   Iterable<E> safeMap<E>(
     E Function(T element) toElement, {
     bool logError = true,
-  }) =>
-      safeNullableMap(
-        toElement,
-        logError: logError,
-      ).where((element) => element != null).cast<E>();
-}
-
-/// The extension that splits the original string and inserts the `text` between
-/// each word.
-extension SplitTextBy on String {
-  /// Splits the original string and inserts the [text] between
-  /// each word.
-  String insertBetween(String text, {String splitBy = ' '}) {
-    final iterator = split(splitBy).iterator;
-    final str = StringBuffer();
-    if (iterator.moveNext()) {
-      str.write(iterator.current);
-      while (iterator.moveNext()) {
-        str
-          ..write(' $text ')
-          ..write(iterator.current);
+  }) sync* {
+    for (final element in this) {
+      try {
+        yield toElement(element);
+      } catch (error) {
+        if (logError) dev.log('Error in safeMap: $error');
       }
     }
-    return str.toString();
   }
 }

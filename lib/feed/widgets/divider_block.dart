@@ -54,27 +54,22 @@ class _DividerBlockState extends State<DividerBlock>
           stops: [0.0, 0.2, 0.4, 0.6, 0.8, 1.0],
           colors: [
             context.customReversedAdaptiveColor(
-              dark: Colors.grey[900],
-              light: Colors.grey[300],
+              dark: AppColors.emphasizeDarkGrey,
+              light: AppColors.grey,
             ),
-            const Color(0xFF833AB4),
-            const Color(0xFFF77737),
-            const Color(0xFFE1306C),
-            const Color(0xFFC13584),
-            const Color(0xFF833AB4),
+            ...AppColors.primaryGradient,
           ],
         ),
         Padding(
-          padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.all(AppSpacing.xlg),
           child: Wrap(
             children: [
               Column(
                 children: [
                   Lottie.asset(
-                    'assets/animations/checked-animation.json',
+                    Assets.animations.checkedAnimation,
                     fit: BoxFit.cover,
                     frameRate: const FrameRate(64),
-                    package: 'app_ui',
                     controller: _controller,
                     onLoaded: (composition) {
                       if (!widget.feedAnimationController.hasPlayedAnimation) {
@@ -92,17 +87,16 @@ class _DividerBlockState extends State<DividerBlock>
                   Text(
                     context.l10n.haveSeenAllRecentPosts,
                     style: context.titleLarge
-                        ?.copyWith(fontWeight: FontWeight.w500),
+                        ?.copyWith(fontWeight: AppFontWeight.medium),
                     overflow: TextOverflow.visible,
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   Text(
                     context.l10n.haveSeenAllRecentPostsInPast3Days,
-                    style: context.bodyLarge
-                        ?.copyWith(color: Colors.grey.shade500),
-                    overflow: TextOverflow.visible,
+                    style: context.bodyLarge?.copyWith(color: AppColors.grey),
                     textAlign: TextAlign.center,
+                    overflow: TextOverflow.visible,
                   ),
                 ],
               ),
@@ -125,14 +119,10 @@ class _DividerBlockState extends State<DividerBlock>
           stops: [0.0, 0.2, 0.4, 0.6, 0.8, 1.0],
           colors: [
             context.customReversedAdaptiveColor(
-              dark: Colors.grey[900],
-              light: Colors.grey[300],
+              dark: AppColors.emphasizeDarkGrey,
+              light: AppColors.grey,
             ),
-            const Color(0xFF833AB4),
-            const Color(0xFFF77737),
-            const Color(0xFFE1306C),
-            const Color(0xFFC13584),
-            const Color(0xFF833AB4),
+            ...AppColors.primaryGradient,
           ],
         ),
       ],

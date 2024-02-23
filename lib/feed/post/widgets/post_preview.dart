@@ -53,7 +53,7 @@ class PostPreviewEmptyDetails extends StatelessWidget {
     return Center(
       child: Text(
         'No post found!',
-        style: context.headlineMedium?.copyWith(fontWeight: AppFontWeight.bold),
+        style: context.headlineMedium,
       ),
     );
   }

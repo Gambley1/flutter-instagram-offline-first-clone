@@ -139,7 +139,6 @@ class _MainViewState extends State<MainView> with SafeSetStateMixin {
           builder: (context, controlNotifier, itemProvider, scrollProvider,
               colorProvider, paintingProvider, editingProvider, child) {
             return SafeArea(
-              //top: false,
               child: ScrollablePageView(
                 scrollPhysics: controlNotifier.mediaPath.isEmpty &&
                     itemProvider.draggableWidget.isEmpty &&
@@ -153,7 +152,7 @@ class _MainViewState extends State<MainView> with SafeSetStateMixin {
                       child: Stack(
                         alignment: Alignment.center,
                         children: [
-                          ///gradient container
+                          /// gradient container
                           /// this container will contain all widgets(image/texts/draws/sticker)
                           /// wrap this widget with coloredFilter
                           GestureDetector(

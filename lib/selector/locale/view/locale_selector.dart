@@ -14,6 +14,7 @@ class LocaleSelector extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final locale = context.watch<LocaleBloc>().state;
+
     return DropdownButton(
       key: const Key('localeSelector_dropdown'),
       onChanged: (locale) =>
@@ -35,6 +36,18 @@ class LocaleSelector extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class LocaleModalOption extends StatelessWidget {
+  const LocaleModalOption({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: const LocaleSelector(),
+      title: Text(context.l10n.language),
     );
   }
 }

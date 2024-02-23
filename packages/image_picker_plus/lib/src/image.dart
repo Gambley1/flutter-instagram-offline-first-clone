@@ -1,6 +1,8 @@
 import 'dart:typed_data';
-import 'package:image_picker_plus/image_picker_plus.dart';
+
+import 'package:cached_memory_image/cached_memory_image.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker_plus/image_picker_plus.dart';
 
 class MemoryImageDisplay extends StatefulWidget {
   final Uint8List imageBytes;
@@ -30,8 +32,9 @@ class _NetworkImageDisplayState extends State<MemoryImageDisplay> {
     return Container(
       width: double.infinity,
       color: widget.appTheme.shimmerBaseColor,
-      child: Image.memory(
-        widget.imageBytes,
+      child: CachedMemoryImage(
+        uniqueKey: 'app://content/${widget.imageBytes.length}',
+        bytes: widget.imageBytes,
         errorBuilder: (context, url, error) => buildError(),
         fit: BoxFit.cover,
         width: double.infinity,
@@ -41,8 +44,9 @@ class _NetworkImageDisplayState extends State<MemoryImageDisplay> {
 
   SizedBox buildError() {
     return SizedBox(
-        width: double.infinity,
-        child: Icon(Icons.warning_amber_rounded,
-            color: widget.appTheme.focusColor));
+      width: double.infinity,
+      child:
+          Icon(Icons.warning_amber_rounded, color: widget.appTheme.focusColor),
+    );
   }
 }

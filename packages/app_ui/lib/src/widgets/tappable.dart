@@ -183,7 +183,7 @@ class Tappable extends StatelessWidget {
           throttle: throttle,
           throttleDuration: throttleDuration?.inMilliseconds,
           // color: color ?? Theme.of(context).canvasColor,
-          color: color ?? Colors.transparent,
+          color: color ?? AppColors.transparent,
           onLongPress: onLongPress != null
               ? () {
                   if (context.theme.platform == TargetPlatform.iOS) {
@@ -205,7 +205,7 @@ class Tappable extends StatelessWidget {
           throttle: throttle,
           throttleDuration: throttleDuration?.inMilliseconds,
           // color: color ?? Theme.of(context).canvasColor,
-          color: color ?? Colors.transparent,
+          color: color ?? AppColors.transparent,
           scaleAlignment: scaleAlignment,
           onLongPress: onLongPress != null
               ? () {
@@ -312,7 +312,7 @@ class DefaultButton extends StatelessWidget {
             child: DecoratedBox(
               decoration: BoxDecoration(
                 borderRadius: borderRadius,
-                color: color ?? Colors.transparent,
+                color: color ?? AppColors.transparent,
               ),
               child: child,
             ),

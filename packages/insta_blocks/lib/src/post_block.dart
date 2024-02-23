@@ -80,6 +80,9 @@ abstract class PostBlock extends InstaBlock with EquatableMixin {
   /// Copies current [PostBlock] instance and merges with new values.
   PostBlock copyWith();
 
+  /// Merges current [PostBlock] instance with [other] instance.
+  PostBlock merge({PostBlock? other});
+
   @override
   List<Object?> get props => [
         id,

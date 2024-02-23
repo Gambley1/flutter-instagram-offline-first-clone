@@ -48,13 +48,7 @@ extension DialogExtension on BuildContext {
                 textAlign: TextAlign.center,
               ),
             const SizedBox(height: 36),
-            Container(
-              color: context.customReversedAdaptiveColor(
-                dark: Colors.grey[900],
-                light: Colors.grey[300],
-              ),
-              height: 1,
-            ),
+            const AppDivider(),
             Row(
               children: [
                 if (cancelText != null)
@@ -81,7 +75,7 @@ extension DialogExtension on BuildContext {
                       child: Text(
                         okText,
                         style: context.bodyLarge?.copyWith(
-                          color: Colors.red,
+                          color: AppColors.red,
                         ),
                       ),
                     ),
@@ -193,24 +187,31 @@ extension DialogExtension on BuildContext {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: options
                   .map(
-                    (option) => Tappable(
-                      animationEffect: TappableAnimationEffect.none,
-                      onTap: () => pop<ModalOption>(option),
-                      child: ListTile(
-                        title: Text(
-                          option.name,
-                          style: bodyLarge?.copyWith(
-                            color: option.nameColor ?? option.distractiveColor,
+                    (option) =>
+                        option.child ??
+                        Tappable(
+                          animationEffect: TappableAnimationEffect.none,
+                          onTap: () => pop<ModalOption>(option),
+                          child: ListTile(
+                            title: option.name == null
+                                ? null
+                                : Text(
+                                    option.name!,
+                                    style: bodyLarge?.copyWith(
+                                      color: option.nameColor ??
+                                          option.distractiveColor,
+                                    ),
+                                  ),
+                            leading:
+                                option.icon == null && option.iconData == null
+                                    ? null
+                                    : option.icon ??
+                                        Icon(
+                                          option.iconData,
+                                          color: option.distractiveColor,
+                                        ),
                           ),
                         ),
-                        leading: option.icon == null
-                            ? option.child
-                            : Icon(
-                                option.icon,
-                                color: option.distractiveColor,
-                              ),
-                      ),
-                    ),
                   )
                   .toList(),
             ),
@@ -253,7 +254,7 @@ extension DialogExtension on BuildContext {
               borderRadius: BorderRadius.circular(16),
             ),
             elevation: 0,
-            backgroundColor: Colors.transparent,
+            backgroundColor: AppColors.transparent,
             child: AspectRatio(
               aspectRatio: 1,
               child: Container(
@@ -335,7 +336,7 @@ extension DialogExtension on BuildContext {
                 ? (canPop() ? pop(true) : null)
                 : yesAction.call(this),
             text: yesText ?? 'Yes',
-            textStyle: yesTextStyle ?? labelLarge?.apply(color: Colors.red),
+            textStyle: yesTextStyle ?? labelLarge?.apply(color: AppColors.red),
           ),
         ],
       );

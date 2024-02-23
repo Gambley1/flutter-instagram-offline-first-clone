@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:shared/shared.dart';
 
 part 'post_options_settings.freezed.dart';
 
@@ -14,6 +15,7 @@ class PostOptionsSettings with _$PostOptionsSettings {
   /// {@macro post_options_settings.owner}
   const factory PostOptionsSettings.owner({
     required ValueSetter<String> onPostDelete,
+    required ValueSetter<PostBlock> onPostEdit,
   }) = Owner;
 
   /// {@macro post_options_settings.viewer}

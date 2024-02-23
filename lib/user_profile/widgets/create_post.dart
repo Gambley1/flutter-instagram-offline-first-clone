@@ -61,23 +61,23 @@ class _CreatePostPageState extends State<CreatePostPage> {
                       if (isImage) Image.memory(firstFileByte),
                       if (multiSelectionMode)
                         const Padding(
-                          padding: EdgeInsets.all(2),
+                          padding: EdgeInsets.all(AppSpacing.xxs),
                           child: Align(
                             alignment: Alignment.topLeft,
                             child: Icon(
                               Icons.copy_rounded,
-                              color: Colors.white,
+                              color: AppColors.white,
                               size: AppSize.iconSizeSmall,
                             ),
                           ),
                         ),
                       if (!isImage)
                         const Padding(
-                          padding: EdgeInsets.all(2),
+                          padding: EdgeInsets.all(AppSpacing.xxs),
                           child: Align(
                             child: Icon(
                               Icons.slow_motion_video_sharp,
-                              color: Colors.white,
+                              color: AppColors.white,
                               size: AppSize.iconSizeSmall,
                             ),
                           ),
@@ -85,7 +85,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                     ],
                   ),
                 ),
-                const SizedBox(width: 10),
+                const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: TextFormField(
                     controller: captionController,
@@ -123,7 +123,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
       ValueListenableBuilder<bool>(
         valueListenable: _busy,
         builder: (context, busy, child) => busy
-            ? const AppCircularProgress(Colors.blue)
+            ? const AppCircularProgress(AppColors.blue)
             : IconButton(
                 onPressed: () async {
                   await createPost(context);
@@ -131,7 +131,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                 icon: const Icon(
                   Icons.check_rounded,
                   size: AppSize.iconSize,
-                  color: Colors.blue,
+                  color: AppColors.blue,
                 ),
               ),
       ),

@@ -42,7 +42,7 @@ class AppDivider extends StatelessWidget {
               right: AppSpacing.sm,
             ),
             child: const Divider(
-              color: Colors.white,
+              color: AppColors.white,
               height: 36,
             ),
           ),

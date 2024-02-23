@@ -117,7 +117,7 @@ class _ReelState extends State<Reel> {
           loadingBuilder: (context) => Stack(
             children: [
               Shimmer.fromColors(
-                baseColor: Colors.grey[500]!,
+                baseColor: AppColors.grey,
                 highlightColor: const Color(0xFFAFAFAF),
                 child: Container(
                   width: double.infinity,
@@ -126,7 +126,7 @@ class _ReelState extends State<Reel> {
                 ),
               ),
               Shimmer.fromColors(
-                baseColor: Colors.grey[600]!,
+                baseColor: AppColors.grey,
                 highlightColor: const Color(0xFFAFAFAF),
                 child: Padding(
                   padding: const EdgeInsetsDirectional.only(
@@ -142,13 +142,13 @@ class _ReelState extends State<Reel> {
                         radius: 20,
                         backgroundColor: AppColors.dark,
                       ),
-                      const SizedBox(height: 5),
+                      const SizedBox(height: AppSpacing.xs),
                       Container(
                         height: 15,
                         width: 150,
                         color: AppColors.dark,
                       ),
-                      const SizedBox(height: 5),
+                      const SizedBox(height: AppSpacing.xs),
                       Container(
                         height: 15,
                         width: 200,
@@ -273,11 +273,7 @@ class VerticalButtons extends StatelessWidget {
               icon: Icons.more_vert_sharp,
               onButtonTap: !isOwner
                   ? null
-                  : () async {
-                      void callback(ModalOption option) =>
-                          option.onTap.call(context);
-
-                      final option = await context.showListOptionsModal(
+                  : () => context.showListOptionsModal(
                         options: [
                           ModalOption(
                             name: context.l10n.delete,
@@ -285,22 +281,30 @@ class VerticalButtons extends StatelessWidget {
                             actionContent:
                                 'Are you sure you want to delete this reel?',
                             actionYesText: context.l10n.delete,
-                            child: Assets.icons.trash.svg(
+                            icon: Assets.icons.trash.svg(
                               colorFilter: const ColorFilter.mode(
                                 AppColors.red,
                                 BlendMode.srcIn,
                               ),
                             ),
                             distractive: true,
-                            onTap: () => context
-                                .read<PostBloc>()
-                                .add(const PostDeleteRequested()),
+                            onTap: () {
+                              context
+                                  .read<PostBloc>()
+                                  .add(const PostDeleteRequested());
+                              context.read<ReelsBloc>().add(
+                                    ReelsUpdateRequested(
+                                      block: block,
+                                      isDelete: true,
+                                    ),
+                                  );
+                            },
                           ),
                         ],
-                      );
-                      if (option == null) return;
-                      callback(option);
-                    },
+                      ).then((option) {
+                        if (option == null) return;
+                        option.onTap(context);
+                      }),
               withStatistic: false,
             ),
             Tappable(
@@ -468,8 +472,7 @@ class ReelParticipants extends StatelessWidget {
                   Flexible(
                     flex: 6,
                     child: RunningText(
-                      text: '$participant:Original audio'
-                          .insertBetween('•', splitBy: ':'),
+                      text: '$participant • Original audio',
                       velocity: 40,
                       style: context.bodyMedium?.apply(color: AppColors.white),
                     ),
@@ -487,12 +490,10 @@ class ReelParticipants extends StatelessWidget {
               child: DecoratedBox(
                 decoration: BoxDecoration(
                   color: context.customReversedAdaptiveColor(
-                    light: const Color.fromARGB(164, 120, 119, 119),
-                    dark: const Color.fromARGB(165, 58, 58, 58),
+                    light: AppColors.lightDark,
+                    dark: AppColors.dark,
                   ),
-                  border: Border.all(
-                    color: const Color.fromARGB(45,250,250,250),
-                  ),
+                  border: Border.all(color: AppColors.borderOutline),
                   borderRadius: const BorderRadius.all(Radius.circular(16)),
                 ),
                 child: Align(

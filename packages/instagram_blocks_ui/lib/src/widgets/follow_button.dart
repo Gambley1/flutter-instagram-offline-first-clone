@@ -1,6 +1,6 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
+import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 
 class FollowButton extends StatelessWidget {
   const FollowButton({
@@ -19,11 +19,11 @@ class FollowButton extends StatelessWidget {
   String? _followingStatus(BuildContext context) {
     switch ((wasFollowed, isFollowed)) {
       case (true, true):
-        return context.l10n.followingUser;
+        return BlockSettings.instance.followTextDelegate.followingText;
       case (false, false):
-        return context.l10n.followUser;
+        return BlockSettings.instance.followTextDelegate.followText;
       case (true, false):
-        return context.l10n.followUser;
+        return BlockSettings.instance.followTextDelegate.followText;
       case _:
         return null;
     }

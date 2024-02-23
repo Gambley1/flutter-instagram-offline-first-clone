@@ -24,7 +24,7 @@ class FunView extends StatelessWidget {
               ],
             ),
           ),
-          const SliverToBoxAdapter(child: SizedBox(height: 12)),
+          const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.md)),
           SeparatedContainer(
             onlyTop: true,
             child: Row(
@@ -32,7 +32,12 @@ class FunView extends StatelessWidget {
                 Expanded(
                   flex: 2,
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(12, 12, 0, 12),
+                    padding: const EdgeInsets.fromLTRB(
+                      AppSpacing.md,
+                      AppSpacing.md,
+                      0,
+                      AppSpacing.md,
+                    ),
                     child: AppButton.outlined(
                       style: ButtonStyle(
                         shape: MaterialStatePropertyAll(
@@ -71,8 +76,8 @@ class FunView extends StatelessWidget {
                         ),
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      padding: const EdgeInsets.all(12),
-                      margin: const EdgeInsets.all(12),
+                      padding: const EdgeInsets.all(AppSpacing.md),
+                      margin: const EdgeInsets.all(AppSpacing.md),
                       alignment: Alignment.center,
                       child: Text(
                         'Upgrade to Pro+',

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:camera/camera.dart';
@@ -83,9 +82,7 @@ class CustomCameraDisplayState extends State<CustomCameraDisplay> {
   Future<void> _initializeCamera() async {
     try {
       final state = await PhotoManager.requestPermissionExtend();
-      log('state: $state');
       if (!state.hasAccess || !state.isAuth) {
-        log('Has no access');
         allPermissionsAccessed = false;
         return;
       }
@@ -108,7 +105,6 @@ class CustomCameraDisplayState extends State<CustomCameraDisplay> {
       initializeDone = true;
       _hasCamera = true;
     } catch (e) {
-      log('Initialize camera error', error: e);
       allPermissionsAccessed = false;
     }
     setState(() {});
@@ -129,21 +125,33 @@ class CustomCameraDisplayState extends State<CustomCameraDisplay> {
   }
 
   Widget failedPermissions() {
-    return Center(
-      child: Text(
-        widget.tabsNames.acceptAllPermissions,
-        style: TextStyle(color: widget.appTheme.focusColor),
-      ),
+    return Stack(
+      children: [
+        appBar(withLeading: false),
+        Align(
+          child: Text(
+            widget.tabsNames.acceptAllPermissions,
+            style: TextStyle(color: widget.appTheme.focusColor),
+          ),
+        ),
+      ],
     );
   }
 
   Widget noCameraFound() {
-    return Center(
-      child: Text(
-        // widget.tabsNames.acceptAllPermissions,
-        'No camera found!',
-        style: TextStyle(color: widget.appTheme.focusColor),
-      ),
+    return Stack(
+      children: [
+        appBar(withLeading: false),
+        Align(
+          child: Text(
+            widget.tabsNames.noCameraFound,
+            style: Theme.of(context)
+                .textTheme
+                .headlineSmall
+                ?.apply(color: widget.appTheme.focusColor),
+          ),
+        ),
+      ],
     );
   }
 
@@ -273,7 +281,7 @@ class CustomCameraDisplayState extends State<CustomCameraDisplay> {
     );
   }
 
-  AppBar appBar() {
+  AppBar appBar({bool withLeading = true}) {
     Color whiteColor = widget.appTheme.primaryColor;
     Color blackColor = widget.appTheme.focusColor;
     File? selectedImage = widget.selectedCameraImage.value;
@@ -286,66 +294,68 @@ class CustomCameraDisplayState extends State<CustomCameraDisplay> {
           Navigator.of(context).maybePop(null);
         },
       ),
-      actions: <Widget>[
-        AnimatedSwitcher(
-          duration: const Duration(seconds: 1),
-          switchInCurve: Curves.easeIn,
-          child: IconButton(
-            icon: const Icon(Icons.arrow_forward_rounded,
-                color: Colors.blue, size: 30),
-            onPressed: () async {
-              if (videoRecordFile != null) {
-                final byte = await videoRecordFile!.readAsBytes();
-                final selectedByte = SelectedByte(
-                  isThatImage: false,
-                  selectedFile: videoRecordFile!,
-                  selectedByte: byte,
-                );
-                final details = SelectedImagesDetails(
-                  multiSelectionMode: false,
-                  selectedFiles: [selectedByte],
-                  aspectRatio: 1.0,
-                );
-                if (!mounted) return;
+      actions: !withLeading
+          ? null
+          : <Widget>[
+              AnimatedSwitcher(
+                duration: const Duration(seconds: 1),
+                switchInCurve: Curves.easeIn,
+                child: IconButton(
+                  icon: const Icon(Icons.arrow_forward_rounded,
+                      color: Colors.blue, size: 30),
+                  onPressed: () async {
+                    if (videoRecordFile != null) {
+                      final byte = await videoRecordFile!.readAsBytes();
+                      final selectedByte = SelectedByte(
+                        isThatImage: false,
+                        selectedFile: videoRecordFile!,
+                        selectedByte: byte,
+                      );
+                      final details = SelectedImagesDetails(
+                        multiSelectionMode: false,
+                        selectedFiles: [selectedByte],
+                        aspectRatio: 1.0,
+                      );
+                      if (!mounted) return;
 
-                if (widget.callbackFunction != null) {
-                  void pop() => Navigator.of(context).maybePop(details);
-                  await widget.callbackFunction!(details);
-                  pop.call();
-                } else {
-                  Navigator.of(context).maybePop(details);
-                }
-              } else if (selectedImage != null) {
-                File? croppedByte = await cropImage(selectedImage);
-                if (croppedByte != null) {
-                  Uint8List byte = await croppedByte.readAsBytes();
+                      if (widget.callbackFunction != null) {
+                        void pop() => Navigator.of(context).maybePop(details);
+                        await widget.callbackFunction!(details);
+                        pop.call();
+                      } else {
+                        Navigator.of(context).maybePop(details);
+                      }
+                    } else if (selectedImage != null) {
+                      File? croppedByte = await cropImage(selectedImage);
+                      if (croppedByte != null) {
+                        Uint8List byte = await croppedByte.readAsBytes();
 
-                  SelectedByte selectedByte = SelectedByte(
-                    isThatImage: true,
-                    selectedFile: croppedByte,
-                    selectedByte: byte,
-                  );
+                        SelectedByte selectedByte = SelectedByte(
+                          isThatImage: true,
+                          selectedFile: croppedByte,
+                          selectedByte: byte,
+                        );
 
-                  SelectedImagesDetails details = SelectedImagesDetails(
-                    selectedFiles: [selectedByte],
-                    multiSelectionMode: false,
-                    aspectRatio: 1.0,
-                  );
-                  if (!mounted) return;
+                        SelectedImagesDetails details = SelectedImagesDetails(
+                          selectedFiles: [selectedByte],
+                          multiSelectionMode: false,
+                          aspectRatio: 1.0,
+                        );
+                        if (!mounted) return;
 
-                  if (widget.callbackFunction != null) {
-                    void pop() => Navigator.of(context).maybePop(details);
-                    await widget.callbackFunction!(details);
-                    pop.call();
-                  } else {
-                    Navigator.of(context).maybePop(details);
-                  }
-                }
-              }
-            },
-          ),
-        ),
-      ],
+                        void pop() => Navigator.of(context).maybePop(details);
+                        if (widget.callbackFunction != null) {
+                          await widget.callbackFunction!(details);
+                          pop.call();
+                        } else {
+                          pop.call();
+                        }
+                      }
+                    }
+                  },
+                ),
+              ),
+            ],
     );
   }
 

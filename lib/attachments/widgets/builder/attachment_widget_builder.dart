@@ -33,7 +33,7 @@ abstract class AttachmentWidgetBuilder {
   static List<AttachmentWidgetBuilder> defaultBuilders({
     required Message message,
     ShapeBorder? shape,
-    EdgeInsetsGeometry padding = const EdgeInsets.all(4),
+    EdgeInsetsGeometry padding = const EdgeInsets.all(AppSpacing.xs),
     AttachmentWidgetTapCallback? onAttachmentTap,
   }) {
     return [

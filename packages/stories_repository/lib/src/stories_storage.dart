@@ -7,7 +7,7 @@ abstract class StoriesStorageKeys {
 }
 
 /// {@template stories_storage}
-/// Storage for the [StoriesRepository].
+/// Manages storage and retrieval of seen stories for users.
 /// {@endtemplate}
 class StoriesStorage {
   /// {@macro stories_storage}

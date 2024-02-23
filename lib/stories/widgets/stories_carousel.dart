@@ -32,7 +32,8 @@ class StoriesListView extends StatelessWidget {
     final user = context.select((AppBloc bloc) => bloc.state.user);
 
     return SliverPadding(
-      padding: const EdgeInsets.only(top: 2, bottom: 2),
+      padding:
+          const EdgeInsets.only(top: AppSpacing.xxs, bottom: AppSpacing.xxs),
       sliver: SliverToBoxAdapter(
         child: SizedBox(
           height: _storiesCarouselHeight,
@@ -48,7 +49,7 @@ class StoriesListView extends StatelessWidget {
                   final isMine = index == 0;
 
                   return Padding(
-                    padding: EdgeInsets.only(left: isMine ? 12 : 0),
+                    padding: EdgeInsets.only(left: isMine ? AppSpacing.md : 0),
                     child: StoryAvatar(
                       key: ValueKey(following?.id ?? user.id),
                       author: following ?? user,

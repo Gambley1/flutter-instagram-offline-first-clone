@@ -21,11 +21,11 @@ dependencies:
   database_client:
     path: packages/database_client
   equatable: ^2.0.5
-  fast_immutable_collections: ^10.1.0
+  fast_immutable_collections: ^10.1.1
   firebase_config:
     path: packages/remote_config/firebase_config
   firebase_core: ^2.25.4
-  firebase_messaging: ^14.7.15
+  firebase_messaging: ^14.7.16
   firebase_notifications_client:
     path: packages/notifications_client/firebase_notifications_client
   flex_color_scheme: ^7.3.1
@@ -74,7 +74,7 @@ dependencies:
     path: packages/stories_editor
   stories_repository:
     path: packages/stories_repository
-  story_view: ^0.16.0
+  story_view: ^0.16.5
   supabase_authentication_client:
     path: packages/authentication_client/supabase_authentication_client
   timeago: ^3.6.1

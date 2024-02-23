@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/comments/comments.dart';
+import 'package:flutter_instagram_offline_first_clone/feed/feed.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/post/post.dart';
 import 'package:flutter_instagram_offline_first_clone/home/home.dart';
 import 'package:flutter_instagram_offline_first_clone/stories/user_stories/user_stories.dart';
@@ -212,7 +213,14 @@ class PostLargeView extends StatelessWidget {
       },
       postOptionsSettings: isOwner
           ? PostOptionsSettings.owner(
-              onPostDelete: (_) => bloc.add(const PostDeleteRequested()),
+              onPostEdit: (block) =>
+                  context.pushNamed('post_edit', extra: block),
+              onPostDelete: (_) {
+                bloc.add(const PostDeleteRequested());
+                context
+                    .read<FeedBloc>()
+                    .add(FeedUpdateRequested(block: block, isDelete: true));
+              },
             )
           : const PostOptionsSettings.viewer(),
       onCommentsTap: (showFullSized) => context.showScrollableModal(

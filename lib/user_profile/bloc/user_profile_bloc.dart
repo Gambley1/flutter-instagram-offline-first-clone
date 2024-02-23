@@ -1,9 +1,7 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/feed.dart';
 import 'package:posts_repository/posts_repository.dart';
 import 'package:shared/shared.dart';
@@ -38,8 +36,6 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
       transformer: throttleDroppable(),
     );
     on<UserProfileUpdateRequested>(_onUserProfileUpdateRequested);
-    on<UserProfilePostCreateRequested>(_onCreatePost);
-    on<UserProfileDeletePostRequested>(_onDeletePost);
     on<UserProfileFetchFollowersRequested>(_onFollowersFetch);
     on<UserProfileFetchFollowingsRequested>(_onFollowingsFetch);
     on<UserProfileFollowersSubscriptionRequested>(
@@ -174,27 +170,6 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
       addError(error, stackTrace);
       emit(state.copyWith(status: UserProfileStatus.userUpdateFailed));
     }
-  }
-
-  Future<void> _onCreatePost(
-    UserProfilePostCreateRequested event,
-    Emitter<UserProfileState> emit,
-  ) async {
-    await _postsRepository.createPost(
-      id: event.postId,
-      userId: event.userId,
-      caption: event.caption,
-      media: json.encode(event.media),
-    );
-  }
-
-  Future<void> _onDeletePost(
-    UserProfileDeletePostRequested event,
-    Emitter<UserProfileState> emit,
-  ) async {
-    final postId = event.postId;
-    final deletedId = await _postsRepository.deletePost(id: postId);
-    event.onPostDeleted?.call(deletedId);
   }
 
   Future<void> _onFollowersFetch(

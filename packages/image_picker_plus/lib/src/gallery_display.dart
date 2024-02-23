@@ -29,16 +29,16 @@ class CustomImagePicker extends StatefulWidget {
 
 class CustomImagePickerState extends State<CustomImagePicker>
     with TickerProviderStateMixin {
-  final pageController = ValueNotifier(PageController());
+  final pageController = PageController();
   final clearVideoRecord = ValueNotifier(false);
   final redDeleteText = ValueNotifier(false);
   final selectedPage = ValueNotifier(SelectedPage.left);
-  ValueNotifier<List<File>> multiSelectedImage = ValueNotifier([]);
+  final multiSelectedImages = ValueNotifier(<File>[]);
   final multiSelectionMode = ValueNotifier(false);
   final showDeleteText = ValueNotifier(false);
   final selectedVideo = ValueNotifier(false);
-  bool noGallery = true;
-  ValueNotifier<File?> selectedCameraImage = ValueNotifier(null);
+  var noGallery = true;
+  final selectedCameraImage = ValueNotifier<File?>(null);
   late bool cropImage;
   late AppTheme appTheme;
   late TabsTexts tabsNames;
@@ -110,7 +110,7 @@ class CustomImagePickerState extends State<CustomImagePicker>
     clearVideoRecord.dispose();
     redDeleteText.dispose();
     multiSelectionMode.dispose();
-    multiSelectedImage.dispose();
+    multiSelectedImages.dispose();
     super.dispose();
   }
 
@@ -168,7 +168,7 @@ class CustomImagePickerState extends State<CustomImagePicker>
           onTap: () async {
             setState(() {
               multiSelectionMode.value = !multiSelectionMode.value;
-              multiSelectedImage.value.clear();
+              multiSelectedImages.value.clear();
             });
           },
           child: Row(
@@ -211,21 +211,17 @@ class CustomImagePickerState extends State<CustomImagePicker>
         mainAxisSize: MainAxisSize.min,
         children: [
           Flexible(
-            child: ValueListenableBuilder(
-              valueListenable: pageController,
-              builder: (context, PageController pageControllerValue, child) =>
-                  PageView(
-                controller: pageControllerValue,
-                dragStartBehavior: DragStartBehavior.start,
-                physics: const NeverScrollableScrollPhysics(),
-                children: [
-                  if (noGallery) imagesViewPage(),
-                  if (enableCamera || enableVideo) cameraPage(),
-                ],
-              ),
+            child: PageView(
+              controller: pageController,
+              dragStartBehavior: DragStartBehavior.start,
+              physics: const NeverScrollableScrollPhysics(),
+              children: [
+                if (noGallery) imagesViewPage(),
+                if (enableCamera || enableVideo) cameraPage(),
+              ],
             ),
           ),
-          if (multiSelectedImage.value.length < maximumSelection) ...[
+          if (multiSelectedImages.value.length < maximumSelection) ...[
             ValueListenableBuilder(
               valueListenable: multiSelectionMode,
               builder: (context, bool multiSelectionModeValue, child) {
@@ -278,7 +274,7 @@ class CustomImagePickerState extends State<CustomImagePicker>
 
   void clearMultiImages() {
     setState(() {
-      multiSelectedImage.value.clear();
+      multiSelectedImages.value.clear();
       multiSelectionMode.value = false;
     });
   }
@@ -293,7 +289,7 @@ class CustomImagePickerState extends State<CustomImagePicker>
       blackColor: blackColor,
       showImagePreview: showImagePreview,
       tabsTexts: tabsNames,
-      multiSelectedImages: multiSelectedImage,
+      multiSelectedImages: multiSelectedImages,
       whiteColor: whiteColor,
       cropImage: cropImage,
       multiSelection: widget.multiSelection,
@@ -357,9 +353,7 @@ class CustomImagePickerState extends State<CustomImagePicker>
       double widthOfTab, SelectedPage selectedPageValue) {
     return GestureDetector(
       onTap: () {
-        setState(() {
-          centerPage(numPage: 0, selectedPage: SelectedPage.left);
-        });
+        centerPage(numPage: 0, selectedPage: SelectedPage.left);
       },
       child: SizedBox(
         width: widthOfTab,
@@ -402,27 +396,21 @@ class CustomImagePickerState extends State<CustomImagePicker>
   centerPage({required int numPage, required SelectedPage selectedPage}) {
     if (!enableVideo && numPage == 1) selectedPage = SelectedPage.right;
 
-    setState(() {
-      this.selectedPage.value = selectedPage;
-      pageController.value.animateToPage(numPage,
-          duration: const Duration(milliseconds: 400),
-          curve: Curves.easeInOutQuad);
-      selectedVideo.value = false;
-    });
+    this.selectedPage.value = selectedPage;
+    pageController.animateToPage(numPage,
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeInOutQuad);
+    selectedVideo.value = false;
   }
 
   GestureDetector videoTabBar(double widthOfTab) {
     return GestureDetector(
       onTap: () {
-        setState(
-          () {
-            pageController.value.animateToPage(cameraVideoOnlyEnabled ? 0 : 1,
-                duration: const Duration(milliseconds: 400),
-                curve: Curves.easeInOutQuad);
-            selectedPage.value = SelectedPage.right;
-            selectedVideo.value = true;
-          },
-        );
+        pageController.animateToPage(cameraVideoOnlyEnabled ? 0 : 1,
+            duration: const Duration(milliseconds: 400),
+            curve: Curves.easeInOutQuad);
+        selectedPage.value = SelectedPage.right;
+        selectedVideo.value = true;
       },
       child: SizedBox(
         width: widthOfTab,

@@ -510,14 +510,14 @@ class ReplyMessagePreview extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     style: context.bodyMedium?.copyWith(
                       fontWeight: AppFontWeight.regular,
-                      color: Colors.white,
+                      color: AppColors.white,
                     ),
                   ),
             trailing: Tappable(
               onTap: onDismissPreviewPressed,
               child: const Icon(
                 Icons.close,
-                color: Colors.white,
+                color: AppColors.white,
               ),
             ),
           ),
@@ -567,14 +567,14 @@ class EditingMessagePreview extends StatelessWidget {
         overflow: TextOverflow.ellipsis,
         style: context.bodyMedium?.copyWith(
           fontWeight: AppFontWeight.regular,
-          color: Colors.white,
+          color: AppColors.white,
         ),
       ),
       trailing: Tappable(
         onTap: onDismissEditingMessage,
         child: const Icon(
           Icons.close,
-          color: Colors.white,
+          color: AppColors.white,
         ),
       ),
     );
@@ -633,7 +633,7 @@ class OGAttachmentPreview extends StatelessWidget {
         onTap: onDismissPreviewPressed,
         child: const Icon(
           Icons.close,
-          color: Colors.white,
+          color: AppColors.white,
         ),
       ),
     );

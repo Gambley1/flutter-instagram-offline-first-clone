@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 import 'package:shared/shared.dart';
@@ -58,4 +59,22 @@ class Post {
 
   /// Converts current [Post] instance to a `Map<String, dynamic>`.
   Map<String, dynamic> toJson() => _$PostToJson(this);
+
+  Post copyWith({
+    String? id,
+    User? author,
+    String? caption,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    List<Media>? media,
+  }) {
+    return Post(
+      id: id ?? this.id,
+      author: author ?? this.author,
+      caption: caption ?? this.caption,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      media: media ?? this.media,
+    );
+  }
 }

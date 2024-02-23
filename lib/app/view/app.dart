@@ -5,6 +5,7 @@ import 'package:firebase_notifications_client/firebase_notifications_client.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
+import 'package:flutter_instagram_offline_first_clone/feed/feed.dart';
 import 'package:flutter_instagram_offline_first_clone/selector/selector.dart';
 import 'package:posts_repository/posts_repository.dart';
 import 'package:search_repository/search_repository.dart';
@@ -20,6 +21,7 @@ final loadingIndeterminateKey = GlobalKey<AppLoadingIndeterminateState>();
 
 class App extends StatelessWidget {
   const App({
+    required this.user,
     required this.userRepository,
     required this.postsRepository,
     required this.chatsRepository,
@@ -27,10 +29,10 @@ class App extends StatelessWidget {
     required this.searchRepository,
     required this.notificationsClient,
     required this.remoteConfig,
-    required this.user,
     super.key,
   });
 
+  final User user;
   final UserRepository userRepository;
   final PostsRepository postsRepository;
   final ChatsRepository chatsRepository;
@@ -38,7 +40,6 @@ class App extends StatelessWidget {
   final SearchRepository searchRepository;
   final FirebaseNotificationsClient notificationsClient;
   final FirebaseConfig remoteConfig;
-  final User user;
 
   @override
   Widget build(BuildContext context) {
@@ -63,6 +64,12 @@ class App extends StatelessWidget {
           ),
           BlocProvider(create: (_) => LocaleBloc()),
           BlocProvider(create: (_) => ThemeModeBloc()),
+          BlocProvider(
+            create: (context) => FeedBloc(
+              postsRepository: context.read<PostsRepository>(),
+              remoteConfig: context.read<FirebaseConfig>(),
+            ),
+          ),
         ],
         child: const AppView(),
       ),

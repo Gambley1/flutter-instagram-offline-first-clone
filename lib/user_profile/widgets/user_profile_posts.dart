@@ -102,7 +102,8 @@ class UserProfilePostsAppBar extends StatelessWidget {
             if (isOwner) return const SizedBox.shrink();
 
             final followText = Padding(
-              padding: const EdgeInsets.only(right: 16),
+              padding:
+                  const EdgeInsets.only(right: AppSpacing.lg),
               child: Tappable(
                 onTap: isFollowed
                     ? null
@@ -110,7 +111,7 @@ class UserProfilePostsAppBar extends StatelessWidget {
                 child: Text(
                   context.l10n.followUser,
                   style: context.titleLarge?.copyWith(
-                    color: Colors.blue.shade500,
+                    color: AppColors.blue,
                   ),
                 ),
               ),

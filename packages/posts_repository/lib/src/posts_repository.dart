@@ -28,7 +28,7 @@ class PostsRepository implements PostsBaseRepository {
       _client.like(userId: userId, id: id, post: post);
 
   @override
-  Future<void> createPost({
+  Future<Post?> createPost({
     required String id,
     required String userId,
     required String caption,
@@ -66,7 +66,11 @@ class PostsRepository implements PostsBaseRepository {
       _client.postsOf(userId: userId);
 
   @override
-  Future<void> updatePost({required String id}) => _client.updatePost(id: id);
+  Future<Post?> updatePost({
+    required String id,
+    String? caption,
+  }) =>
+      _client.updatePost(id: id, caption: caption);
 
   @override
   Stream<int> commentsAmountOf({required String postId}) =>

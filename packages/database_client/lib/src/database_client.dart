@@ -151,7 +151,7 @@ abstract class PostsBaseRepository {
   });
 
   /// Create a new post with provided details.
-  Future<void> createPost({
+  Future<Post?> createPost({
     required String id,
     required String userId,
     required String caption,
@@ -163,7 +163,7 @@ abstract class PostsBaseRepository {
   Future<String?> deletePost({required String id});
 
   /// Updates the post with provided [id] and optional parameters to update.
-  Future<void> updatePost({required String id});
+  Future<Post?> updatePost({required String id, String? caption});
 
   /// Returns the stream of real-time posts of the current user.
   Stream<List<Post>> postsOf({String? userId});
@@ -327,19 +327,34 @@ SELECT id FROM profiles WHERE id = ?
   }
 
   @override
-  Future<void> createPost({
+  Future<Post?> createPost({
     required String id,
     required String userId,
     required String caption,
     required String media,
-  }) =>
+  }) async {
+    if (currentUserId == null) return null;
+    final result = await Future.wait([
       _powerSyncRepository.db().execute(
         '''
     INSERT INTO posts(id, user_id, caption, media, created_at)
     VALUES(?, ?, ?, ?, ?)
+    RETURNING *
     ''',
         [id, userId, caption, media, DateTime.timestamp().toIso8601String()],
-      );
+      ),
+      _powerSyncRepository.db().get(
+        '''
+SELECT * FROM profiles WHERE id = ?
+''',
+        [currentUserId],
+      ),
+    ]);
+    if (result.isEmpty) return null;
+    final row = Map<String, dynamic>.from((result.first as ResultSet).first);
+    final author = User.fromJson(result.last as Row);
+    return Post.fromJson(row).copyWith(author: author);
+  }
 
   @override
   Stream<int> postsAmountOf({required String userId}) =>
@@ -528,11 +543,21 @@ ORDER BY created_at DESC LIMIT ?1 OFFSET ?2
   }
 
   @override
-  Future<void> updatePost({required String id}) =>
-      _powerSyncRepository.db().execute(
-        'UPDATE posts WHERE id = ?',
-        [id],
-      );
+  Future<Post?> updatePost({required String id, String? caption}) async {
+    final row = await _powerSyncRepository.db().execute(
+      '''
+UPDATE posts
+SET
+  caption = ?2
+WHERE id = ?1
+RETURNING *
+''',
+      [id, caption],
+    );
+    if (row.isEmpty) return null;
+    final json = Map<String, dynamic>.from(row.first);
+    return Post.fromJson(json);
+  }
 
   @override
   Stream<int> likesOf({required String id, bool post = true}) {
@@ -1360,9 +1385,7 @@ values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       data: jsonEncode(data),
       options: Options(headers: headers),
     );
-    logI(
-      'Response: $res, \n status code: ${res.statusCode}',
-    );
+    logI('Response: $res, \n status code: ${res.statusCode}');
   }
 
   @override

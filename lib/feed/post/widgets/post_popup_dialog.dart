@@ -203,7 +203,7 @@ class PopupDialogFooter extends StatelessWidget {
 
                 return Icon(
                   isLiked ? Icons.favorite : Icons.favorite_border,
-                  color: isLiked ? Colors.red : null,
+                  color: isLiked ? AppColors.red : null,
                   size: 28,
                 );
               },
@@ -256,7 +256,7 @@ class LikeAnimatedIcon extends StatelessWidget {
           opacity: controller.isAnimating ? 1 : 0,
           child: const Icon(
             Icons.favorite,
-            color: Colors.white,
+            color: AppColors.white,
             size: 100,
           )
               .animate(
@@ -297,7 +297,7 @@ class _PopupMessageDialog extends StatelessWidget {
         left: widgetPositionLeft,
         child: Container(
           decoration: BoxDecoration(
-            color: Colors.black.withOpacity(.7),
+            color: AppColors.black.withOpacity(.7),
             borderRadius: BorderRadius.circular(4),
           ),
           padding: const EdgeInsets.symmetric(
@@ -306,7 +306,7 @@ class _PopupMessageDialog extends StatelessWidget {
           ),
           child: Text(
             message,
-            style: context.bodyMedium?.apply(color: Colors.white),
+            style: context.bodyMedium?.apply(color: AppColors.white),
           ),
         )
             .animate(
@@ -373,7 +373,7 @@ class AnimatedPopupDialogState extends State<AnimatedPopupDialog>
         sigmaY: _sigmaBlurYAnimation.value * 10,
       ),
       child: Material(
-        color: Colors.black.withOpacity(_opacityAnimation.value),
+        color: AppColors.black.withOpacity(_opacityAnimation.value),
         child: Center(
           child: widget.child
               .animate(autoPlay: true, controller: _animationController)

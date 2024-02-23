@@ -21,6 +21,13 @@ final class PostIsLikedSubscriptionRequested extends PostEvent {
   final String currentUserId;
 }
 
+final class PostUpdateRequested extends PostEvent {
+  const PostUpdateRequested({this.caption, this.onPostUpdated});
+
+  final String? caption;
+  final ValueSetter<PostBlock>? onPostUpdated;
+}
+
 final class PostAuthoFollowingStatusSubscriptionRequested extends PostEvent {
   const PostAuthoFollowingStatusSubscriptionRequested({
     required this.ownerId,

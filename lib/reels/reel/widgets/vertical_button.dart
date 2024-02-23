@@ -27,7 +27,7 @@ class VerticalButton extends StatelessWidget {
       child: child ??
           Icon(
             icon,
-            color: color ?? Colors.white,
+            color: color ?? AppColors.white,
             size: size,
           ),
     );
@@ -75,7 +75,7 @@ class VerticalGroup extends StatelessWidget {
               statisticCount!.compactShort(context),
               style: context.bodySmall?.copyWith(
                 fontWeight: AppFontWeight.bold,
-                color: Colors.white,
+                color: AppColors.white,
               ),
               textAlign: TextAlign.center,
               maxLines: 2,

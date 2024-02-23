@@ -350,7 +350,7 @@ class _SharePostButtonState extends State<SharePostButton> {
                 },
                 child: Container(
                   decoration: const BoxDecoration(
-                    color: Colors.blue,
+                    color: AppColors.blue,
                     borderRadius: BorderRadius.all(Radius.circular(6)),
                   ),
                   alignment: Alignment.center,
@@ -362,7 +362,7 @@ class _SharePostButtonState extends State<SharePostButton> {
                     widget.selectedUsers.length == 1
                         ? 'Send'
                         : 'Send separately',
-                    style: context.bodyLarge?.apply(color: Colors.white),
+                    style: context.bodyLarge?.apply(color: AppColors.white),
                   ),
                 ),
               ),
@@ -395,8 +395,8 @@ class UserSearchField extends StatefulWidget {
 class _UserSearchFieldState extends State<UserSearchField> {
   late Debouncer _debouncer;
 
-  final _unactiveIconColor = Colors.grey.shade600;
-  final _activeIconColor = Colors.white;
+  final _unactiveIconColor = AppColors.grey;
+  final _activeIconColor = AppColors.white;
 
   late final _iconColor = ValueNotifier(_unactiveIconColor);
 
@@ -528,14 +528,14 @@ class UsersListView extends StatelessWidget {
                                       height: 32,
                                       width: 32,
                                       decoration: BoxDecoration(
-                                        color: Colors.blue,
+                                        color: AppColors.blue,
                                         shape: BoxShape.circle,
                                         border: Border.all(width: 2),
                                       ),
                                       child: const Icon(
                                         Icons.check,
                                         size: 22,
-                                        color: Colors.black,
+                                        color: AppColors.black,
                                       ),
                                     ),
                                   ),
@@ -576,8 +576,8 @@ class UsersListView extends StatelessWidget {
                         ),
                         subtitle: Text(
                           user.displayUsername,
-                          style: context.bodyLarge
-                              ?.apply(color: Colors.grey.shade600),
+                          style:
+                              context.bodyLarge?.apply(color: AppColors.grey),
                         ),
                         trailing: Checkbox.adaptive(
                           value: isSelected,

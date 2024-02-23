@@ -15,7 +15,7 @@ class GalleryMediaPicker extends StatefulWidget {
   final MediaPickerParamsModel mediaPickerParams;
 
   /// return all selected paths
-  final Function(List<PickedAssetModel> path) pathList;
+  final void Function(List<PickedAssetModel> path) pathList;
 
   const GalleryMediaPicker({
     super.key,

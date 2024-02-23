@@ -23,6 +23,11 @@ class FeedState extends Equatable {
   final FeedPage feed;
   final FeedStatus status;
 
+  FeedState loading() => copyWith(status: FeedStatus.loading);
+  FeedState populated({FeedPage? feed}) =>
+      copyWith(status: FeedStatus.populated, feed: feed);
+  FeedState failure() => copyWith(status: FeedStatus.failure);
+
   FeedState copyWith({
     FeedPage? feed,
     FeedStatus? status,

@@ -33,7 +33,7 @@ abstract class AppColors {
   static const Color dark = Color.fromARGB(255, 58, 58, 58);
 
   /// Grey.
-  static const MaterialColor grey = Colors.grey;
+  static const Color grey = Colors.grey;
 
   /// The bright grey color.
   static const Color brightGrey = Color.fromARGB(255, 224, 224, 224);
@@ -49,4 +49,13 @@ abstract class AppColors {
 
   /// Red material color.
   static const MaterialColor red = Colors.red;
+
+  /// The primary Instagram gradient pallete.
+  static const List<Color> primaryGradient = <Color>[
+    Color(0xFF833AB4), // Purple
+    Color(0xFFF77737), // Orange
+    Color(0xFFE1306C), // Red-pink
+    Color(0xFFC13584), // Red-purple
+    Color(0xFF833AB4), // Duplicate of the first color
+  ];
 }

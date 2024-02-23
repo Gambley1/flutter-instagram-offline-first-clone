@@ -39,7 +39,7 @@ class MediaCarousel extends StatelessWidget {
                   return settings.videoPlayerBuilder?.call(
                         context,
                         media,
-                        settings.aspectRatio,
+                        settings.aspectRatio!,
                         (isInView ?? true) && shouldPlay,
                       ) ??
                       VideoPlay(
@@ -49,7 +49,7 @@ class MediaCarousel extends StatelessWidget {
                         blurHash: blurHash,
                         withSound: false,
                         id: media.id,
-                        aspectRatio: settings.aspectRatio,
+                        aspectRatio: settings.aspectRatio!,
                       );
                 },
               );
@@ -72,9 +72,9 @@ class MediaCarousel extends StatelessWidget {
             );
           },
           options: CarouselOptions(
-            aspectRatio: settings.aspectRatio,
-            viewportFraction: settings.viewportFraction,
-            enableInfiniteScroll: settings.enableInfiniteScroll,
+            aspectRatio: settings.aspectRatio!,
+            viewportFraction: settings.viewportFraction!,
+            enableInfiniteScroll: settings.enableInfiniteScroll!,
             onPageChanged: (index, reason) {
               currentIndex.value = index;
               settings.onPageChanged?.call(index, reason);
@@ -82,7 +82,7 @@ class MediaCarousel extends StatelessWidget {
           ),
         );
 
-    if (!settings.withInViewNotifier) return carousel();
+    if (!settings.withInViewNotifier!) return carousel();
 
     return InViewNotifierWidget(
       id: '${postIndex!}',

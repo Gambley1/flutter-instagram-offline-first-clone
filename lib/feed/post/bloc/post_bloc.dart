@@ -1,4 +1,6 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_instagram_offline_first_clone/feed/feed.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:posts_repository/posts_repository.dart';
@@ -38,6 +40,7 @@ class PostBloc extends HydratedBloc<PostEvent, PostState> {
       _onPostLikersPageRequested,
       transformer: throttleDroppable(),
     );
+    on<PostUpdateRequested>(_onPostUpdateRequested);
     on<PostLikeRequested>(_onPostLikeRequested);
     on<PostAuthorFollowRequested>(_onPostAuthorSubscribeRequested);
     on<PostDeleteRequested>(_onPostDeleteRequested);
@@ -123,6 +126,23 @@ class PostBloc extends HydratedBloc<PostEvent, PostState> {
       );
       addError(error, stackTrace);
       emit(state.copyWith(status: PostStatus.failure));
+    }
+  }
+
+  Future<void> _onPostUpdateRequested(
+    PostUpdateRequested event,
+    Emitter<PostState> emit,
+  ) async {
+    try {
+      final post =
+          await _postsRepository.updatePost(id: id, caption: event.caption);
+
+      if(post != null){
+        event.onPostUpdated?.call(post.toPostLargeBlock());
+      }
+    } catch (error, stackTrace) {
+      logE('Failed to update post.', error: error, stackTrace: stackTrace);
+      addError(error, stackTrace);
     }
   }
 

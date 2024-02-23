@@ -2,9 +2,7 @@ import 'package:app_ui/app_ui.dart';
 import 'package:avatar_stack/avatar_stack.dart';
 import 'package:avatar_stack/positions.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:instagram_blocks_ui/src/carousel_dot_indicator.dart';
 import 'package:instagram_blocks_ui/src/carousel_indicator_controller.dart';
@@ -53,9 +51,6 @@ class PostFooter extends StatelessWidget {
             (block as PostLargeBlock).likersInFollowings.isEmpty
         ? <User>[]
         : (block as PostLargeBlock).likersInFollowings.toList();
-
-    final l10n = context.l10n;
-    final t = context.t;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -145,44 +140,43 @@ class PostFooter extends StatelessWidget {
               Row(
                 children: [
                   if (likersInFollowings.isNotEmpty) ...[
-                    LikersInFollowings(likersInFollowings: likersInFollowings),
+                    LikersInFollowings(
+                      likersInFollowings: likersInFollowings,
+                    ),
                     const SizedBox(width: AppSpacing.xs),
                   ],
-                  RepaintBoundary(
-                    child: LikesCount(
-                      key: ValueKey(block.id),
-                      count: likesCount,
-                      textBuilder: (count) {
-                        final name = likersInFollowings
-                            .firstWhere(
-                              (user) => user.username != null,
-                              orElse: () => User.anonymous,
-                            )
-                            .username;
-                        final userId = likersInFollowings.firstOrNull?.id;
-                        if (name == null || name.trim().isEmpty) return null;
+                  Flexible(
+                    child: RepaintBoundary(
+                      child: LikesCount(
+                        key: ValueKey(block.id),
+                        count: likesCount,
+                        textBuilder: (count) {
+                          final name = likersInFollowings
+                              .firstWhere(
+                                (user) => user.username != null,
+                                orElse: () => User.anonymous,
+                              )
+                              .username;
+                          final userId = likersInFollowings.firstOrNull?.id;
+                          if (name == null || name.trim().isEmpty) {
+                            return null;
+                          }
 
-                        return Text.rich(
-                          t.likedBy(
-                            name: TextSpan(
-                              text: name,
-                              style: context.titleMedium
-                                  ?.copyWith(fontWeight: AppFontWeight.bold),
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = userId == null
-                                    ? null
-                                    : () => onAvatarTap(userId),
+                          final onTap =
+                              userId == null ? null : () => onAvatarTap(userId);
+
+                          return Text.rich(
+                            BlockSettings.instance.postTextDelegate.likedByText(
+                              count,
+                              name,
+                              onTap,
                             ),
-                            and: TextSpan(text: count < 1 ? '' : l10n.and),
-                            others: TextSpan(
-                              text: l10n.others(count),
-                              style: context.titleMedium
-                                  ?.copyWith(fontWeight: AppFontWeight.bold),
-                            ),
-                          ),
-                          style: context.titleMedium,
-                        );
-                      },
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: context.titleMedium,
+                          );
+                        },
+                      ),
                     ),
                   ),
                 ],
@@ -238,7 +232,7 @@ class LikersInFollowings extends StatelessWidget {
                 child: ConstrainedBox(
                   constraints: const BoxConstraints.expand(),
                   child: Padding(
-                    padding: const EdgeInsets.all(2),
+                    padding: const EdgeInsets.all(AppSpacing.xxs),
                     child: CircleAvatar(
                       backgroundColor: AppColors.white,
                       foregroundImage: Assets.images.profilePhoto.provider(),
@@ -255,7 +249,7 @@ class LikersInFollowings extends StatelessWidget {
                     child: ConstrainedBox(
                       constraints: const BoxConstraints.expand(),
                       child: Padding(
-                        padding: const EdgeInsets.all(2),
+                        padding: const EdgeInsets.all(AppSpacing.xxs),
                         child: CircleAvatar(
                           backgroundImage: imageProvider,
                           backgroundColor: context.theme.colorScheme.background,
@@ -325,7 +319,10 @@ class _SponsoredPostActionState extends State<SponsoredPostAction> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              context.l10n.visitSponsoredInstagramProfile,
+              BlockSettings
+                  .instance.postTextDelegate.visitSponsoredInstagramProfileText,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
               style: context.titleMedium
                   ?.copyWith(fontWeight: AppFontWeight.semiBold),
             ),

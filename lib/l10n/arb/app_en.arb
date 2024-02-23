@@ -145,6 +145,10 @@
     "@editProfileText": {
         "description": "Text shown in account view to edit profile"
     },
+    "editPostText": "Edit post",
+    "@editPostText": {
+        "description": "Text shown in post edit view to edit post"
+    },
     "shareProfileText": "Share profile",
     "@shareProfileText": {
         "description": "Text shown in account view to share profile"
@@ -203,7 +207,6 @@
     "addMessage": "Add message",
     "message": "Message",
     "editPicture": "Edit picture",
-    "editProfile": "Edit profile",
     "requiredField": "This field is required",
     "passwordLengthError": "Password should contain at least {count} characters",
     "@passwordLengthError": {
@@ -225,6 +228,17 @@
             }
         }
     },
+    "captionText": "Caption",
+    "noCameraFound": "No camera found!",
+    "videoText": "VIDEO",
+    "photoText": "PHOTO",
+    "clearImagesText": "Clear selected images",
+    "galleryText": "GALLERY",
+    "deletingText": "DELETE",
+    "notFoundingCameraText": "No secondary camera found",
+    "holdButtonText": "Press and hold to record",
+    "noImagesFounded": "There is no images",
+    "acceptAllPermissions": "Failed! accept all access permissions.",
     "noAccount": "Don''t have an account",
     "alreadyHaveAccount": "Alrady have an account",
     "name": "Name",
@@ -239,7 +253,7 @@
     "edit": "Edit",
     "delete": "Delete",
     "reply": "Reply",
-    "theme": "Тема",
+    "theme": "Theme",
     "systemOption": "System",
     "@systemOption": {
         "description": "The option to use system-wide theme in the theme selector menu",

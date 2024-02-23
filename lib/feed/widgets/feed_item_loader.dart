@@ -18,7 +18,7 @@ class _FeedLoaderItemState extends State<FeedLoaderItem> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(4000.ms, () => widget.onPresented?.call());
+    Future.delayed(350.ms, () => widget.onPresented?.call());
   }
 
   @override

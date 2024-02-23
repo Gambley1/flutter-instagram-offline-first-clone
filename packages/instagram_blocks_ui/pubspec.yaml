@@ -17,8 +17,6 @@ dependencies:
     sdk: flutter
   flutter_animate: ^4.4.0
   flutter_blurhash: ^0.8.2
-  flutter_instagram_offline_first_clone:
-    path: ../../
   insta_blocks:
     path: ../insta_blocks
   inview_notifier_list:

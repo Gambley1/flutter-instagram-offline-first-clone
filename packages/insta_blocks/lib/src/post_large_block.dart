@@ -55,5 +55,19 @@ class PostLargeBlock extends PostBlock {
   }
 
   @override
+  PostBlock merge({PostBlock? other}) {
+    if (other is! PostLargeBlock) return this;
+    return copyWith(
+      id: other.id,
+      author: other.author,
+      createdAt: other.createdAt,
+      media: other.media,
+      caption: other.caption,
+      action: other.action,
+      likersInFollowings: other.likersInFollowings,
+    );
+  }
+
+  @override
   Map<String, dynamic> toJson() => _$PostLargeBlockToJson(this);
 }

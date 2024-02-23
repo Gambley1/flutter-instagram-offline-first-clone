@@ -87,6 +87,9 @@ class CustomCropState extends State<CustomCrop> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _getImage(force: true);
+    });
 
     _activeController = AnimationController(
       vsync: this,

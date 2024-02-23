@@ -226,11 +226,11 @@ extension SystemNavigationBarTheme on Widget {
       AnnotatedRegion<SystemUiOverlayStyle>(
         value: context.theme.platform == TargetPlatform.android
             ? context.isLight
-                ? SystemUiOverlayStyle.dark
-                : SystemUiOverlayStyle.light
+                ? SystemUiOverlayTheme.androidLightSystemBarTheme
+                : SystemUiOverlayTheme.androidDarkSystemBarTheme
             : context.isLight
-                ? AppTheme.darkSystemBarTheme
-                : AppTheme.lightSystemBarTheme,
+                ? SystemUiOverlayTheme.iOSDarkSystemBarTheme
+                : SystemUiOverlayTheme.iOSLightSystemBarTheme,
         child: this,
       );
 }
