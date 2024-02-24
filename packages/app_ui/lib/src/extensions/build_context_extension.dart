@@ -33,8 +33,11 @@ extension BuildContextX on BuildContext {
   /// Defines [MediaQueryData] based on provided context.
   Size get size => MediaQuery.sizeOf(this);
 
-  /// Defines EdgeInsets from [MediaQuery] with current [BuildContext].
+  /// Defines view insets from [MediaQuery] with current [BuildContext].
   EdgeInsets get viewInsets => MediaQuery.viewInsetsOf(this);
+
+  /// Defines view padding of from [MediaQuery] with current [BuildContext].
+  EdgeInsets get viewPaddingOf => MediaQuery.viewPaddingOf(this);
 
   /// Defines value of device current width based on [size].
   double get screenWidth => size.width;

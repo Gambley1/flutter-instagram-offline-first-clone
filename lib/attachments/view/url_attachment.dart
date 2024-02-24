@@ -13,7 +13,7 @@ class UrlAttachment extends StatelessWidget {
   const UrlAttachment({
     required this.message,
     required this.urlAttachment,
-    required this.hostDisplayName,
+    this.hostDisplayName,
     super.key,
     this.shape,
     this.constraints = const BoxConstraints(),
@@ -33,8 +33,8 @@ class UrlAttachment extends StatelessWidget {
   /// The constraints to use when displaying the file.
   final BoxConstraints constraints;
 
-  /// Host name
-  final String hostDisplayName;
+  /// Host display name.
+  final String? hostDisplayName;
 
   @override
   Widget build(BuildContext context) {
@@ -61,21 +61,22 @@ class UrlAttachment extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            hostDisplayName,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: context.bodyLarge?.copyWith(
-              fontWeight: AppFontWeight.bold,
-              color: AppColors.white,
+          if (hostDisplayName != null)
+            Text(
+              hostDisplayName!,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: context.bodyMedium?.copyWith(
+                fontWeight: AppFontWeight.bold,
+                color: AppColors.white,
+              ),
             ),
-          ),
-          if (urlAttachment.title == null ||
+          if (urlAttachment.title != null ||
               urlAttachment.title != hostDisplayName)
             Text(
               urlAttachment.title!.trim(),
               maxLines: 5,
-              style: context.bodyLarge?.copyWith(
+              style: context.bodyMedium?.copyWith(
                 fontWeight: AppFontWeight.bold,
                 height: 1.2,
                 wordSpacing: 0.5,
@@ -94,10 +95,10 @@ class UrlAttachment extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(top: AppSpacing.xxs),
             child: AspectRatio(
-              aspectRatio: 1.72 / 1,
+              aspectRatio: urlAttachment.aspectRatio,
               child: ImageAttachmentThumbnail(
-                height: 132,
-                width: 132,
+                height: urlAttachment.originalHeight?.toDouble(),
+                width: urlAttachment.originalWidth?.toDouble(),
                 image: urlAttachment,
                 borderRadius: 4,
                 fit: BoxFit.cover,

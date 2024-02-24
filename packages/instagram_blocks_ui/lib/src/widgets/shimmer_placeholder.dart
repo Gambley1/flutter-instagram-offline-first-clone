@@ -12,6 +12,7 @@ class ShimmerPlaceholder extends StatelessWidget {
     this.width,
     this.height,
     this.radius,
+    this.borderRadius,
     this.baseColor = const Color(0xff2d2f2f),
     this.baseColorLight,
     this.highlightColor = const Color(0xff13151b),
@@ -30,12 +31,13 @@ class ShimmerPlaceholder extends StatelessWidget {
   final double? radius;
   final double? width;
   final double? height;
+  final double? borderRadius;
   final Widget? child;
   final PlaceholderImageBuilder? placeholderImageBuilder;
 
   static Widget _defaultPlaceholderImage({
-    double? width,
-    double? height,
+    required double width,
+    required double height,
   }) =>
       Assets.images.placeholder.image(
         width: width,
@@ -50,6 +52,8 @@ class ShimmerPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final width = this.width ?? double.infinity;
+    final height = this.height ?? double.infinity;
     final image = placeholderImageBuilder?.call(width, height) ??
         (radius != null
             ? _defaultCircularPlaceholderImage(radius!)
@@ -68,10 +72,20 @@ class ShimmerPlaceholder extends StatelessWidget {
           )
         : this.highlightColor;
 
-    return Shimmer.fromColors(
-      baseColor: baseColor,
-      highlightColor: highlightColor,
-      child: child ?? image,
+    return ClipPath(
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      clipper: ShapeBorderClipper(
+        shape: RoundedRectangleBorder(
+          borderRadius: borderRadius == null
+              ? BorderRadius.zero
+              : BorderRadius.all(Radius.circular(borderRadius!)),
+        ),
+      ),
+      child: Shimmer.fromColors(
+        baseColor: baseColor,
+        highlightColor: highlightColor,
+        child: child ?? image,
+      ),
     );
   }
 }

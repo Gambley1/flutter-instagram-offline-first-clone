@@ -15,7 +15,6 @@ import 'package:go_router/go_router.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:intl/intl.dart';
 import 'package:shared/shared.dart';
-import 'package:visibility_detector/visibility_detector.dart';
 
 typedef MessageTapCallback<T> = Future<T?> Function(
   TapUpDetails details,
@@ -67,6 +66,75 @@ class MessageBubble extends StatelessWidget {
         borderRadius: borderRadius ?? this.borderRadius,
       );
 
+  @override
+  Widget build(BuildContext context) {
+    final message = this.message;
+
+    final user = context.select((AppBloc bloc) => bloc.state.user);
+    final isMine = message.sender?.id == user.id;
+    final messageAlignment = !isMine ? Alignment.topLeft : Alignment.topRight;
+
+    return Tappable(
+      animationEffect: TappableAnimationEffect.none,
+      onTapUp: (details) async {
+        late final onDeleteTap = context.confirmAction(
+          title: 'Delete message',
+          content: 'Are you sure you want to delete this message?',
+          yesText: context.l10n.delete,
+          fn: () => this.onDeleteTap?.call(message),
+        );
+        final option = await onMessageTap.call(
+          details,
+          message.id,
+          isMine: isMine,
+          hasSharedPost: message.sharedPost != null,
+        );
+        if (option == null) return;
+        void action() => switch (option) {
+              MessageAction.delete => onDeleteTap,
+              MessageAction.edit => onEditTap?.call(message),
+              MessageAction.reply => onReplyTap?.call(message),
+            };
+        action();
+      },
+      child: FractionallySizedBox(
+        alignment: messageAlignment,
+        widthFactor: 0.9,
+        child: Align(
+          alignment: messageAlignment,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+            child: ClipPath(
+              clipper: ShapeBorderClipper(
+                shape: RoundedRectangleBorder(
+                  borderRadius: borderRadius?.call(isMine) ??
+                      const BorderRadius.all(Radius.circular(22)),
+                ),
+              ),
+              child: RepaintBoundary(
+                child: MessageBubbleContent(
+                  message: message,
+                  onReplyTap: onReplyTap,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class MessageBubbleContent extends StatelessWidget {
+  const MessageBubbleContent({
+    required this.message,
+    super.key,
+    this.onReplyTap,
+  });
+
+  final ValueSetter<Message>? onReplyTap;
+  final Message message;
+
   bool get hasNonUrlAttachments =>
       message.attachments.any((a) => a.type != AttachmentType.urlPreview.value);
 
@@ -82,95 +150,6 @@ class MessageBubble extends StatelessWidget {
   bool get isEdited =>
       message.createdAt.isAfter(message.updatedAt) &&
       !message.createdAt.isAtSameMomentAs(message.updatedAt);
-
-  @override
-  Widget build(BuildContext context) {
-    final message = this.message;
-
-    final user = context.select((AppBloc bloc) => bloc.state.user);
-    final isMine = message.sender?.id == user.id;
-    final messageAlignment = !isMine ? Alignment.topLeft : Alignment.topRight;
-
-    return VisibilityDetector(
-      key: ValueKey(message.id),
-      onVisibilityChanged: (info) {
-        if (info.visibleBounds.isEmpty) return;
-        if (isMine) return;
-        if (message.isRead) return;
-        context.read<ChatBloc>().add(ChatMessageSeen(message.id));
-      },
-      child: Tappable(
-        animationEffect: TappableAnimationEffect.none,
-        onTapUp: (details) async {
-          late final onDeleteTap = context.confirmAction(
-            title: 'Delete message',
-            content: 'Are you sure you want to delete this message?',
-            yesText: context.l10n.delete,
-            fn: () => this.onDeleteTap?.call(message),
-          );
-          final option = await onMessageTap.call(
-            details,
-            message.id,
-            isMine: isMine,
-            hasSharedPost: message.sharedPost != null,
-          );
-          if (option == null) return;
-          void action() => switch (option) {
-                MessageAction.delete => onDeleteTap,
-                MessageAction.edit => onEditTap?.call(message),
-                MessageAction.reply => onReplyTap?.call(message),
-              };
-          action();
-        },
-        child: FractionallySizedBox(
-          alignment: messageAlignment,
-          widthFactor: 0.9,
-          child: Align(
-            alignment: messageAlignment,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-              child: ClipRRect(
-                borderRadius: borderRadius?.call(isMine) ??
-                    const BorderRadius.all(Radius.circular(22)),
-                child: RepaintBoundary(
-                  child: MessageBubbleContent(
-                    isMine: isMine,
-                    message: message,
-                    hasRepliedComment: hasRepliedComment,
-                    displayBottomStatuses: displayBottomStatuses,
-                    hasAttachments: hasAttachments,
-                    isEdited: isEdited,
-                    onReplyTap: onReplyTap,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class MessageBubbleContent extends StatelessWidget {
-  const MessageBubbleContent({
-    required this.isMine,
-    required this.message,
-    required this.hasRepliedComment,
-    required this.displayBottomStatuses,
-    required this.hasAttachments,
-    required this.isEdited,
-    super.key,
-    this.onReplyTap,
-  });
-
-  final bool isMine;
-  final bool hasRepliedComment;
-  final bool displayBottomStatuses;
-  final bool hasAttachments;
-  final bool isEdited;
-  final ValueSetter<Message>? onReplyTap;
-  final Message message;
 
   @override
   Widget build(BuildContext context) {
@@ -190,14 +169,10 @@ class MessageBubbleContent extends StatelessWidget {
         if (!isMine) ...[
           context.customReversedAdaptiveColor(
             light: AppColors.white,
-            dark: const ui.Color(0xff1c1e22),
+            dark: AppColors.primaryDarkBlue,
           ),
-        ] else ...const [
-          ui.Color.fromARGB(255, 226, 128, 53),
-          ui.Color.fromARGB(255, 228, 96, 182),
-          ui.Color.fromARGB(255, 107, 73, 195),
-          ui.Color.fromARGB(255, 78, 173, 195),
-        ],
+        ] else
+          ...AppColors.primaryMessageBubbleGradient,
       ],
       child: message.sharedPostId == null && message.message.trim().isEmpty
           ? Padding(
@@ -215,7 +190,7 @@ class MessageBubbleContent extends StatelessWidget {
                   ),
                   TextMessageWidget(
                     text: '${context.l10n.postUnavailableDescription}.',
-                    spacing: 12,
+                    spacing: AppSpacing.md,
                     textStyle:
                         context.bodyLarge?.apply(color: effectiveTextColor),
                     child: MessageStatuses(
@@ -300,8 +275,8 @@ class MessageBubbleContent extends StatelessWidget {
                                       ],
                                     ),
                                     child: Assets.icons.instagramReel.svg(
-                                      height: 36,
-                                      width: 36,
+                                      height: AppSize.iconSizeBig,
+                                      width: AppSize.iconSizeBig,
                                       colorFilter: const ColorFilter.mode(
                                         AppColors.white,
                                         BlendMode.srcIn,
@@ -314,8 +289,8 @@ class MessageBubbleContent extends StatelessWidget {
                           ),
                         ),
                         Positioned.fill(
-                          right: 12,
-                          bottom: 4,
+                          right: AppSpacing.md,
+                          bottom: AppSpacing.xs,
                           child: Align(
                             alignment: Alignment.bottomRight,
                             child: MessageStatuses(
@@ -368,8 +343,8 @@ class MessageBubbleContent extends StatelessWidget {
                                     ),
                                   ),
                                   Positioned(
-                                    top: 8,
-                                    right: 8,
+                                    top: AppSpacing.sm,
+                                    right: AppSpacing.sm,
                                     child: Builder(
                                       builder: (_) {
                                         if (sharedPost.isReel) {
@@ -385,8 +360,8 @@ class MessageBubbleContent extends StatelessWidget {
                                             ),
                                             child:
                                                 Assets.icons.instagramReel.svg(
-                                              height: 36,
-                                              width: 36,
+                                              height: AppSize.iconSizeBig,
+                                              width: AppSize.iconSizeBig,
                                               colorFilter:
                                                   const ColorFilter.mode(
                                                 AppColors.white,
@@ -451,8 +426,8 @@ class MessageBubbleContent extends StatelessWidget {
                           ),
                         ),
                         Positioned.fill(
-                          right: 12,
-                          bottom: 4,
+                          right: AppSpacing.md,
+                          bottom: AppSpacing.xs,
                           child: Align(
                             alignment: Alignment.bottomRight,
                             child: MessageStatuses(
@@ -491,7 +466,7 @@ class MessageBubbleContent extends StatelessWidget {
                           else
                             TextMessageWidget(
                               text: message.message,
-                              spacing: 12,
+                              spacing: AppSpacing.md,
                               textStyle: context.bodyLarge
                                   ?.apply(color: effectiveTextColor),
                               child: MessageStatuses(
@@ -768,16 +743,17 @@ class RepliedMessageBubble extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (!repliedMessageSharedPostDeleted)
+            if (!repliedMessageSharedPostDeleted) ...[
               ImageAttachmentThumbnail(
                 image: Attachment(imageUrl: replyMessageAttachmentUrl),
-                width: imageWidth,
-                height: imageHeight,
                 fit: BoxFit.cover,
                 borderRadius: 4,
+                width: imageWidth,
+                height: imageHeight,
                 withAdaptiveColors: false,
               ),
-            const SizedBox(width: AppSpacing.xs),
+              const SizedBox(width: AppSpacing.xs),
+            ],
             Flexible(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -963,9 +939,9 @@ class MessageDateTimeSeparator extends StatelessWidget {
           horizontal: AppSpacing.md,
           vertical: AppSpacing.xxs,
         ),
-        decoration: const BoxDecoration(
-          color: ui.Color.fromARGB(255, 58, 58, 70),
-          borderRadius: BorderRadius.all(Radius.circular(22)),
+        decoration: BoxDecoration(
+          color: AppColors.dark.withOpacity(.7),
+          borderRadius: const BorderRadius.all(Radius.circular(22)),
         ),
         child: Text(
           date.format(context, dateFormat: DateFormat.MMMMd),

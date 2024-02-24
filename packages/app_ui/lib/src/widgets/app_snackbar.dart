@@ -300,7 +300,7 @@ class AppSnackbarState extends State<AppSnackbar>
             offset: Offset(
               (_animationControllerX.value - 0.5) * 100,
               (_animationControllerY.value - 0.5) * 400 +
-                  MediaQuery.of(context).viewPadding.top +
+                  context.viewPaddingOf.top +
                   10,
             ),
             child: child,

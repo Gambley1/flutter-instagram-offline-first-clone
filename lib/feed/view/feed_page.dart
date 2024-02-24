@@ -208,6 +208,7 @@ class _FeedBodyState extends State<FeedBody> {
     if (block is SectionHeaderBlock) {
       return switch (block.sectionType) {
         SectionHeaderBlockType.suggested => Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
                 padding: const EdgeInsets.symmetric(

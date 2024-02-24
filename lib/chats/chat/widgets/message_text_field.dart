@@ -257,29 +257,7 @@ class _ChatMessageTextFieldInputState extends State<ChatMessageTextFieldInput>
           if (!mounted) return;
           value = value.trim();
 
-          // final channel = StreamChannel.of(context).channel;
-          // if (value.isNotEmpty &&
-          //     channel.ownCapabilities.contains(PermissionType.sendTypingEvent
-          // s
-          //)) {
-          //   // Notify the server that the user started typing.
-          //   channel
-          //       .keyStroke(_effectiveController.message.parentId)
-          //       .onError(
-          //     (error, stackTrace) {
-          //       widget.onError?.call(error!, stackTrace);
-          //     },
-          //   );
-          // }
-
-          // var actionsLength = widget.actions.length;
-          // if (widget.showCommandsButton) actionsLength += 1;
-          // if (!widget.disableAttachments) actionsLength += 1;
-
-          // setState(() => _actionsShrunk = value.isNotEmpty && actionsLength
-          //> 1);
-
-          _checkContainsUrl(value, context);
+          _checkContainsUrl(value);
         },
       );
 
@@ -290,7 +268,7 @@ class _ChatMessageTextFieldInputState extends State<ChatMessageTextFieldInput>
     caseSensitive: false,
   );
 
-  Future<void> _checkContainsUrl(String value, BuildContext context) async {
+  Future<void> _checkContainsUrl(String value) async {
     // Cancel the previous operation if it's still running
     await _enrichUrlOperation?.cancel();
 
@@ -303,19 +281,7 @@ class _ChatMessageTextFieldInputState extends State<ChatMessageTextFieldInput>
       if (parsedMatch == null) return false;
 
       return parsedMatch.host.split('.').last.isValidTLD();
-      // &&
-      // widget.ogPreviewFilter.call(_parsedMatch, value);
     }).toList();
-
-    // Reset the og attachment if the text doesn't contain any url
-    // if (matchedUrls.isEmpty ||
-    //     !StreamChannel.of(context)
-    //         .channel
-    //         .ownCapabilities
-    //         .contains(PermissionType.sendLinks)) {
-    //   _effectiveController.clearOGAttachment();
-    //   return;
-    // }
 
     if (matchedUrls.isEmpty) {
       if (_effectiveController.ogAttachment != null) {
@@ -337,8 +303,6 @@ class _ChatMessageTextFieldInputState extends State<ChatMessageTextFieldInput>
     ).then(
       (ogAttachment) {
         final attachment = Attachment.fromOGAttachment(ogAttachment);
-        // if (_ogAttachmentCache[firstMatchedUrl] == ogAttachment &&
-        // _effectiveController.editingMessage != null) return;
         _effectiveController.setOGAttachment(attachment);
       },
       onError: (error, stackTrace) {
@@ -360,8 +324,10 @@ class _ChatMessageTextFieldInputState extends State<ChatMessageTextFieldInput>
         if (ogp == null) {
           return Future.error("The page doesn't contain any OG data.");
         }
-        final isEmpty =
-            ogp.title == null && ogp.description == null && ogp.url == null;
+        final isEmpty = ogp.title == null &&
+            ogp.description == null &&
+            ogp.url == null &&
+            ogp.image == null;
         if (isEmpty) {
           return Future.error(
             "The page doesn't contain any title, description or url.",
@@ -469,7 +435,7 @@ class ReplyMessagePreview extends StatelessWidget {
           padding: EdgeInsets.only(left: AppSpacing.sm),
           child: Icon(
             Icons.reply_rounded,
-            color: Color(0xff337eff),
+            color: AppColors.blue,
           ),
         ),
         Expanded(
@@ -498,7 +464,7 @@ class ReplyMessagePreview extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     style: context.bodyLarge?.copyWith(
                       fontWeight: AppFontWeight.bold,
-                      color: const Color(0xff337eff),
+                      color: AppColors.blue,
                     ),
                   ),
             subtitle: replyingMessage.message.isEmpty &&

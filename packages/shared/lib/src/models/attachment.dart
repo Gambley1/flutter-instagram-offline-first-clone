@@ -67,7 +67,7 @@ enum AttachmentType {
   final String value;
 }
 
-extension on String? {
+extension AttachmentTypeParser on String? {
   AttachmentType? get toAttachmentType {
     for (final type in AttachmentType.values) {
       if (type.value == this) {
@@ -125,6 +125,8 @@ class Attachment extends Equatable {
         titleLink: ogAttachment.titleLink,
         text: ogAttachment.text,
         imageUrl: ogAttachment.imageUrl,
+        originalHeight: ogAttachment.imageHeight,
+        originalWidth: ogAttachment.imageWidth,
         thumbUrl: ogAttachment.thumbUrl,
         authorName: ogAttachment.authorName,
         authorLink: ogAttachment.authorLink,
@@ -192,6 +194,11 @@ class Attachment extends Equatable {
 
   /// The original height of the attached image.
   final int? originalHeight;
+
+  /// The aspect ratio for the image.
+  double get aspectRatio => originalHeight == null || originalWidth == null
+      ? 1.72 / 1
+      : originalWidth! / originalHeight!;
 
   final Uri? localUri;
 

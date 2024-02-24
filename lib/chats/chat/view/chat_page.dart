@@ -1,5 +1,3 @@
-import 'dart:ui' as ui;
-
 import 'package:app_ui/app_ui.dart';
 import 'package:chats_repository/chats_repository.dart';
 import 'package:flutter/material.dart';
@@ -144,67 +142,80 @@ class _ChatViewState extends State<ChatView> {
 
   @override
   Widget build(BuildContext context) {
-    final messages = context.select((ChatBloc bloc) => bloc.state.messages);
     final user = context.select((AppBloc bloc) => bloc.state.user);
+    logI('Build');
 
-    return AppScaffold(
-      appBar: ChatAppBar(participant: widget.chat.participant),
-      releaseFocus: true,
-      resizeToAvoidBottomInset: true,
-      body: Column(
-        children: [
-          Expanded(
-            child: ChatMessagesListView(
-              itemScrollController: _itemScrollController,
-              itemPositionsListener: _itemPositionsListener,
-              scrollOffsetController: _scrollOffsetController,
-              scrollOffsetListener: _scrollOffsetListener,
-              messages: messages,
-              onMessageTap: onMessageTap,
-              messageBuilder: (
-                context,
-                message,
-                messages,
-                defaultMessageWidget, {
-                padding,
-              }) {
-                final isMine = message.sender?.id == user.id;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return AppScaffold(
+          appBar: ChatAppBar(participant: widget.chat.participant),
+          releaseFocus: true,
+          // resizeToAvoidBottomInset: true,
+          body: Column(
+            children: [
+              Expanded(
+                child: BlocBuilder<ChatBloc, ChatState>(
+                  builder: (context, state) {
+                    final messages = state.messages;
+                    return ChatMessagesListView(
+                      messages: messages,
+                      itemScrollController: _itemScrollController,
+                      itemPositionsListener: _itemPositionsListener,
+                      scrollOffsetController: _scrollOffsetController,
+                      scrollOffsetListener: _scrollOffsetListener,
+                      onMessageTap: onMessageTap,
+                      messageBuilder: (
+                        context,
+                        message,
+                        messages,
+                        defaultMessageWidget, {
+                        padding,
+                      }) {
+                        final isMine = message.sender?.id == user.id;
 
-                void reply(Message message) => _reply.call(
-                      message.copyWith(
-                        replyMessageUsername: isMine
-                            ? user.username
-                            : widget.chat.participant.username,
-                      ),
+                        void reply(Message message) => _reply.call(
+                              message.copyWith(
+                                replyMessageUsername: isMine
+                                    ? user.username
+                                    : widget.chat.participant.username,
+                              ),
+                            );
+
+                        final child = defaultMessageWidget.copyWith(
+                          onReplyTap: reply,
+                          onEditTap: _edit,
+                          onDeleteTap: (message) => context
+                              .read<ChatBloc>()
+                              .add(ChatMessageDeleteRequested(message.id)),
+                        );
+
+                        return SwipeableMessage(
+                          id: message.id,
+                          onSwiped: (_) => reply(message),
+                          child: Padding(
+                            padding: padding ?? EdgeInsets.zero,
+                            child: child,
+                          ),
+                        );
+                      },
                     );
-
-                final child = defaultMessageWidget.copyWith(
-                  onReplyTap: reply,
-                  onEditTap: _edit,
-                  onDeleteTap: (message) => context
-                      .read<ChatBloc>()
-                      .add(ChatMessageDeleteRequested(message.id)),
-                );
-
-                return SwipeableMessage(
-                  id: message.id,
-                  onSwiped: (_) => reply(message),
-                  child: Padding(
-                    padding: padding ?? EdgeInsets.zero,
-                    child: child,
-                  ),
-                );
-              },
-            ),
+                  },
+                ),
+              ),
+              Builder(
+                builder: (context) {
+                  return ChatMessageTextField(
+                    focusNode: _focusNode,
+                    itemScrollController: _itemScrollController,
+                    messageInputController: _messageInputController,
+                    chat: widget.chat,
+                  );
+                },
+              ),
+            ],
           ),
-          ChatMessageTextField(
-            focusNode: _focusNode,
-            itemScrollController: _itemScrollController,
-            messageInputController: _messageInputController,
-            chat: widget.chat,
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }
@@ -442,12 +453,7 @@ class ChatBackground extends StatelessWidget {
               return const LinearGradient(
                 begin: FractionalOffset.topCenter,
                 end: FractionalOffset.bottomCenter,
-                colors: [
-                  ui.Color.fromARGB(255, 119, 69, 121),
-                  ui.Color.fromARGB(255, 141, 124, 189),
-                  ui.Color.fromARGB(255, 50, 94, 170),
-                  ui.Color.fromARGB(255, 111, 156, 189),
-                ],
+                colors: AppColors.primaryBackgroundGradient,
                 stops: [0, .33, .66, .99],
               ).createShader(bounds);
             },

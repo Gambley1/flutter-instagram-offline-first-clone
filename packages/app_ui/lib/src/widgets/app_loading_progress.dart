@@ -114,7 +114,7 @@ class Helper {
     return (context.screenWidth * screenPercent > maxWidthNavigation
             ? maxWidthNavigation
             : context.screenWidth * screenPercent) +
-        MediaQuery.viewPaddingOf(context).left;
+        context.viewPaddingOf.left;
   }
 
   /// Returns true if the navigation sidebar should be shown.
