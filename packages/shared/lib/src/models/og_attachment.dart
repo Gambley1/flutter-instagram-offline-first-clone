@@ -1,5 +1,5 @@
 import 'package:ogp_data_extract/ogp_data_extract.dart';
-import 'package:shared/src/models/attachment.dart';
+import 'package:shared/shared.dart';
 
 /// Model response for an Open Graph attachment
 class OGAttachment {
@@ -15,6 +15,8 @@ class OGAttachment {
     required this.title,
     required this.titleLink,
     required this.type,
+    required this.imageHeight,
+    required this.imageWidth,
   });
 
   /// Create a new instance from an [OgpData].
@@ -28,6 +30,8 @@ class OGAttachment {
         authorLink: ogp.countryName,
         authorName: ogp.siteName,
         imageUrl: ogp.image,
+        imageHeight: ogp.imageHeight?.parse.toInt(),
+        imageWidth: ogp.imageWidth?.parse.toInt(),
         text: ogp.description,
         thumbUrl: ogp.image,
         title: ogp.title,
@@ -49,6 +53,12 @@ class OGAttachment {
 
   /// The URL of the image.
   final String? imageUrl;
+
+  /// The height of the image(if exists).
+  final int? imageHeight;
+
+  /// The width of the image(if exists).
+  final int? imageWidth;
 
   /// The text of the attachment.
   final String? text;

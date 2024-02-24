@@ -75,7 +75,7 @@ class UrlAttachmentBuilder extends AttachmentWidgetBuilder {
         child: UrlAttachment(
           message: message,
           urlAttachment: urlPreview,
-          hostDisplayName: hostDisplayName!,
+          hostDisplayName: hostDisplayName,
           constraints: constraints,
           shape: shape,
         ),

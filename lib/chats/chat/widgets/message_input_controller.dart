@@ -239,9 +239,20 @@ class MessageInputController extends ValueNotifier<Message> {
 
   /// Sets the og attachment in the message.
   void setOGAttachment(Attachment attachment) {
-    attachments = [...attachments]
-      ..remove(attachment)
-      ..insert(0, attachment);
+    if (attachments
+        .map((e) => e.type.toAttachmentType)
+        .contains(AttachmentType.urlPreview)) {
+      attachments.retainWhere(
+        (e) => e.type.toAttachmentType == AttachmentType.urlPreview,
+      );
+      attachments = [...attachments]
+        ..remove(attachment)
+        ..insert(0, attachment);
+    } else {
+      attachments = [...attachments]
+        ..remove(attachment)
+        ..insert(0, attachment);
+    }
     _ogAttachment = attachment;
   }
 

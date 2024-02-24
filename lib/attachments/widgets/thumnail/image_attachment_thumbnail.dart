@@ -84,12 +84,14 @@ class ImageAttachmentThumbnail extends StatelessWidget {
     StackTrace? stackTrace, {
     double? height,
     double? width,
+    double? borderRadius,
   }) {
     return ThumbnailError(
       error: error,
       stackTrace: stackTrace,
       height: height ?? double.infinity,
       width: width ?? double.infinity,
+      borderRadius: borderRadius,
       fit: BoxFit.cover,
     );
   }
@@ -103,7 +105,9 @@ class ImageAttachmentThumbnail extends StatelessWidget {
         file: file,
         width: width,
         height: height,
+        borderRadius: borderRadius,
         withPlaceholder: withPlaceholder,
+        withAdaptiveColors: withAdaptiveColors,
         errorBuilder: errorBuilder,
       );
     }
@@ -131,6 +135,7 @@ class ImageAttachmentThumbnail extends StatelessWidget {
       StackTrace.current,
       height: height,
       width: width,
+      borderRadius: borderRadius,
     );
   }
 }
@@ -141,10 +146,12 @@ class LocalImageAttachment extends StatelessWidget {
     required this.fit,
     this.width,
     this.height,
+    this.borderRadius,
     this.withPlaceholder = true,
     this.file,
     this.imageFile,
     this.bytes,
+    this.withAdaptiveColors = true,
     super.key,
   });
 
@@ -153,8 +160,10 @@ class LocalImageAttachment extends StatelessWidget {
   final File? imageFile;
   final double? width;
   final double? height;
+  final double? borderRadius;
   final BoxFit? fit;
   final bool withPlaceholder;
+  final bool withAdaptiveColors;
   final ThumbnailErrorBuilder errorBuilder;
 
   @override
@@ -163,18 +172,20 @@ class LocalImageAttachment extends StatelessWidget {
     if (bytes != null) {
       return CachedMemoryImage(
         uniqueKey: 'app://content/image/${file?.path}/${UidGenerator.v4()}',
+        fit: fit,
         bytes: bytes,
         height: height,
         width: width,
         cacheHeight: height?.toInt(),
         cacheWidth: width?.toInt(),
-        fit: fit,
         errorBuilder: errorBuilder,
         placeholder: !withPlaceholder
             ? null
             : ShimmerPlaceholder(
                 height: height,
                 width: width,
+                withAdaptiveColors: withAdaptiveColors,
+                borderRadius: borderRadius,
               ),
       );
     }
@@ -198,6 +209,7 @@ class LocalImageAttachment extends StatelessWidget {
       StackTrace.current,
       height: height,
       width: width,
+      borderRadius: borderRadius,
     );
   }
 }
@@ -253,6 +265,7 @@ class NetworkImageAttachment extends StatelessWidget {
                 height: height,
                 width: width,
                 withAdaptiveColors: withAdaptiveColors,
+                borderRadius: borderRadius,
               ),
       errorWidget: (context, url, error) {
         return errorBuilder(
@@ -261,6 +274,7 @@ class NetworkImageAttachment extends StatelessWidget {
           StackTrace.current,
           height: height,
           width: width,
+          borderRadius: borderRadius,
         );
       },
     );

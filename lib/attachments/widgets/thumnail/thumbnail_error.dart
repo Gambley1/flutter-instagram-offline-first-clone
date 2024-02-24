@@ -7,6 +7,7 @@ typedef ThumbnailErrorBuilder = Widget Function(
   StackTrace? stackTrace, {
   double? height,
   double? width,
+  double? borderRadius,
 });
 
 /// {@template thumbnailError}
@@ -20,6 +21,7 @@ class ThumbnailError extends StatelessWidget {
     this.stackTrace,
     this.width,
     this.height,
+    this.borderRadius,
     this.fit,
   });
 
@@ -28,6 +30,9 @@ class ThumbnailError extends StatelessWidget {
 
   /// The height of the thumbnail.
   final double? height;
+
+  /// The border radius of the thumnail.
+  final double? borderRadius;
 
   /// How to inscribe the thumbnail into the space allocated during layout.
   final BoxFit? fit;
@@ -40,10 +45,28 @@ class ThumbnailError extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Assets.images.placeholder.image(
-      width: width,
+    if (borderRadius == null) {
+      return Assets.images.placeholder.image(
+        width: width,
+        height: height,
+        fit: fit,
+      );
+    }
+    return SizedBox(
       height: height,
-      fit: fit,
+      width: width,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          borderRadius: borderRadius == null
+              ? null
+              : BorderRadius.all(Radius.circular(borderRadius!)),
+          image: DecorationImage(
+            fit: fit,
+            filterQuality: FilterQuality.high,
+            image: Assets.images.placeholder.provider(),
+          ),
+        ),
+      ),
     );
   }
 }

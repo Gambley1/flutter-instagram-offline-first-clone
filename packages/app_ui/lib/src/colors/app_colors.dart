@@ -32,6 +32,9 @@ abstract class AppColors {
   /// Dark.
   static const Color dark = Color.fromARGB(255, 58, 58, 58);
 
+  /// Primary dark blue color.
+  static const Color primaryDarkBlue = Color(0xff1c1e22);
+
   /// Grey.
   static const Color grey = Colors.grey;
 
@@ -51,11 +54,27 @@ abstract class AppColors {
   static const MaterialColor red = Colors.red;
 
   /// The primary Instagram gradient pallete.
-  static const List<Color> primaryGradient = <Color>[
+  static const primaryGradient = <Color>[
     Color(0xFF833AB4), // Purple
     Color(0xFFF77737), // Orange
     Color(0xFFE1306C), // Red-pink
     Color(0xFFC13584), // Red-purple
     Color(0xFF833AB4), // Duplicate of the first color
+  ];
+
+  /// The primary Telegram gradient chat background pallete.
+  static const primaryBackgroundGradient = <Color>[
+    Color.fromARGB(255, 119, 69, 121),
+    Color.fromARGB(255, 141, 124, 189),
+    Color.fromARGB(255, 50, 94, 170),
+    Color.fromARGB(255, 111, 156, 189),
+  ];
+
+  /// The primary Telegram gradient chat message bubble pallete.
+  static const primaryMessageBubbleGradient = <Color>[
+    Color.fromARGB(255, 226, 128, 53),
+    Color.fromARGB(255, 228, 96, 182),
+    Color.fromARGB(255, 107, 73, 195),
+    Color.fromARGB(255, 78, 173, 195),
   ];
 }
