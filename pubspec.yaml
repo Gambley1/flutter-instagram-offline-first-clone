@@ -62,7 +62,7 @@ dependencies:
   scrollable_positioned_list: ^0.3.8
   search_repository:
     path: packages/search_repository
-  selectable: ^0.3.0
+  selectable: ^0.3.1
   shared:
     path: packages/shared
   shimmer: ^3.0.0
