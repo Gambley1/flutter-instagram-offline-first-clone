@@ -36,7 +36,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
   final _recommenedPosts = <PostLargeBlock>[
     PostLargeBlock(
-      id: UidGenerator.v4(),
+      id: uuid.v4(),
       author: PostAuthor.randomConfirmed(),
       createdAt: DateTime.now().subtract(
         Duration(
@@ -47,7 +47,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       ),
       media: [
         ImageMedia(
-          id: UidGenerator.v4(),
+          id: uuid.v4(),
           url:
               'https://img.freepik.com/free-photo/morskie-oko-tatry_1204-510.jpg?size=626&ext=jpg',
         ),
@@ -55,7 +55,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       caption: 'Hello world!',
     ),
     PostLargeBlock(
-      id: UidGenerator.v4(),
+      id: uuid.v4(),
       author: PostAuthor.randomConfirmed(),
       createdAt: DateTime.now().subtract(
         Duration(
@@ -66,7 +66,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       ),
       media: [
         VideoMedia(
-          id: UidGenerator.v4(),
+          id: uuid.v4(),
           firstFrameUrl: '',
           url:
               'https://player.vimeo.com/progressive_redirect/playback/903856061/rendition/540p/file.mp4?loc=external&oauth2_token_id=1747418641&signature=1bf8c7fcb5788b45eb5b8b30519f1eb872eb5be562ef9b0e04191ee44d53acff',
@@ -75,7 +75,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       caption: 'Hello world!',
     ),
     PostLargeBlock(
-      id: UidGenerator.v4(),
+      id: uuid.v4(),
       author: PostAuthor.randomConfirmed(),
       createdAt: DateTime.now().subtract(
         Duration(
@@ -86,7 +86,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       ),
       media: [
         ImageMedia(
-          id: UidGenerator.v4(),
+          id: uuid.v4(),
           url:
               'https://img.freepik.com/free-photo/beautiful-shot-high-mountains-covered-with-green-plants-near-lake-storm-clouds_181624-7731.jpg?size=626&ext=jpg',
         ),
@@ -94,7 +94,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       caption: 'Hello world!',
     ),
     PostLargeBlock(
-      id: UidGenerator.v4(),
+      id: uuid.v4(),
       author: PostAuthor.randomConfirmed(),
       createdAt: DateTime.now().subtract(
         Duration(
@@ -105,7 +105,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       ),
       media: [
         ImageMedia(
-          id: UidGenerator.v4(),
+          id: uuid.v4(),
           url:
               'https://img.freepik.com/free-photo/landscape-morning-fog-mountains-with-hot-air-balloons-sunrise_335224-794.jpg?size=626&ext=jpg',
         ),
@@ -113,7 +113,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       caption: 'Hello world!',
     ),
     PostLargeBlock(
-      id: UidGenerator.v4(),
+      id: uuid.v4(),
       author: PostAuthor.randomConfirmed(),
       createdAt: DateTime.now().subtract(
         Duration(
@@ -124,7 +124,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       ),
       media: [
         ImageMedia(
-          id: UidGenerator.v4(),
+          id: uuid.v4(),
           url:
               'https://img.freepik.com/free-photo/magical-shot-dolomite-mountains-fanes-sennes-prags-national-park-italy-during-summer_181624-43445.jpg?size=626&ext=jpg',
         ),
@@ -132,7 +132,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       caption: 'Hello world!',
     ),
     PostLargeBlock(
-      id: UidGenerator.v4(),
+      id: uuid.v4(),
       author: PostAuthor.randomConfirmed(),
       createdAt: DateTime.now().subtract(
         Duration(
@@ -143,7 +143,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       ),
       media: [
         ImageMedia(
-          id: UidGenerator.v4(),
+          id: uuid.v4(),
           url:
               'https://img.freepik.com/free-photo/morskie-oko-tatry_1204-510.jpg?size=626&ext=jpg',
         ),
@@ -151,7 +151,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       caption: 'Hello world!',
     ),
     PostLargeBlock(
-      id: UidGenerator.v4(),
+      id: uuid.v4(),
       author: PostAuthor.randomConfirmed(),
       createdAt: DateTime.now().subtract(
         Duration(
@@ -162,7 +162,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       ),
       media: [
         ImageMedia(
-          id: UidGenerator.v4(),
+          id: uuid.v4(),
           url:
               'https://img.freepik.com/premium-photo/clouds-is-top-wooden-boat-crystal-lake-with-majestic-mountain-reflection-water-chapel-is-right-coast_146671-14200.jpg?size=626&ext=jpg',
         ),
@@ -170,7 +170,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       caption: 'Hello world!',
     ),
     PostLargeBlock(
-      id: UidGenerator.v4(),
+      id: uuid.v4(),
       author: PostAuthor.randomConfirmed(),
       createdAt: DateTime.now().subtract(
         Duration(
@@ -181,7 +181,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       ),
       media: [
         VideoMedia(
-          id: UidGenerator.v4(),
+          id: uuid.v4(),
           firstFrameUrl: '',
           url:
               'https://player.vimeo.com/progressive_redirect/playback/899246570/rendition/540p/file.mp4?loc=external&oauth2_token_id=1747418641&signature=40dde4d43100a4ef1b77b713dee18a003757a7748ffab1cfbddce2818c818283',
@@ -190,7 +190,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       caption: 'Hello world!',
     ),
     PostLargeBlock(
-      id: UidGenerator.v4(),
+      id: uuid.v4(),
       author: PostAuthor.randomConfirmed(),
       createdAt: DateTime.now().subtract(
         Duration(
@@ -201,7 +201,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       ),
       media: [
         ImageMedia(
-          id: UidGenerator.v4(),
+          id: uuid.v4(),
           url:
               'https://img.freepik.com/premium-photo/clouds-is-top-wooden-boat-crystal-lake-with-majestic-mountain-reflection-water-chapel-is-right-coast_146671-14200.jpg?size=626&ext=jpg',
         ),
@@ -209,7 +209,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       caption: 'Hello world!',
     ),
     PostLargeBlock(
-      id: UidGenerator.v4(),
+      id: uuid.v4(),
       author: PostAuthor.randomConfirmed(),
       createdAt: DateTime.now().subtract(
         Duration(
@@ -220,7 +220,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       ),
       media: [
         ImageMedia(
-          id: UidGenerator.v4(),
+          id: uuid.v4(),
           url:
               'https://img.freepik.com/premium-photo/clouds-is-top-wooden-boat-crystal-lake-with-majestic-mountain-reflection-water-chapel-is-right-coast_146671-14200.jpg?size=626&ext=jpg',
         ),

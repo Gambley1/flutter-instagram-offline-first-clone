@@ -272,7 +272,7 @@ class MessageInputController extends ValueNotifier<Message> {
   /// Sets the [message] to the initial [Message] value.
   void reset({bool resetId = true}) {
     if (resetId) {
-      final newId = UidGenerator.v4();
+      final newId = uuid.v4();
       _initialMessage = _initialMessage.copyWith(id: newId);
     }
     // Reset the message to the initial value.

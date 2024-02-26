@@ -947,7 +947,7 @@ WHERE user_id = ?
       );
       return;
     }
-    final newChatId = UidGenerator.v4();
+    final newChatId = uuid.v4();
     final createdConversation = _powerSyncRepository.db().execute(
       '''
 insert into
@@ -964,7 +964,7 @@ insert into
   values
   (?, ?, ?)
   ''',
-      [UidGenerator.v4(), sender.id, newChatId],
+      [uuid.v4(), sender.id, newChatId],
     );
     final addParticipant2 = _powerSyncRepository.db().execute(
       '''
@@ -973,7 +973,7 @@ insert into
   values
   (?, ?, ?)
   ''',
-      [UidGenerator.v4(), receiver.id, newChatId],
+      [uuid.v4(), receiver.id, newChatId],
     );
     await createdConversation
         .whenComplete(() => Future.wait([addParticipant1, addParticipant2]));
@@ -1147,7 +1147,7 @@ order by created_at asc
       [userId, participantId],
     );
     if (alreadyExists != null) return;
-    final conversationId = UidGenerator.v4();
+    final conversationId = uuid.v4();
     final createdConversation = _powerSyncRepository.db().execute(
       '''
 insert into
@@ -1164,7 +1164,7 @@ insert into
   values
   (?, ?, ?)
   ''',
-      [UidGenerator.v4(), userId, conversationId],
+      [uuid.v4(), userId, conversationId],
     );
     final addParticipant2 = _powerSyncRepository.db().execute(
       '''
@@ -1173,7 +1173,7 @@ insert into
   values
   (?, ?, ?)
   ''',
-      [UidGenerator.v4(), participantId, conversationId],
+      [uuid.v4(), participantId, conversationId],
     );
     await createdConversation
         .whenComplete(() => Future.wait([addParticipant1, addParticipant2]));
@@ -1537,7 +1537,7 @@ insert into stories (id, user_id, content_type, content_url, duration, created_a
 values (?, ?, ?, ?, ?, ?, ?)
 ''',
         [
-          id ?? UidGenerator.v4(),
+          id ?? uuid.v4(),
           author.id,
           contentType.toJson(),
           contentUrl,

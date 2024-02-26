@@ -5,13 +5,16 @@ import 'package:uuid/data.dart';
 import 'package:uuid/rng.dart';
 import 'package:uuid/uuid.dart';
 
+/// The global instance of the [uuid].
+final uuid = UuidGenerator._();
+
 /// Unique user id generator
-class UidGenerator {
-  const UidGenerator._();
-  static final _uuid = Uuid(goptions: GlobalOptions(CryptoRNG._()));
+class UuidGenerator {
+  UuidGenerator._();
+  final _uuid = Uuid(goptions: GlobalOptions(CryptoRNG._()));
 
   /// Generate random id based on [Uuid] library
-  static String v4() => _uuid.v4();
+  String v4() => _uuid.v4();
 }
 
 /// {@template crypto_rng}

@@ -56,7 +56,7 @@ class CreateStoriesBloc extends Bloc<CreateStoriesEvent, CreateStoriesState> {
     try {
       event.onLoading?.call();
 
-      final storyId = UidGenerator.v4();
+      final storyId = uuid.v4();
       final storyImageFile = File(event.filePath);
       final compressed = await ImageCompress.compressFile(storyImageFile);
       final compressedFile = File(compressed!.path);

@@ -457,7 +457,7 @@ class UserProfileAddMediaButton extends StatelessWidget {
                 onMediaPicked: (context, selectedFiles) async {
                   try {
                     openSnackbar(const SnackbarMessage.loading());
-                    late final postId = UidGenerator.v4();
+                    late final postId = uuid.v4();
                     late final storage =
                         Supabase.instance.client.storage.from('posts');
 
@@ -509,7 +509,7 @@ class UserProfileAddMediaButton extends StatelessWidget {
                     }
                     final media = [
                       {
-                        'media_id': UidGenerator.v4(),
+                        'media_id': uuid.v4(),
                         'url': mediaUrl,
                         'type': VideoMedia.identifier,
                         'blur_hash': blurHash,

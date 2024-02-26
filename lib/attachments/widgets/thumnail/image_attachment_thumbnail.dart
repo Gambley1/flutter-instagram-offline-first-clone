@@ -155,7 +155,7 @@ class LocalImageAttachment extends StatelessWidget {
     final bytes = this.bytes ?? imageFile?.readAsBytesSync() ?? file?.bytes;
     if (bytes != null) {
       return CachedMemoryImage(
-        uniqueKey: 'app://content/image/${file?.path}/${UidGenerator.v4()}',
+        uniqueKey: 'app://content/image/${file?.path}/${uuid.v4()}',
         fit: fit,
         bytes: bytes,
         height: height,

@@ -191,7 +191,7 @@ class _CreatePostViewState extends State<CreatePostView>
                             late final storage =
                                 Supabase.instance.client.storage.from('posts');
 
-                            final postId = UidGenerator.v4();
+                            final postId = uuid.v4();
                             final media = <Map<String, dynamic>>[];
                             for (var i = 0; i < _selectedFiles!.length; i++) {
                               late final selectedByte =
@@ -277,7 +277,7 @@ class _CreatePostViewState extends State<CreatePostView>
                                   : ImageMedia.identifier;
                               if (isVideo) {
                                 media.add({
-                                  'media_id': UidGenerator.v4(),
+                                  'media_id': uuid.v4(),
                                   'url': mediaUrl,
                                   'type': mediaType,
                                   'blur_hash': blurHash,
@@ -285,7 +285,7 @@ class _CreatePostViewState extends State<CreatePostView>
                                 });
                               } else {
                                 media.add({
-                                  'media_id': UidGenerator.v4(),
+                                  'media_id': uuid.v4(),
                                   'url': mediaUrl,
                                   'type': mediaType,
                                   'blur_hash': blurHash,

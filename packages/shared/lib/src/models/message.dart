@@ -55,7 +55,7 @@ class Message extends Equatable {
     this.sharedPost,
     String? sharedPostId,
     this.replyMessageAttachmentUrl,
-  })  : id = id ?? UidGenerator.v4(),
+  })  : id = id ?? uuid.v4(),
         createdAt = createdAt ?? Jiffy.now().dateTime,
         updatedAt = updatedAt ?? Jiffy.now().dateTime,
         _replyMessageId = replyMessageId,

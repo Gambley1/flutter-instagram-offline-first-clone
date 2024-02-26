@@ -15,7 +15,7 @@ void main() {
       'created_at': '2023-11-09T00:00:00.000',
       'media': [
         {
-          'media_id': UidGenerator.v4(),
+          'media_id': uuid.v4(),
           'url':
               'https://blog.nursing.com/hs-fs/hubfs/visual%20nursing%20app.webp?width=1080&height=1080&name=visual%20nursing%20app.webp',
           'type': ImageMedia.identifier,
@@ -43,7 +43,7 @@ void main() {
       'created_at': '2023-11-09T00:00:00.000',
       'media': [
         {
-          'media_id': UidGenerator.v4(),
+          'media_id': uuid.v4(),
           'url':
               'https://images.squarespace-cdn.com/content/v1/54222358e4b0ef23d87a996b/1659992618857-S3ZIJIAT0V659W9HFTEF/3.png',
           'type': ImageMedia.identifier,
@@ -71,7 +71,7 @@ void main() {
       'created_at': '2023-11-09T00:00:00.000',
       'media': [
         {
-          'media_id': UidGenerator.v4(),
+          'media_id': uuid.v4(),
           'url':
               'https://global.discourse-cdn.com/business7/uploads/adalo/original/2X/b/bc2fa4e8174f0b997c0a0f4167fe6895ae3092c4.jpeg',
           'type': ImageMedia.identifier,
@@ -99,7 +99,7 @@ void main() {
       'created_at': '2023-11-09T00:00:00.000',
       'media': [
         {
-          'media_id': UidGenerator.v4(),
+          'media_id': uuid.v4(),
           'url':
               'https://images.squarespace-cdn.com/content/v1/54222358e4b0ef23d87a996b/1659992618857-S3ZIJIAT0V659W9HFTEF/3.png',
           'type': ImageMedia.identifier,
