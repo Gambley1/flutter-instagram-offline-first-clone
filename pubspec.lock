@@ -670,10 +670,10 @@ packages:
     dependency: transitive
     description:
       name: float_column
-      sha256: "518b9d49ca8c9edbd35011325913ec6a6f7835fa665fd6e4cfdc48fc7d7de4eb"
+      sha256: "62f0bba2de502ea5fabab6adf6ce704e27bcc7931de1202477ca852f8855def9"
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.1"
+    version: "2.1.5"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -784,10 +784,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_markdown
-      sha256: "30088ce826b5b9cfbf9e8bece34c716c8a59fa54461dcae1e4ac01a94639e762"
+      sha256: a64c5323ac83ed2b7940d2b6288d160aa1753ff271ba9d9b2a86770414aa3eab
       url: "https://pub.dev"
     source: hosted
-    version: "0.6.18+3"
+    version: "0.6.20+1"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -1302,10 +1302,10 @@ packages:
     dependency: "direct main"
     description:
       name: lottie
-      sha256: "1f0ce68112072d66ea271a9841994fa8d16442e23d8cf8996c9fa74174e58b4e"
+      sha256: ce2bb2605753915080e4ee47f036a64228c88dc7f56f7bc1dbe912d75b55b1e2
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.0"
+    version: "3.1.0"
   markdown:
     dependency: transitive
     description:
@@ -1674,10 +1674,10 @@ packages:
     dependency: "direct main"
     description:
       name: selectable
-      sha256: "18432ba915b3e82a367e6ec9038666e0cc3147336cba125a9aa5768dc84296eb"
+      sha256: "942b2b8fb68f093a8c9f5fefbecaeced88a16763f3298dfa4fcd48fba0e6be53"
       url: "https://pub.dev"
     source: hosted
-    version: "0.3.0"
+    version: "0.3.1"
   shared:
     dependency: "direct main"
     description:
@@ -2113,10 +2113,10 @@ packages:
     dependency: "direct main"
     description:
       name: url_launcher
-      sha256: c512655380d241a337521703af62d2c122bf7b77a46ff7dd750092aa9433499c
+      sha256: "0ecc004c62fd3ed36a2ffcbe0dd9700aee63bd7532d0b642a488b1ec310f492e"
       url: "https://pub.dev"
     source: hosted
-    version: "6.2.4"
+    version: "6.2.5"
   url_launcher_android:
     dependency: transitive
     description:
