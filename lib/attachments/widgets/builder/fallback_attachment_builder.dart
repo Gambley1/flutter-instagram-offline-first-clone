@@ -1,13 +1,13 @@
 part of 'attachment_widget_builder.dart';
 
-/// {@template fallbackAttachmentBuilder}
+/// {@template fallback_attachment_builder}
 /// A widget builder for when no other builder can handle the attachments.
 ///
 /// Saves you from getting an error when you have an attachment type that is not
 /// supported by the SDK.
 /// {@endtemplate}
 class FallbackAttachmentBuilder extends AttachmentWidgetBuilder {
-  /// {@macro fallbackAttachmentBuilder}
+  /// {@macro fallback_attachment_builder}
   const FallbackAttachmentBuilder();
 
   @override

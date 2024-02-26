@@ -6,42 +6,22 @@ import 'package:shared/shared.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ParseAttachments extends StatelessWidget {
-  /// {@macro parseAttachments}
+  /// {@macro parse_attachments}
   const ParseAttachments({
     required this.message,
-    // required this.attachmentBuilders,
-    // required this.attachmentPadding,
     super.key,
     this.attachmentShape,
     this.onAttachmentTap,
-    // this.onShowMessage,
-    this.onReplyTap,
-    // this.attachmentActionsModalBuilder,
   });
 
   /// {@macro message}
   final Message message;
-
-  /// {@macro attachmentBuilders}
-  // final List<AttachmentWidgetBuilder>? attachmentBuilders;
-
-  /// {@macro attachmentPadding}
-  // final EdgeInsetsGeometry attachmentPadding;
 
   /// {@macro attachmentShape}
   final ShapeBorder? attachmentShape;
 
   /// {@macro onAttachmentTap}
   final AttachmentWidgetTapCallback? onAttachmentTap;
-
-  /// {@macro onShowMessage}
-  // final ShowMessageCallback? onShowMessage;
-
-  /// {@macro onReplyTap}
-  final void Function(Message)? onReplyTap;
-
-  /// {@macro attachmentActionsBuilder}
-  // final AttachmentActionsBuilder? attachmentActionsModalBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -54,48 +34,6 @@ class ParseAttachments extends StatelessWidget {
       if (isUrlPreview) {
         final url = attachment.ogScrapeUrl ?? '';
         launchURL(context, url);
-        return;
-      }
-
-      final isImage = attachment.type == AttachmentType.image.value;
-      final isVideo = attachment.type == AttachmentType.video.value;
-      final isGiphy = attachment.type == AttachmentType.giphy.value;
-
-      // If the current attachment is a media attachment, open the media
-      // attachment in full screen.
-      final isMedia = isImage || isVideo || isGiphy;
-      if (isMedia) {
-        // final attachments = message.toAttachmentPackage(
-        //   filter: (it) {
-        //     final isImage = it.type == AttachmentType.image;
-        //     final isVideo = it.type == AttachmentType.video;
-        //     final isGiphy = it.type == AttachmentType.giphy;
-        //     return isImage || isVideo || isGiphy;
-        //   },
-        // );
-
-        // Navigator.of(context).push(
-        //   MaterialPageRoute(
-        //     builder: (context) {
-        //       return StreamChannel(
-        //         channel: channel,
-        //         child: StreamFullScreenMediaBuilder(
-        //           userName: message.user!.name,
-        //           mediaAttachmentPackages: attachments,
-        //           startIndex: attachments.indexWhere(
-        //             (it) => it.attachment.id == attachment.id,
-        //           ),
-        //           onReplyMessage: onReplyTap,
-        //           onShowMessage: onShowMessage,
-        //           attachmentActionsModalBuilder: attachmentActionsModalBuilde
-        // r,
-        //         ),
-        //       );
-        //     },
-        //   ),
-        // );
-
-        return;
       }
     };
 
@@ -103,9 +41,6 @@ class ParseAttachments extends StatelessWidget {
     // var builders = attachmentBuilders;
     final builders = AttachmentWidgetBuilder.defaultBuilders(
       message: message,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(10)),
-      ),
       onAttachmentTap: onAttachmentTap,
     );
 

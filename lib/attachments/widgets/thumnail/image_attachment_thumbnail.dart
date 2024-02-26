@@ -25,9 +25,6 @@ class ImageAttachmentThumbnail extends StatelessWidget {
     this.memCacheHeight,
     this.memCacheWidth,
     this.fit,
-    this.thumbnailSize,
-    this.thumbnailResizeType = 'clip',
-    this.thumbnailCropType = 'center',
     this.withPlaceholder = true,
     this.withAdaptiveColors = true,
     this.borderRadius,
@@ -54,19 +51,6 @@ class ImageAttachmentThumbnail extends StatelessWidget {
 
   /// Fit of the attachment image thumbnail.
   final BoxFit? fit;
-
-  /// Size of the attachment image thumbnail.
-  final Size? thumbnailSize;
-
-  /// Resize type of the image attachment thumbnail.
-  ///
-  /// Defaults to [crop]
-  final String thumbnailResizeType;
-
-  /// Crop type of the image attachment thumbnail.
-  ///
-  /// Defaults to [center]
-  final String thumbnailCropType;
 
   /// Whether to show a default shimmer placeholder when image is loading.
   final bool withPlaceholder;

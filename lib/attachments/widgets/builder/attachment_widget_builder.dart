@@ -4,8 +4,6 @@ import 'package:flutter_instagram_offline_first_clone/attachments/view/view.dart
 import 'package:shared/shared.dart';
 
 part 'fallback_attachment_builder.dart';
-part 'image_attachment_builder.dart';
-part 'mixed_attachment_builder.dart';
 part 'url_attachment_builder.dart';
 
 typedef AttachmentWidgetTapCallback = void Function(
@@ -27,27 +25,16 @@ enum AttachmentAlignment {
 }
 
 abstract class AttachmentWidgetBuilder {
-  /// {@macro attachmentWidgetBuilder}
+  /// {@macro attachment_widget_builder}
   const AttachmentWidgetBuilder();
 
   static List<AttachmentWidgetBuilder> defaultBuilders({
     required Message message,
-    ShapeBorder? shape,
-    EdgeInsetsGeometry padding = const EdgeInsets.all(AppSpacing.xs),
     AttachmentWidgetTapCallback? onAttachmentTap,
   }) {
     return [
-      // Handles a mix of image, gif, video, url and file attachments.
-      MixedAttachmentBuilder(
-        padding: padding,
-        onAttachmentTap: onAttachmentTap,
-      ),
-
       // We don't handle URL attachments if the message is a reply.
-      UrlAttachmentBuilder(
-        shape: shape,
-        onAttachmentTap: onAttachmentTap,
-      ),
+      UrlAttachmentBuilder(onAttachmentTap: onAttachmentTap),
 
       // Fallback builder should always be the last builder in the list.
       const FallbackAttachmentBuilder(),

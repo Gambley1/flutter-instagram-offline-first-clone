@@ -5,23 +5,16 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_instagram_offline_first_clone/attachments/widgets/builder/builder.dart';
 import 'package:shared/shared.dart';
 
-/// {@template attachmentWidgetCatalog}
+/// {@template attachment_widget_catalog}
 /// A widget catalog which determines which attachment widget should be build
 /// for a given [Message] and [Attachment] based on the list of [builders].
 ///
-/// This is used by the [MessageWidget] to build the widget for the
+/// This is used by the [MessageBubble] to build the widget for the
 /// [Message.attachments]. If you want to customize the widget used to show
 /// attachments, you can use this to add your own attachment builder.
 /// {@endtemplate}
-///
-/// See also:
-///
-///   * [StreamAttachmentWidgetBuilder], which is used to build a widget for a
-///   given [Message] and [Attachment].
-///   * [MessageWidget] which uses the [AttachmentWidgetCatalog] to build the
-///   widget for the [Message.attachments].
 class AttachmentWidgetCatalog {
-  /// {@macro attachmentWidgetCatalog}
+  /// {@macro attachment_widget_catalog}
   const AttachmentWidgetCatalog({required this.builders});
 
   /// The list of builders to use to build the widget.

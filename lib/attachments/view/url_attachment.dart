@@ -5,7 +5,7 @@ import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/attachments/widgets/thumnail/thumbnail.dart';
 import 'package:shared/shared.dart';
 
-/// {@template streamUrlAttachment}
+/// {@template url_attachment}
 /// Displays a URL attachment.
 /// {@endtemplate}
 class UrlAttachment extends StatelessWidget {
@@ -15,8 +15,6 @@ class UrlAttachment extends StatelessWidget {
     required this.urlAttachment,
     this.hostDisplayName,
     super.key,
-    this.shape,
-    this.constraints = const BoxConstraints(),
   });
 
   /// The [Message] that the image is attached to.
@@ -24,14 +22,6 @@ class UrlAttachment extends StatelessWidget {
 
   /// Attachment to be displayed
   final Attachment urlAttachment;
-
-  /// The shape of the attachment.
-  ///
-  /// Defaults to [RoundedRectangleBorder] with a radius of 14.
-  final ShapeBorder? shape;
-
-  /// The constraints to use when displaying the file.
-  final BoxConstraints constraints;
 
   /// Host display name.
   final String? hostDisplayName;

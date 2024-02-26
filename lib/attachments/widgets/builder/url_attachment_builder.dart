@@ -1,28 +1,18 @@
 part of 'attachment_widget_builder.dart';
 
-const _kDefaultUrlAttachmentConstraints = BoxConstraints(maxWidth: 256);
-
-/// {@template urlAttachmentBuilder}
+/// {@template url_attachment_builder}
 /// A widget builder for url attachment type.
 ///
 /// This is used to show url attachments with a preview. e.g. youtube, twitter,
 /// etc.
 /// {@endtemplate}
 class UrlAttachmentBuilder extends AttachmentWidgetBuilder {
-  /// {@macro urlAttachmentBuilder}
+  /// {@macro url_attachment_builder}
   const UrlAttachmentBuilder({
-    this.shape,
     this.padding,
-    this.constraints = _kDefaultUrlAttachmentConstraints,
     this.onAttachmentTap,
     this.attachmentAlignment = AttachmentAlignment.bottom,
   });
-
-  /// The shape of the url attachment.
-  final ShapeBorder? shape;
-
-  /// The constraints to apply to the url attachment widget.
-  final BoxConstraints constraints;
 
   /// The padding to apply to the url attachment widget.
   final EdgeInsetsGeometry? padding;
@@ -76,8 +66,6 @@ class UrlAttachmentBuilder extends AttachmentWidgetBuilder {
           message: message,
           urlAttachment: urlPreview,
           hostDisplayName: hostDisplayName,
-          constraints: constraints,
-          shape: shape,
         ),
       );
     }

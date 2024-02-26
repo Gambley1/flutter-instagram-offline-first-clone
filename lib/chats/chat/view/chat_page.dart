@@ -339,7 +339,7 @@ class _ChatMessagesListViewState extends State<ChatMessagesListView> {
                 key: ValueKey(message.id),
                 message: message,
                 onMessageTap: widget.onMessageTap,
-                borderRadius: (isMine) => BorderRadius.only(
+                borderRadius: ({required isMine}) => BorderRadius.only(
                   topLeft: isMine
                       ? const Radius.circular(22)
                       : (isNextUserSame && !hasTimeDifferenceWithNext)
