@@ -80,7 +80,7 @@ dependencies:
   timeago: ^3.6.1
   token_storage:
     path: packages/authentication_client/token_storage
-  url_launcher: ^6.2.4
+  url_launcher: ^6.2.5
   user_repository:
     path: packages/user_repository
   vector_math: ^2.1.4
