@@ -6,7 +6,6 @@ import 'dart:typed_data';
 import 'package:cached_memory_image/cached_memory_image.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_instagram_offline_first_clone/attachments/widgets/thumnail/thumbnail.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:shared/shared.dart';
 
@@ -25,9 +24,11 @@ class ImageAttachmentThumbnail extends StatelessWidget {
     this.memCacheHeight,
     this.memCacheWidth,
     this.fit,
+    this.filterQuality = FilterQuality.low,
     this.withPlaceholder = true,
     this.withAdaptiveColors = true,
     this.borderRadius,
+    this.border,
     this.errorBuilder = _defaultErrorBuilder,
   });
 
@@ -49,8 +50,14 @@ class ImageAttachmentThumbnail extends StatelessWidget {
   /// The border radius of the image.
   final double? borderRadius;
 
+  /// The border of the container that wraps an image.
+  final BoxBorder? border;
+
   /// Fit of the attachment image thumbnail.
   final BoxFit? fit;
+
+  /// The quality of the image. Default is low.
+  final FilterQuality filterQuality;
 
   /// Whether to show a default shimmer placeholder when image is loading.
   final bool withPlaceholder;
@@ -83,6 +90,9 @@ class ImageAttachmentThumbnail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final file = image.file;
+    final width = image.originalWidth?.toDouble() ?? this.width;
+    final height = image.originalHeight?.toDouble() ?? this.height;
+
     if (file != null) {
       return LocalImageAttachment(
         fit: fit,
@@ -93,6 +103,7 @@ class ImageAttachmentThumbnail extends StatelessWidget {
         withPlaceholder: withPlaceholder,
         withAdaptiveColors: withAdaptiveColors,
         errorBuilder: errorBuilder,
+        filterQuality: filterQuality,
       );
     }
 
@@ -108,7 +119,9 @@ class ImageAttachmentThumbnail extends StatelessWidget {
         withPlaceholder: withPlaceholder,
         withAdaptiveColors: withAdaptiveColors,
         borderRadius: borderRadius,
+        border: border,
         errorBuilder: errorBuilder,
+        filterQuality: filterQuality,
       );
     }
 
@@ -133,6 +146,7 @@ class LocalImageAttachment extends StatelessWidget {
     this.borderRadius,
     this.withPlaceholder = true,
     this.file,
+    this.filterQuality = FilterQuality.low,
     this.imageFile,
     this.bytes,
     this.withAdaptiveColors = true,
@@ -146,6 +160,7 @@ class LocalImageAttachment extends StatelessWidget {
   final double? height;
   final double? borderRadius;
   final BoxFit? fit;
+  final FilterQuality filterQuality;
   final bool withPlaceholder;
   final bool withAdaptiveColors;
   final ThumbnailErrorBuilder errorBuilder;
@@ -163,6 +178,7 @@ class LocalImageAttachment extends StatelessWidget {
         cacheHeight: height?.toInt(),
         cacheWidth: width?.toInt(),
         errorBuilder: errorBuilder,
+        filterQuality: filterQuality,
         placeholder: !withPlaceholder
             ? null
             : ShimmerPlaceholder(
@@ -207,9 +223,11 @@ class NetworkImageAttachment extends StatelessWidget {
     required this.width,
     required this.height,
     required this.borderRadius,
+    required this.border,
     required this.fit,
     required this.memCacheWidth,
     required this.memCacheHeight,
+    required this.filterQuality,
     super.key,
   });
 
@@ -219,7 +237,9 @@ class NetworkImageAttachment extends StatelessWidget {
   final int? memCacheWidth;
   final int? memCacheHeight;
   final double? borderRadius;
+  final BoxBorder? border;
   final BoxFit? fit;
+  final FilterQuality filterQuality;
   final bool withPlaceholder;
   final bool withAdaptiveColors;
   final ThumbnailErrorBuilder errorBuilder;
@@ -236,10 +256,15 @@ class NetworkImageAttachment extends StatelessWidget {
           height: height,
           width: width,
           decoration: BoxDecoration(
+            border: border,
             borderRadius: borderRadius == null
                 ? null
                 : BorderRadius.all(Radius.circular(borderRadius!)),
-            image: DecorationImage(image: imageProvider, fit: fit),
+            image: DecorationImage(
+              image: imageProvider,
+              fit: fit,
+              filterQuality: filterQuality,
+            ),
           ),
         );
       },

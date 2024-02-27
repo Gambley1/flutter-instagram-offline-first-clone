@@ -1,7 +1,8 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
-import 'package:flutter_instagram_offline_first_clone/attachments/attachments.dart';
+import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:shared/shared.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -25,6 +26,9 @@ class ParseAttachments extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final user = context.read<AppBloc>().state.user;
+    final isMine = message.sender?.id == user.id;
+
     // Create a default onAttachmentTap callback if not provided.
     var onAttachmentTap = this.onAttachmentTap;
     onAttachmentTap ??= (message, attachment) {
@@ -45,7 +49,7 @@ class ParseAttachments extends StatelessWidget {
     );
 
     final catalog = AttachmentWidgetCatalog(builders: builders);
-    return catalog.build(context, message);
+    return catalog.build(context, message, isMine: isMine);
   }
 }
 

@@ -2,13 +2,18 @@ import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/bloc/app_bloc.dart';
-import 'package:flutter_instagram_offline_first_clone/attachments/attachments.dart';
+import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:shared/shared.dart';
 
 class RepliedMessageBubble extends StatelessWidget {
-  const RepliedMessageBubble({required this.message, super.key});
+  const RepliedMessageBubble({
+    required this.message,
+    this.onTap,
+    super.key,
+  });
 
   final Message message;
+  final ValueSetter<String>? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +34,9 @@ class RepliedMessageBubble extends StatelessWidget {
     const imageWidth = 46.0;
 
     return Tappable(
-      onTap: () {},
+      onTap: message.replyMessageId == null
+          ? null
+          : () => onTap?.call(message.replyMessageId!),
       animationEffect: TappableAnimationEffect.scale,
       scaleStrength: ScaleStrength.xxxxs,
       child: Container(
@@ -72,9 +79,13 @@ class RepliedMessageBubble extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.visible,
                   ),
-                  if (!(repliedMessage?.message.isEmpty ?? true))
+                  if (!(repliedMessage?.message.isEmpty ??
+                      true &&
+                          (repliedMessage?.sharedPost?.caption.trim().isEmpty ??
+                              true)))
                     Text(
-                      repliedMessage!.message,
+                      repliedMessage?.message ??
+                          repliedMessage!.sharedPost!.caption,
                       style: context.bodyMedium?.apply(color: AppColors.white),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,

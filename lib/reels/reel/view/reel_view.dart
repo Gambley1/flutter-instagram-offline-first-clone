@@ -1,5 +1,4 @@
 import 'package:app_ui/app_ui.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -311,21 +310,15 @@ class VerticalButtons extends StatelessWidget {
               onTap: () {},
               animationEffect: TappableAnimationEffect.scale,
               scaleStrength: ScaleStrength.xxs,
-              child: Container(
-                height: AppSize.iconSize,
-                width: AppSize.iconSize,
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.all(Radius.circular(4)),
-                  border: Border.all(color: AppColors.white),
-                  image: DecorationImage(
-                    image: CachedNetworkImageProvider(
-                      block.author.avatarUrl,
-                      cacheKey: block.author.avatarUrl,
-                      maxHeight: AppSize.iconSize.toInt(),
-                      maxWidth: AppSize.iconSize.toInt(),
-                    ),
-                  ),
+              child: ImageAttachmentThumbnail(
+                image: Attachment(
+                  imageUrl: block.author.avatarUrl,
+                  originalHeight: AppSize.iconSize.toInt(),
+                  originalWidth: AppSize.iconSize.toInt(),
                 ),
+                borderRadius: 4,
+                border: Border.all(color: AppColors.white),
+                filterQuality: FilterQuality.high,
               ),
             ),
           ].insertBetween(const SizedBox(height: AppSpacing.lg)),

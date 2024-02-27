@@ -27,18 +27,17 @@ class ReelsBloc extends Bloc<ReelsEvent, ReelsState> {
     ReelsPageRequested event,
     Emitter<ReelsState> emit,
   ) async {
-    emit(state.copyWith(status: ReelsStatus.loading));
+    emit(state.loading());
     try {
       final posts =
           await _postsRepository.getPage(offset: 0, limit: 10, onlyReels: true);
       final instaBlocks = <PostBlock>[];
 
-      for (final post in posts
-          .where((element) => element.media.firstOrNull is VideoMedia?)) {
+      for (final post in posts.where((element) => element.media.isReel)) {
         final reel = post.toPostReelBlock;
         instaBlocks.add(reel);
       }
-      emit(state.copyWith(blocks: instaBlocks));
+      emit(state.populated(blocks: instaBlocks));
     } catch (error, stackTrace) {
       logE(
         '[ReelsBloc] Reels fetching failed.',
@@ -46,7 +45,7 @@ class ReelsBloc extends Bloc<ReelsEvent, ReelsState> {
         stackTrace: stackTrace,
       );
       addError(error, stackTrace);
-      emit(state.copyWith(status: ReelsStatus.failure));
+      emit(state.failure());
     }
   }
 

@@ -2,7 +2,6 @@ import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/bloc/app_bloc.dart';
-import 'package:flutter_instagram_offline_first_clone/attachments/attachments.dart';
 import 'package:flutter_instagram_offline_first_clone/chats/chat/widgets/widgets.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:go_router/go_router.dart';
@@ -13,10 +12,12 @@ import 'package:shared/shared.dart';
 class MessageBubbleContent extends StatelessWidget {
   const MessageBubbleContent({
     required this.message,
+    this.onRepliedMessageTap,
     super.key,
   });
 
   final Message message;
+  final ValueSetter<String>? onRepliedMessageTap;
 
   bool get hasNonUrlAttachments =>
       message.attachments.any((a) => a.type != AttachmentType.urlPreview.value);
@@ -26,7 +27,7 @@ class MessageBubbleContent extends StatelessWidget {
 
   bool get hasAttachments => hasUrlAttachments || hasNonUrlAttachments;
 
-  bool get hasRepliedComment => message.repliedMessage != null;
+  bool get hasRepliedMessage => message.repliedMessage != null;
 
   bool get displayBottomStatuses => hasAttachments;
 
@@ -89,13 +90,14 @@ class MessageBubbleContent extends StatelessWidget {
             message: message,
           ),
         (false, false, _) => MessageContentView(
-            hasRepliedComment: hasRepliedComment,
             message: message,
-            displayBottomStatuses: displayBottomStatuses,
             isMine: isMine,
-            effectiveTextColor: effectiveTextColor,
             isEdited: isEdited,
             hasAttachments: hasAttachments,
+            effectiveTextColor: effectiveTextColor,
+            onRepliedMessageTap: onRepliedMessageTap,
+            hasRepliedMessage: hasRepliedMessage,
+            displayBottomStatuses: displayBottomStatuses,
           ),
       },
     );
@@ -104,23 +106,25 @@ class MessageBubbleContent extends StatelessWidget {
 
 class MessageContentView extends StatelessWidget {
   const MessageContentView({
-    required this.hasRepliedComment,
+    required this.hasRepliedMessage,
     required this.message,
     required this.displayBottomStatuses,
     required this.isMine,
     required this.effectiveTextColor,
     required this.isEdited,
     required this.hasAttachments,
+    this.onRepliedMessageTap,
     super.key,
   });
 
-  final bool hasRepliedComment;
   final Message message;
-  final bool displayBottomStatuses;
-  final bool isMine;
   final Color effectiveTextColor;
+  final ValueSetter<String>? onRepliedMessageTap;
+  final bool isMine;
   final bool isEdited;
+  final bool hasRepliedMessage;
   final bool hasAttachments;
+  final bool displayBottomStatuses;
 
   @override
   Widget build(BuildContext context) {
@@ -134,10 +138,14 @@ class MessageContentView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (hasRepliedComment) RepliedMessageBubble(message: message),
+              if (hasRepliedMessage)
+                RepliedMessageBubble(
+                  message: message,
+                  onTap: onRepliedMessageTap,
+                ),
               if (displayBottomStatuses)
                 Padding(
-                  padding: !hasRepliedComment
+                  padding: !hasRepliedMessage
                       ? EdgeInsets.zero
                       : const EdgeInsets.only(
                           top: AppSpacing.xs,
@@ -231,9 +239,7 @@ class MessageSharedPost extends StatelessWidget {
                   AspectRatio(
                     aspectRatio: 1,
                     child: ImageAttachmentThumbnail(
-                      image: Attachment(
-                        imageUrl: sharedPost.firstMediaUrl,
-                      ),
+                      image: Attachment(imageUrl: sharedPost.firstMediaUrl),
                       fit: BoxFit.cover,
                     ),
                   ),

@@ -3,7 +3,6 @@ import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
-import 'package:flutter_instagram_offline_first_clone/attachments/attachments.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/post/post.dart';
 import 'package:flutter_instagram_offline_first_clone/home/home.dart';
 import 'package:flutter_instagram_offline_first_clone/search/view/search_view.dart';
@@ -252,9 +251,7 @@ class TimelineLoading extends StatelessWidget {
         ],
       ),
       itemCount: 20,
-      itemBuilder: (context, index) {
-        return const ShimmerPlaceholder();
-      },
+      itemBuilder: (_, __) => const ShimmerPlaceholder(),
     );
   }
 }
@@ -297,20 +294,14 @@ class TimelineError extends StatelessWidget {
                           'Try again',
                           style: context.labelLarge,
                         ),
-                      ].insertBetween(
-                        const SizedBox(width: AppSpacing.md),
-                      ),
+                      ].insertBetween(const SizedBox(width: AppSpacing.md)),
                     ),
                   ),
                 ),
               ),
             ),
           ),
-        ].insertBetween(
-          const SizedBox(
-            height: AppSpacing.sm,
-          ),
-        ),
+        ].insertBetween(const SizedBox(height: AppSpacing.sm)),
       ),
     );
   }

@@ -1,5 +1,9 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:async';
+
 import 'package:app_ui/app_ui.dart';
 import 'package:chats_repository/chats_repository.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,6 +14,46 @@ import 'package:flutter_instagram_offline_first_clone/stories/user_stories/user_
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:shared/shared.dart';
 import 'package:user_repository/user_repository.dart';
+
+/// The signature of a callback that uses message.
+typedef MessageCallback = void Function(Message message);
+
+class MessageSettings extends Equatable {
+  const MessageSettings._({
+    required this.onReplyTap,
+    required this.onEditTap,
+    required this.onDeleteTap,
+  });
+
+  MessageSettings.create({
+    MessageCallback? onEditTap,
+    MessageCallback? onReplyTap,
+    MessageCallback? onDeleteTap,
+  }) : this._(
+          onReplyTap: onReplyTap ?? (_) {},
+          onEditTap: onEditTap ?? (_) {},
+          onDeleteTap: onDeleteTap ?? (_) {},
+        );
+
+  final MessageCallback onReplyTap;
+  final MessageCallback onEditTap;
+  final MessageCallback onDeleteTap;
+
+  @override
+  List<Object?> get props => [onReplyTap, onEditTap, onDeleteTap];
+
+  MessageSettings copyWith({
+    MessageCallback? onReplyTap,
+    MessageCallback? onEditTap,
+    MessageCallback? onDeleteTap,
+  }) {
+    return MessageSettings._(
+      onReplyTap: onReplyTap ?? this.onReplyTap,
+      onEditTap: onEditTap ?? this.onEditTap,
+      onDeleteTap: onDeleteTap ?? this.onDeleteTap,
+    );
+  }
+}
 
 class ChatPage extends StatelessWidget {
   const ChatPage({required this.chatId, required this.chat, super.key});
@@ -47,19 +91,7 @@ class _ChatViewState extends State<ChatView> {
   late ScrollOffsetController _scrollOffsetController;
   late ScrollOffsetListener _scrollOffsetListener;
 
-  @override
-  void initState() {
-    super.initState();
-    _messageInputController = MessageInputController();
-    _focusNode = FocusNode();
-
-    _itemScrollController = ItemScrollController();
-    _itemPositionsListener = ItemPositionsListener.create();
-    _scrollOffsetController = ScrollOffsetController();
-    _scrollOffsetListener = ScrollOffsetListener.create();
-  }
-
-  Future<MessageAction?> onMessageTap(
+  Future<MessageAction?> _onMessageTap(
     TapUpDetails details,
     String messageId, {
     required bool isMine,
@@ -133,6 +165,22 @@ class _ChatViewState extends State<ChatView> {
     });
   }
 
+  void _delete(Message message) {
+    context.read<ChatBloc>().add(ChatMessageDeleteRequested(message.id));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _messageInputController = MessageInputController();
+    _focusNode = FocusNode();
+
+    _itemScrollController = ItemScrollController();
+    _itemPositionsListener = ItemPositionsListener.create();
+    _scrollOffsetController = ScrollOffsetController();
+    _scrollOffsetListener = ScrollOffsetListener.create();
+  }
+
   @override
   void dispose() {
     _messageInputController.dispose();
@@ -142,80 +190,50 @@ class _ChatViewState extends State<ChatView> {
 
   @override
   Widget build(BuildContext context) {
-    final user = context.select((AppBloc bloc) => bloc.state.user);
-    logI('Build');
+    final user = context.read<AppBloc>().state.user;
+    bool isMine(Message message) {
+      return message.sender?.id == user.id;
+    }
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return AppScaffold(
-          appBar: ChatAppBar(participant: widget.chat.participant),
-          releaseFocus: true,
-          // resizeToAvoidBottomInset: true,
-          body: Column(
-            children: [
-              Expanded(
-                child: BlocBuilder<ChatBloc, ChatState>(
-                  builder: (context, state) {
-                    final messages = state.messages;
-                    return ChatMessagesListView(
-                      messages: messages,
-                      itemScrollController: _itemScrollController,
-                      itemPositionsListener: _itemPositionsListener,
-                      scrollOffsetController: _scrollOffsetController,
-                      scrollOffsetListener: _scrollOffsetListener,
-                      onMessageTap: onMessageTap,
-                      messageBuilder: (
-                        context,
-                        message,
-                        messages,
-                        defaultMessageWidget, {
-                        padding,
-                      }) {
-                        final isMine = message.sender?.id == user.id;
-
-                        void reply(Message message) => _reply.call(
-                              message.copyWith(
-                                replyMessageUsername: isMine
-                                    ? user.username
-                                    : widget.chat.participant.username,
-                              ),
-                            );
-
-                        final child = defaultMessageWidget.copyWith(
-                          onReplyTap: reply,
-                          onEditTap: _edit,
-                          onDeleteTap: (message) => context
-                              .read<ChatBloc>()
-                              .add(ChatMessageDeleteRequested(message.id)),
-                        );
-
-                        return SwipeableMessage(
-                          id: message.id,
-                          onSwiped: (_) => reply(message),
-                          child: Padding(
-                            padding: padding ?? EdgeInsets.zero,
-                            child: child,
-                          ),
-                        );
-                      },
-                    );
-                  },
-                ),
-              ),
-              Builder(
-                builder: (context) {
-                  return ChatMessageTextField(
-                    focusNode: _focusNode,
-                    itemScrollController: _itemScrollController,
-                    messageInputController: _messageInputController,
-                    chat: widget.chat,
-                  );
-                },
-              ),
-            ],
+    return AppScaffold(
+      appBar: ChatAppBar(participant: widget.chat.participant),
+      releaseFocus: true,
+      body: Column(
+        children: [
+          Expanded(
+            child: BlocBuilder<ChatBloc, ChatState>(
+              builder: (context, state) {
+                final messages = state.messages;
+                return ChatMessagesListView(
+                  messages: messages,
+                  onMessageTap: _onMessageTap,
+                  messageSettings: MessageSettings.create(
+                    onReplyTap: (message) => _reply.call(
+                      message.copyWith(
+                        replyMessageUsername: isMine(message)
+                            ? user.username
+                            : widget.chat.participant.username,
+                      ),
+                    ),
+                    onEditTap: _edit,
+                    onDeleteTap: _delete,
+                  ),
+                  itemScrollController: _itemScrollController,
+                  itemPositionsListener: _itemPositionsListener,
+                  scrollOffsetController: _scrollOffsetController,
+                  scrollOffsetListener: _scrollOffsetListener,
+                );
+              },
+            ),
           ),
-        );
-      },
+          ChatMessageTextField(
+            focusNode: _focusNode,
+            itemScrollController: _itemScrollController,
+            messageInputController: _messageInputController,
+            chat: widget.chat,
+          ),
+        ],
+      ),
     );
   }
 }
@@ -228,13 +246,13 @@ class ChatMessagesListView extends StatefulWidget {
     required this.itemPositionsListener,
     required this.scrollOffsetController,
     required this.scrollOffsetListener,
-    this.messageBuilder,
+    required this.messageSettings,
     super.key,
   });
 
   final List<Message> messages;
   final MessageTapCallback<MessageAction> onMessageTap;
-  final MessageBuilder? messageBuilder;
+  final MessageSettings messageSettings;
   final ItemScrollController itemScrollController;
   final ItemPositionsListener itemPositionsListener;
   final ScrollOffsetController scrollOffsetController;
@@ -246,7 +264,10 @@ class ChatMessagesListView extends StatefulWidget {
 
 class _ChatMessagesListViewState extends State<ChatMessagesListView> {
   final Map<String, int> _messagesIndex = {};
+  final _highlightMessageId = ValueNotifier<String?>(null);
   final _showScrollToBottom = ValueNotifier(false);
+
+  Timer? _highlightTimer;
 
   @override
   void initState() {
@@ -258,18 +279,42 @@ class _ChatMessagesListViewState extends State<ChatMessagesListView> {
   void didUpdateWidget(covariant ChatMessagesListView oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.messages != widget.messages) {
-      updateMessagesIndex(widget.messages);
+      _updateMessagesIndex(widget.messages);
     }
   }
 
-  void updateMessagesIndex(List<Message> messages) {
+  void _updateMessagesIndex(List<Message> messages) {
     for (var index = 0; index < messages.length; index++) {
       _messagesIndex[messages[index].id] = index;
     }
   }
 
+  void _onRepliedMessageTap(String repliedMessageId, List<Message> messages) {
+    final index = messages.indexWhere((m) => m.id == repliedMessageId);
+    if (index == -1) return;
+    widget.itemScrollController.scrollTo(
+      index: messages.length - 1 - index,
+      duration: 350.ms,
+      curve: Curves.easeInOut,
+      alignment: 0.2,
+    );
+    _highlightMessageId.value = repliedMessageId;
+    _highlightTimer?.cancel();
+    _highlightTimer = Timer(1500.ms, () {
+      _highlightMessageId.value = null;
+    });
+  }
+
+  @override
+  void dispose() {
+    _highlightMessageId.dispose();
+    _showScrollToBottom.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final settings = widget.messageSettings;
     final messages = widget.messages;
 
     return Stack(
@@ -335,48 +380,61 @@ class _ChatMessagesListViewState extends State<ChatMessagesListView> {
                 );
               }
 
-              Widget messageWidget = MessageBubble(
-                key: ValueKey(message.id),
-                message: message,
-                onMessageTap: widget.onMessageTap,
-                borderRadius: ({required isMine}) => BorderRadius.only(
-                  topLeft: isMine
-                      ? const Radius.circular(22)
-                      : (isNextUserSame && !hasTimeDifferenceWithNext)
-                          ? const Radius.circular(4)
-                          : const Radius.circular(22),
-                  topRight: !isMine
-                      ? const Radius.circular(22)
-                      : (isNextUserSame && !hasTimeDifferenceWithNext)
-                          ? const Radius.circular(4)
-                          : const Radius.circular(22),
-                  bottomLeft: isMine
-                      ? const Radius.circular(22)
-                      : (isPreviusUserSame && !hasTimeDifferenceWithPrevious)
-                          ? const Radius.circular(4)
-                          : Radius.zero,
-                  bottomRight: !isMine
-                      ? const Radius.circular(22)
-                      : (isPreviusUserSame && !hasTimeDifferenceWithPrevious)
-                          ? const Radius.circular(4)
-                          : Radius.zero,
-                ),
+              final messageWidget = ValueListenableBuilder<String?>(
+                valueListenable: _highlightMessageId,
+                builder: (context, highlightedId, child) {
+                  return MessageBubble(
+                    key: ValueKey(message.id),
+                    shouldHighlight: highlightedId == message.id,
+                    onEditTap: settings.onEditTap,
+                    onReplyTap: settings.onReplyTap,
+                    onDeleteTap: settings.onDeleteTap,
+                    onRepliedMessageTap: (repliedMessageId) =>
+                        _onRepliedMessageTap(repliedMessageId, messages),
+                    message: message,
+                    onMessageTap: widget.onMessageTap,
+                    borderRadius: ({required isMine}) => BorderRadius.only(
+                      topLeft: isMine
+                          ? const Radius.circular(22)
+                          : (isNextUserSame && !hasTimeDifferenceWithNext)
+                              ? const Radius.circular(4)
+                              : const Radius.circular(22),
+                      topRight: !isMine
+                          ? const Radius.circular(22)
+                          : (isNextUserSame && !hasTimeDifferenceWithNext)
+                              ? const Radius.circular(4)
+                              : const Radius.circular(22),
+                      bottomLeft: isMine
+                          ? const Radius.circular(22)
+                          : (isPreviusUserSame &&
+                                  !hasTimeDifferenceWithPrevious)
+                              ? const Radius.circular(4)
+                              : Radius.zero,
+                      bottomRight: !isMine
+                          ? const Radius.circular(22)
+                          : (isPreviusUserSame &&
+                                  !hasTimeDifferenceWithPrevious)
+                              ? const Radius.circular(4)
+                              : Radius.zero,
+                    ),
+                  );
+                },
               );
 
-              if (widget.messageBuilder != null) {
-                messageWidget = widget.messageBuilder!.call(
-                  context,
-                  message,
-                  messages,
-                  messageWidget as MessageBubble,
-                  padding: isFirst
-                      ? const EdgeInsets.only(bottom: AppSpacing.md)
-                      : isLast
-                          ? const EdgeInsets.only(top: AppSpacing.md)
-                          : null,
-                );
-              }
-              return messageWidget;
+              final padding = isFirst
+                  ? const EdgeInsets.only(bottom: AppSpacing.md)
+                  : isLast
+                      ? const EdgeInsets.only(top: AppSpacing.md)
+                      : null;
+
+              return SwipeableMessage(
+                id: message.id,
+                onSwiped: (_) => settings.onReplyTap.call(message),
+                child: Padding(
+                  padding: padding ?? EdgeInsets.zero,
+                  child: messageWidget,
+                ),
+              );
             },
             separatorBuilder: (context, index) {
               final isLast = messages.length - 1 - index == 1;
@@ -431,6 +489,17 @@ class _ChatMessagesListViewState extends State<ChatMessagesListView> {
               ),
             );
           },
+        ),
+        Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          child: FloatingDateSeparator(
+            reverse: true,
+            messages: messages,
+            itemCount: messages.length,
+            itemPositionsListener: widget.itemPositionsListener.itemPositions,
+          ),
         ),
       ],
     );

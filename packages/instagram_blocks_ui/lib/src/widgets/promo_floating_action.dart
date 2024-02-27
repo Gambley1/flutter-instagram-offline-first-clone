@@ -1,7 +1,9 @@
 import 'package:app_ui/app_ui.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_animate/flutter_animate.dart'
+    hide NumDurationExtensions;
+import 'package:instagram_blocks_ui/src/attachments/index.dart';
+import 'package:shared/shared.dart';
 import 'package:sprung/sprung.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -32,23 +34,18 @@ class PromoFloatingAction extends StatelessWidget {
         vertical: AppSpacing.sm,
       ),
       child: Tappable(
-        color: Colors.blue.shade400,
+        color: AppColors.blue,
         borderRadius: 4,
         animationEffect: TappableAnimationEffect.none,
         onTap: () => launchUrl(Uri.parse(url)),
         child: ListTile(
-          leading: Container(
-            width: 42,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(2),
-              image: const DecorationImage(
-                image: CachedNetworkImageProvider(
+          leading: ImageAttachmentThumbnail(
+            image: Attachment(
+              imageUrl:
                   'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Instagram_icon.png/600px-Instagram_icon.png',
-                  cacheKey:
-                      'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Instagram_icon.png/600px-Instagram_icon.png',
-                ),
-              ),
             ),
+            width: 42,
+            borderRadius: 2,
           ),
           horizontalTitleGap: AppSpacing.sm,
           title: Text(

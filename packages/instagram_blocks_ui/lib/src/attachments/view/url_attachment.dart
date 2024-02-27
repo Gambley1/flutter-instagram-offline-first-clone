@@ -1,8 +1,6 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_instagram_offline_first_clone/app/app.dart';
-import 'package:flutter_instagram_offline_first_clone/attachments/widgets/thumnail/thumbnail.dart';
+import 'package:instagram_blocks_ui/src/attachments/widgets/widgets.dart';
 import 'package:shared/shared.dart';
 
 /// {@template url_attachment}
@@ -14,6 +12,7 @@ class UrlAttachment extends StatelessWidget {
     required this.message,
     required this.urlAttachment,
     this.hostDisplayName,
+    this.isMine = true,
     super.key,
   });
 
@@ -26,11 +25,11 @@ class UrlAttachment extends StatelessWidget {
   /// Host display name.
   final String? hostDisplayName;
 
+  /// Whether the message this url attachment is attached to is mine.
+  final bool isMine;
+
   @override
   Widget build(BuildContext context) {
-    final user = context.select((AppBloc bloc) => bloc.state.user);
-    final isMine = message.sender?.id == user.id;
-
     final accentColor = isMine ? AppColors.white : const Color(0xff337eff);
 
     return Container(

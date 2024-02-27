@@ -4,9 +4,14 @@ import 'package:intl/intl.dart';
 import 'package:shared/shared.dart';
 
 class MessageDateTimeSeparator extends StatelessWidget {
-  const MessageDateTimeSeparator({required this.date, super.key});
+  const MessageDateTimeSeparator({
+    required this.date,
+    super.key,
+    this.floating = false,
+  });
 
   final DateTime date;
+  final bool floating;
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +23,7 @@ class MessageDateTimeSeparator extends StatelessWidget {
           vertical: AppSpacing.xxs,
         ),
         decoration: BoxDecoration(
-          color: AppColors.dark.withOpacity(.7),
+          color: floating ? AppColors.dark.withOpacity(.7) : AppColors.dark,
           borderRadius: const BorderRadius.all(Radius.circular(22)),
         ),
         child: Text(

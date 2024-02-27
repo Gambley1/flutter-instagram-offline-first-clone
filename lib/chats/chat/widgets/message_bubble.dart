@@ -13,14 +13,6 @@ typedef MessageTapCallback<T> = Future<T?> Function(
   required bool hasSharedPost,
 });
 
-typedef MessageBuilder = Widget Function(
-  BuildContext,
-  Message message,
-  List<Message>,
-  MessageBubble defaultMessageWidget, {
-  EdgeInsets? padding,
-});
-
 class MessageBubble extends StatelessWidget {
   const MessageBubble({
     required this.message,
@@ -28,39 +20,26 @@ class MessageBubble extends StatelessWidget {
     this.onEditTap,
     this.onReplyTap,
     this.onDeleteTap,
+    this.onRepliedMessageTap,
     this.borderRadius,
+    this.shouldHighlight = false,
     super.key,
   });
 
+  final Message message;
   final ValueSetter<Message>? onReplyTap;
   final ValueSetter<Message>? onEditTap;
   final ValueSetter<Message>? onDeleteTap;
-  final Message message;
+  final ValueSetter<String>? onRepliedMessageTap;
   final BorderRadiusGeometry Function({required bool isMine})? borderRadius;
   final MessageTapCallback<MessageAction> onMessageTap;
-
-  MessageBubble copyWith({
-    ValueSetter<Message>? onReplyTap,
-    ValueSetter<Message>? onEditTap,
-    ValueSetter<Message>? onDeleteTap,
-    Message? message,
-    BorderRadiusGeometry Function({required bool isMine})? borderRadius,
-    MessageTapCallback<MessageAction>? onMessageTap,
-  }) =>
-      MessageBubble(
-        message: message ?? this.message,
-        onMessageTap: onMessageTap ?? this.onMessageTap,
-        onReplyTap: onReplyTap ?? this.onReplyTap,
-        onEditTap: onEditTap ?? this.onEditTap,
-        onDeleteTap: onDeleteTap ?? this.onDeleteTap,
-        borderRadius: borderRadius ?? this.borderRadius,
-      );
+  final bool shouldHighlight;
 
   @override
   Widget build(BuildContext context) {
     final message = this.message;
 
-    final user = context.select((AppBloc bloc) => bloc.state.user);
+    final user = context.read<AppBloc>().state.user;
     final isMine = message.sender?.id == user.id;
     final messageAlignment = !isMine ? Alignment.topLeft : Alignment.topRight;
 
@@ -87,22 +66,33 @@ class MessageBubble extends StatelessWidget {
             };
         action();
       },
-      child: FractionallySizedBox(
-        alignment: messageAlignment,
-        widthFactor: 0.9,
-        child: Align(
+      child: AnimatedContainer(
+        duration: 350.ms,
+        curve: Curves.fastOutSlowIn,
+        padding: const EdgeInsets.symmetric(vertical: AppSpacing.xxs),
+        decoration: BoxDecoration(
+          color: shouldHighlight ? AppColors.blue.withOpacity(.2) : null,
+        ),
+        child: FractionallySizedBox(
           alignment: messageAlignment,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-            child: ClipPath(
-              clipper: ShapeBorderClipper(
-                shape: RoundedRectangleBorder(
-                  borderRadius: borderRadius?.call(isMine: isMine) ??
-                      const BorderRadius.all(Radius.circular(22)),
+          widthFactor: 0.85,
+          child: Align(
+            alignment: messageAlignment,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+              child: ClipPath(
+                clipper: ShapeBorderClipper(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: borderRadius?.call(isMine: isMine) ??
+                        const BorderRadius.all(Radius.circular(22)),
+                  ),
                 ),
-              ),
-              child: RepaintBoundary(
-                child: MessageBubbleContent(message: message),
+                child: RepaintBoundary(
+                  child: MessageBubbleContent(
+                    message: message,
+                    onRepliedMessageTap: onRepliedMessageTap,
+                  ),
+                ),
               ),
             ),
           ),

@@ -1,6 +1,6 @@
 import 'package:app_ui/app_ui.dart' hide FlexStringExtensions;
 import 'package:flutter/material.dart';
-import 'package:flutter_instagram_offline_first_clone/attachments/view/view.dart';
+import 'package:instagram_blocks_ui/src/attachments/index.dart';
 import 'package:shared/shared.dart';
 
 part 'fallback_attachment_builder.dart';
@@ -51,8 +51,9 @@ abstract class AttachmentWidgetBuilder {
   Widget build(
     BuildContext context,
     Message message,
-    Map<String, List<Attachment>> attachments,
-  );
+    Map<String, List<Attachment>> attachments, {
+    required bool isMine,
+  });
 
   /// Asserts that this builder can handle the given [message] and
   /// [attachments].

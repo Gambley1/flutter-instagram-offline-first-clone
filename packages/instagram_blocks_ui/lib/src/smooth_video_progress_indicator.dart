@@ -1,3 +1,4 @@
+import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_video_progress/smooth_video_progress.dart';
 import 'package:video_player/video_player.dart';
@@ -20,9 +21,9 @@ class SmoothVideoProgressIndicator extends StatelessWidget {
           value: value,
           allowScrubbing: true,
           padding: const EdgeInsets.only(top: 5),
-          colors: VideoProgressColors(
-            playedColor: Colors.grey.shade300,
-            backgroundColor: Colors.grey.shade800,
+          colors: const VideoProgressColors(
+            playedColor: AppColors.brightGrey,
+            backgroundColor: AppColors.dark,
           ),
         );
       },

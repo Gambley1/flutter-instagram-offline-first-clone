@@ -1,6 +1,7 @@
 import 'package:app_ui/app_ui.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:instagram_blocks_ui/src/attachments/index.dart';
+import 'package:shared/shared.dart';
 
 typedef ImageThumbnailBuilder = Widget Function(
   BuildContext context,
@@ -61,16 +62,11 @@ class _PostThumbnailImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final thumbnailImage = imageThumbnailBuilder?.call(context, mediaUrl) ??
-        CachedNetworkImage(
-          imageUrl: mediaUrl,
-          cacheKey: mediaUrl,
+        ImageAttachmentThumbnail(
+          image: Attachment(imageUrl: mediaUrl),
           memCacheHeight: 225,
           memCacheWidth: 225,
-          imageBuilder: (context, imageProvider) => Image(
-            image: imageProvider,
-            filterQuality: FilterQuality.high,
-            fit: BoxFit.cover,
-          ),
+          fit: BoxFit.cover,
         );
 
     final icon = Icon(

@@ -1,8 +1,7 @@
 // ignore_for_file: comment_references
 
-import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_instagram_offline_first_clone/attachments/widgets/builder/builder.dart';
+import 'package:instagram_blocks_ui/src/attachments/widgets/widgets.dart';
 import 'package:shared/shared.dart';
 
 /// {@template attachment_widget_catalog}
@@ -29,7 +28,7 @@ class AttachmentWidgetCatalog {
   /// that can handle the message and attachments.
   ///
   /// Throws an [Exception] if no builder is found for the message.
-  Widget build(BuildContext context, Message message) {
+  Widget build(BuildContext context, Message message, {required bool isMine}) {
     assert(!message.isDeleted, 'Cannot build attachment for deleted message');
 
     assert(
@@ -41,7 +40,7 @@ class AttachmentWidgetCatalog {
     final attachments = message.attachments.grouped;
     for (final builder in builders) {
       if (builder.canHandle(message, attachments)) {
-        return builder.build(context, message, attachments);
+        return builder.build(context, message, attachments, isMine: isMine);
       }
     }
 
@@ -50,6 +49,14 @@ class AttachmentWidgetCatalog {
 }
 
 extension on List<Attachment> {
+  Map<T, List<S>> groupBy<S, T>(Iterable<S> values, T Function(S) key) {
+    final map = <T, List<S>>{};
+    for (final element in values) {
+      (map[key(element)] ??= []).add(element);
+    }
+    return map;
+  }
+
   /// Groups the attachments by their type.
   Map<String, List<Attachment>> get grouped {
     return groupBy(

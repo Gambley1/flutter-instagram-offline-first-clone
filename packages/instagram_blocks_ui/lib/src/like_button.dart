@@ -29,13 +29,13 @@ class LikeButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Tappable(
-      color: Colors.transparent,
+      color: AppColors.transparent,
       animationEffect: tapEffect,
       scaleStrength: scaleStrength,
       onTap: onLikedTap,
       child: Icon(
         isLiked ? Icons.favorite : Icons.favorite_outline,
-        color: isLiked ? Colors.red : color,
+        color: isLiked ? AppColors.red : color,
         size: size ?? AppSize.iconSize,
       ),
     );

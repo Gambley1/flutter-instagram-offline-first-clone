@@ -37,8 +37,9 @@ class UrlAttachmentBuilder extends AttachmentWidgetBuilder {
   Widget build(
     BuildContext context,
     Message message,
-    Map<String, List<Attachment>> attachments,
-  ) {
+    Map<String, List<Attachment>> attachments, {
+    required bool isMine,
+  }) {
     assert(debugAssertCanHandle(message, attachments), '');
 
     final urlPreviews = attachments[AttachmentType.urlPreview.value]!;
@@ -66,6 +67,7 @@ class UrlAttachmentBuilder extends AttachmentWidgetBuilder {
           message: message,
           urlAttachment: urlPreview,
           hostDisplayName: hostDisplayName,
+          isMine: isMine,
         ),
       );
     }
