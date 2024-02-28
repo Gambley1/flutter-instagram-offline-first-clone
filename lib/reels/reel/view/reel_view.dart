@@ -113,52 +113,7 @@ class _ReelState extends State<Reel> {
           withSoundButton: false,
           withPlayControll: false,
           controller: _videoController,
-          loadingBuilder: (context) => Stack(
-            children: [
-              Shimmer.fromColors(
-                baseColor: AppColors.grey,
-                highlightColor: const Color(0xFFAFAFAF),
-                child: Container(
-                  width: double.infinity,
-                  height: double.maxFinite,
-                  color: const Color(0xff696969),
-                ),
-              ),
-              Shimmer.fromColors(
-                baseColor: AppColors.grey,
-                highlightColor: const Color(0xFFAFAFAF),
-                child: Padding(
-                  padding: const EdgeInsetsDirectional.only(
-                    end: 25,
-                    bottom: 20,
-                    start: 15,
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const CircleAvatar(
-                        radius: 20,
-                        backgroundColor: AppColors.dark,
-                      ),
-                      const SizedBox(height: AppSpacing.xs),
-                      Container(
-                        height: 15,
-                        width: 150,
-                        color: AppColors.dark,
-                      ),
-                      const SizedBox(height: AppSpacing.xs),
-                      Container(
-                        height: 15,
-                        width: 200,
-                        color: AppColors.dark,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
+          loadingBuilder: (context) => const ReelShimmerLoading(),
           stackedWidgets: [
             VerticalButtons(block),
             Padding(
@@ -199,6 +154,60 @@ class _ReelState extends State<Reel> {
             alignment: Alignment.bottomCenter,
             child: SmoothVideoProgressIndicator(controller: _videoController!),
           ),
+      ],
+    );
+  }
+}
+
+class ReelShimmerLoading extends StatelessWidget {
+  const ReelShimmerLoading({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Shimmer.fromColors(
+          baseColor: AppColors.grey,
+          highlightColor: const Color(0xFFAFAFAF),
+          child: Container(
+            width: double.infinity,
+            height: double.maxFinite,
+            color: AppColors.emphasizeGrey,
+          ),
+        ),
+        Shimmer.fromColors(
+          baseColor: AppColors.grey,
+          highlightColor: const Color(0xFFAFAFAF),
+          child: Padding(
+            padding: const EdgeInsetsDirectional.only(
+              end: 25,
+              bottom: 20,
+              start: 15,
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const CircleAvatar(
+                  radius: 20,
+                  backgroundColor: AppColors.dark,
+                ),
+                const SizedBox(height: AppSpacing.xs),
+                Container(
+                  height: 15,
+                  width: 150,
+                  color: AppColors.dark,
+                ),
+                const SizedBox(height: AppSpacing.xs),
+                Container(
+                  height: 15,
+                  width: 200,
+                  color: AppColors.dark,
+                ),
+              ],
+            ),
+          ),
+        ),
       ],
     );
   }

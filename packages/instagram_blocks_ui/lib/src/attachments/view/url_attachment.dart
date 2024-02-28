@@ -30,7 +30,7 @@ class UrlAttachment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final accentColor = isMine ? AppColors.white : const Color(0xff337eff);
+    final accentColor = isMine ? AppColors.white : AppColors.deepBlue;
 
     return Container(
       padding: const EdgeInsets.fromLTRB(

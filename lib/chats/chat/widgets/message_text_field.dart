@@ -518,13 +518,13 @@ class EditingMessagePreview extends StatelessWidget {
       ),
       leading: const Icon(
         Icons.edit_outlined,
-        color: Color(0xff337eff),
+        color: AppColors.deepBlue,
       ),
       title: Text(
         'Editing',
         style: context.bodyLarge?.copyWith(
           fontWeight: AppFontWeight.bold,
-          color: const Color(0xff337eff),
+          color: AppColors.deepBlue,
         ),
       ),
       subtitle: Text(
@@ -573,7 +573,7 @@ class OGAttachmentPreview extends StatelessWidget {
       ),
       leading: const Icon(
         Icons.link,
-        color: Color(0xff337eff),
+        color: AppColors.deepBlue,
       ),
       title: attachmentTitle == null
           ? null
@@ -583,7 +583,7 @@ class OGAttachmentPreview extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               style: context.bodyLarge?.copyWith(
                 fontWeight: AppFontWeight.bold,
-                color: const Color(0xff337eff),
+                color: AppColors.deepBlue,
               ),
             ),
       subtitle: attachmentText == null

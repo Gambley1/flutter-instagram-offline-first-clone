@@ -68,7 +68,7 @@ class SwipeableMessage extends StatelessWidget {
                     child: Icon(
                       Icons.reply_rounded,
                       size: ui.lerpDouble(0, 18, progress),
-                      color: const Color(0xff337eff),
+                      color: AppColors.deepBlue,
                     ),
                   ),
                 ),

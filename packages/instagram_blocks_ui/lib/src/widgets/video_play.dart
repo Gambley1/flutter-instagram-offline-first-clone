@@ -334,15 +334,11 @@ class SoundToggleButton extends StatelessWidget {
             height: 35,
             width: 35,
             decoration: BoxDecoration(
-              color: const Color.fromARGB(165, 58, 58, 58),
-              border: Border.all(
-                color: const Color.fromARGB(
-                  45,
-                  250,
-                  250,
-                  250,
-                ),
+              color: context.customReversedAdaptiveColor(
+                light: AppColors.lightDark,
+                dark: AppColors.dark,
               ),
+              border: Border.all(color: AppColors.borderOutline),
               shape: BoxShape.circle,
             ),
             child: Center(

@@ -61,7 +61,7 @@ class ShimmerPlaceholder extends StatelessWidget {
     final baseColor = withAdaptiveColors
         ? context.customReversedAdaptiveColor(
             dark: this.baseColor,
-            light: baseColorLight ?? Colors.white.withOpacity(.4),
+            light: baseColorLight ?? AppColors.white.withOpacity(.4),
           )
         : this.baseColor;
     final highlightColor = withAdaptiveColors
