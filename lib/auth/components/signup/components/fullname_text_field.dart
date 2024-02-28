@@ -43,7 +43,7 @@ class _FullNameTextFieldState extends State<FullNameTextField> {
     return AppTextField(
       filled: true,
       focusNode: _focusNode,
-      hintText: context.l10n.name,
+      hintText: context.l10n.nameText,
       textInputAction: TextInputAction.next,
       textCapitalization: TextCapitalization.words,
       autofillHints: const [AutofillHints.givenName],

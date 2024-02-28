@@ -24,14 +24,14 @@ class LocaleSelector extends StatelessWidget {
         DropdownMenuItem(
           value: const Locale('en', 'US'),
           child: Text(
-            l10n.enOption,
+            l10n.enOptionText,
             key: const Key('localeSelector_en_dropdownMenuItem'),
           ),
         ),
         DropdownMenuItem(
           value: const Locale('ru', 'RU'),
           child: Text(
-            l10n.ruOption,
+            l10n.ruOptionText,
             key: const Key('localeSelector_ru_dropdownMenuItem'),
           ),
         ),
@@ -47,7 +47,7 @@ class LocaleModalOption extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       leading: const LocaleSelector(),
-      title: Text(context.l10n.language),
+      title: Text(context.l10n.languageText),
     );
   }
 }

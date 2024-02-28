@@ -284,11 +284,12 @@ class VerticalButtons extends StatelessWidget {
                   : () => context.showListOptionsModal(
                         options: [
                           ModalOption(
-                            name: context.l10n.delete,
-                            actionTitle: 'Delete reel',
+                            name: context.l10n.deleteText,
+                            actionTitle: context.l10n.deleteReelText,
                             actionContent:
-                                'Are you sure you want to delete this reel?',
-                            actionYesText: context.l10n.delete,
+                                context.l10n.reelDeleteConfirmationText,
+                            actionYesText: context.l10n.deleteText,
+                            actionNoText: context.l10n.cancelText,
                             icon: Assets.icons.trash.svg(
                               colorFilter: const ColorFilter.mode(
                                 AppColors.red,

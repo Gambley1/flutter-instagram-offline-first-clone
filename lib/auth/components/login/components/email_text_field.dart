@@ -48,7 +48,7 @@ class _EmailTextFieldState extends State<EmailTextField> {
       key: const ValueKey('loginEmailTextField'),
       filled: true,
       focusNode: _focusNode,
-      hintText: context.l10n.email,
+      hintText: context.l10n.emailText,
       enabled: !isLoading,
       textInputAction: TextInputAction.next,
       textInputType: TextInputType.emailAddress,

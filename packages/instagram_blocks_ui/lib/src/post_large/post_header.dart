@@ -72,7 +72,7 @@ class PostHeader extends StatelessWidget {
         : Text(
             author.username,
             overflow: TextOverflow.ellipsis,
-                maxLines: 1,
+            maxLines: 1,
             style: context.titleMedium?.apply(color: color),
           );
 
@@ -111,7 +111,7 @@ class PostHeader extends StatelessWidget {
                         BlockSettings
                             .instance.postTextDelegate.sponsoredPostText,
                         overflow: TextOverflow.ellipsis,
-                maxLines: 1,
+                        maxLines: 1,
                         style: context.bodyMedium?.apply(color: color),
                       ),
                     ],
@@ -202,9 +202,11 @@ class PostOptionsButton extends StatelessWidget {
           ),
           ModalOption(
             name: BlockSettings.instance.postTextDelegate.deleteText,
-            actionTitle: 'Delete post',
-            actionContent: 'Are you sure you want to delete this post?',
+            actionTitle: BlockSettings.instance.postTextDelegate.deletePostText,
+            actionContent: BlockSettings
+                .instance.postTextDelegate.deletePostConfirmationText,
             actionYesText: BlockSettings.instance.postTextDelegate.deleteText,
+            actionNoText: BlockSettings.instance.postTextDelegate.cancelText,
             icon: Assets.icons.trash.svg(
               colorFilter:
                   const ColorFilter.mode(AppColors.red, BlendMode.srcIn),

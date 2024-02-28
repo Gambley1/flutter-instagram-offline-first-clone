@@ -41,9 +41,10 @@ class _UserProfileListTileState extends State<UserProfileListTile> {
 
   void _removeFollower(BuildContext context) {
     context.confirmAction(
-      title: 'Remove Follower',
-      content: 'Are you sure you want to remove follower?',
-      yesText: 'Remove',
+      title: context.l10n.removeFollowerText,
+      content: context.l10n.removeFollowerConfirmationText,
+      yesText: context.l10n.removeText,
+      noText: context.l10n.cancelText,
       fn: () => context
           .read<UserProfileBloc>()
           .add(UserProfileRemoveFollowerRequested(widget.user.id)),
@@ -190,7 +191,7 @@ class UserActionButton extends StatelessWidget {
 
     late final Widget followerRemoveButton = UserProfileButton(
       onTap: onTap,
-      label: 'Remove',
+      label: context.l10n.removeText,
       padding: padding,
       textStyle: textStyle,
       fadeStrength: fadeStrength,

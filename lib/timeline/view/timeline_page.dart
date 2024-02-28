@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/post/post.dart';
 import 'package:flutter_instagram_offline_first_clone/home/home.dart';
+import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:flutter_instagram_offline_first_clone/search/view/search_view.dart';
 import 'package:flutter_instagram_offline_first_clone/timeline/timeline.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -266,7 +267,7 @@ class TimelineError extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Text(
-            'Something went wrong!',
+            context.l10n.somethingWentWrongText,
             style: context.headlineSmall,
           ),
           FittedBox(

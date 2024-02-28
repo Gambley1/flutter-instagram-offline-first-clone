@@ -47,9 +47,10 @@ class MessageBubble extends StatelessWidget {
       animationEffect: TappableAnimationEffect.none,
       onTapUp: (details) async {
         late final onDeleteTap = context.confirmAction(
-          title: 'Delete message',
-          content: 'Are you sure you want to delete this message?',
-          yesText: context.l10n.delete,
+          title: context.l10n.deleteMessageText,
+          content: context.l10n.messageDeleteConfirmationText,
+          yesText: context.l10n.deleteText,
+          noText: context.l10n.cancelText,
           fn: () => this.onDeleteTap?.call(message),
         );
         final option = await onMessageTap.call(

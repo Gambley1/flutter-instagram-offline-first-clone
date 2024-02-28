@@ -67,19 +67,21 @@ class StoriesListView extends StatelessWidget {
                                     contentType: StoryContentType.image,
                                     filePath: path,
                                     onError: (_, __) => openSnackbar(
-                                      const SnackbarMessage.error(
-                                        title: 'Something went wrong!',
-                                        description: 'Failed to create story',
+                                      SnackbarMessage.error(
+                                        title:
+                                            context.l10n.somethingWentWrongText,
+                                        description: context
+                                            .l10n.failedToCreateStoryText,
                                       ),
-                                      clearIfQueue: true,
                                     ),
                                     onLoading: () => openSnackbar(
                                       const SnackbarMessage.loading(),
                                       clearIfQueue: true,
                                     ),
                                     onStoryCreated: () => openSnackbar(
-                                      const SnackbarMessage.success(
-                                        title: 'Successfully created story!',
+                                      SnackbarMessage.success(
+                                        title: context
+                                            .l10n.successfullyCreatedStoryText,
                                       ),
                                       clearIfQueue: true,
                                     ),

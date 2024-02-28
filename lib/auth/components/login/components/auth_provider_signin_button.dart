@@ -24,7 +24,7 @@ class AuthProviderSignInButton extends StatelessWidget {
       ),
       child: AppButton(
         icon: const Icon(Icons.wordpress_outlined),
-        text: context.l10n.signInWith(provider.value),
+        text: context.l10n.signInWithText(provider.value),
         textStyle:
             context.labelLarge?.copyWith(overflow: TextOverflow.ellipsis),
         style: ElevatedButton.styleFrom(shape: LinearBorder.none),

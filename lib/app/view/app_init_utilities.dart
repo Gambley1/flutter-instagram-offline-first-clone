@@ -17,20 +17,23 @@ void initUtilities(BuildContext context, Locale locale) {
     TabsTexts(
       photoText: l10n.photoText,
       videoText: l10n.videoText,
-      acceptAllPermissions: l10n.acceptAllPermissions,
+      acceptAllPermissions: l10n.acceptAllPermissionsText,
       clearImagesText: l10n.clearImagesText,
       deletingText: l10n.deletingText,
       galleryText: l10n.galleryText,
       holdButtonText: l10n.holdButtonText,
-      noImagesFounded: l10n.noImagesFounded,
+      noImagesFounded: l10n.noImagesFoundedText,
       notFoundingCameraText: l10n.notFoundingCameraText,
-      noCameraFound: l10n.noCameraFound,
+      noCameraFound: l10n.noCameraFoundText,
     ),
   );
   BlockSettings.instance.init(
     postDelegate: PostTextDelegate(
-      editText: l10n.edit,
-      deleteText: l10n.delete,
+      cancelText: l10n.cancelText,
+      editText: l10n.editText,
+      deleteText: l10n.deleteText,
+      deletePostText: l10n.deletePostText,
+      deletePostConfirmationText: l10n.deletePostConfirmationText,
       visitSponsoredInstagramProfileText: l10n.visitSponsoredInstagramProfile,
       likedByText: (count, name, onUsernameTap) => t.likedBy(
         name: TextSpan(
@@ -38,9 +41,9 @@ void initUtilities(BuildContext context, Locale locale) {
           style: context.titleMedium?.copyWith(fontWeight: AppFontWeight.bold),
           recognizer: TapGestureRecognizer()..onTap = onUsernameTap,
         ),
-        and: TextSpan(text: count < 1 ? '' : l10n.and),
+        and: TextSpan(text: count < 1 ? '' : l10n.andText),
         others: TextSpan(
-          text: l10n.others(count),
+          text: l10n.othersText(count),
           style: context.titleMedium?.copyWith(fontWeight: AppFontWeight.bold),
         ),
       ),
@@ -50,7 +53,7 @@ void initUtilities(BuildContext context, Locale locale) {
     ),
     commentDelegate: CommentTextDelegate(
       seeAllCommentsText: l10n.seeAllComments,
-      replyText: l10n.reply,
+      replyText: l10n.replyText,
     ),
     dateTimeDelegate: DateTimeTextDeleagte(
       timeAgo: (createdAt) => createdAt.timeAgo(context),

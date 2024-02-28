@@ -50,7 +50,7 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
       key: const ValueKey('loginPasswordTextField'),
       filled: true,
       focusNode: _focusNode,
-      hintText: context.l10n.password,
+      hintText: context.l10n.passwordText,
       enabled: !isLoading,
       obscureText: !showPassword,
       textInputType: TextInputType.visiblePassword,

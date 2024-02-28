@@ -79,6 +79,7 @@ class _CreatePostViewState extends State<CreatePostView>
                         title: 'Clear images',
                         content: 'Are you sure you want to clear all images?',
                         yesText: 'Clear',
+                        noText: context.l10n.cancelText,
                         fn: () => safeSetState(() {
                           _selectedFiles?.clear();
                         }),
@@ -426,7 +427,7 @@ class CreatePostButton extends StatelessWidget {
     } else {
       button = AppButton.outlined(
         onPressed: onPostCreate,
-        text: 'Create',
+        text: context.l10n.createText,
       );
     }
     return SizedBox(width: double.infinity, child: button);

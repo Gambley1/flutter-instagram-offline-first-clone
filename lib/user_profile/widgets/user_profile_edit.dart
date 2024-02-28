@@ -85,7 +85,7 @@ class _UserProfileEditViewState extends State<UserProfileEditView> {
                     ),
                     const SizedBox(height: AppSpacing.md),
                     Text(
-                      'Change photo',
+                      context.l10n.changePhotoText,
                       style: context.bodyLarge?.apply(color: AppColors.blue),
                     ),
                     const SizedBox(height: AppSpacing.md),
@@ -93,23 +93,21 @@ class _UserProfileEditViewState extends State<UserProfileEditView> {
                       children: <Widget>[
                         ProfileInfoInput(
                           value: user.fullName,
-                          label: context.l10n.name,
-                          description:
-                              ProfileInfoEditView.fullNameEditDescription,
+                          label: context.l10n.nameText,
+                          description: context.l10n.fullNameEditDescription,
                           infoType: ProfileEditInfoType.fullName,
                         ),
                         ProfileInfoInput(
                           value: user.username,
-                          label: context.l10n.username,
-                          description:
-                              ProfileInfoEditView.usernameEditDescription(
+                          label: context.l10n.usernameText,
+                          description: context.l10n.usernameEditDescription(
                             user.username!,
                           ),
                           infoType: ProfileEditInfoType.username,
                         ),
                         ProfileInfoInput(
                           value: '',
-                          label: context.l10n.bio,
+                          label: context.l10n.bioText,
                           infoType: ProfileEditInfoType.bio,
                           onTap: () {},
                         ),
@@ -274,15 +272,6 @@ class ProfileInfoEditView extends StatefulWidget {
   final String infoLabel;
   final ProfileEditInfoType infoType;
 
-  static const fullNameEditDescription =
-      "Help people discover your account by using the name yor're known by: "
-      'either your full name, nickname, or business name.\n\n'
-      'You can only change your name twice within 14 days.';
-
-  static String usernameEditDescription(String value) =>
-      "You'll be able to change your username back to $value "
-      'for another 14 days.';
-
   @override
   State<ProfileInfoEditView> createState() => _ProfileInfoEditViewState();
 }
@@ -299,8 +288,11 @@ class _ProfileInfoEditViewState extends State<ProfileInfoEditView> {
     _initialValue = ValueNotifier(widget.infoValue ?? '');
     _valueController = TextEditingController(text: widget.infoValue);
 
-    _infoChangeType =
-        widget.infoType == ProfileEditInfoType.fullName ? 'name' : 'username';
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _infoChangeType = widget.infoType == ProfileEditInfoType.fullName
+          ? context.l10n.nameText.toLowerCase()
+          : context.l10n.usernameText.toLowerCase();
+    });
   }
 
   @override
@@ -329,10 +321,10 @@ class _ProfileInfoEditViewState extends State<ProfileInfoEditView> {
         context.pop();
       },
       title:
-          'Are you sure you want to change your $_infoChangeType to $value ?',
-      content: 'You can change your $_infoChangeType '
-          'only twice in 14 days',
-      yesText: 'Change',
+          context.l10n.profileInfoEditConfirmationText(value, _infoChangeType),
+      content: context.l10n.profileInfoChangePeriodText(_infoChangeType, 14),
+      yesText: context.l10n.changeText,
+      noText: context.l10n.cancelText,
       yesTextStyle: context.labelLarge?.apply(color: AppColors.blue),
     );
   }

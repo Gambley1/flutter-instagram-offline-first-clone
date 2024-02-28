@@ -54,7 +54,7 @@ class ThemeSelectorModalOption extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       leading: const ThemeSelector(),
-      title: Text(context.l10n.theme),
+      title: Text(context.l10n.themeText),
     );
   }
 }

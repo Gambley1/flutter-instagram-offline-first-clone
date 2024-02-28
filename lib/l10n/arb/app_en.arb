@@ -1,358 +1,432 @@
 {
-    "@@locale": "en",
-    "feedAppBarTitle": "Feed",
-    "@feedAppBarTitle": {
-        "description": "Text shown in the Feed screen in the AppBar"
-    },
-    "homeNavBarItemLabel": "Home",
-    "@homeNavBarItemLabel": {
-        "description": "Home navigation bar item tooltip"
-    },
-    "searchNavBarItemLabel": "Search",
-    "@searchNavBarItemLabel": {
-        "description": "Search navigation bar item tooltip"
-    },
-    "createMediaNavBarItemLabel": "Create media",
-    "@createMediaNavBarItemLabel": {
-        "description": "Create media navigation bar item tooltip"
-    },
-    "reelsNavBarItemLabel": "Reels",
-    "@reelsNavBarItemLabel": {
-        "description": "Reels navigation bar item tooltip"
-    },
-    "profileNavBarItemLabel": "Profile",
-    "@profileNavBarItemLabel": {
-        "description": "Profile navigation bar item tooltip"
-    },
-    "likesText": "Likes",
-    "@likesText":{
-        "description": "Text displaying statis Likes text"
-    },
-    "likesCountText": "{count, plural, =1{{count} like} other{{count} likes}}",
-    "@likesCountText": {
-        "description": "Text shown in post footer section that display count of likes",
-        "placeholders": {
-            "count": {
-              "type": "int",
-              "example": "1" 
-            }
-        }
-    },
-    "likedByText": "Liked by {userName} and {count, plural, =1{{count} other} other{{count} others}}",
-    "@likedByText": {
-        "placeholders": {
-            "userName": {
-              "type": "String",
-              "example": "john.dale" 
-            },
-            "count": {
-                "type": "int",
-                "example": "1" 
-            }
-        }
-    },
-    "likesCountTextShort": "{count}",
-    "@likesCountTextShort": {
-        "description": "Text shown in post footer section that display short count of likes",
-        "placeholders": {
-            "count": {
-              "type": "int",
-              "example": "1" 
-            }
-        }
-    },
-    "seeAllComments": "View all {count} comments",
-    "@seeAllComments":{
-        "description": "Text shown under the post caption",
-        "placeholders": {
-            "count": {
-              "type": "int",
-              "example": "1" 
-            }
-        }
-    },
-    "yourStoryLabel": "Your story",
-    "@yourStoryLabel":{
-        "description": "Text shown under the first storie in stories list view marked as your story"
-    },
-    "postsText": "Posts",
-    "@postsText": {
-        "description": "Text displaying static Posts text"
-    },
-    "followUser": "Follow",
-    "followingUser": "Following",
-    "followersText": "Followers",
-    "@followersText": {
-        "description": "Text displaying static Followers text"
-    },
-    "followingsText": "Following",
-    "@followingsText": {
-        "description": "Text displaying static Following text"
-    },
-    "followersCountText": "{count, plural, =1{{count} follower} other{{count} followers}}",
-    "@followersCountText": {
-        "placeholders": {
-            "count": {
-              "type": "int",
-              "example": "1" 
-            }
-        }
-    },
-    "followingsCountText": "{count, plural, other{{count} following}}",
-    "@followingsCountText": {
-        "placeholders": {
-            "count": {
-              "type": "int",
-              "example": "1" 
-            }
-        }
-    },
-    "postsCount": "{count, plural, =1{Post} other{Posts}}",
-    "@postsCount": {
-        "description": "Text describing the count of posts",
-        "placeholders": {
-            "count": {
-              "type": "int",
-              "example": "1" 
-            }
-        }
-    },
-    "profilePostsAppBarTitle": "Posts",
-    "@profilePostsAppBarTitle":{
-        "description": "Text shown in app bar in user's all posts screen"
-    },
-    "followersCount": "{count, plural, =1{Follower} other{Followers}}",
-    "@followersCount": {
-        "description": "Text describing the count of posts",
-        "placeholders": {
-            "count": {
-              "type": "int",
-              "example": "1" 
-            }
-        }
-    },
-    "followingsCount": "{count, plural, =1{Following} other{Followings}}",
-    "@followingsCount": {
-        "description": "Text describing the count of user followings",
-        "placeholders": {
-            "count": {
-              "type": "int",
-              "example": "1" 
-            }
-        }
-    },
-    "editProfileText": "Edit profile",
-    "@editProfileText": {
-        "description": "Text shown in account view to edit profile"
-    },
-    "editPostText": "Edit post",
-    "@editPostText": {
-        "description": "Text shown in post edit view to edit post"
-    },
-    "shareProfileText": "Share profile",
-    "@shareProfileText": {
-        "description": "Text shown in account view to share profile"
-    },
-    "addStoryText": "New",
-    "@addStoryText": {
-        "description": "Text shown in account view to add new story"
-    },
-    "sponsoredPostText": "Sponsored",
-    "@sponsoredPostText": {
-        "description": "Text shown on sponsored post indicating that the post is sponsored by author"
-    },
-    "visitSponsoredInstagramProfile": "Visit Instagram Profile",
-    "@visitSponsoredInstagramProfile": {
-        "description": "Text shown on sponsored post telling that this action will navigate user to author's instagram profile"
-    },
-    "visitSponsoredPostAuthorProfileText": "Visit Instagram Profile",
-    "@visitSponsoredPostAuthorProfileText": {
-        "description": "Text shown on sponsored post telling that this action will navigate user to author profile"
-    },
-    "learnMoreAboutUserPromoText": "Learn more",
-    "@learnMoreAboutUserPromoText": {
-        "description": "Text shown in a floating action promo in user profile when was navigated from sponsored post"
-    },
-    "visitUserPromoWebsiteText": "Go to website",
-    "@visitUserPromoWebsiteText": {
-        "description": "Text shown in a floating action promo in user profile when was navigated from sponsored post"
-    },
-    "cancelFollowingText": "Unfollow",
-    "@cancelFollowingText": {
-        "description": "Text shown in modal bottom sheet to cancel current following to user"
-    },
-    "haveSeenAllRecentPosts": "You''re all caught up",
-    "@haveSeenAllRecentPosts": {
-        "description": "Header text shown in divider block when user have seen all recent posts"
-    },
-    "haveSeenAllRecentPostsInPast3Days": "You''ve seen all new posts from the past 3 days.",
-    "@haveSeenAllRecentPostsInPast3Days": {
-        "description": "Body text shown in divider block when user have seen all recent posts in past 3 days"
-    },
-    "suggestedForYouText": "Suggested for you",
-    "@suggestedForYouText": {
-        "description": "Text shown in a suggested section block."
-    },
-    "and": "and",
-    "others": "{count, plural, =0{} =1{{count} other} other{{count} others}}",
-    "@others": {
-        "placeholders": {
-            "count": {
-                "type": "int",
-                "example": "1"
-            }
-        }
-    },
-    "search": "Search",
-    "addMessage": "Add message",
-    "message": "Message",
-    "editPicture": "Edit picture",
-    "requiredField": "This field is required",
-    "passwordLengthError": "Password should contain at least {count} characters",
-    "@passwordLengthError": {
-        "placeholders": {
-            "characters": {
-                "type": "int",
-                "example": "1"
-            }
-        }
-    },
-    "forgotPassword": "Forgot password",
-    "or": "Or",
-    "signInWith": "Sign in with {provider}",
-    "@signInWith":{
-        "placeholders": {
-            "provider": {
-                "type": "String",
-                "example": "Google"
-            }
-        }
-    },
-    "captionText": "Caption",
-    "noCameraFound": "No camera found!",
-    "videoText": "VIDEO",
-    "photoText": "PHOTO",
-    "clearImagesText": "Clear selected images",
-    "galleryText": "GALLERY",
-    "deletingText": "DELETE",
-    "notFoundingCameraText": "No secondary camera found",
-    "holdButtonText": "Press and hold to record",
-    "noImagesFounded": "There is no images",
-    "acceptAllPermissions": "Failed! accept all access permissions.",
-    "noAccount": "Don''t have an account",
-    "alreadyHaveAccount": "Alrady have an account",
-    "name": "Name",
-    "username": "Username",
-    "email": "Email",
-    "password": "Password",
-    "logIn": "Login",
-    "signUp": "Sign up",
-    "bio": "Bio",
-    "postUnavailable": "Post unavailable",
-    "postUnavailableDescription": "This post is unavailable",
-    "edit": "Edit",
-    "delete": "Delete",
-    "reply": "Reply",
-    "theme": "Theme",
-    "systemOption": "System",
-    "@systemOption": {
-        "description": "The option to use system-wide theme in the theme selector menu",
-        "type": "String",
-        "placeholders": {}
-    },
-    "lightModeOption": "Light",
-    "@lightModeOption": {
-        "description": "The option for light mode in the theme selector menu",
-        "type": "String",
-        "placeholders": {}
-    },
-    "darkModeOption": "Dark",
-    "@darkModeOption": {
-        "description": "The option for dark mode in the theme selector menu",
-        "type": "String",
-        "placeholders": {}
-    },
-    "language": "Language",
-    "ruOption": "Russian",
-    "enOption": "English",
-    "secondsAgo": "{seconds, plural, =1{1 second ago} other{{seconds} seconds ago}}",
-    "@secondsAgo": {
-        "description": "Represents a text of seconds ago",
-        "placeholders": {
-            "seconds": {
-              "type": "int",
-              "example": "1" 
-            }
-        }
-    },
-    "minutesAgo": "{minutes, plural, =1{1 minute ago} other{{minutes} minutes ago}}",
-    "@minutesAgo": {
-        "description": "Represents a text of minutes ago",
-        "placeholders": {
-            "minutes": {
-              "type": "int",
-              "example": "1" 
-            }
-        }
-    },
-    "hoursAgo": "{hours, plural, =1{1 hour ago} other{{hours} hours ago}}",
-    "@hoursAgo": {
-        "description": "Represents a text of hours ago",
-        "placeholders": {
-            "hours": {
-              "type": "int",
-              "example": "1" 
-            }
-        }
-    },
-    "daysAgo": "{days, plural, =1{1 day ago} other{{days} days ago}}",
-    "@daysAgo": {
-        "description": "Represents a text of days ago",
-        "placeholders": {
-            "days": {
-              "type": "int",
-              "example": "1" 
-            }
-        }
-    },
-    "weeksAgo": "{weeks, plural, =1{1 week ago} other{{weeks} weeks ago}}",
-    "@weeksAgo": {
-        "description": "Represents a text of weeks ago",
-        "placeholders": {
-            "weeks": {
-              "type": "int",
-              "example": "1" 
-            }
-        }
-    },
-    "monthsAgo": "{months, plural, =1{1 month ago} other{{months} months ago}}",
-    "@monthsAgo": {
-        "description": "Represents a text of months ago",
-        "placeholders": {
-            "months": {
-              "type": "int",
-              "example": "1" 
-            }
-        }
-    },
-    "yearsAgo": "{years, plural, =1{1 year ago} other{{years} years ago}}",
-    "@yearsAgo": {
-        "description": "Represents a text of years ago",
-        "placeholders": {
-            "years": {
-              "type": "int",
-              "example": "1" 
-            }
-        }
-    },
-    "networkError": "A network error has occured.\nCheck your connection and try again.",
-    "@networkError": {
-        "description": "Text displayed when a network error occurs.",
-        "type": "String"
-    },
-    "networkErrorButton": "Try Again",
-    "@networkErrorButton": {
-        "description": "Text displayed on the refresh button when a network error occurs.",
-        "type": "String"
+  "@@locale": "en",
+  "feedAppBarTitle": "Feed",
+  "@feedAppBarTitle": {
+    "description": "Text shown in the Feed screen in the AppBar"
+  },
+  "homeNavBarItemLabel": "Home",
+  "@homeNavBarItemLabel": {
+    "description": "Home navigation bar item tooltip"
+  },
+  "searchNavBarItemLabel": "Search",
+  "@searchNavBarItemLabel": {
+    "description": "Search navigation bar item tooltip"
+  },
+  "createMediaNavBarItemLabel": "Create media",
+  "@createMediaNavBarItemLabel": {
+    "description": "Create media navigation bar item tooltip"
+  },
+  "reelsNavBarItemLabel": "Reels",
+  "@reelsNavBarItemLabel": {
+    "description": "Reels navigation bar item tooltip"
+  },
+  "profileNavBarItemLabel": "Profile",
+  "@profileNavBarItemLabel": {
+    "description": "Profile navigation bar item tooltip"
+  },
+  "likesText": "Likes",
+  "@likesText": {
+    "description": "Text displaying statis Likes text"
+  },
+  "likesCountText": "{count, plural, =1{{count} like} other{{count} likes}}",
+  "@likesCountText": {
+    "description": "Text shown in post footer section that display count of likes",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
     }
+  },
+  "likedByText": "Liked by {userName} and {count, plural, =1{{count} other} other{{count} others}}",
+  "@likedByText": {
+    "placeholders": {
+      "userName": {
+        "type": "String",
+        "example": "john.dale"
+      },
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "likeText": "Like",
+  "unlikeText": "Unlike",
+  "likesCountTextShort": "{count}",
+  "@likesCountTextShort": {
+    "description": "Text shown in post footer section that display short count of likes",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "addCommentText": "Add a comment",
+  "deleteCommentText": "Delete comment",
+  "commentDeleteConfirmationText": "Are you sure you want to delete this comment?",
+  "deleteMessageText": "Delete message",
+  "messageDeleteConfirmationText": "Are you sure you want to delete this message?",
+  "deleteChatText": "Delete chat",
+  "chatDeleteConfirmationText": "Are you sure you want to delete this chat?",
+  "deleteReelText": "Delete Reel",
+  "reelDeleteConfirmationText": "Are you sure you want to delete this Reel?",
+  "deleteStoryText": "Delete story",
+  "storyDeleteConfirmationText": "Are you sure you want to delete this story?",
+  "commentText": "Comment",
+  "commentsText": "Comments",
+  "noCommentsText": "No comments",
+  "seeAllComments": "View all {count} comments",
+  "@seeAllComments": {
+    "description": "Text shown under the post caption",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "yourStoryLabel": "Your story",
+  "@yourStoryLabel": {
+    "description": "Text shown under the first storie in stories list view marked as your story"
+  },
+  "postsText": "Posts",
+  "@postsText": {
+    "description": "Text displaying static Posts text"
+  },
+  "followUser": "Follow",
+  "followingUser": "Following",
+  "followersText": "Followers",
+  "@followersText": {
+    "description": "Text displaying static Followers text"
+  },
+  "followingsText": "Following",
+  "@followingsText": {
+    "description": "Text displaying static Following text"
+  },
+  "followersCountText": "{count, plural, =1{{count} follower} other{{count} followers}}",
+  "@followersCountText": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "followingsCountText": "{count, plural, other{{count} following}}",
+  "@followingsCountText": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "postsCount": "{count, plural, =1{Post} other{Posts}}",
+  "@postsCount": {
+    "description": "Text describing the count of posts",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "profilePostsAppBarTitle": "Posts",
+  "@profilePostsAppBarTitle": {
+    "description": "Text shown in app bar in user's all posts screen"
+  },
+  "followersCount": "{count, plural, =1{Follower} other{Followers}}",
+  "@followersCount": {
+    "description": "Text describing the count of posts",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "followingsCount": "{count, plural, =1{Following} other{Followings}}",
+  "@followingsCount": {
+    "description": "Text describing the count of user followings",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "optionsText": "Options",
+  "viewProfileText": "View profile",
+  "editProfileText": "Edit profile",
+  "@editProfileText": {
+    "description": "Text shown in account view to edit profile"
+  },
+  "editPostText": "Edit post",
+  "@editPostText": {
+    "description": "Text shown in post edit view to edit post"
+  },
+  "shareProfileText": "Share profile",
+  "@shareProfileText": {
+    "description": "Text shown in account view to share profile"
+  },
+  "sharePostText": "Share",
+  "@sharePostText": {
+    "description": "Tooltip text shown in post popup to share post"
+  },
+  "addStoryText": "New",
+  "@addStoryText": {
+    "description": "Text shown in account view to add new story"
+  },
+  "sponsoredPostText": "Sponsored",
+  "@sponsoredPostText": {
+    "description": "Text shown on sponsored post indicating that the post is sponsored by author"
+  },
+  "visitSponsoredInstagramProfile": "Visit Instagram Profile",
+  "@visitSponsoredInstagramProfile": {
+    "description": "Text shown on sponsored post telling that this action will navigate user to author's instagram profile"
+  },
+  "visitSponsoredPostAuthorProfileText": "Visit Instagram Profile",
+  "@visitSponsoredPostAuthorProfileText": {
+    "description": "Text shown on sponsored post telling that this action will navigate user to author profile"
+  },
+  "learnMoreAboutUserPromoText": "Learn more",
+  "@learnMoreAboutUserPromoText": {
+    "description": "Text shown in a floating action promo in user profile when was navigated from sponsored post"
+  },
+  "visitUserPromoWebsiteText": "Go to website",
+  "@visitUserPromoWebsiteText": {
+    "description": "Text shown in a floating action promo in user profile when was navigated from sponsored post"
+  },
+  "cancelFollowingText": "Unfollow",
+  "@cancelFollowingText": {
+    "description": "Text shown in modal bottom sheet to cancel current following to user"
+  },
+  "haveSeenAllRecentPosts": "You''re all caught up",
+  "@haveSeenAllRecentPosts": {
+    "description": "Header text shown in divider block when user have seen all recent posts"
+  },
+  "haveSeenAllRecentPostsInPast3Days": "You''ve seen all new posts from the past 3 days.",
+  "@haveSeenAllRecentPostsInPast3Days": {
+    "description": "Body text shown in divider block when user have seen all recent posts in past 3 days"
+  },
+  "suggestedForYouText": "Suggested for you",
+  "@suggestedForYouText": {
+    "description": "Text shown in a suggested section block."
+  },
+  "andText": "and",
+  "othersText": "{count, plural, =0{} =1{{count} other} other{{count} others}}",
+  "@othersText": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "searchText": "Search",
+  "addMessageText": "Add message",
+  "messageText": "Message",
+  "editPictureText": "Edit picture",
+  "requiredFieldText": "This field is required",
+  "passwordLengthErrorText": "Password should contain at least {count} characters",
+  "@passwordLengthErrorText": {
+    "placeholders": {
+      "characters": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "changeText": "Change",
+  "changePhotoText": "Change photo",
+  "fullNameEditDescription": "Help people discover your account by using the name yor''re known by: either your full name, nickname, or business name.\n\nYou can only change your name twice within 14 days.",
+  "usernameEditDescription": "You''ll be able to change your username back to {username} for another 14 days",
+  "@usernameEditDescription": {
+    "placeholders": {
+      "username": {
+        "type": "String",
+        "example": "emil"
+      }
+    }
+  },
+  "profileInfoEditConfirmationText": "Are you sure you want to change your {changeType} to {newUsername} ?",
+  "@profileInfoEditConfirmationText": {
+    "placeholders": {
+      "newUsername": {
+        "type": "String",
+        "example": "jorge"
+      },
+      "changeType": {
+        "type": "String",
+        "example": "username"
+      }
+    }
+  },
+  "profileInfoChangePeriodText": "You can change your {changeType} only twice in {count} days ",
+  "@profileInfoChangePeriodText": {
+    "placeholders": {
+      "changeType": {
+        "type": "String",
+        "example": "username"
+      },
+      "count": {
+        "type": "int",
+        "example": "14"
+      }
+    }
+  },
+  "forgotPasswordText": "Forgot password?",
+  "orText": "Or",
+  "signInWithText": "Sign in with {provider}",
+  "@signInWithText": {
+    "placeholders": {
+      "provider": {
+        "type": "String",
+        "example": "Google"
+      }
+    }
+  },
+  "searchText": "Search",
+  "somethingWentWrongText": "Something went wrong!",
+  "failedToCreateStoryText": "Failed to create story",
+  "successfullyCreatedStoryText": "Successfully created story!",
+  "createText": "Create",
+  "reelText": "Reel",
+  "postText": "Post",
+  "storyText": "Story",
+  "removeText": "Remove",
+  "removeFollowerText": "Remove follower",
+  "removeFollowerConfirmationText": "Are you sure you want to remove follower?",
+  "deletePostText": "Delete post",
+  "deletePostConfirmationText": "Are you sure you want to delete this post?",
+  "cancelText": "Cancel",
+  "captionText": "Caption",
+  "noCameraFoundText": "No camera found!",
+  "videoText": "VIDEO",
+  "photoText": "PHOTO",
+  "clearImagesText": "Clear selected images",
+  "galleryText": "GALLERY",
+  "deletingText": "DELETE",
+  "notFoundingCameraText": "No secondary camera found",
+  "holdButtonText": "Press and hold to record",
+  "noImagesFoundedText": "There is no images",
+  "acceptAllPermissionsText": "Failed! accept all access permissions.",
+  "noAccountText": "Don''t have an account?",
+  "alreadyHaveAccountText": "Already have an account?",
+  "nameText": "Name",
+  "usernameText": "Username",
+  "emailText": "Email",
+  "passwordText": "Password",
+  "loginText": "Login",
+  "signUpText": "Sign up",
+  "bioText": "Bio",
+  "postUnavailableText": "Post unavailable",
+  "postUnavailableDescriptionText": "This post is unavailable",
+  "editText": "Edit",
+  "deleteText": "Delete",
+  "replyText": "Reply",
+  "themeText": "Theme",
+  "systemOption": "System",
+  "@systemOption": {
+    "description": "The option to use system-wide theme in the theme selector menu",
+    "type": "String",
+    "placeholders": {}
+  },
+  "lightModeOption": "Light",
+  "@lightModeOption": {
+    "description": "The option for light mode in the theme selector menu",
+    "type": "String",
+    "placeholders": {}
+  },
+  "darkModeOption": "Dark",
+  "@darkModeOption": {
+    "description": "The option for dark mode in the theme selector menu",
+    "type": "String",
+    "placeholders": {}
+  },
+  "languageText": "Language",
+  "ruOptionText": "Russian",
+  "enOptionText": "English",
+  "secondsAgo": "{seconds, plural, =1{1 second ago} other{{seconds} seconds ago}}",
+  "@secondsAgo": {
+    "description": "Represents a text of seconds ago",
+    "placeholders": {
+      "seconds": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "minutesAgo": "{minutes, plural, =1{1 minute ago} other{{minutes} minutes ago}}",
+  "@minutesAgo": {
+    "description": "Represents a text of minutes ago",
+    "placeholders": {
+      "minutes": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "hoursAgo": "{hours, plural, =1{1 hour ago} other{{hours} hours ago}}",
+  "@hoursAgo": {
+    "description": "Represents a text of hours ago",
+    "placeholders": {
+      "hours": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "daysAgo": "{days, plural, =1{1 day ago} other{{days} days ago}}",
+  "@daysAgo": {
+    "description": "Represents a text of days ago",
+    "placeholders": {
+      "days": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "weeksAgo": "{weeks, plural, =1{1 week ago} other{{weeks} weeks ago}}",
+  "@weeksAgo": {
+    "description": "Represents a text of weeks ago",
+    "placeholders": {
+      "weeks": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "monthsAgo": "{months, plural, =1{1 month ago} other{{months} months ago}}",
+  "@monthsAgo": {
+    "description": "Represents a text of months ago",
+    "placeholders": {
+      "months": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "yearsAgo": "{years, plural, =1{1 year ago} other{{years} years ago}}",
+  "@yearsAgo": {
+    "description": "Represents a text of years ago",
+    "placeholders": {
+      "years": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "networkError": "A network error has occured.\nCheck your connection and try again.",
+  "@networkError": {
+    "description": "Text displayed when a network error occurs.",
+    "type": "String"
+  },
+  "networkErrorButton": "Try Again",
+  "@networkErrorButton": {
+    "description": "Text displayed on the refresh button when a network error occurs.",
+    "type": "String"
+  }
 }

@@ -220,10 +220,11 @@ class StoryOptions extends StatelessWidget {
             await context.showListOptionsModal(
               options: [
                 ModalOption(
-                  name: context.l10n.delete,
-                  actionTitle: 'Delete story',
-                  actionContent: 'Are you sure you want to delete this story?',
-                  actionYesText: context.l10n.delete,
+                  name: context.l10n.deleteText,
+                  actionTitle: context.l10n.deleteStoryText,
+                  actionContent: context.l10n.storyDeleteConfirmationText,
+                  actionYesText: context.l10n.deleteText,
+                  actionNoText: context.l10n.cancelText,
                   icon: Assets.icons.trash.svg(
                     height: AppSize.iconSize,
                     colorFilter:

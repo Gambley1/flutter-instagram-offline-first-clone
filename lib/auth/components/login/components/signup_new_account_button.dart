@@ -21,9 +21,9 @@ class SignupNewAccountButton extends StatelessWidget {
         style: context.bodyMedium,
         TextSpan(
           children: [
-            TextSpan(text: '${context.l10n.noAccount}? '),
+            TextSpan(text: '${context.l10n.noAccountText} '),
             TextSpan(
-              text: '${context.l10n.signUp}.',
+              text: '${context.l10n.signUpText}.',
               style: context.bodyMedium?.copyWith(color: AppColors.blue),
             ),
           ],

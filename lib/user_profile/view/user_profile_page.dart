@@ -367,6 +367,7 @@ class UserProfileSettingsButton extends StatelessWidget {
               actionTitle: 'Log out',
               actionYesText: 'Log out',
               actionContent: 'Are you sure you want to log out?',
+              actionNoText: context.l10n.cancelText,
               iconData: Icons.logout_rounded,
               distractive: true,
               onTap: () =>
@@ -403,11 +404,11 @@ class UserProfileAddMediaButton extends StatelessWidget {
         void callback(ModalOption option) => option.onTap.call(context);
 
         final option = await context.showListOptionsModal(
-          title: 'Create',
+          title: context.l10n.createText,
           options: createMediaModalOptions(
-            reelLabel: 'Reel',
-            postLabel: 'Post',
-            storyLabel: 'Story',
+            reelLabel: context.l10n.reelText,
+            postLabel: context.l10n.postText,
+            storyLabel: context.l10n.storyText,
             context: context,
             goTo: (route, {extra}) => context.pushNamed(route, extra: extra),
             enableStory: enableStory,
@@ -418,9 +419,9 @@ class UserProfileAddMediaButton extends StatelessWidget {
                       contentType: StoryContentType.image,
                       filePath: path,
                       onError: (_, __) => openSnackbar(
-                        const SnackbarMessage.error(
-                          title: 'Something went wrong!',
-                          description: 'Failed to create story',
+                        SnackbarMessage.error(
+                          title: context.l10n.somethingWentWrongText,
+                          description: context.l10n.failedToCreateStoryText,
                         ),
                       ),
                       onLoading: () => openSnackbar(
@@ -428,8 +429,8 @@ class UserProfileAddMediaButton extends StatelessWidget {
                         clearIfQueue: true,
                       ),
                       onStoryCreated: () => openSnackbar(
-                        const SnackbarMessage.success(
-                          title: 'Successfully created story!',
+                        SnackbarMessage.success(
+                          title: context.l10n.successfullyCreatedStoryText,
                         ),
                         clearIfQueue: true,
                       ),

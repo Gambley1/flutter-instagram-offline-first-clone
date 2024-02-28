@@ -93,9 +93,10 @@ class CommentGroup extends StatelessWidget {
           isLikedByOwner: isLikedByOwner,
           onLikeComment: () => bloc.add(CommentLikeRequested(user.id)),
           onCommentDelete: (_) => context.confirmAction(
-            title: 'Delete comment',
-            content: 'Are you sure you want to delete this comment?',
-            yesText: context.l10n.delete,
+            title: context.l10n.deleteCommentText,
+            content: context.l10n.commentDeleteConfirmationText,
+            yesText: context.l10n.deleteText,
+            noText: context.l10n.cancelText,
             fn: () => bloc.add(const CommentDeleteRequested()),
           ),
           likesCount: likes,

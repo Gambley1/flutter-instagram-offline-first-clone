@@ -42,7 +42,7 @@ class _UsernameTextFieldState extends State<UsernameTextField> {
     return AppTextField(
       filled: true,
       focusNode: _focusNode,
-      hintText: context.l10n.username,
+      hintText: context.l10n.usernameText,
       textInputAction: TextInputAction.next,
       enabled: !isLoading,
       onChanged: (v) => _debouncer.run(

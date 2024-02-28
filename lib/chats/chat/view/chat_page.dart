@@ -114,7 +114,7 @@ class _ChatViewState extends State<ChatView> {
           child: ListTile(
             contentPadding: EdgeInsets.zero,
             leading: const Icon(Icons.reply_rounded),
-            title: Text(context.l10n.reply),
+            title: Text(context.l10n.replyText),
           ),
         ),
         if (isMine) ...[
@@ -124,7 +124,7 @@ class _ChatViewState extends State<ChatView> {
               child: ListTile(
                 contentPadding: EdgeInsets.zero,
                 leading: const Icon(Icons.edit_outlined),
-                title: Text(context.l10n.edit),
+                title: Text(context.l10n.editText),
               ),
             ),
           PopupMenuItem(
@@ -139,7 +139,7 @@ class _ChatViewState extends State<ChatView> {
                   BlendMode.srcIn,
                 ),
               ),
-              title: Text(context.l10n.delete),
+              title: Text(context.l10n.deleteText),
             ),
           ),
         ],

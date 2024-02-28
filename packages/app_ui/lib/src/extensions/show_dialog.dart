@@ -280,9 +280,9 @@ extension DialogExtension on BuildContext {
   Future<void> confirmAction({
     required void Function() fn,
     required String title,
+    required String noText,
+    required String yesText,
     String? content,
-    String? yesText,
-    String? noText,
     TextStyle? yesTextStyle,
     TextStyle? noTextStyle,
     BuildContextCallback? noAction,
@@ -304,8 +304,8 @@ extension DialogExtension on BuildContext {
   /// action.
   Future<bool?> showConfirmationDialog({
     required String title,
-    String? noText,
-    String? yesText,
+    required String noText,
+    required String yesText,
     String? content,
     BuildContextCallback? noAction,
     BuildContextCallback? yesAction,
@@ -326,7 +326,7 @@ extension DialogExtension on BuildContext {
             onPressed: () => noAction == null
                 ? (canPop() ? pop(false) : null)
                 : noAction.call(this),
-            text: noText ?? 'Cancel',
+            text: noText,
             textStyle: noTextStyle ?? labelLarge?.apply(color: adaptiveColor),
           ),
           AppButton(
@@ -335,7 +335,7 @@ extension DialogExtension on BuildContext {
             onPressed: () => yesAction == null
                 ? (canPop() ? pop(true) : null)
                 : yesAction.call(this),
-            text: yesText ?? 'Yes',
+            text: yesText,
             textStyle: yesTextStyle ?? labelLarge?.apply(color: AppColors.red),
           ),
         ],

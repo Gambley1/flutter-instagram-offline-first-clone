@@ -33,7 +33,7 @@ class SignupButton extends StatelessWidget {
       );
     }
     return AppButton.auth(
-      context.l10n.signUp,
+      context.l10n.signUpText,
       () => context.read<SignupCubit>().onSubmit(avatarFile: avatarFile),
       style: style,
       outlined: true,

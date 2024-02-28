@@ -19,7 +19,7 @@ class SignInButton extends StatelessWidget {
     final child = switch (isLoading) {
       true => AppButton.inProgress(style: style, scale: 0.5),
       _ => AppButton.auth(
-          context.l10n.logIn,
+          context.l10n.loginText,
           () => context.read<LoginCubit>().onSubmit(),
           style: style,
           outlined: true,

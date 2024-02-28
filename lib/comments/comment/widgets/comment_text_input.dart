@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/comments/comments.dart';
+import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:shared/shared.dart';
 
@@ -123,7 +124,7 @@ class _CommentTextFieldState extends State<CommentTextField> {
                       textController: _commentTextController,
                       focusNode: _focusNode,
                       contentPadding: EdgeInsets.zero,
-                      hintText: 'Add a comment',
+                      hintText: context.l10n.addCommentText,
                       textInputType: TextInputType.text,
                       textInputAction: TextInputAction.newline,
                       autofillHints: const [AutofillHints.username],

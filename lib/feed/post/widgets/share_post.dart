@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/post/post.dart';
+import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:flutter_instagram_offline_first_clone/user_profile/user_profile.dart';
 import 'package:go_router/go_router.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
@@ -445,7 +446,7 @@ class _UserSearchFieldState extends State<UserSearchField> {
             widget.onUsersFound.call(users, query);
           }),
           filled: true,
-          hintText: 'Search',
+          hintText: context.l10n.searchText,
           contentPadding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.md,
           ),

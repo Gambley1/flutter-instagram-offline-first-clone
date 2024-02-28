@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/comments/view/comments_page.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/post/post.dart';
+import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:go_router/go_router.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:posts_repository/posts_repository.dart';
@@ -176,8 +177,11 @@ class _PostPopupState extends State<PopupModal>
               'index': widget.index.toString(),
             },
           ),
-          onLongPressMoveUpdate: (details) =>
-              onLongPressMoveUpdate(details, isLiked: isLiked),
+          onLongPressMoveUpdate: (details) => onLongPressMoveUpdate(
+            details,
+            isLiked: isLiked,
+            context: context,
+          ),
           onLongPress: () => onLongPress(context.read<PostBloc>()),
           onLongPressEnd: (details) => onLongPressEnd(
             details,
@@ -193,8 +197,11 @@ class _PostPopupState extends State<PopupModal>
 
   void onLongPressMoveUpdate(
     LongPressMoveUpdateDetails details, {
+    required BuildContext context,
     required bool isLiked,
   }) {
+    final l10n = context.l10n;
+
     final likePosition = _getOffset(_likeButtonKey);
     final commentPosition = _getOffset(_commentOrViewProfileButtonKey);
     final sharePosition = _getOffset(_sharePostKey);
@@ -207,26 +214,29 @@ class _PostPopupState extends State<PopupModal>
         details.globalPosition.dx < dimension.positionRight;
 
     if (isInside(likePosition)) {
-      _messageText.value = isLiked ? 'Unlike' : 'Like';
+      _messageText.value =
+          isLiked ? l10n.unlikeText : l10n.likeText;
       _messagePositionLeft.value = likePosition.positionLeft -
           likePosition.positionCenter -
           (isLiked ? 15 : 7);
       _likeVisibility.value = true;
       _messageVisibility.value = true;
     } else if (isInside(commentPosition)) {
-      _messageText.value = widget.showComments ? 'Comment' : 'View profile';
+      _messageText.value = widget.showComments
+          ? l10n.commentText
+          : l10n.viewProfileText;
       _messagePositionLeft.value =
           commentPosition.positionLeft - commentPosition.positionCenter - 30;
       _commentOrViewProfileVisibility.value = true;
       _messageVisibility.value = true;
     } else if (isInside(sharePosition)) {
-      _messageText.value = 'Share';
+      _messageText.value = l10n.sharePostText;
       _messagePositionLeft.value =
           sharePosition.positionLeft - sharePosition.positionCenter - 12;
       _sharePostVisibility.value = true;
       _messageVisibility.value = true;
     } else if (isInside(optionsPosition)) {
-      _messageText.value = 'Options';
+      _messageText.value = l10n.optionsText;
       _messagePositionLeft.value =
           optionsPosition.positionLeft - optionsPosition.positionCenter - 15;
       _optionsVisibility.value = true;

@@ -42,7 +42,7 @@ class _EmailTextFieldState extends State<EmailTextField> {
     return AppTextField(
       filled: true,
       focusNode: _focusNode,
-      hintText: context.l10n.email,
+      hintText: context.l10n.emailText,
       enabled: !isLoading,
       textInputType: TextInputType.emailAddress,
       textInputAction: TextInputAction.next,

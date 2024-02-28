@@ -27,6 +27,7 @@ final class BlockSettings {
 
 final class PostTextDelegate {
   const PostTextDelegate({
+    required this.cancelText,
     required this.editText,
     required this.deleteText,
     required this.visitSponsoredInstagramProfileText,
@@ -34,10 +35,15 @@ final class PostTextDelegate {
     required this.sponsoredPostText,
     required this.likesCountText,
     required this.likesCountShortText,
+    required this.deletePostText,
+    required this.deletePostConfirmationText,
   });
 
+  final String cancelText;
   final String editText;
   final String deleteText;
+  final String deletePostText;
+  final String deletePostConfirmationText;
   final String visitSponsoredInstagramProfileText;
   final TextSpan Function(int count, String name, VoidCallback? onUsernameTap)
       likedByText;

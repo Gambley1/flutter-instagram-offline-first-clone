@@ -5,6 +5,7 @@ import 'package:flutter_instagram_offline_first_clone/comments/bloc/comments_blo
 import 'package:flutter_instagram_offline_first_clone/comments/comment/comment.dart';
 import 'package:flutter_instagram_offline_first_clone/comments/comment/widgets/widgets.dart';
 import 'package:flutter_instagram_offline_first_clone/comments/controller/comments_controller.dart';
+import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:posts_repository/posts_repository.dart';
 import 'package:shared/shared.dart';
 
@@ -93,7 +94,7 @@ class CommentsView extends StatelessWidget {
         centerTitle: true,
         toolbarHeight: 24,
         title: Text(
-          'Comments',
+          context.l10n.commentsText,
           style: context.titleLarge?.apply(color: AppColors.grey),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
@@ -146,7 +147,7 @@ class CommentsListView extends StatelessWidget {
           SliverFillRemaining(
             child: Center(
               child: Text(
-                'No comments.',
+                context.l10n.noCommentsText,
                 style: context.headlineSmall,
               ),
             ),

@@ -478,14 +478,14 @@ class MessageSharedPostUnavailable extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            l10n.postUnavailable,
+            l10n.postUnavailableText,
             style: context.bodyLarge?.copyWith(
               fontWeight: AppFontWeight.bold,
               color: effectiveTextColor,
             ),
           ),
           TextMessageWidget(
-            text: '${l10n.postUnavailableDescription}.',
+            text: '${l10n.postUnavailableDescriptionText}.',
             spacing: AppSpacing.md,
             textStyle: context.bodyLarge?.apply(color: effectiveTextColor),
             child: MessageStatuses(
