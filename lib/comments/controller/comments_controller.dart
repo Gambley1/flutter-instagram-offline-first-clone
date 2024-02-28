@@ -44,5 +44,6 @@ class CommentsController {
   void dispose() {
     isCommentReplyingTo.dispose();
     commentTextController.dispose();
+    commentFocusNode.dispose();
   }
 }

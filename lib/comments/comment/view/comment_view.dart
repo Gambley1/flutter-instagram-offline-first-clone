@@ -36,11 +36,7 @@ class CommentView extends StatelessWidget {
         ..add(const CommentLikesSubscriptionRequested())
         ..add(CommentIsLikedSubscriptionRequested(user.id))
         ..add(CommentIsLikedByOwnerSubscriptionRequested(post.author.id)),
-      child: CommentGroup(
-        comment: comment,
-        post: post,
-        isReplied: isReplied,
-      ),
+      child: CommentGroup(comment: comment, post: post, isReplied: isReplied),
     );
   }
 }

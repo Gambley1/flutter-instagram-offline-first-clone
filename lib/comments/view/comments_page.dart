@@ -8,7 +8,7 @@ import 'package:flutter_instagram_offline_first_clone/comments/controller/commen
 import 'package:posts_repository/posts_repository.dart';
 import 'package:shared/shared.dart';
 
-class CommentsPage extends StatelessWidget {
+class CommentsPage extends StatefulWidget {
   const CommentsPage({
     required this.post,
     required this.scrollController,
@@ -21,20 +21,41 @@ class CommentsPage extends StatelessWidget {
   final DraggableScrollableController draggableScrollController;
 
   @override
-  Widget build(BuildContext context) {
-    final commentsController = CommentsController();
+  State<CommentsPage> createState() => _CommentsPageState();
+}
 
+class _CommentsPageState extends State<CommentsPage> {
+  late CommentsController _commentsController;
+  late TextEditingController _commentTextController;
+
+  @override
+  void initState() {
+    super.initState();
+    _commentsController = CommentsController();
+    _commentTextController = TextEditingController();
+
+    _commentsController.commentTextController = _commentTextController;
+  }
+
+  @override
+  void dispose() {
+    _commentsController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => CommentsBloc(
-        postId: post.id,
+        postId: widget.post.id,
         postsRepository: context.read<PostsRepository>(),
       )..add(const CommentsSubscriptionRequested()),
       child: RepositoryProvider.value(
-        value: commentsController,
+        value: _commentsController,
         child: CommentsView(
-          post: post,
-          scrollController: scrollController,
-          scrollableSheetController: draggableScrollController,
+          post: widget.post,
+          scrollController: widget.scrollController,
+          scrollableSheetController: widget.draggableScrollController,
         ),
       ),
     );
@@ -68,6 +89,7 @@ class CommentsView extends StatelessWidget {
         elevation: 0,
         automaticallyImplyLeading: false,
         backgroundColor: backgroundColor,
+        surfaceTintColor: backgroundColor,
         centerTitle: true,
         toolbarHeight: 24,
         title: Text(

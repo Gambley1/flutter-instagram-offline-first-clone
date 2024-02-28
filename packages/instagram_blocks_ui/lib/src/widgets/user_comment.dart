@@ -94,7 +94,7 @@ class UserComment extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
-            child: buildHighlightedText(comment.content, context),
+            child: buildHighlightedText(comment, context),
           ),
           Tappable(
             onTap: () => onReplyButtonTap?.call(comment.author.username),
@@ -179,14 +179,13 @@ List<String> getAllHashtags(String text) {
 }
 
 List<String> getAllMentions(String text) {
-  final regexp = RegExp(r'\@[a-zA-Z0-9]+\b()');
+  final regexp = RegExp(r'\@[a-zA-Z0-9\-_.]+\b'); // Updated regular expression
 
   final mentions = <String>[];
 
-  regexp.allMatches(text).forEach((element) {
-    if (element.group(0) != null) {
-      mentions.add(element.group(0).toString());
-    }
+  regexp.allMatches(text).forEach((match) {
+    if (match.group(0) == null) return;
+    mentions.add(match.group(0)!);
   });
 
   return mentions;
@@ -206,17 +205,17 @@ String cleanText(String text) {
   return text;
 }
 
-RichText buildHighlightedText(String text, BuildContext context) {
-  text = cleanText(text);
+RichText buildHighlightedText(Comment comment, BuildContext context) {
+  final commentMessage = cleanText(comment.content);
 
   final validMentions = <String>['@'];
 
-  final mentions = getAllMentions(text);
+  final mentions = getAllMentions(commentMessage);
 
   final textSpans = <TextSpan>[];
   final userIds = <String, String>{};
 
-  text.split(' ').forEach((value) {
+  commentMessage.split(' ').forEach((value) {
     if (mentions.contains(value) &&
         value.characters.contains(validMentions.first)) {
       userIds.putIfAbsent(value, () => value);

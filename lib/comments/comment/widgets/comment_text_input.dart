@@ -21,14 +21,14 @@ class CommentTextField extends StatefulWidget {
 }
 
 class _CommentTextFieldState extends State<CommentTextField> {
-  final _commentTextController = TextEditingController();
+  late TextEditingController _commentTextController;
   late FocusNode _focusNode;
 
   @override
   void initState() {
     super.initState();
-    context.read<CommentsController>().commentTextController =
-        _commentTextController;
+    _commentTextController =
+        context.read<CommentsController>().commentTextController;
 
     _focusNode = context.read<CommentsController>().commentFocusNode;
     _focusNode.addListener(() {
@@ -45,20 +45,12 @@ class _CommentTextFieldState extends State<CommentTextField> {
   }
 
   @override
-  void dispose() {
-    _commentTextController.dispose();
-    _focusNode.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final user = context.select((AppBloc b) => b.state.user);
     final commentsController = context.read<CommentsController>();
 
     return Padding(
-      padding:
-          EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      padding: EdgeInsets.only(bottom: context.viewInsets.bottom),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -77,7 +69,7 @@ class _CommentTextFieldState extends State<CommentTextField> {
                     style: context.bodyMedium?.apply(color: AppColors.grey),
                   ),
                   trailing: Tappable(
-                    onTap: () => commentsController.clearReplying,
+                    onTap: commentsController.clearReplying,
                     animationEffect: TappableAnimationEffect.none,
                     child: const Icon(Icons.cancel, color: AppColors.grey),
                   ),
