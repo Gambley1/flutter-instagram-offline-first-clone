@@ -63,7 +63,10 @@
       }
     }
   },
+  "noPostsText": "No Posts Yet!",
   "addCommentText": "Add a comment",
+  "noChatsText": "No chats yet!",
+  "startChatText": "Start a chat",
   "deleteCommentText": "Delete comment",
   "commentDeleteConfirmationText": "Are you sure you want to delete this comment?",
   "deleteMessageText": "Delete message",
@@ -160,6 +163,7 @@
   "optionsText": "Options",
   "viewProfileText": "View profile",
   "editProfileText": "Edit profile",
+  "editingText": "Editing",
   "@editProfileText": {
     "description": "Text shown in account view to edit profile"
   },
@@ -175,6 +179,9 @@
   "@sharePostText": {
     "description": "Tooltip text shown in post popup to share post"
   },
+  "sharePostCaptionHintText": "Add a message...",
+  "sendText": "Send",
+  "sendSeparatelyText": "Send separately",
   "addStoryText": "New",
   "@addStoryText": {
     "description": "Text shown in account view to add new story"
@@ -225,6 +232,18 @@
       }
     }
   },
+  "newPostText": "New post",
+  "writeCaptionText": "Write caption...",
+  "logOutText": "Log out",
+  "logOutConfirmationText": "Are you sure you want to log out?",
+  "dontShowAgainText": "Dont''t show again",
+  "blockPostAuthorText": "Block post author",
+  "blockAuthorText": "Block author",
+  "blockAuthorConfirmationText": "Are you sure you want to block this author?",
+  "blockText": "Block",
+  "refreshText": "Refresh",
+  "noReelsFoundText": "No Reels Yet",
+  "publishText": "Publish",
   "searchText": "Search",
   "addMessageText": "Add message",
   "messageText": "Message",
@@ -327,6 +346,15 @@
   "editText": "Edit",
   "deleteText": "Delete",
   "replyText": "Reply",
+  "replyToText": "Reply to {username}",
+  "@replyingToText": {
+    "placeholders": {
+      "username": {
+        "type": "String",
+        "example": "emil"
+      }
+    }
+  },
   "themeText": "Theme",
   "systemOption": "System",
   "@systemOption": {

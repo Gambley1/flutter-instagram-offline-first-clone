@@ -100,7 +100,7 @@ class UserComment extends StatelessWidget {
             onTap: () => onReplyButtonTap?.call(comment.author.username),
             animationEffect: TappableAnimationEffect.none,
             child: Text(
-              BlockSettings.instance.commentTextDelegate.replyText,
+              BlockSettings().commentTextDelegate.replyText,
               style: context.labelMedium?.copyWith(color: AppColors.grey),
             ),
           ),

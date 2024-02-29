@@ -312,9 +312,9 @@ create policy "Only owners can update comment." on public.comments for update wi
 create policy "Only authenticated can upload comments." on public.comments for insert to authenticated with check (true);
 
 create policy "Only owners can delete comment." on public.comments for delete to authenticated
-using (
-    auth.uid() = user_id
-  );
+using ((auth.uid() = user_id) OR (auth.uid() IN ( SELECT posts.user_id
+   FROM posts
+  WHERE (posts.id = comments.post_id))))
 
 create table
   public.subscriptions (

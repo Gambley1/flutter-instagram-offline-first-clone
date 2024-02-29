@@ -1,9 +1,9 @@
 import 'package:flutter/widgets.dart';
 
 final class BlockSettings {
+  factory BlockSettings() => _internal;
+  
   BlockSettings._();
-
-  static BlockSettings get instance => _internal;
 
   static final _internal = BlockSettings._();
 
@@ -31,12 +31,18 @@ final class PostTextDelegate {
     required this.editText,
     required this.deleteText,
     required this.visitSponsoredInstagramProfileText,
+    required this.noPostsText,
     required this.likedByText,
     required this.sponsoredPostText,
     required this.likesCountText,
     required this.likesCountShortText,
     required this.deletePostText,
     required this.deletePostConfirmationText,
+    required this.dontShowAgainText,
+    required this.blockPostAuthorText,
+    required this.blockAuthorText,
+    required this.blockAuthorConfirmationText,
+    required this.blockText,
   });
 
   final String cancelText;
@@ -44,7 +50,13 @@ final class PostTextDelegate {
   final String deleteText;
   final String deletePostText;
   final String deletePostConfirmationText;
+  final String dontShowAgainText;
+  final String blockPostAuthorText;
+  final String blockAuthorText;
+  final String blockAuthorConfirmationText;
+  final String blockText;
   final String visitSponsoredInstagramProfileText;
+  final String noPostsText;
   final TextSpan Function(int count, String name, VoidCallback? onUsernameTap)
       likedByText;
   final String sponsoredPostText;

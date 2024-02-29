@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker_plus/image_picker_plus.dart';
-import 'package:image_picker_plus/src/gallery_display.dart';
+export 'package:image_picker_plus/src/gallery_display.dart';
 
 extension ImagePickerPlus on BuildContext {
   Future<SelectedImagesDetails?> pickImage({

@@ -1,5 +1,6 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:shared/shared.dart';
 
@@ -37,8 +38,8 @@ class PostsListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (withLoading && (loading ?? false)) return const _LoadingPosts();
-    if (blocks == null || (blocks?.isEmpty ?? true)) return const _EmptyPosts();
+    if (withLoading && (loading ?? false)) return const LoadingPosts();
+    if (blocks == null || (blocks?.isEmpty ?? true)) return const EmptyPosts();
 
     if (withItemController) {
       return _PostsItemController(
@@ -113,26 +114,54 @@ class _PostsItemControllerState extends State<_PostsItemController> {
   }
 }
 
-class _EmptyPosts extends StatelessWidget {
-  const _EmptyPosts();
+class EmptyPosts extends StatelessWidget {
+  const EmptyPosts({
+    this.text,
+    this.icon = Icons.camera_alt_outlined,
+    this.child,
+    this.isSliver = true,
+    super.key,
+  });
 
-  static const _noPostsText = 'No posts';
+  final String? text;
+  final IconData icon;
+  final Widget? child;
+  final bool isSliver;
 
-  Widget child(BuildContext context) => Center(
-        child: Text(
-          _noPostsText,
-          style: context.headlineSmall,
-        ),
+  Widget empty(BuildContext context) => Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox.square(
+            dimension: 92,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                border: Border.all(color: context.adaptiveColor, width: 2),
+                shape: BoxShape.circle,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(AppSpacing.lg),
+                child: FittedBox(child: Icon(icon)),
+              ),
+            ),
+          ),
+          Text(
+            text ?? BlockSettings().postTextDelegate.noPostsText,
+            style: context.headlineSmall,
+          ),
+          if (child != null) child!,
+        ].insertBetween(const SizedBox(height: AppSpacing.sm)),
       );
 
   @override
   Widget build(BuildContext context) {
-    return SliverFillRemaining(child: child(context));
+    return isSliver
+        ? SliverFillRemaining(child: empty(context))
+        : empty(context);
   }
 }
 
-class _LoadingPosts extends StatelessWidget {
-  const _LoadingPosts();
+class LoadingPosts extends StatelessWidget {
+  const LoadingPosts({super.key});
 
   @override
   Widget build(BuildContext context) {

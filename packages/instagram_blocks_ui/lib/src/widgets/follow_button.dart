@@ -19,11 +19,11 @@ class FollowButton extends StatelessWidget {
   String? _followingStatus(BuildContext context) {
     switch ((wasFollowed, isFollowed)) {
       case (true, true):
-        return BlockSettings.instance.followTextDelegate.followingText;
+        return BlockSettings().followTextDelegate.followingText;
       case (false, false):
-        return BlockSettings.instance.followTextDelegate.followText;
+        return BlockSettings().followTextDelegate.followText;
       case (true, false):
-        return BlockSettings.instance.followTextDelegate.followText;
+        return BlockSettings().followTextDelegate.followText;
       case _:
         return null;
     }

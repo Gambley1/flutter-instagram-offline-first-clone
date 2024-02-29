@@ -42,9 +42,9 @@ class _LikesCountState extends State<LikesCount>
       child: widget.textBuilder?.call(count != 0 ? count - 1 : 0) ??
           Text(
             widget.short
-                ? BlockSettings.instance.postTextDelegate
+                ? BlockSettings().postTextDelegate
                     .likesCountShortText(count)
-                : BlockSettings.instance.postTextDelegate.likesCountText(count),
+                : BlockSettings().postTextDelegate.likesCountText(count),
             style: context.titleMedium?.copyWith(
               color: widget.color,
               fontSize: widget.size,

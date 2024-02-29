@@ -215,7 +215,7 @@ class SignupCubit extends Cubit<SignupState> {
       String? imageUrlResponse;
       if (avatarFile != null) {
         final imageBytes =
-            await PickImage.instance.imageBytes(file: File(avatarFile.path));
+            await PickImage().imageBytes(file: File(avatarFile.path));
         final avatarsStorage = Supabase.instance.client.storage.from('avatars');
 
         final fileExt = avatarFile.path.split('.').last.toLowerCase();

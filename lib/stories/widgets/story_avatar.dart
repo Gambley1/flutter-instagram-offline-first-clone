@@ -4,6 +4,7 @@ import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
+import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:flutter_instagram_offline_first_clone/stories/user_stories/user_stories.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:shared/shared.dart';
@@ -23,7 +24,6 @@ class StoryAvatar extends StatelessWidget {
   const StoryAvatar({
     required this.author,
     required this.isMine,
-    required this.myStoryLabel,
     required this.username,
     required this.onTap,
     super.key,
@@ -33,7 +33,6 @@ class StoryAvatar extends StatelessWidget {
 
   final User author;
   final bool isMine;
-  final String myStoryLabel;
   final String username;
   final OnAvatarTapCallback onTap;
   final VoidCallback? onLongPress;
@@ -53,7 +52,6 @@ class StoryAvatar extends StatelessWidget {
         isMine: isMine,
         username: username,
         onTap: onTap,
-        myStoryLabel: myStoryLabel,
         avatarBuilder: avatarBuilder,
       ),
     );
@@ -66,7 +64,6 @@ class AvatarView extends StatelessWidget {
     required this.isMine,
     required this.username,
     required this.onTap,
-    required this.myStoryLabel,
     this.onLongPress,
     super.key,
     this.avatarBuilder,
@@ -74,7 +71,6 @@ class AvatarView extends StatelessWidget {
 
   final User author;
   final bool isMine;
-  final String myStoryLabel;
   final String username;
   final OnAvatarTapCallback onTap;
   final VoidCallback? onLongPress;
@@ -105,8 +101,8 @@ class AvatarView extends StatelessWidget {
                 UserProfileAvatar(
                   withAddButton: isMine,
                   stories: state.stories,
-                  onTap: (_) => onTap,
-                  onLongPress: onLongPress,
+                  onTap: onTap,
+                  onLongPress: (_) => onLongPress?.call(),
                   enableUnactiveBorder: !isMine,
                   avatarUrl: author.avatarUrl,
                   scaleStrength: ScaleStrength.xxs,
@@ -115,7 +111,7 @@ class AvatarView extends StatelessWidget {
             DefaultTextStyle(
               style: style,
               child: Text(
-                isMine ? myStoryLabel : username,
+                isMine ? context.l10n.yourStoryLabel : username,
               ),
             ),
           ],

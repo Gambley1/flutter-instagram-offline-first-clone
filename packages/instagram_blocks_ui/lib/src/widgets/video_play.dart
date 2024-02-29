@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_blocks_ui/src/blur_hash_image_placeholder.dart';
@@ -10,12 +12,12 @@ import 'package:visibility_detector/visibility_detector.dart';
 
 class VideoPlay extends StatefulWidget {
   const VideoPlay({
-    required this.url,
     required this.play,
+    this.url,
+    this.file,
     super.key,
     this.blurHash,
     this.withSound = true,
-    this.fromMemory = false,
     this.aspectRatio = 4 / 5,
     this.expand = false,
     this.id,
@@ -32,11 +34,11 @@ class VideoPlay extends StatefulWidget {
   });
 
   final String? id;
-  final String url;
+  final String? url;
+  final File? file;
   final String? blurHash;
   final double aspectRatio;
   final bool expand;
-  final bool fromMemory;
   final bool play;
   final bool withSound;
   final Duration initDelay;
@@ -81,8 +83,9 @@ class _VideoPlayState extends State<VideoPlay>
         if (_controller.value.volume == 1) {
           if (oldWidget.play == widget.play) return;
           _controller.setVolume(1);
+        } else {
+          _controller.setVolume(0);
         }
-        _controller.setVolume(0);
       }
     } else {
       _controller
@@ -93,13 +96,13 @@ class _VideoPlayState extends State<VideoPlay>
 
   Future<void> _initializeController() async {
     _controller = (widget.controller ??
-        (widget.fromMemory
-            ? VideoPlayerController.asset(
-                widget.url,
+        (widget.file != null
+            ? VideoPlayerController.file(
+                widget.file!,
                 videoPlayerOptions: widget.videoPlayerOptions,
               )
             : VideoPlayerController.networkUrl(
-                Uri.parse(widget.url),
+                Uri.parse(widget.url!),
                 videoPlayerOptions: widget.videoPlayerOptions,
               )))
       ..addListener(_controllerListener);

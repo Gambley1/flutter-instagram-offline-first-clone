@@ -61,7 +61,7 @@ class CreateStoriesBloc extends Bloc<CreateStoriesEvent, CreateStoriesState> {
       final compressed = await ImageCompress.compressFile(storyImageFile);
       final compressedFile = File(compressed!.path);
       final compressedBytes =
-          await PickImage.instance.imageBytes(file: compressedFile);
+          await PickImage().imageBytes(file: compressedFile);
       final contentUrl = await _storiesRepository.uploadStoryMedia(
         storyId: storyId,
         imageFile: compressedFile,

@@ -91,6 +91,19 @@ class UserProfilePostsAppBar extends StatelessWidget {
     final bloc = context.read<UserProfileBloc>();
     final isOwner = context.select<UserProfileBloc, bool>((b) => b.isOwner);
 
+    late final followText = Padding(
+      padding: const EdgeInsets.only(right: AppSpacing.lg),
+      child: Tappable(
+        onTap: () => bloc.add(UserProfileFollowUserRequested(userId)),
+        child: Text(
+          context.l10n.followUser,
+          style: context.titleLarge?.copyWith(
+            color: AppColors.blue,
+          ),
+        ),
+      ),
+    );
+
     return SliverAppBar(
       centerTitle: false,
       pinned: true,
@@ -98,24 +111,8 @@ class UserProfilePostsAppBar extends StatelessWidget {
         BetterStreamBuilder<bool>(
           stream: bloc.followingStatus(userId: userId),
           builder: (context, isFollowed) {
-            if (isFollowed) return const SizedBox.shrink();
-            if (isOwner) return const SizedBox.shrink();
+            if (isFollowed || isOwner) return const SizedBox.shrink();
 
-            final followText = Padding(
-              padding:
-                  const EdgeInsets.only(right: AppSpacing.lg),
-              child: Tappable(
-                onTap: isFollowed
-                    ? null
-                    : () => bloc.add(UserProfileFollowUserRequested(userId)),
-                child: Text(
-                  context.l10n.followUser,
-                  style: context.titleLarge?.copyWith(
-                    color: AppColors.blue,
-                  ),
-                ),
-              ),
-            );
             return AnimatedSwitcher(
               switchInCurve: Curves.easeIn,
               duration: 550.ms,
@@ -133,7 +130,11 @@ class UserProfilePostsAppBar extends StatelessWidget {
           },
         ),
       ],
-      title: Text(context.l10n.profilePostsAppBarTitle),
+      title: Text(
+        context.l10n.profilePostsAppBarTitle,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
     );
   }
 }

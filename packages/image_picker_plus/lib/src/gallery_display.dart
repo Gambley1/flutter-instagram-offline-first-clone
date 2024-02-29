@@ -13,12 +13,14 @@ class CustomImagePicker extends StatefulWidget {
   final GalleryDisplaySettings? galleryDisplaySettings;
   final PickerSource pickerSource;
   final FilterOptionGroup? filterOption;
+  final VoidCallback? onBackButtonTap;
 
   const CustomImagePicker({
     required this.source,
     required this.multiSelection,
     required this.galleryDisplaySettings,
     required this.pickerSource,
+    this.onBackButtonTap,
     this.filterOption,
     super.key,
   });
@@ -205,7 +207,7 @@ class CustomImagePickerState extends State<CustomImagePicker>
         length: 2, child: Material(color: whiteColor, child: safeArea()));
   }
 
-  SafeArea safeArea() {
+  Widget safeArea() {
     return SafeArea(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -268,6 +270,7 @@ class CustomImagePickerState extends State<CustomImagePicker>
         moveToVideoScreen: moveToVideo,
         selectedVideo: selectedVideoValue,
         callbackFunction: callbackFunction,
+        onBackButtonTap: widget.onBackButtonTap,
       ),
     );
   }
@@ -281,6 +284,7 @@ class CustomImagePickerState extends State<CustomImagePicker>
 
   ImagesViewPage imagesViewPage() {
     return ImagesViewPage(
+      key: imagesViewPageKey,
       appTheme: appTheme,
       clearMultiImages: clearMultiImages,
       callbackFunction: callbackFunction,
@@ -297,6 +301,7 @@ class CustomImagePickerState extends State<CustomImagePicker>
       showInternalImages: showInternalImages,
       maximumSelection: maximumSelection,
       filterOption: widget.filterOption,
+      onBackButtonTap: widget.onBackButtonTap,
     );
   }
 

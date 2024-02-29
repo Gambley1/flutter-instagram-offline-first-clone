@@ -37,13 +37,16 @@ extension BuildContextX on BuildContext {
   EdgeInsets get viewInsets => MediaQuery.viewInsetsOf(this);
 
   /// Defines view padding of from [MediaQuery] with current [BuildContext].
-  EdgeInsets get viewPaddingOf => MediaQuery.viewPaddingOf(this);
+  EdgeInsets get viewPadding => MediaQuery.viewPaddingOf(this);
 
   /// Defines value of device current width based on [size].
   double get screenWidth => size.width;
 
   /// Defines value of device current height based on [size].
   double get screenHeight => size.height;
+
+  /// Defines value of current device pixel ratio.
+  double get devicePixelRatio => MediaQuery.devicePixelRatioOf(this);
 
   /// Whether the current device is an `Android`.
   bool get isAndroid => theme.platform == TargetPlatform.android;

@@ -39,7 +39,7 @@ class UserStoriesAvatar extends StatelessWidget {
   final List<Story> stories;
   final OnAvatarTapCallback? onAvatarTap;
   final bool withAddButton;
-  final VoidCallback? onLongPress;
+  final ValueSetter<String?>? onLongPress;
   final TappableAnimationEffect animationEffect;
   final bool? showStories;
   final bool? showWhenSeen;
@@ -66,7 +66,6 @@ class UserStoriesAvatar extends StatelessWidget {
       showStories: showStories,
       showWhenSeen: showWhenSeen,
       isLarge: isLarge,
-      isImagePicker: isImagePicker,
       onImagePick: onImagePick,
       enableUnactiveBorder: enableUnactiveBorder,
       withShimmerPlaceholder: withShimmerPlaceholder,
@@ -97,7 +96,6 @@ class ProfileAvatar extends StatelessWidget {
     required this.withAddButton,
     required this.animationEffect,
     required this.isLarge,
-    required this.isImagePicker,
     required this.enableUnactiveBorder,
     required this.withShimmerPlaceholder,
     required this.scaleStrength,
@@ -115,12 +113,11 @@ class ProfileAvatar extends StatelessWidget {
   final List<Story> stories;
   final OnAvatarTapCallback? onAvatarTap;
   final bool withAddButton;
-  final VoidCallback? onLongPress;
+  final ValueSetter<String?>? onLongPress;
   final TappableAnimationEffect animationEffect;
   final bool? showStories;
   final bool? showWhenSeen;
   final bool isLarge;
-  final bool isImagePicker;
   final bool enableUnactiveBorder;
   final bool withShimmerPlaceholder;
   final bool withAdaptiveBorder;
@@ -147,7 +144,6 @@ class ProfileAvatar extends StatelessWidget {
       showStories: this.showStories ?? showStories,
       avatarUrl: author.avatarUrl,
       isLarge: isLarge,
-      isImagePicker: isImagePicker,
       onImagePick: onImagePick,
       withAddButton: withAddButton,
       onLongPress: onLongPress,

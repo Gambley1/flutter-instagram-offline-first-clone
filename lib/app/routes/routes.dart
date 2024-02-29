@@ -303,17 +303,51 @@ GoRouter router(AppBloc appBloc) => GoRouter(
                         return CustomTransitionPage(
                           key: state.pageKey,
                           child: const UserProfileCreatePost(),
-                          transitionsBuilder:
-                              (context, animation, secondaryAnimation, child) {
+                          transitionsBuilder: (
+                            context,
+                            animation,
+                            secondaryAnimation,
+                            child,
+                          ) {
                             return SharedAxisTransition(
                               animation: animation,
                               secondaryAnimation: secondaryAnimation,
-                              transitionType: SharedAxisTransitionType.vertical,
+                              transitionType:
+                                  SharedAxisTransitionType.horizontal,
                               child: child,
                             );
                           },
                         );
                       },
+                      routes: [
+                        GoRoute(
+                          name: 'publish_post',
+                          path: 'publish_post',
+                          parentNavigatorKey: _rootNavigatorKey,
+                          pageBuilder: (context, state) {
+                            final props = state.extra! as CreatePostProps;
+
+                            return CustomTransitionPage(
+                              key: state.pageKey,
+                              child: CreatePostPage(props: props),
+                              transitionsBuilder: (
+                                context,
+                                animation,
+                                secondaryAnimation,
+                                child,
+                              ) {
+                                return SharedAxisTransition(
+                                  animation: animation,
+                                  secondaryAnimation: secondaryAnimation,
+                                  transitionType:
+                                      SharedAxisTransitionType.horizontal,
+                                  child: child,
+                                );
+                              },
+                            );
+                          },
+                        ),
+                      ],
                     ),
                     GoRoute(
                       path: 'create_stories',

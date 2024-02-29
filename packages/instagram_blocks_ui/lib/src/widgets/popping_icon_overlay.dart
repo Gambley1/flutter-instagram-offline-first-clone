@@ -34,8 +34,8 @@ class _PoppingIconAnimationOverlayState
 
   @override
   void dispose() {
-    super.dispose();
     _controller.dispose();
+    super.dispose();
   }
 
   void _handleDoubleTap({required bool isLiked}) {

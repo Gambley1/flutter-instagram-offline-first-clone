@@ -70,7 +70,6 @@ class PostFooter extends StatelessWidget {
               Expanded(
                 child: Align(
                   alignment: Alignment.centerLeft,
-                  heightFactor: 1,
                   child: Row(
                     children: <Widget>[
                       LikeButton(
@@ -117,7 +116,6 @@ class PostFooter extends StatelessWidget {
               Expanded(
                 child: Align(
                   alignment: Alignment.centerRight,
-                  heightFactor: 1,
                   child: Tappable(
                     animationEffect: TappableAnimationEffect.scale,
                     onTap: () {},
@@ -166,11 +164,11 @@ class PostFooter extends StatelessWidget {
                               userId == null ? null : () => onAvatarTap(userId);
 
                           return Text.rich(
-                            BlockSettings.instance.postTextDelegate.likedByText(
-                              count,
-                              name,
-                              onTap,
-                            ),
+                            BlockSettings().postTextDelegate.likedByText(
+                                  count,
+                                  name,
+                                  onTap,
+                                ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: context.titleMedium,
@@ -319,8 +317,9 @@ class _SponsoredPostActionState extends State<SponsoredPostAction> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              BlockSettings
-                  .instance.postTextDelegate.visitSponsoredInstagramProfileText,
+              BlockSettings()
+                  .postTextDelegate
+                  .visitSponsoredInstagramProfileText,
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
               style: context.titleMedium

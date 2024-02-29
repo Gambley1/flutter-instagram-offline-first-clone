@@ -20,7 +20,6 @@ class UserProfileAvatar extends StatelessWidget {
     this.avatarUrl,
     this.radius,
     this.isLarge = true,
-    this.isImagePicker = false,
     this.onTapPickImage = false,
     this.strokeWidth,
     this.onTap,
@@ -44,11 +43,10 @@ class UserProfileAvatar extends StatelessWidget {
   final double? radius;
   final double? strokeWidth;
   final bool isLarge;
-  final bool isImagePicker;
   final bool onTapPickImage;
   final bool withShimmerPlaceholder;
   final ValueSetter<String?>? onTap;
-  final VoidCallback? onLongPress;
+  final ValueSetter<String?>? onLongPress;
   final VoidCallback? onAddButtonTap;
   final ValueSetter<String>? onImagePick;
   final TappableAnimationEffect animationEffect;
@@ -106,7 +104,7 @@ class UserProfileAvatar extends StatelessWidget {
         precacheImage(CachedNetworkImageProvider(url), context);
 
     final imageFile =
-        await PickImage.instance.pickImage(context, source: ImageSource.both);
+        await PickImage().pickImage(context, source: ImageSource.both);
     if (imageFile == null) return;
 
     final selectedFile = imageFile.selectedFiles.firstOrNull;
@@ -117,7 +115,7 @@ class UserProfileAvatar extends StatelessWidget {
     final file = compressedFile ?? selectedFile.selectedFile;
     final compressedBytes = compressedFile == null
         ? null
-        : await PickImage.instance.imageBytes(file: compressedFile);
+        : await PickImage().imageBytes(file: compressedFile);
     final bytes = compressedBytes ?? selectedFile.selectedByte;
     final avatarsStorage = Supabase.instance.client.storage.from('avatars');
 
@@ -305,7 +303,8 @@ class UserProfileAvatar extends StatelessWidget {
               ? null
               : () => _pickImage.call(context)
           : () => onTap?.call(avatarUrl),
-      onLongPress: isImagePicker ? () => _pickImage.call(context) : onLongPress,
+      onLongPress:
+          onLongPress == null ? null : () => onLongPress?.call(avatarUrl),
       animationEffect: animationEffect,
       scaleStrength: scaleStrength,
       child: avatar,

@@ -136,7 +136,12 @@ class _CurrentPostImageInexOfTotal extends StatelessWidget {
             dark: AppColors.black.withOpacity(.4),
           ),
         ),
-        child: Text(text, overflow: TextOverflow.ellipsis, maxLines: 1),
+        child: Text(
+          text,
+          style: context.bodyMedium?.apply(color: AppColors.white),
+          overflow: TextOverflow.ellipsis,
+          maxLines: 1,
+        ),
       ),
     );
   }

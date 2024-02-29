@@ -9,15 +9,17 @@ import 'package:image_picker_plus/image_picker_plus.dart';
 import 'package:insta_assets_picker/insta_assets_picker.dart';
 import 'package:shared/shared.dart';
 
+export 'package:image_picker_plus/src/images_view_page.dart';
+
 class PickImage {
+  factory PickImage() => _internal;
+
   /// {@macro image_picker}
-  const PickImage._();
+  PickImage._();
 
-  static const PickImage _internal = PickImage._();
+  static final PickImage _internal = PickImage._();
 
-  static PickImage get instance => _internal;
-
-  static late TabsTexts _tabsTexts;
+  late TabsTexts _tabsTexts;
 
   // ignore: use_setters_to_change_properties
   void init(TabsTexts tabsTexts) {
@@ -126,6 +128,30 @@ class PickImage {
           appTheme: _appTheme(context),
           callbackFunction: (details) => onMediaPicked.call(context, details),
         ),
+      );
+
+  Widget customMediaPicker({
+    required BuildContext context,
+    required ImageSource source,
+    required PickerSource pickerSource,
+    required ValueSetter<SelectedImagesDetails> onMediaPicked,
+    bool multiSelection = true,
+    FilterOptionGroup? filterOption,
+    VoidCallback? onBackButtonTap,
+  }) =>
+      CustomImagePicker(
+        galleryDisplaySettings: GalleryDisplaySettings(
+          showImagePreview: true,
+          cropImage: true,
+          tabsTexts: _tabsTexts,
+          appTheme: _appTheme(context),
+          callbackFunction: (details) async => onMediaPicked.call(details),
+        ),
+        multiSelection: multiSelection,
+        pickerSource: pickerSource,
+        source: source,
+        filterOption: _defaultFilterOption,
+        onBackButtonTap: onBackButtonTap,
       );
 
   /// Reads image as bytes.

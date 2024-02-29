@@ -20,6 +20,8 @@ dependencies:
   collection: ^1.18.0
   database_client:
     path: packages/database_client
+  env:
+    path: packages/env
   equatable: ^2.0.5
   fast_immutable_collections: ^10.1.1
   firebase_config:

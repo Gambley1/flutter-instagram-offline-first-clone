@@ -108,8 +108,7 @@ class PostHeader extends StatelessWidget {
                     children: [
                       username,
                       Text(
-                        BlockSettings
-                            .instance.postTextDelegate.sponsoredPostText,
+                        BlockSettings().postTextDelegate.sponsoredPostText,
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
                         style: context.bodyMedium?.apply(color: color),
@@ -196,17 +195,17 @@ class PostOptionsButton extends StatelessWidget {
     }) =>
         <ModalOption>[
           ModalOption(
-            name: BlockSettings.instance.postTextDelegate.editText,
+            name: BlockSettings().postTextDelegate.editText,
             iconData: Icons.edit,
             onTap: onPostEditTap,
           ),
           ModalOption(
-            name: BlockSettings.instance.postTextDelegate.deleteText,
-            actionTitle: BlockSettings.instance.postTextDelegate.deletePostText,
-            actionContent: BlockSettings
-                .instance.postTextDelegate.deletePostConfirmationText,
-            actionYesText: BlockSettings.instance.postTextDelegate.deleteText,
-            actionNoText: BlockSettings.instance.postTextDelegate.cancelText,
+            name: BlockSettings().postTextDelegate.deleteText,
+            actionTitle: BlockSettings().postTextDelegate.deletePostText,
+            actionContent:
+                BlockSettings().postTextDelegate.deletePostConfirmationText,
+            actionYesText: BlockSettings().postTextDelegate.deleteText,
+            actionNoText: BlockSettings().postTextDelegate.cancelText,
             icon: Assets.icons.trash.svg(
               colorFilter:
                   const ColorFilter.mode(AppColors.red, BlendMode.srcIn),
@@ -222,16 +221,18 @@ class PostOptionsButton extends StatelessWidget {
     }) =>
         <ModalOption>[
           ModalOption(
-            name: "Don't show again",
+            name: BlockSettings().postTextDelegate.dontShowAgainText,
             iconData: Icons.remove_circle_outline_sharp,
             onTap: onPostDontShowAgainTap,
           ),
           ModalOption(
-            name: 'Block post author',
-            actionTitle: 'Block author',
-            actionContent: 'Are you sure you want to block this author?',
-            actionYesText: 'Block',
+            name: BlockSettings().postTextDelegate.blockPostAuthorText,
+            actionTitle: BlockSettings().postTextDelegate.blockAuthorText,
+            actionContent:
+                BlockSettings().postTextDelegate.blockAuthorConfirmationText,
+            actionYesText: BlockSettings().postTextDelegate.blockText,
             iconData: Icons.block,
+            actionNoText: BlockSettings().postTextDelegate.cancelText,
             distractive: true,
             onTap: onPostBlockAuthorTap,
           ),

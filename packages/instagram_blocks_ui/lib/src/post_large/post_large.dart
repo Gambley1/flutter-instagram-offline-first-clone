@@ -49,7 +49,6 @@ class PostLarge extends StatelessWidget {
   final VideoPlayerBuilder? videoPlayerBuilder;
   final int? postIndex;
   final bool withInViewNotifier;
-
   final Widget? Function(String? name, String? userId, int count)?
       likesCountBuilder;
 

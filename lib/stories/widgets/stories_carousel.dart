@@ -55,7 +55,6 @@ class StoriesListView extends StatelessWidget {
                       author: following ?? user,
                       isMine: isMine,
                       username: following?.displayUsername ?? '',
-                      myStoryLabel: context.l10n.yourStoryLabel,
                       onTap: (_) {
                         if (!canCreateStory) return;
                         context.pushNamed(
@@ -106,7 +105,7 @@ class StoriesListView extends StatelessWidget {
                           author: author,
                           onAvatarTap: onAvatarTap,
                           withAddButton: isMine,
-                          onLongPress: onLongPress,
+                          onLongPress: (_) => onLongPress?.call(),
                           animationEffect: TappableAnimationEffect.scale,
                           showWhenSeen: true,
                           onAddButtonTap: () => onAvatarTap(''),

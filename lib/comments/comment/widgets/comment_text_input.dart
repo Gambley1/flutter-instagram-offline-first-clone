@@ -66,7 +66,9 @@ class _CommentTextFieldState extends State<CommentTextField> {
                     dark: AppColors.background,
                   ),
                   title: Text(
-                    'Reply to ${commentsController.commentReplyingToUsername}',
+                    context.l10n.replyToText(
+                      commentsController.commentReplyingToUsername ?? 'unknown',
+                    ),
                     style: context.bodyMedium?.apply(color: AppColors.grey),
                   ),
                   trailing: Tappable(
@@ -158,7 +160,7 @@ class _CommentTextFieldState extends State<CommentTextField> {
                             _commentTextController.clear();
                           },
                           child: Text(
-                            'Publish',
+                            context.l10n.publishText,
                             style:
                                 context.bodyLarge?.apply(color: AppColors.blue),
                           ),

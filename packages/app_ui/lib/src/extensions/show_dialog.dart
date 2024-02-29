@@ -267,6 +267,7 @@ extension DialogExtension on BuildContext {
                   image: DecorationImage(
                     image: NetworkImage(imageUrl),
                     fit: BoxFit.cover,
+                    filterQuality: FilterQuality.high,
                   ),
                 ),
               ),

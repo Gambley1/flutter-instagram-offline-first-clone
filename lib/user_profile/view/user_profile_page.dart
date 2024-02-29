@@ -214,11 +214,7 @@ class _PostsPageState extends State<PostsPage>
           comparator: const ListEquality<PostBlock>().equals,
           builder: (context, blocks) {
             if (blocks.isEmpty) {
-              return SliverFillRemaining(
-                child: Center(
-                  child: Text('No posts', style: context.headlineSmall),
-                ),
-              );
+              return const EmptyPosts();
             }
             return SliverGrid.builder(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -275,10 +271,7 @@ class UserProfileMentionedPostsPage extends StatelessWidget {
         SliverOverlapInjector(
           handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
         ),
-        const SliverFillRemaining(
-          hasScrollBody: false,
-          child: Text('Hello'),
-        ),
+        const EmptyPosts(icon: Icons.person_pin_outlined),
       ],
     );
   }
@@ -300,26 +293,28 @@ class UserProfileAppBar extends StatelessWidget {
         centerTitle: false,
         pinned: !ModalRoute.of(context)!.isFirst,
         floating: ModalRoute.of(context)!.isFirst,
-        title: Row(
-          children: [
-            Flexible(
-              flex: 12,
-              child: Text(
-                '${user.username ?? ''} ',
-                style: context.titleLarge?.copyWith(
-                  fontWeight: AppFontWeight.bold,
-                ),
-                overflow: TextOverflow.ellipsis,
+        title: user.username == null
+            ? null
+            : Row(
+                children: [
+                  Flexible(
+                    flex: 12,
+                    child: Text(
+                      '${user.username} ',
+                      style: context.titleLarge?.copyWith(
+                        fontWeight: AppFontWeight.bold,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  Flexible(
+                    child: Assets.icons.verifiedUser.svg(
+                      width: AppSize.iconSizeSmall,
+                      height: AppSize.iconSizeSmall,
+                    ),
+                  ),
+                ],
               ),
-            ),
-            Flexible(
-              child: Assets.icons.verifiedUser.svg(
-                width: AppSize.iconSizeSmall,
-                height: AppSize.iconSizeSmall,
-              ),
-            ),
-          ],
-        ),
         actions: userId != null && userId != currentUser.id ||
                 (userId == null && !ModalRoute.of(context)!.isFirst)
             ? const [
@@ -355,29 +350,16 @@ class UserProfileSettingsButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Tappable(
-      onTap: () async {
-        void callback(ModalOption option) => option.onTap.call(context);
-
-        final option = await context.showListOptionsModal(
-          options: [
-            ModalOption(child: const LocaleModalOption()),
-            ModalOption(child: const ThemeSelectorModalOption()),
-            ModalOption(
-              name: 'Log out',
-              actionTitle: 'Log out',
-              actionYesText: 'Log out',
-              actionContent: 'Are you sure you want to log out?',
-              actionNoText: context.l10n.cancelText,
-              iconData: Icons.logout_rounded,
-              distractive: true,
-              onTap: () =>
-                  context.read<AppBloc>().add(const AppLogoutRequested()),
-            ),
-          ],
-        );
+      onTap: () => context.showListOptionsModal(
+        options: [
+          ModalOption(child: const LocaleModalOption()),
+          ModalOption(child: const ThemeSelectorModalOption()),
+          ModalOption(child: const LogoutModalOption()),
+        ],
+      ).then((option) {
         if (option == null) return;
-        callback(option);
-      },
+        option.onTap(context);
+      }),
       child: Assets.icons.setting.svg(
         height: AppSize.iconSize,
         width: AppSize.iconSize,
@@ -385,6 +367,34 @@ class UserProfileSettingsButton extends StatelessWidget {
           context.adaptiveColor,
           BlendMode.srcIn,
         ),
+      ),
+    );
+  }
+}
+
+class LogoutModalOption extends StatelessWidget {
+  const LogoutModalOption({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Tappable(
+      animationEffect: TappableAnimationEffect.none,
+      onTap: () => context.confirmAction(
+        fn: () {
+          context.pop();
+          context.read<AppBloc>().add(const AppLogoutRequested());
+        },
+        title: context.l10n.logOutText,
+        content: context.l10n.logOutConfirmationText,
+        noText: context.l10n.cancelText,
+        yesText: context.l10n.logOutText,
+      ),
+      child: ListTile(
+        title: Text(
+          context.l10n.logOutText,
+          style: context.bodyLarge?.apply(color: AppColors.red),
+        ),
+        leading: const Icon(Icons.logout, color: AppColors.red),
       ),
     );
   }
@@ -452,7 +462,7 @@ class UserProfileAddMediaButton extends StatelessWidget {
                         ),
                       );
 
-              await PickImage.instance.pickVideo(
+              await PickImage().pickVideo(
                 context,
                 onMediaPicked: (context, selectedFiles) async {
                   try {
@@ -476,7 +486,7 @@ class UserProfileAddMediaButton extends StatelessWidget {
                             ?.file ??
                         selectedFile.selectedFile;
                     final compressedVideoBytes =
-                        await PickImage.instance.imageBytes(
+                        await PickImage().imageBytes(
                       file: compressedVideo,
                     );
                     final attachment = AttachmentFile(

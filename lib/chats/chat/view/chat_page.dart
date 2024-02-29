@@ -380,45 +380,40 @@ class _ChatMessagesListViewState extends State<ChatMessagesListView> {
                 );
               }
 
-              final messageWidget = ValueListenableBuilder<String?>(
-                valueListenable: _highlightMessageId,
-                builder: (context, highlightedId, child) {
-                  return MessageBubble(
-                    key: ValueKey(message.id),
-                    shouldHighlight: highlightedId == message.id,
-                    onEditTap: settings.onEditTap,
-                    onReplyTap: settings.onReplyTap,
-                    onDeleteTap: settings.onDeleteTap,
-                    onRepliedMessageTap: (repliedMessageId) =>
-                        _onRepliedMessageTap(repliedMessageId, messages),
-                    message: message,
-                    onMessageTap: widget.onMessageTap,
-                    borderRadius: ({required isMine}) => BorderRadius.only(
-                      topLeft: isMine
-                          ? const Radius.circular(22)
-                          : (isNextUserSame && !hasTimeDifferenceWithNext)
-                              ? const Radius.circular(4)
-                              : const Radius.circular(22),
-                      topRight: !isMine
-                          ? const Radius.circular(22)
-                          : (isNextUserSame && !hasTimeDifferenceWithNext)
-                              ? const Radius.circular(4)
-                              : const Radius.circular(22),
-                      bottomLeft: isMine
-                          ? const Radius.circular(22)
-                          : (isPreviusUserSame &&
-                                  !hasTimeDifferenceWithPrevious)
-                              ? const Radius.circular(4)
-                              : Radius.zero,
-                      bottomRight: !isMine
-                          ? const Radius.circular(22)
-                          : (isPreviusUserSame &&
-                                  !hasTimeDifferenceWithPrevious)
-                              ? const Radius.circular(4)
-                              : Radius.zero,
-                    ),
-                  );
-                },
+              final messageWidget = MessageBubble(
+                key: ValueKey(message.id),
+                highlightMessageId: _highlightMessageId,
+                onEditTap: settings.onEditTap,
+                onReplyTap: settings.onReplyTap,
+                onDeleteTap: settings.onDeleteTap,
+                onRepliedMessageTap: (repliedMessageId) =>
+                    _onRepliedMessageTap(repliedMessageId, messages),
+                message: message,
+                onMessageTap: widget.onMessageTap,
+                borderRadius: ({required isMine}) => BorderRadius.only(
+                  topLeft: isMine
+                      ? const Radius.circular(22)
+                      : (isNextUserSame && !hasTimeDifferenceWithNext)
+                          ? const Radius.circular(4)
+                          : const Radius.circular(22),
+                  topRight: !isMine
+                      ? const Radius.circular(22)
+                      : (isNextUserSame && !hasTimeDifferenceWithNext)
+                          ? const Radius.circular(4)
+                          : const Radius.circular(22),
+                  bottomLeft: isMine
+                      ? const Radius.circular(22)
+                      : (isPreviusUserSame &&
+                              !hasTimeDifferenceWithPrevious)
+                          ? const Radius.circular(4)
+                          : Radius.zero,
+                  bottomRight: !isMine
+                      ? const Radius.circular(22)
+                      : (isPreviusUserSame &&
+                              !hasTimeDifferenceWithPrevious)
+                          ? const Radius.circular(4)
+                          : Radius.zero,
+                ),
               );
 
               final padding = isFirst

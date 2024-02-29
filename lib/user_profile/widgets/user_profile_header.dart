@@ -53,12 +53,9 @@ class UserProfileHeader extends StatelessWidget {
               children: [
                 UserStoriesAvatar(
                   author: user,
-                  isImagePicker: isOwner,
-                  onImagePick: (imageUrl) {
-                    context
-                        .read<UserProfileBloc>()
-                        .add(UserProfileUpdateRequested(avatarUrl: imageUrl));
-                  },
+                  onLongPress: (avatarUrl) => avatarUrl == null
+                      ? null
+                      : context.showImagePreview(avatarUrl),
                   onAvatarTap: (imageUrl) {
                     if (imageUrl == null) return;
                     if (!isOwner) context.showImagePreview(imageUrl);

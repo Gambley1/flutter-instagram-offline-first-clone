@@ -10,6 +10,8 @@ import 'package:image_picker_plus/src/multi_selection_mode.dart';
 import 'package:insta_assets_crop/insta_assets_crop.dart';
 import 'package:shimmer/shimmer.dart';
 
+final imagesViewPageKey = GlobalKey<ImagesViewPageState>();
+
 class ImagesViewPage extends StatefulWidget {
   final ValueNotifier<List<File>> multiSelectedImages;
   final ValueNotifier<bool> multiSelectionMode;
@@ -28,6 +30,7 @@ class ImagesViewPage extends StatefulWidget {
   final Color blackColor;
   final bool showImagePreview;
   final SliverGridDelegateWithFixedCrossAxisCount gridDelegate;
+  final VoidCallback? onBackButtonTap;
 
   final FilterOptionGroup? filterOption;
 
@@ -49,13 +52,14 @@ class ImagesViewPage extends StatefulWidget {
     required this.maximumSelection,
     required this.filterOption,
     this.callbackFunction,
+    this.onBackButtonTap,
   }) : super(key: key);
 
   @override
-  State<ImagesViewPage> createState() => _ImagesViewPageState();
+  State<ImagesViewPage> createState() => ImagesViewPageState();
 }
 
-class _ImagesViewPageState extends State<ImagesViewPage>
+class ImagesViewPageState extends State<ImagesViewPage>
     with AutomaticKeepAliveClientMixin {
   late PMFilter _filterOption;
 
@@ -89,6 +93,13 @@ class _ImagesViewPageState extends State<ImagesViewPage>
   final noImages = ValueNotifier(false);
   final noDuration = ValueNotifier(false);
   final indexOfLatestImage = ValueNotifier<int>(-1);
+
+  void resetAll() {
+    selectedImage.value =
+        allImages.value.isEmpty ? null : allImages.value.first;
+    widget.multiSelectedImages.value.clear();
+    widget.multiSelectionMode.value = false;
+  }
 
   @override
   void dispose() {
@@ -251,7 +262,7 @@ class _ImagesViewPageState extends State<ImagesViewPage>
         if (noImages) {
           return Stack(
             children: [
-              normalAppBar(withDoneButton: false),
+              normalAppBar(withDoneButton: false, noImages: true),
               Align(
                 child: Text(
                   widget.tabsTexts.noImagesFounded,
@@ -363,17 +374,13 @@ class _ImagesViewPageState extends State<ImagesViewPage>
     return AppBar(
       backgroundColor: widget.appTheme.primaryColor,
       elevation: 0,
-      leading: IconButton(
-        icon: Icon(Icons.clear_rounded,
-            color: widget.appTheme.focusColor, size: 30),
-        onPressed: () {
-          Navigator.of(context).maybePop(null);
-        },
-      ),
+      leading: exitButton(),
+      centerTitle: false,
+      title: Text(widget.tabsTexts.newPostText),
     );
   }
 
-  Widget normalAppBar({bool withDoneButton = true}) {
+  Widget normalAppBar({bool withDoneButton = true, bool noImages = false}) {
     double width = MediaQuery.of(context).size.width;
     return Container(
       color: widget.whiteColor,
@@ -381,10 +388,17 @@ class _ImagesViewPageState extends State<ImagesViewPage>
       width: width,
       child: Row(
         mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          exitButton(),
+          Row(children: [
+            exitButton(),
+            const SizedBox(width: 24),
+            Text(
+              widget.tabsTexts.newPostText,
+              style: Theme.of(context).textTheme.titleLarge,
+            )
+          ]),
           if (withDoneButton) ...[
-            const Spacer(),
             doneButton(),
           ],
         ],
@@ -396,7 +410,12 @@ class _ImagesViewPageState extends State<ImagesViewPage>
     return IconButton(
       icon: Icon(Icons.clear_rounded, color: widget.blackColor, size: 30),
       onPressed: () {
-        Navigator.of(context).maybePop(null);
+        if (widget.onBackButtonTap == null) {
+          Navigator.of(context).maybePop(null);
+        } else {
+          widget.onBackButtonTap!.call();
+        }
+        resetAll();
       },
     );
   }
@@ -458,7 +477,6 @@ class _ImagesViewPageState extends State<ImagesViewPage>
                         void pop() => Navigator.of(context).maybePop(details);
                         if (widget.callbackFunction != null) {
                           await widget.callbackFunction!(details);
-                          pop.call();
                         } else {
                           pop.call();
                         }
@@ -488,7 +506,6 @@ class _ImagesViewPageState extends State<ImagesViewPage>
                       void pop() => Navigator.of(context).maybePop(details);
                       if (widget.callbackFunction != null) {
                         await widget.callbackFunction!(details);
-                        pop.call();
                       } else {
                         pop.call();
                       }

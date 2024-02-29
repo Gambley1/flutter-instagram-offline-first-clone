@@ -1,28 +1,209 @@
+import 'dart:async';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:app_ui/app_ui.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
-import 'package:flutter_instagram_offline_first_clone/feed/bloc/feed_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/feed.dart';
+import 'package:flutter_instagram_offline_first_clone/feed/post/post.dart';
+import 'package:flutter_instagram_offline_first_clone/feed/post/widgets/widgets.dart';
 import 'package:flutter_instagram_offline_first_clone/home/home.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:go_router/go_router.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
-import 'package:powersync_repository/powersync_repository.dart';
+import 'package:powersync_repository/powersync_repository.dart' hide Row;
 import 'package:shared/shared.dart';
 
 class UserProfileCreatePost extends StatelessWidget {
-  const UserProfileCreatePost({this.onPopInvoked, super.key});
+  const UserProfileCreatePost({
+    this.onPopInvoked,
+    this.onBackButtonTap,
+    super.key,
+  });
 
+  final VoidCallback? onBackButtonTap;
   final VoidCallback? onPopInvoked;
 
   @override
   Widget build(BuildContext context) {
-    return CreatePostView(onPopInvoked: onPopInvoked);
+    return PickImage().customMediaPicker(
+      context: context,
+      source: ImageSource.both,
+      pickerSource: PickerSource.both,
+      onMediaPicked: (details) => context.pushNamed(
+        'publish_post',
+        extra: CreatePostProps(details: details),
+      ),
+      onBackButtonTap:
+          onBackButtonTap != null ? () => onBackButtonTap?.call() : null,
+    );
+  }
+}
+
+class CreatePostProps {
+  const CreatePostProps({
+    required this.details,
+    this.isReel = false,
+    this.context,
+  });
+
+  final SelectedImagesDetails details;
+  final bool isReel;
+  final BuildContext? context;
+}
+
+class CreatePostPage extends StatefulWidget {
+  const CreatePostPage({required this.props, super.key});
+
+  final CreatePostProps props;
+
+  @override
+  State<CreatePostPage> createState() => _CreatePostPageState();
+}
+
+class _CreatePostPageState extends State<CreatePostPage> {
+  late TextEditingController _captionController;
+  late List<Media> _media;
+
+  List<SelectedByte> get selectedFiles => widget.props.details.selectedFiles;
+
+  @override
+  void initState() {
+    super.initState();
+    _captionController = TextEditingController();
+    _media = selectedFiles
+        .map(
+          (e) => e.isThatImage
+              ? MemoryImageMedia(bytes: e.selectedByte, id: uuid.v4())
+              : MemoryVideoMedia(id: uuid.v4(), file: e.selectedFile),
+        )
+        .toList();
+  }
+
+  @override
+  void dispose() {
+    _captionController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _onShareTap(String caption) async {
+    void goHome() {
+      if (widget.props.isReel) {
+        context
+          ..pop()
+          ..pop();
+      } else {
+        HomeProvider().animateToPage(1);
+        FeedPageController().scrollToTop();
+      }
+    }
+
+    try {
+      loadingIndeterminateKey.currentState?.setVisibility(visible: true);
+
+      final postId = uuid.v4();
+      unawaited(
+        FeedPageController().processPostMedia(
+          postId: postId,
+          selectedFiles: selectedFiles,
+          caption: _captionController.text.trim(),
+          isReel: widget.props.isReel,
+          context: widget.props.context,
+        ),
+      );
+      goHome.call();
+    } catch (error, stackTrace) {
+      loadingIndeterminateKey.currentState?.setVisibility(visible: false);
+      logE('Failed to create post', error: error, stackTrace: stackTrace);
+      openSnackbar(
+        const SnackbarMessage.error(title: 'Failed to create post!'),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AppScaffold(
+      releaseFocus: true,
+      resizeToAvoidBottomInset: true,
+      appBar: AppBar(
+        centerTitle: false,
+        title: Text(context.l10n.newPostText),
+      ),
+      bottomNavigationBar: BottomAppBar(
+        elevation: 0,
+        color: context.reversedAdaptiveColor,
+        padding: EdgeInsets.zero,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const AppDivider(),
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.md,
+                vertical: AppSpacing.md,
+              ),
+              child: Tappable(
+                onTap: () => _onShareTap(_captionController.text),
+                borderRadius: 6,
+                color: AppColors.blue,
+                child: Align(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: AppSpacing.md,
+                      horizontal: AppSpacing.sm,
+                    ),
+                    child: Text(
+                      context.l10n.sharePostText,
+                      style: context.labelLarge,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.sm,
+              vertical: AppSpacing.sm,
+            ),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minWidth: constraints.maxWidth,
+                minHeight: constraints.maxHeight,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  PostMedia(
+                    media: _media,
+                    withLikeOverlay: false,
+                    withInViewNotifier: false,
+                    autoHideCurrentIndex: false,
+                    mediaCarouselSettings: const MediaCarouselSettings.empty(
+                      viewportFraction: .9,
+                    ),
+                  ),
+                  const Gap.v(AppSpacing.sm),
+                  CaptionInputField(
+                    captionController: _captionController,
+                    caption: _captionController.text.trim(),
+                    onSubmitted: _onShareTap,
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
   }
 }
 
@@ -66,7 +247,7 @@ class _CreatePostViewState extends State<CreatePostView>
           icon: const Icon(Icons.clear, size: AppSize.iconSize),
           onPressed: () {
             _selectedFiles?.clear();
-            HomeProvider.instance.animateToPage(1);
+            HomeProvider().animateToPage(1);
           },
         ),
         title: const Text('Create post'),
@@ -95,52 +276,54 @@ class _CreatePostViewState extends State<CreatePostView>
             children: [
               SizedBox.square(
                 dimension: 128,
-                child: ElevatedButton(
-                  onPressed: _busy
-                      ? null
-                      : () async {
-                          await PickImage.instance.pickAssetsFromBoth(
-                            context,
-                            onMediaPicked: (context, details) async {
-                              final selectedFiles = <SelectedByte>[];
-                              for (final selectedFile
-                                  in details.selectedFiles) {
-                                if (selectedFile.selectedFile.isVideo ||
-                                    !selectedFile.isThatImage) {
-                                  selectedFiles.add(selectedFile);
-                                  continue;
+                child: FittedBox(
+                  fit: BoxFit.cover,
+                  child: ElevatedButton(
+                    onPressed: _busy
+                        ? null
+                        : () async {
+                            await PickImage().pickAssetsFromBoth(
+                              context,
+                              onMediaPicked: (context, details) async {
+                                final selectedFiles = <SelectedByte>[];
+                                for (final selectedFile
+                                    in details.selectedFiles) {
+                                  if (selectedFile.selectedFile.isVideo ||
+                                      !selectedFile.isThatImage) {
+                                    selectedFiles.add(selectedFile);
+                                    continue;
+                                  }
+                                  final compressedFile =
+                                      await ImageCompress.compressFile(
+                                    selectedFile.selectedFile,
+                                  );
+                                  final compressedByte =
+                                      await PickImage().imageBytes(
+                                    file: compressedFile != null
+                                        ? File(compressedFile.path)
+                                        : selectedFile.selectedFile,
+                                  );
+                                  final byte = SelectedByte(
+                                    isThatImage:
+                                        selectedFile.selectedFile.isVideo,
+                                    selectedFile: compressedFile == null
+                                        ? selectedFile.selectedFile
+                                        : File(compressedFile.path),
+                                    selectedByte: compressedByte,
+                                  );
+                                  selectedFiles.add(byte);
                                 }
-                                final compressedFile =
-                                    await ImageCompress.compressFile(
-                                  selectedFile.selectedFile,
-                                );
-                                final compressedByte =
-                                    await PickImage.instance.imageBytes(
-                                  file: compressedFile != null
-                                      ? File(compressedFile.path)
-                                      : selectedFile.selectedFile,
-                                );
-                                final byte = SelectedByte(
-                                  isThatImage:
-                                      selectedFile.selectedFile.isVideo,
-                                  selectedFile: compressedFile == null
-                                      ? selectedFile.selectedFile
-                                      : File(compressedFile.path),
-                                  selectedByte: compressedByte,
-                                );
-                                selectedFiles.add(byte);
-                              }
 
-                              safeSetState(() {
-                                _selectedFiles = selectedFiles;
-                              });
-                            },
-                          );
-                        },
-                  style: ElevatedButton.styleFrom(
-                    shape: const CircleBorder(),
+                                safeSetState(() {
+                                  _selectedFiles = selectedFiles;
+                                });
+                              },
+                            );
+                          },
+                    style:
+                        ElevatedButton.styleFrom(shape: const CircleBorder()),
+                    child: const Icon(Icons.camera_alt_outlined),
                   ),
-                  child: const FittedBox(child: Icon(Icons.camera)),
                 ),
               ),
               const SizedBox(height: AppSpacing.md),
@@ -177,7 +360,8 @@ class _CreatePostViewState extends State<CreatePostView>
                             if (context.canPop()) {
                               context.pop();
                             } else {
-                              HomeProvider.instance.animateToPage(1);
+                              HomeProvider().animateToPage(1);
+                              FeedPageController().scrollToTop();
                             }
                           }
 
@@ -233,7 +417,7 @@ class _CreatePostViewState extends State<CreatePostView>
                                       await VideoPlus.compressVideo(
                                     selectedFile,
                                   );
-                                  bytes = await PickImage.instance.imageBytes(
+                                  bytes = await PickImage().imageBytes(
                                     file: compressedVideo!.file!,
                                   );
                                 } catch (error, stackTrace) {

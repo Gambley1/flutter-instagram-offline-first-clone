@@ -1,7 +1,9 @@
 import 'dart:convert';
 
+import 'package:app_ui/app_ui.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/feed.dart';
 import 'package:posts_repository/posts_repository.dart';
 import 'package:shared/shared.dart';
@@ -95,6 +97,10 @@ class ReelsBloc extends Bloc<ReelsEvent, ReelsState> {
           isCreate: true,
         ),
       );
+      loadingIndeterminateKey.currentState?.setVisibility(visible: false);
+      openSnackbar(
+        const SnackbarMessage.success(title: 'Successfully created reel!'),
+      );
     } catch (error, stackTrace) {
       logE(
         '[ReelsBloc] Failed to create reel.',
@@ -103,6 +109,12 @@ class ReelsBloc extends Bloc<ReelsEvent, ReelsState> {
       );
       addError(error, stackTrace);
       emit(state.failure());
+      loadingIndeterminateKey.currentState?.setVisibility(visible: false);
+      openSnackbar(
+        const SnackbarMessage.error(
+          title: 'Failed to create reel!',
+        ),
+      );
     }
   }
 

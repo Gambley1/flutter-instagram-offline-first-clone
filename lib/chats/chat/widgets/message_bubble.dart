@@ -1,4 +1,5 @@
 import 'package:app_ui/app_ui.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
@@ -17,12 +18,12 @@ class MessageBubble extends StatelessWidget {
   const MessageBubble({
     required this.message,
     required this.onMessageTap,
+    required this.highlightMessageId,
     this.onEditTap,
     this.onReplyTap,
     this.onDeleteTap,
     this.onRepliedMessageTap,
     this.borderRadius,
-    this.shouldHighlight = false,
     super.key,
   });
 
@@ -33,7 +34,7 @@ class MessageBubble extends StatelessWidget {
   final ValueSetter<String>? onRepliedMessageTap;
   final BorderRadiusGeometry Function({required bool isMine})? borderRadius;
   final MessageTapCallback<MessageAction> onMessageTap;
-  final bool shouldHighlight;
+  final ValueListenable<String?>? highlightMessageId;
 
   @override
   Widget build(BuildContext context) {
@@ -67,13 +68,8 @@ class MessageBubble extends StatelessWidget {
             };
         action();
       },
-      child: AnimatedContainer(
-        duration: 350.ms,
-        curve: Curves.fastOutSlowIn,
-        padding: const EdgeInsets.symmetric(vertical: AppSpacing.xxs),
-        decoration: BoxDecoration(
-          color: shouldHighlight ? AppColors.blue.withOpacity(.2) : null,
-        ),
+      child: ValueListenableBuilder<String?>(
+        valueListenable: highlightMessageId ?? ValueNotifier(''),
         child: FractionallySizedBox(
           alignment: messageAlignment,
           widthFactor: 0.85,
@@ -98,6 +94,18 @@ class MessageBubble extends StatelessWidget {
             ),
           ),
         ),
+        builder: (context, highlightedId, child) {
+          return AnimatedContainer(
+            duration: 350.ms,
+            curve: Curves.fastOutSlowIn,
+            decoration: BoxDecoration(
+              color: highlightedId == message.id
+                  ? AppColors.blue.withOpacity(.2)
+                  : null,
+            ),
+            child: child,
+          );
+        },
       ),
     );
   }

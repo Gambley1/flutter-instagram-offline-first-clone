@@ -27,6 +27,7 @@ class CustomCameraDisplay extends StatefulWidget {
   final ValueChanged<bool> replacingTabBar;
   final ValueNotifier<bool> clearVideoRecord;
   final AsyncValueSetter<SelectedImagesDetails>? callbackFunction;
+  final VoidCallback? onBackButtonTap;
 
   const CustomCameraDisplay({
     Key? key,
@@ -41,6 +42,7 @@ class CustomCameraDisplay extends StatefulWidget {
     required this.clearVideoRecord,
     required this.moveToVideoScreen,
     required this.callbackFunction,
+    this.onBackButtonTap,
   }) : super(key: key);
 
   @override
@@ -144,7 +146,7 @@ class CustomCameraDisplayState extends State<CustomCameraDisplay> {
         appBar(withLeading: false),
         Align(
           child: Text(
-            widget.tabsNames.noCameraFound,
+            widget.tabsNames.noCameraFoundText,
             style: Theme.of(context)
                 .textTheme
                 .headlineSmall
@@ -288,10 +290,16 @@ class CustomCameraDisplayState extends State<CustomCameraDisplay> {
     return AppBar(
       backgroundColor: whiteColor,
       elevation: 0,
+      title: Text(widget.tabsNames.newPostText),
+      centerTitle: false,
       leading: IconButton(
         icon: Icon(Icons.clear_rounded, color: blackColor, size: 30),
         onPressed: () {
-          Navigator.of(context).maybePop(null);
+          if (widget.onBackButtonTap == null) {
+            Navigator.of(context).maybePop(null);
+          } else {
+            widget.onBackButtonTap!.call();
+          }
         },
       ),
       actions: !withLeading
@@ -318,12 +326,11 @@ class CustomCameraDisplayState extends State<CustomCameraDisplay> {
                       );
                       if (!mounted) return;
 
+                      void pop() => Navigator.of(context).maybePop(details);
                       if (widget.callbackFunction != null) {
-                        void pop() => Navigator.of(context).maybePop(details);
                         await widget.callbackFunction!(details);
-                        pop.call();
                       } else {
-                        Navigator.of(context).maybePop(details);
+                        pop();
                       }
                     } else if (selectedImage != null) {
                       File? croppedByte = await cropImage(selectedImage);
@@ -346,7 +353,6 @@ class CustomCameraDisplayState extends State<CustomCameraDisplay> {
                         void pop() => Navigator.of(context).maybePop(details);
                         if (widget.callbackFunction != null) {
                           await widget.callbackFunction!(details);
-                          pop.call();
                         } else {
                           pop.call();
                         }

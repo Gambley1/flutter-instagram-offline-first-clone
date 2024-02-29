@@ -114,7 +114,7 @@ class _PostEditViewState extends State<PostEditView> {
                     withInViewNotifier: false,
                     autoHideCurrentIndex: false,
                     mediaCarouselSettings: const MediaCarouselSettings.empty(
-                      fit: BoxFit.contain,
+                      fit: BoxFit.cover,
                       viewportFraction: .9,
                     ),
                   ),
@@ -174,13 +174,14 @@ class _CaptionInputFieldState extends State<CaptionInputField> {
 
   @override
   Widget build(BuildContext context) {
-    return AppTextField.underlineBorder(
+    return AppTextField(
+      border: InputBorder.none,
       textController: widget.captionController,
       contentPadding: EdgeInsets.zero,
       textInputType: TextInputType.text,
+      textInputAction: TextInputAction.newline,
       textCapitalization: TextCapitalization.sentences,
-      labelText: context.l10n.captionText,
-      labelStyle: context.bodyLarge?.apply(color: AppColors.grey),
+      hintText: context.l10n.writeCaptionText,
       onFieldSubmitted: (value) =>
           _equals(value) ? null : widget.onSubmitted(_effectiveValue(value)),
     );

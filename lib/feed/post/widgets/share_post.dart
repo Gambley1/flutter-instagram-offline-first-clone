@@ -273,9 +273,55 @@ class _SharePostButtonState extends State<SharePostButton> {
     super.dispose();
   }
 
+  Future<void> _onPostShareTap() async {
+    final user = context.read<AppBloc>().state.user;
+    void pop() => context.pop();
+
+    openSnackbar(const SnackbarMessage.loading());
+    final postShareFutures = widget.selectedUsers.map(
+      (receiver) => Future.microtask(
+        () => context.read<PostBloc>().add(
+              PostShareRequested(
+                sender: user,
+                receiver: receiver,
+                postAuthor: widget.block.author,
+                message: Message(
+                  message: _messageController.text,
+                  sender: PostAuthor(
+                    id: user.id,
+                    avatarUrl: user.avatarUrl!,
+                    username: user.username!,
+                  ),
+                ),
+              ),
+            ),
+      ),
+    );
+    try {
+      await Future.wait(postShareFutures).whenComplete(() {
+        pop.call();
+        openSnackbar(
+          const SnackbarMessage.success(
+            title: 'Successfully shared post!',
+          ),
+        );
+      });
+    } catch (error, stackTrace) {
+      logE(
+        'Failed to share post.',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      openSnackbar(
+        const SnackbarMessage.error(
+          title: 'Failed to share post.',
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final user = context.select((AppBloc bloc) => bloc.state.user);
     return Padding(
       padding: EdgeInsets.only(bottom: context.viewInsets.bottom),
       child: SafeArea(
@@ -294,7 +340,7 @@ class _SharePostButtonState extends State<SharePostButton> {
                 textInputType: TextInputType.text,
                 textInputAction: TextInputAction.done,
                 textCapitalization: TextCapitalization.sentences,
-                hintText: 'Add a message...',
+                hintText: context.l10n.sharePostCaptionHintText,
               ),
             ),
             Padding(
@@ -304,66 +350,21 @@ class _SharePostButtonState extends State<SharePostButton> {
                 bottom: AppSpacing.md,
               ),
               child: Tappable(
-                onTap: () async {
-                  void pop() => context.pop();
-
-                  openSnackbar(const SnackbarMessage.loading());
-                  final postShareFutures = widget.selectedUsers.map(
-                    (receiver) => Future(
-                      () => context.read<PostBloc>().add(
-                            PostShareRequested(
-                              sender: user,
-                              receiver: receiver,
-                              postAuthor: widget.block.author,
-                              message: Message(
-                                message: _messageController.text,
-                                sender: PostAuthor(
-                                  id: user.id,
-                                  avatarUrl: user.avatarUrl!,
-                                  username: user.username!,
-                                ),
-                              ),
-                            ),
-                          ),
+                onTap: _onPostShareTap,
+                color: AppColors.blue,
+                borderRadius: 6,
+                child: Align(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.md,
+                      vertical: AppSpacing.md,
                     ),
-                  );
-                  try {
-                    await Future.wait(postShareFutures).whenComplete(() {
-                      pop.call();
-                      openSnackbar(
-                        const SnackbarMessage.success(
-                          title: 'Successfully shared post!',
-                        ),
-                      );
-                    });
-                  } catch (error, stackTrace) {
-                    logE(
-                      'Failed to share post.',
-                      error: error,
-                      stackTrace: stackTrace,
-                    );
-                    openSnackbar(
-                      const SnackbarMessage.error(
-                        title: 'Failed to share post.',
-                      ),
-                    );
-                  }
-                },
-                child: Container(
-                  decoration: const BoxDecoration(
-                    color: AppColors.blue,
-                    borderRadius: BorderRadius.all(Radius.circular(6)),
-                  ),
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.md,
-                    vertical: AppSpacing.md,
-                  ),
-                  child: Text(
-                    widget.selectedUsers.length == 1
-                        ? 'Send'
-                        : 'Send separately',
-                    style: context.bodyLarge?.apply(color: AppColors.white),
+                    child: Text(
+                      widget.selectedUsers.length == 1
+                          ? context.l10n.sendText
+                          : context.l10n.sendSeparatelyText,
+                      style: context.labelLarge?.apply(color: AppColors.white),
+                    ),
                   ),
                 ),
               ),

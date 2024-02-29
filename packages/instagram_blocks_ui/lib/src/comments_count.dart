@@ -38,7 +38,7 @@ class _CommentsCountState extends State<CommentsCount>
         animationEffect: TappableAnimationEffect.none,
         onTap: widget.onTap,
         child: Text(
-          BlockSettings.instance.commentTextDelegate.seeAllCommentsText(count),
+          BlockSettings().commentTextDelegate.seeAllCommentsText(count),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: context.bodyLarge?.copyWith(color: AppColors.grey),

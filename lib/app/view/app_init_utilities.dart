@@ -13,7 +13,7 @@ void initUtilities(BuildContext context, Locale locale) {
   final l10n = context.l10n;
   final t = context.t;
 
-  PickImage.instance.init(
+  PickImage().init(
     TabsTexts(
       photoText: l10n.photoText,
       videoText: l10n.videoText,
@@ -24,16 +24,23 @@ void initUtilities(BuildContext context, Locale locale) {
       holdButtonText: l10n.holdButtonText,
       noImagesFounded: l10n.noImagesFoundedText,
       notFoundingCameraText: l10n.notFoundingCameraText,
-      noCameraFound: l10n.noCameraFoundText,
+      noCameraFoundText: l10n.noCameraFoundText,
+      newPostText: l10n.newPostText,
     ),
   );
-  BlockSettings.instance.init(
+  BlockSettings().init(
     postDelegate: PostTextDelegate(
       cancelText: l10n.cancelText,
       editText: l10n.editText,
       deleteText: l10n.deleteText,
       deletePostText: l10n.deletePostText,
       deletePostConfirmationText: l10n.deletePostConfirmationText,
+      dontShowAgainText: l10n.dontShowAgainText,
+      blockAuthorConfirmationText: l10n.blockAuthorConfirmationText,
+      blockAuthorText: l10n.blockAuthorText,
+      blockPostAuthorText: l10n.blockPostAuthorText,
+      blockText: l10n.blockText,
+      noPostsText: l10n.noPostsText,
       visitSponsoredInstagramProfileText: l10n.visitSponsoredInstagramProfile,
       likedByText: (count, name, onUsernameTap) => t.likedBy(
         name: TextSpan(

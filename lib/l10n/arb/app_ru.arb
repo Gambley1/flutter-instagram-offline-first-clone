@@ -25,6 +25,9 @@
     "description": "Подсказка при зажатии иконки профиля на нижней навигационной панели"
   },
   "likesText": "Нравится",
+  "noPostsText": "Публикаций пока нет",
+  "noChatsText": "Нет чатов!",
+  "startChatText": "Создать чат",
   "addCommentText": "Добавить комментарий",
   "deleteCommentText": "Удалить комментарий",
   "commentDeleteConfirmationText": "Вы уверены что хотите удалить этот комментарий?",
@@ -138,9 +141,13 @@
   "optionsText": "Настройки",
   "viewProfileText": "Посмотреть профиль",
   "editProfileText": "Редактировать профиль",
+  "editingText": "Редактирование",
   "editPostText": "Редактировать публикацию",
   "shareProfileText": "Поделиться профилем",
   "sharePostText": "Поделиться",
+  "sharePostCaptionHintText": "Добавить сообщение...",
+  "sendText": "Отправить",
+  "sendSeparatelyText": "Отправить отдельно",
   "addStoryText": "Добавить",
   "followingsCount": "{count, plural, =1{Подписка} few{Подписки} other{Подписок}}",
   "@followingsCount": {
@@ -195,11 +202,23 @@
       }
     }
   },
+  "newPostText": "Новая публикация",
+  "writeCaptionText": "Добавить подпись...",
+  "logOutText": "Выйти",
+  "logOutConfirmationText": "Вы уверены что хотите выйти из аккаунта?",
+  "dontShowAgainText": "Не показывать снова",
+  "blockPostAuthorText": "Заблокировать автора публикации",
+  "blockAuthorText": "Заблокировать автора",
+  "blockAuthorConfirmationText": "Вы уверены что хотите заблокировать этого автора?",
+  "blockText": "Заблокировать",
+  "refreshText": "Обновить",
+  "noReelsFoundText": "Видео Reels пока нет",
+  "publishText": "Отправить",
   "searchText": "Поиск",
   "somethingWentWrongText": "Что-то пошло не так!",
   "failedToCreateStoryText": "Не удалось создать историю",
   "successfullyCreatedStoryText": "Успешно создана история!",
-  "createText": "Create",
+  "createText": "Cоздать",
   "reelText": "Видео Reels",
   "postText": "Публикация",
   "storyText": "История",
@@ -297,6 +316,15 @@
   "editText": "Редактировать",
   "deleteText": "Удалить",
   "replyText": "Ответить",
+  "replyToText": "В ответ {username}",
+  "@replyingToText": {
+    "placeholders": {
+      "username": {
+        "type": "String",
+        "example": "emil"
+      }
+    }
+  },
   "themeText": "Тема",
   "systemOption": "Системная",
   "@systemOption": {

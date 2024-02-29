@@ -12,8 +12,8 @@ class TimeAgo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       short
-          ? BlockSettings.instance.dateTimeTextDelegate.timeAgoShort(createdAt)
-          : BlockSettings.instance.dateTimeTextDelegate.timeAgo(createdAt),
+          ? BlockSettings().dateTimeTextDelegate.timeAgoShort(createdAt)
+          : BlockSettings().dateTimeTextDelegate.timeAgo(createdAt),
       overflow: TextOverflow.visible,
       style: context.bodyMedium?.copyWith(color: AppColors.grey),
     );

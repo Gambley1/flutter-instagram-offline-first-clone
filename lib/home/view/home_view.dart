@@ -16,11 +16,11 @@ import 'package:shared/shared.dart';
 import 'package:stories_repository/stories_repository.dart';
 
 class HomeProvider extends ChangeNotifier {
+  factory HomeProvider() => _internal;
+
   HomeProvider._();
 
-  static final _iternal = HomeProvider._();
-
-  static HomeProvider get instance => _iternal;
+  static final _internal = HomeProvider._();
 
   late PageController pageController;
 
@@ -29,8 +29,7 @@ class HomeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void animateToPage(int page) =>
-      HomeProvider.instance.pageController.animateToPage(
+  void animateToPage(int page) => pageController.animateToPage(
         page,
         curve: Easing.legacy,
         duration: 150.ms,
@@ -91,7 +90,7 @@ class _HomeViewState extends State<HomeView> {
     _videoPlayerState = VideoPlayerState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      HomeProvider.instance.setPageController(_pageController);
+      HomeProvider().setPageController(_pageController);
     });
   }
 
@@ -127,9 +126,9 @@ class _HomeViewState extends State<HomeView> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (widget.navigationShell.currentIndex == 0 &&
-        !HomeProvider.instance.enablePageView) {
+        !HomeProvider().enablePageView) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        HomeProvider.instance.togglePageView();
+        HomeProvider().togglePageView();
       });
     }
   }
@@ -149,25 +148,28 @@ class _HomeViewState extends State<HomeView> {
       )..add(const CreateStoriesIsFeatureAvaiableSubscriptionRequested()),
       child: VideoPlayerProvider(
         videoPlayerState: _videoPlayerState,
-        child: AnimatedBuilder(
-          animation: Listenable.merge([HomeProvider.instance]),
+        child: ListenableBuilder(
+          listenable: HomeProvider(),
           builder: (context, child) {
             return PageView.builder(
               itemCount: 3,
               controller: _pageController,
-              physics: HomeProvider.instance.enablePageView
+              physics: HomeProvider().enablePageView
                   ? null
                   : const NeverScrollableScrollPhysics(),
               onPageChanged: (page) {
+                if (page != 0 && page != 2 && page == 1) {
+                  imagesViewPageKey.currentState?.resetAll();
+                }
                 if (page == 1 && widget.navigationShell.currentIndex != 0) {
-                  HomeProvider.instance.togglePageView(enable: false);
+                  HomeProvider().togglePageView(enable: false);
                 }
               },
               itemBuilder: (context, index) {
                 return switch (index) {
                   0 => UserProfileCreatePost(
-                      onPopInvoked: () =>
-                          HomeProvider.instance.animateToPage(1),
+                      onPopInvoked: () => HomeProvider().animateToPage(1),
+                      onBackButtonTap: () => HomeProvider().animateToPage(1),
                     ),
                   2 => const ChatsPage(),
                   _ => AppScaffold(

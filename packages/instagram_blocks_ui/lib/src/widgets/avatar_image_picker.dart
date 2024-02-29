@@ -30,12 +30,12 @@ class AvatarImagePicker extends StatelessWidget {
   final double placeholderSize;
   final bool withPlaceholder;
 
-  /// Picks an image from the device's gallery or camera and passes the image 
+  /// Picks an image from the device's gallery or camera and passes the image
   /// bytes and file to the provided callback.
-  /// 
+  ///
   /// Handles compressing the image before returning it.
   Future<void> _pickImage(BuildContext context) async {
-    final file = await PickImage.instance.pickImage(
+    final file = await PickImage().pickImage(
       context,
       source: ImageSource.both,
     );
@@ -49,7 +49,7 @@ class AvatarImagePicker extends StatelessWidget {
     final newFile = compressedFile ?? selectedFile.selectedFile;
     final compressedBytes = compressedFile == null
         ? null
-        : await PickImage.instance.imageBytes(file: compressedFile);
+        : await PickImage().imageBytes(file: compressedFile);
     final bytes = compressedBytes ?? selectedFile.selectedByte;
     onUpload?.call(bytes, newFile);
   }

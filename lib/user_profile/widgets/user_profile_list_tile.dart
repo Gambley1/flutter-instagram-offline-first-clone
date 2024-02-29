@@ -265,12 +265,11 @@ class FollowTextButton extends StatelessWidget {
                 children: [
                   TextSpan(
                     text: ' • ',
-                    style: context.bodyLarge,
+                    style: context.bodyMedium,
                   ),
                   TextSpan(
                     text: followed ? l10n.followingUser : l10n.followUser,
-                    style: context.bodyLarge?.copyWith(
-                      fontWeight: AppFontWeight.semiBold,
+                    style: context.bodyMedium?.copyWith(
                       color: followed ? AppColors.white : AppColors.blue,
                     ),
                     recognizer: TapGestureRecognizer()

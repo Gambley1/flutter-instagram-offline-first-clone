@@ -6,7 +6,9 @@ import 'package:flutter_instagram_offline_first_clone/app/bloc/app_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/chats/bloc/chats_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/chats/widgets/chat_inbox_tile.dart';
 import 'package:flutter_instagram_offline_first_clone/home/home.dart';
+import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared/shared.dart';
 
 class ChatsPage extends StatelessWidget {
   const ChatsPage({super.key});
@@ -31,7 +33,7 @@ class ChatsView extends StatelessWidget {
     return AppScaffold(
       onPopInvoked: (didPop) {
         if (didPop) return;
-        HomeProvider.instance.animateToPage(1);
+        HomeProvider().animateToPage(1);
       },
       body: const CustomScrollView(
         slivers: [
@@ -52,7 +54,7 @@ class ChatsAppBar extends StatelessWidget {
 
     return SliverAppBar(
       leading: IconButton(
-        onPressed: () => HomeProvider.instance.animateToPage(1),
+        onPressed: () => HomeProvider().animateToPage(1),
         icon: Icon(
           Icons.adaptive.arrow_back,
           size: AppSize.iconSizeMedium,
@@ -128,15 +130,13 @@ class ChatsEmpty extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: AppSpacing.md),
               Text(
-                'No chats yet!',
+                context.l10n.noChatsText,
                 style: context.headlineLarge
                     ?.copyWith(fontWeight: AppFontWeight.semiBold),
               ),
-              const SizedBox(height: AppSpacing.sm),
               AppButton(
-                text: 'Start a Chat',
+                text: context.l10n.startChatText,
                 onPressed: () async {
                   final participantId = await context.push(
                     '/timeline/search',
@@ -153,7 +153,7 @@ class ChatsEmpty extends StatelessWidget {
                   );
                 },
               ),
-            ],
+            ].insertBetween(const SizedBox(height: AppSpacing.sm)),
           ),
         ),
       ),

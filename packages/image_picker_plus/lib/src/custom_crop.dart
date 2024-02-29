@@ -4,6 +4,7 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 const _kCropGridColumnCount = 3;
 const _kCropGridRowCount = 3;
@@ -673,8 +674,8 @@ class _DisplayVideo extends StatefulWidget {
 }
 
 class _DisplayVideoState extends State<_DisplayVideo> {
-  VideoPlayerController? controller;
-  late Future<void> initializeVideoPlayerFuture;
+  late VideoPlayerController _controller;
+  late Future<void> _initializeVideoPlayerFuture;
 
   @override
   void initState() {
@@ -697,99 +698,113 @@ class _DisplayVideoState extends State<_DisplayVideo> {
   }
 
   Future<void> _initVideoController() async {
-    if (controller != null) controller?.dispose();
-    controller = VideoPlayerController.file(widget.selectedFile);
-    initializeVideoPlayerFuture = controller!.initialize();
-    controller!.setLooping(true);
+    _controller = VideoPlayerController.file(widget.selectedFile);
+    _initializeVideoPlayerFuture = _controller.initialize();
+    _controller.setLooping(true);
   }
 
   @override
   void dispose() {
-    controller?.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: initializeVideoPlayerFuture,
+      future: _initializeVideoPlayerFuture,
       builder: (context, snapshot) {
-        return AnimatedSwitcher(
-          duration: const Duration(milliseconds: 350),
-          child: snapshot.connectionState == ConnectionState.done
-              ? Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    InteractiveViewer(
-                      minScale: 1,
-                      child: VideoPlayer(controller!),
-                    ),
-                    Align(
-                      alignment: Alignment.center,
-                      child: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            if (controller?.value.isPlaying ?? false) {
-                              controller?.pause();
-                            } else {
-                              controller?.play();
-                            }
-                          });
-                        },
-                        child: AnimatedSwitcher(
-                          reverseDuration: const Duration(milliseconds: 350),
-                          duration: const Duration(milliseconds: 350),
-                          transitionBuilder: (child, animation) {
-                            return ScaleTransition(
-                              scale: animation,
-                              child: child,
-                            );
-                          },
-                          child: controller?.value.isPlaying ?? false
-                              ? Container(
-                                  decoration: const BoxDecoration(
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black26,
-                                        blurRadius: 10.0,
-                                        offset: Offset(2.0, 2.0),
-                                      ),
-                                    ],
-                                  ),
-                                  child: const Icon(
-                                    Icons.pause,
-                                    color: Colors.white,
-                                    size: 45,
-                                  ))
-                              : Container(
-                                  decoration: const BoxDecoration(
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black26,
-                                        blurRadius: 15.0,
-                                        offset: Offset(2.0, 2.0),
-                                      ),
-                                    ],
-                                  ),
-                                  child: const Icon(
-                                    Icons.play_arrow,
-                                    color: Colors.white,
-                                    size: 45,
-                                  )),
-                        ),
-                      ),
-                    )
-                  ],
-                )
-              : const Center(
-                  child: CircularProgressIndicator(strokeWidth: 1),
-                ),
-          transitionBuilder: (child, animation) {
-            return FadeTransition(
-              opacity: animation,
-              child: child,
-            );
+        return VisibilityDetector(
+          key: ValueKey(widget.selectedFile.path),
+          onVisibilityChanged: (info) {
+            if (info.visibleBounds.isEmpty) {
+              _controller
+                ..pause()
+                ..seekTo(Duration.zero);
+            }
           },
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 350),
+            child: snapshot.connectionState == ConnectionState.done
+                ? Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      InteractiveViewer(
+                        minScale: 1,
+                        child: VideoPlayer(_controller),
+                      ),
+                      Align(
+                        alignment: Alignment.center,
+                        child: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              if (_controller.value.isPlaying) {
+                                _controller.pause();
+                              } else {
+                                _controller.play();
+                              }
+                            });
+                          },
+                          child: AnimatedSwitcher(
+                              reverseDuration:
+                                  const Duration(milliseconds: 350),
+                              duration: const Duration(milliseconds: 350),
+                              transitionBuilder: (child, animation) {
+                                return ScaleTransition(
+                                  scale: animation,
+                                  child: child,
+                                );
+                              },
+                              child: ListenableBuilder(
+                                listenable: _controller,
+                                builder: (context, child) {
+                                  return _controller.value.isPlaying
+                                      ? Container(
+                                          decoration: const BoxDecoration(
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.black26,
+                                                blurRadius: 10.0,
+                                                offset: Offset(2.0, 2.0),
+                                              ),
+                                            ],
+                                          ),
+                                          child: const Icon(
+                                            Icons.pause,
+                                            color: Colors.white,
+                                            size: 45,
+                                          ))
+                                      : Container(
+                                          decoration: const BoxDecoration(
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.black26,
+                                                blurRadius: 15.0,
+                                                offset: Offset(2.0, 2.0),
+                                              ),
+                                            ],
+                                          ),
+                                          child: const Icon(
+                                            Icons.play_arrow,
+                                            color: Colors.white,
+                                            size: 45,
+                                          ));
+                                },
+                              )),
+                        ),
+                      )
+                    ],
+                  )
+                : const Center(
+                    child: CircularProgressIndicator(strokeWidth: 1),
+                  ),
+            transitionBuilder: (child, animation) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+          ),
         );
       },
     );

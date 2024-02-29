@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/bloc/app_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/chats/chat/bloc/chat_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/chats/chat/widgets/message_input_controller.dart';
+import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:ogp_data_extract/ogp_data_extract.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
@@ -243,7 +244,7 @@ class _ChatMessageTextFieldInputState extends State<ChatMessageTextFieldInput>
               textAlignVertical: TextAlignVertical.center,
               maxLines: 5,
               minLines: 1,
-              hintText: 'Message...',
+              hintText: '${context.l10n.messageText}...',
             ),
           ],
         );
@@ -459,7 +460,9 @@ class ReplyMessagePreview extends StatelessWidget {
             title: replyingMessage.replyMessageUsername == null
                 ? null
                 : Text(
-                    'Replying to ${replyingMessage.replyMessageUsername}',
+                    context.l10n.replyToText(
+                      replyingMessage.replyMessageUsername ?? 'unknown',
+                    ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: context.bodyLarge?.copyWith(
@@ -521,7 +524,7 @@ class EditingMessagePreview extends StatelessWidget {
         color: AppColors.deepBlue,
       ),
       title: Text(
-        'Editing',
+        context.l10n.editingText,
         style: context.bodyLarge?.copyWith(
           fontWeight: AppFontWeight.bold,
           color: AppColors.deepBlue,

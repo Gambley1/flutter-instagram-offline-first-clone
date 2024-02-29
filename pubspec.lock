@@ -446,7 +446,7 @@ packages:
     source: hosted
     version: "5.4.0"
   env:
-    dependency: transitive
+    dependency: "direct main"
     description:
       path: "packages/env"
       relative: true

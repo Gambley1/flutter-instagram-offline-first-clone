@@ -85,8 +85,9 @@ abstract class Media extends Equatable {
 /// contains any video media.
 extension HasVideoMedia on List<Media> {
   /// Whether the list of media has any video.
-  bool get hasVideo => any((e) => e is VideoMedia);
+  bool get hasVideo => any((e) => e is VideoMedia || e is MemoryVideoMedia);
 
   /// Whether the list of media is reel, meaning there is only one video.
-  bool get isReel => length == 1 && every((e) => e is VideoMedia);
+  bool get isReel =>
+      length == 1 && every((e) => e is VideoMedia || e is MemoryVideoMedia);
 }

@@ -2,11 +2,13 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:app_ui/app_ui.dart';
 import 'package:bloc/bloc.dart';
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_config/firebase_config.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:posts_repository/posts_repository.dart';
 import 'package:shared/shared.dart';
 import 'package:user_repository/user_repository.dart';
@@ -447,6 +449,12 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         );
       }
       emit(state.populated());
+      loadingIndeterminateKey.currentState?.setVisibility(visible: false);
+      openSnackbar(
+        const SnackbarMessage.success(
+          title: 'Successfully created post!',
+        ),
+      );
     } catch (error, stackTrace) {
       logE('Failed to create post.', error: error, stackTrace: stackTrace);
       addError(error, stackTrace);

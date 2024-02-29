@@ -74,32 +74,17 @@ class _ReelState extends State<Reel> {
 
   @override
   Widget build(BuildContext context) {
-    final status = context.select((ReelsBloc bloc) => bloc.state.status);
     if (widget.block is! PostReelBlock) {
       return SizedBox.expand(
         child: Center(
           child: Text(
-            'An error occured!',
-            style: context.bodyMedium?.copyWith(
-              fontWeight: AppFontWeight.bold,
-            ),
+            context.l10n.somethingWentWrongText,
+            style: context.headlineLarge,
           ),
         ),
       );
     }
     final block = widget.block as PostReelBlock;
-    if (block.reel == null && status != ReelsStatus.loading) {
-      return SizedBox.expand(
-        child: Center(
-          child: Text(
-            'No media found!',
-            style: context.bodyMedium?.copyWith(
-              fontWeight: AppFontWeight.bold,
-            ),
-          ),
-        ),
-      );
-    }
 
     return Stack(
       alignment: Alignment.center,
