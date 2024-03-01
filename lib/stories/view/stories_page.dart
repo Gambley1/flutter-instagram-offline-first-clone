@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -66,23 +64,37 @@ class StoriesView extends StatefulWidget {
 
 class _StoriesViewState extends State<StoriesView> with SafeSetStateMixin {
   final StoryController _controller = StoryController();
-  final _storyItems = ValueNotifier(<StoryItem>[]);
 
+  final _storyItems = ValueNotifier(<StoryItem>[]);
   final _currentStory = ValueNotifier<Story>(Story.empty);
   final _createdAt = ValueNotifier<DateTime?>(null);
   final _showOverlay = ValueNotifier<bool>(true);
+  final _wasVisible = ValueNotifier<bool>(false);
 
   @override
   void initState() {
     super.initState();
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
     _storyItems.value = widget.stories.toStoryItems(_controller);
-    // });
+    _showOverlay.addListener(_showOverlayListener);
+  }
 
-    _controller.playbackNotifier.listen((state) {
-      if (state != PlaybackState.pause) _showOverlay.value = true;
-      if (state == PlaybackState.pause) _showOverlay.value = false;
-    });
+  void _showOverlayListener() {
+    if (!_showOverlay.value) {
+      _controller.pause();
+    } else {
+      if (!_wasVisible.value) return;
+      _controller.play();
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _storyItems.dispose();
+    _currentStory.dispose();
+    _createdAt.dispose();
+    _showOverlay.dispose();
+    super.dispose();
   }
 
   @override
@@ -95,7 +107,11 @@ class _StoriesViewState extends State<StoriesView> with SafeSetStateMixin {
           key: ValueKey(user.id),
           onVisibilityChanged: (info) {
             if (!info.visibleBounds.isEmpty) {
+              _wasVisible.value = true;
               if (_controller.playbackNotifier.value == PlaybackState.pause) {
+                if (!_wasVisible.value) {
+                  return;
+                }
                 if (mounted) _controller.play();
               }
             } else {
@@ -105,18 +121,21 @@ class _StoriesViewState extends State<StoriesView> with SafeSetStateMixin {
           child: ValueListenableBuilder(
             valueListenable: _storyItems,
             builder: (context, storyItems, child) {
-              return StoryView(
-                storyItems: storyItems,
-                controller: _controller,
-                inline: true,
-                onStoryShow: (story, index) {
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    _currentStory.value = widget.stories[index];
-                    _createdAt.value = widget.stories[index].createdAt;
-                  });
-                  if (widget.onStorySeen != null) {
-                    widget.onStorySeen!.call(index, widget.stories);
-                  } else {
+              return GestureDetector(
+                onLongPressStart: (_) => _showOverlay.value = false,
+                onLongPressEnd: (_) => _showOverlay.value = true,
+                child: StoryView(
+                  inline: true,
+                  storyItems: storyItems,
+                  controller: _controller,
+                  onStoryShow: (story, index) {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      _currentStory.value = widget.stories[index];
+                      _createdAt.value = widget.stories[index].createdAt;
+                    });
+                    if (widget.onStorySeen != null) {
+                      widget.onStorySeen!.call(index, widget.stories);
+                    }
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       context.read<StoriesBloc>().add(
                             StoriesStorySeen(
@@ -125,12 +144,12 @@ class _StoriesViewState extends State<StoriesView> with SafeSetStateMixin {
                             ),
                           );
                     });
-                  }
-                },
-                onVerticalSwipeComplete: (_) => context.pop(),
-                onComplete: () {
-                  if (context.canPop()) context.pop();
-                },
+                  },
+                  onVerticalSwipeComplete: (_) => context.pop(),
+                  onComplete: () {
+                    if (context.canPop()) context.pop();
+                  },
+                ),
               );
             },
           ),
@@ -177,8 +196,7 @@ class _StoriesViewState extends State<StoriesView> with SafeSetStateMixin {
                         () => _storyItems.value.removeAt(storyIndex),
                       );
                       _controller.previous();
-                      _currentStory.value = widget.stories[
-                          min(storyIndex, _storyItems.value.length - 1)];
+                      _currentStory.value = widget.stories.first;
                     }
                   },
                 ),
