@@ -27,7 +27,7 @@ dependencies:
   firebase_config:
     path: packages/remote_config/firebase_config
   firebase_core: ^2.25.4
-  firebase_messaging: ^14.7.16
+  firebase_messaging: ^14.7.17
   firebase_notifications_client:
     path: packages/notifications_client/firebase_notifications_client
   flex_color_scheme: ^7.3.1
