@@ -29,7 +29,7 @@ class VideoPlay extends StatefulWidget {
     this.withVisibilityDetector = true,
     this.withProgressIndicator = false,
     this.loadingBuilder,
-    this.stackedWidgets,
+    this.stackedWidget,
     this.videoPlayerOptions,
   });
 
@@ -49,7 +49,7 @@ class VideoPlay extends StatefulWidget {
   final bool withVisibilityDetector;
   final bool withProgressIndicator;
   final WidgetBuilder? loadingBuilder;
-  final List<Widget>? stackedWidgets;
+  final Widget? stackedWidget;
   final VideoPlayerOptions? videoPlayerOptions;
 
   @override
@@ -178,13 +178,13 @@ class _VideoPlayState extends State<VideoPlay>
                   expand: widget.expand,
                   child: VideoPlayer(_controller),
                 );
-                if (widget.stackedWidgets != null) {
+                if (widget.stackedWidget != null) {
                   videoPlayer = AspectRatio(
                     aspectRatio: widget.aspectRatio,
                     child: Stack(
                       children: [
                         VideoPlayer(_controller),
-                        ...widget.stackedWidgets!,
+                        widget.stackedWidget!,
                       ],
                     ),
                   );

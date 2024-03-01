@@ -135,11 +135,13 @@ class PickImage {
     required ImageSource source,
     required PickerSource pickerSource,
     required ValueSetter<SelectedImagesDetails> onMediaPicked,
+    Key? key,
     bool multiSelection = true,
     FilterOptionGroup? filterOption,
     VoidCallback? onBackButtonTap,
   }) =>
       CustomImagePicker(
+        key: key,
         galleryDisplaySettings: GalleryDisplaySettings(
           showImagePreview: true,
           cropImage: true,

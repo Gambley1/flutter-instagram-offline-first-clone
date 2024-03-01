@@ -19,17 +19,20 @@ import 'package:shared/shared.dart';
 
 class UserProfileCreatePost extends StatelessWidget {
   const UserProfileCreatePost({
+    this.imagePickerKey,
     this.onPopInvoked,
     this.onBackButtonTap,
     super.key,
   });
 
+  final Key? imagePickerKey;
   final VoidCallback? onBackButtonTap;
   final VoidCallback? onPopInvoked;
 
   @override
   Widget build(BuildContext context) {
     return PickImage().customMediaPicker(
+      key: imagePickerKey,
       context: context,
       source: ImageSource.both,
       pickerSource: PickerSource.both,

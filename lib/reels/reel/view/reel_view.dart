@@ -61,6 +61,7 @@ class Reel extends StatefulWidget {
 
 class _ReelState extends State<Reel> {
   VideoPlayerController? _videoController;
+  late ValueNotifier<bool> _isPaused;
 
   @override
   void initState() {
@@ -70,6 +71,24 @@ class _ReelState extends State<Reel> {
         : VideoPlayerController.networkUrl(
             Uri.parse((widget.block as PostReelBlock).reel!.url),
           );
+    _isPaused = ValueNotifier(false)..addListener(_isPausedListener);
+  }
+
+  void _isPausedListener() {
+    if (_isPaused.value) {
+      _videoController?.pause();
+    } else {
+      _videoController?.play();
+    }
+  }
+
+  @override
+  void dispose() {
+    _videoController?.dispose();
+    _isPaused
+      ..removeListener(_isPausedListener)
+      ..dispose();
+    super.dispose();
   }
 
   @override
@@ -86,60 +105,88 @@ class _ReelState extends State<Reel> {
     }
     final block = widget.block as PostReelBlock;
 
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        VideoPlay(
-          url: block.reel!.url,
-          play: widget.play,
-          blurHash: block.reel!.blurHash,
-          withSound: widget.withSound || true,
-          aspectRatio: 9 / 15,
-          withSoundButton: false,
-          withPlayControll: false,
-          controller: _videoController,
-          loadingBuilder: (context) => const ReelShimmerLoading(),
-          stackedWidgets: [
-            VerticalButtons(block),
-            Padding(
-              padding: const EdgeInsets.only(
-                bottom: AppSpacing.md,
-                left: AppSpacing.lg,
-              ),
-              child: Align(
-                alignment: Alignment.bottomLeft,
-                child: ConstrainedBox(
-                  constraints:
-                      BoxConstraints.tightFor(width: context.screenWidth * .8),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ReelAuthorListTile(block: block),
-                      if (block.caption.isNotEmpty) ...[
-                        const SizedBox(height: AppSpacing.md),
-                        ReelCaption(caption: block.caption),
-                      ],
-                      const SizedBox(height: AppSpacing.sm),
-                      SizedBox(
-                        height: 32,
-                        child: ReelParticipants(
-                          participant: block.author.username,
+    return GestureDetector(
+      onLongPressStart: (_) => _isPaused.value = true,
+      onLongPressEnd: (_) => _isPaused.value = false,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          VideoPlay(
+            url: block.reel!.url,
+            play: widget.play,
+            blurHash: block.reel!.blurHash,
+            withSound: widget.withSound || true,
+            aspectRatio: 9 / 15,
+            withSoundButton: false,
+            withPlayControll: false,
+            controller: _videoController,
+            loadingBuilder: (context) => const ReelShimmerLoading(),
+            stackedWidget: ValueListenableBuilder<bool>(
+              valueListenable: _isPaused,
+              child: Stack(
+                children: [
+                  VerticalButtons(block),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      bottom: AppSpacing.md,
+                      left: AppSpacing.lg,
+                    ),
+                    child: Align(
+                      alignment: Alignment.bottomLeft,
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints.tightFor(
+                          width: context.screenWidth * .8,
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ReelAuthorListTile(block: block),
+                            if (block.caption.isNotEmpty) ...[
+                              const SizedBox(height: AppSpacing.md),
+                              ReelCaption(caption: block.caption),
+                            ],
+                            const SizedBox(height: AppSpacing.sm),
+                            SizedBox(
+                              height: 32,
+                              child: ReelParticipants(
+                                participant: block.author.username,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ],
+                    ),
                   ),
-                ),
+                ],
               ),
+              builder: (context, isPaused, child) {
+                return AnimatedOpacity(
+                  opacity: isPaused ? 0 : 1,
+                  duration: 150.ms,
+                  child: child,
+                );
+              },
             ),
-          ],
-        ),
-        if (_videoController != null)
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: SmoothVideoProgressIndicator(controller: _videoController!),
           ),
-      ],
+          if (_videoController != null)
+            ValueListenableBuilder<bool>(
+              valueListenable: _isPaused,
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child:
+                    SmoothVideoProgressIndicator(controller: _videoController!),
+              ),
+              builder: (context, isPaused, child) {
+                return AnimatedOpacity(
+                  opacity: isPaused ? 0 : 1,
+                  duration: 150.ms,
+                  child: child,
+                );
+              },
+            ),
+        ],
+      ),
     );
   }
 }

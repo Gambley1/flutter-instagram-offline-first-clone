@@ -7,6 +7,8 @@ import 'package:image_picker_plus/image_picker_plus.dart';
 import 'package:image_picker_plus/src/camera_display.dart';
 import 'package:image_picker_plus/src/images_view_page.dart';
 
+final customImagePickerKey = GlobalKey<CustomImagePickerState>();
+
 class CustomImagePicker extends StatefulWidget {
   final ImageSource source;
   final bool multiSelection;
@@ -100,6 +102,11 @@ class CustomImagePickerState extends State<CustomImagePicker>
     showAllTabs = cameraAndVideoEnabled && noGallery;
     whiteColor = appTheme.primaryColor;
     blackColor = appTheme.focusColor;
+  }
+
+  void resetAll() {
+    multiSelectedImages.value.clear();
+    multiSelectionMode.value = false;
   }
 
   @override
@@ -284,7 +291,6 @@ class CustomImagePickerState extends State<CustomImagePicker>
 
   ImagesViewPage imagesViewPage() {
     return ImagesViewPage(
-      key: imagesViewPageKey,
       appTheme: appTheme,
       clearMultiImages: clearMultiImages,
       callbackFunction: callbackFunction,

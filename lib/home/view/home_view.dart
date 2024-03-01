@@ -159,7 +159,7 @@ class _HomeViewState extends State<HomeView> {
                   : const NeverScrollableScrollPhysics(),
               onPageChanged: (page) {
                 if (page != 0 && page != 2 && page == 1) {
-                  imagesViewPageKey.currentState?.resetAll();
+                  customImagePickerKey.currentState?.resetAll();
                 }
                 if (page == 1 && widget.navigationShell.currentIndex != 0) {
                   HomeProvider().togglePageView(enable: false);
@@ -168,6 +168,7 @@ class _HomeViewState extends State<HomeView> {
               itemBuilder: (context, index) {
                 return switch (index) {
                   0 => UserProfileCreatePost(
+                      imagePickerKey: customImagePickerKey,
                       onPopInvoked: () => HomeProvider().animateToPage(1),
                       onBackButtonTap: () => HomeProvider().animateToPage(1),
                     ),

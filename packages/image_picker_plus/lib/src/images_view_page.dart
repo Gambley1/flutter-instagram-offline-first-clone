@@ -10,8 +10,6 @@ import 'package:image_picker_plus/src/multi_selection_mode.dart';
 import 'package:insta_assets_crop/insta_assets_crop.dart';
 import 'package:shimmer/shimmer.dart';
 
-final imagesViewPageKey = GlobalKey<ImagesViewPageState>();
-
 class ImagesViewPage extends StatefulWidget {
   final ValueNotifier<List<File>> multiSelectedImages;
   final ValueNotifier<bool> multiSelectionMode;
@@ -56,10 +54,10 @@ class ImagesViewPage extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<ImagesViewPage> createState() => ImagesViewPageState();
+  State<ImagesViewPage> createState() => _ImagesViewPageState();
 }
 
-class ImagesViewPageState extends State<ImagesViewPage>
+class _ImagesViewPageState extends State<ImagesViewPage>
     with AutomaticKeepAliveClientMixin {
   late PMFilter _filterOption;
 
