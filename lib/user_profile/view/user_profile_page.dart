@@ -5,15 +5,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/post/widgets/post_popup.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
-import 'package:flutter_instagram_offline_first_clone/reels/reels.dart';
 import 'package:flutter_instagram_offline_first_clone/selector/selector.dart';
 import 'package:flutter_instagram_offline_first_clone/stories/create_stories/create_stories.dart';
 import 'package:flutter_instagram_offline_first_clone/user_profile/bloc/user_profile_bloc.dart';
-import 'package:flutter_instagram_offline_first_clone/user_profile/widgets/user_profile_header.dart';
+import 'package:flutter_instagram_offline_first_clone/user_profile/widgets/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:posts_repository/posts_repository.dart';
-import 'package:powersync_repository/powersync_repository.dart' hide Row;
 import 'package:shared/shared.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 import 'package:user_repository/user_repository.dart';
@@ -44,11 +42,6 @@ class UserProfilePage extends StatelessWidget {
             ..add(const UserProfilePostsCountSubscriptionRequested())
             ..add(const UserProfileFollowingsCountSubscriptionRequested())
             ..add(const UserProfileFollowersCountSubscriptionRequested()),
-        ),
-        BlocProvider(
-          create: (context) => ReelsBloc(
-            postsRepository: context.read<PostsRepository>(),
-          ),
         ),
       ],
       child: UserProfileView(
@@ -410,148 +403,62 @@ class UserProfileAddMediaButton extends StatelessWidget {
         context.select((CreateStoriesBloc bloc) => bloc.state.isAvailable);
 
     return Tappable(
-      onTap: () async {
-        void callback(ModalOption option) => option.onTap.call(context);
-
-        final option = await context.showListOptionsModal(
-          title: context.l10n.createText,
-          options: createMediaModalOptions(
-            reelLabel: context.l10n.reelText,
-            postLabel: context.l10n.postText,
-            storyLabel: context.l10n.storyText,
-            context: context,
-            goTo: (route, {extra}) => context.pushNamed(route, extra: extra),
-            enableStory: enableStory,
-            storyExtra: (String path) {
-              context.read<CreateStoriesBloc>().add(
-                    CreateStoriesStoryCreateRequested(
-                      author: user,
-                      contentType: StoryContentType.image,
-                      filePath: path,
-                      onError: (_, __) => openSnackbar(
+      onTap: () => context
+          .showListOptionsModal(
+        title: context.l10n.createText,
+        options: createMediaModalOptions(
+          reelLabel: context.l10n.reelText,
+          postLabel: context.l10n.postText,
+          storyLabel: context.l10n.storyText,
+          context: context,
+          goTo: (route, {extra}) => context.pushNamed(route, extra: extra),
+          enableStory: enableStory,
+          storyExtra: (String path) {
+            context.read<CreateStoriesBloc>().add(
+                  CreateStoriesStoryCreateRequested(
+                    author: user,
+                    contentType: StoryContentType.image,
+                    filePath: path,
+                    onError: (_, __) {
+                      toggleLoadingIndeterminate(enable: false);
+                      openSnackbar(
                         SnackbarMessage.error(
                           title: context.l10n.somethingWentWrongText,
                           description: context.l10n.failedToCreateStoryText,
                         ),
-                      ),
-                      onLoading: () => openSnackbar(
-                        const SnackbarMessage.loading(),
-                        clearIfQueue: true,
-                      ),
-                      onStoryCreated: () => openSnackbar(
+                      );
+                    },
+                    onLoading: toggleLoadingIndeterminate,
+                    onStoryCreated: () {
+                      toggleLoadingIndeterminate(enable: false);
+                      openSnackbar(
                         SnackbarMessage.success(
                           title: context.l10n.successfullyCreatedStoryText,
                         ),
                         clearIfQueue: true,
-                      ),
-                    ),
-                  );
-              context.pop();
-            },
-            onCreateReelTap: () async {
-              void uploadReel({
-                required String id,
-                required List<Map<String, dynamic>> media,
-              }) =>
-                  context.read<ReelsBloc>().add(
-                        ReelsCreateReelRequested(
-                          id: id,
-                          userId: user.id,
-                          caption: '',
-                          media: media,
-                        ),
                       );
-
-              await PickImage().pickVideo(
-                context,
-                onMediaPicked: (context, selectedFiles) async {
-                  try {
-                    openSnackbar(const SnackbarMessage.loading());
-                    late final postId = uuid.v4();
-                    late final storage =
-                        Supabase.instance.client.storage.from('posts');
-
-                    late final mediaPath = '$postId/video_0';
-
-                    final selectedFile = selectedFiles.selectedFiles.first;
-                    final firstFrame = await VideoPlus.getVideoThumbnail(
-                      selectedFile.selectedFile,
-                    );
-                    final blurHash = firstFrame == null
-                        ? ''
-                        : await BlurHashPlus.blurHashEncode(firstFrame);
-                    final compressedVideo = (await VideoPlus.compressVideo(
-                          selectedFile.selectedFile,
-                        ))
-                            ?.file ??
-                        selectedFile.selectedFile;
-                    final compressedVideoBytes =
-                        await PickImage().imageBytes(
-                      file: compressedVideo,
-                    );
-                    final attachment = AttachmentFile(
-                      size: compressedVideoBytes.length,
-                      bytes: compressedVideoBytes,
-                      path: compressedVideo.path,
-                    );
-
-                    await storage.uploadBinary(
-                      mediaPath,
-                      attachment.bytes!,
-                      fileOptions: FileOptions(
-                        contentType: attachment.mediaType!.mimeType,
-                        cacheControl: '9000000',
-                      ),
-                    );
-                    final mediaUrl = storage.getPublicUrl(mediaPath);
-                    String? firstFrameUrl;
-                    if (firstFrame != null) {
-                      late final firstFramePath = '$postId/video_first_frame_0';
-                      await storage.uploadBinary(
-                        firstFramePath,
-                        firstFrame,
-                        fileOptions: FileOptions(
-                          contentType: attachment.mediaType!.mimeType,
-                          cacheControl: '9000000',
-                        ),
-                      );
-                      firstFrameUrl = storage.getPublicUrl(firstFramePath);
-                    }
-                    final media = [
-                      {
-                        'media_id': uuid.v4(),
-                        'url': mediaUrl,
-                        'type': VideoMedia.identifier,
-                        'blur_hash': blurHash,
-                        'first_frame_url': firstFrameUrl,
-                      }
-                    ];
-                    uploadReel(media: media, id: postId);
-                    openSnackbar(
-                      const SnackbarMessage.success(
-                        title: 'Successfully created reel!',
-                      ),
-                    );
-                  } catch (error, stackTrace) {
-                    logE(
-                      'Failed to create reel!',
-                      error: error,
-                      stackTrace: stackTrace,
-                    );
-                    openSnackbar(
-                      const SnackbarMessage.error(
-                        title: 'Failed to create reel!',
-                      ),
-                    );
-                  }
-                },
-              );
-            },
+                    },
+                  ),
+                );
+            context.pop();
+          },
+          onCreateReelTap: () => PickImage().pickVideo(
+            context,
+            onMediaPicked: (context, details) => context.pushNamed(
+              'publish_post',
+              extra: CreatePostProps(
+                details: details,
+                isReel: true,
+                context: context,
+              ),
+            ),
           ),
-        );
+        ),
+      )
+          .then((option) {
         if (option == null) return;
-        callback(option);
-      },
+        option.onTap(context);
+      }),
       child: const Icon(
         Icons.add_box_outlined,
         size: AppSize.iconSize,

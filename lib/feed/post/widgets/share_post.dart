@@ -277,7 +277,7 @@ class _SharePostButtonState extends State<SharePostButton> {
     final user = context.read<AppBloc>().state.user;
     void pop() => context.pop();
 
-    openSnackbar(const SnackbarMessage.loading());
+    toggleLoadingIndeterminate();
     final postShareFutures = widget.selectedUsers.map(
       (receiver) => Future.microtask(
         () => context.read<PostBloc>().add(
@@ -285,14 +285,23 @@ class _SharePostButtonState extends State<SharePostButton> {
                 sender: user,
                 receiver: receiver,
                 postAuthor: widget.block.author,
-                message: Message(
-                  message: _messageController.text,
+                sharedPostMessage: Message(
                   sender: PostAuthor(
                     id: user.id,
                     avatarUrl: user.avatarUrl!,
                     username: user.username!,
                   ),
                 ),
+                message: _messageController.text.trim().isEmpty
+                    ? null
+                    : Message(
+                        message: _messageController.text,
+                        sender: PostAuthor(
+                          id: user.id,
+                          avatarUrl: user.avatarUrl!,
+                          username: user.username!,
+                        ),
+                      ),
               ),
             ),
       ),
@@ -305,6 +314,7 @@ class _SharePostButtonState extends State<SharePostButton> {
             title: 'Successfully shared post!',
           ),
         );
+        toggleLoadingIndeterminate(enable: false);
       });
     } catch (error, stackTrace) {
       logE(
@@ -317,6 +327,7 @@ class _SharePostButtonState extends State<SharePostButton> {
           title: 'Failed to share post.',
         ),
       );
+      toggleLoadingIndeterminate(enable: false);
     }
   }
 

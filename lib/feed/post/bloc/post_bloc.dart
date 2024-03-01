@@ -196,6 +196,7 @@ class PostBloc extends HydratedBloc<PostEvent, PostState> {
         id: id,
         sender: event.sender,
         receiver: event.receiver,
+        sharedPostMessage: event.sharedPostMessage.copyWith(sharedPostId: id),
         message: event.message,
         postAuthor: event.postAuthor,
       );

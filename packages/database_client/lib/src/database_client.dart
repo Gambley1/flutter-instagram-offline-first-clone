@@ -197,7 +197,8 @@ abstract class PostsBaseRepository {
     required String id,
     required User sender,
     required User receiver,
-    required Message message,
+    required Message sharedPostMessage,
+    Message? message,
     PostAuthor? postAuthor,
   });
 }
@@ -913,7 +914,8 @@ WHERE id = ?
     required String id,
     required User sender,
     required User receiver,
-    required Message message,
+    required Message sharedPostMessage,
+    Message? message,
     PostAuthor? postAuthor,
   }) async {
     final exists = await _powerSyncRepository.db().execute(
@@ -938,13 +940,22 @@ WHERE user_id = ?
     );
     if (conversation.isNotEmpty) {
       final chatId = conversation.first['conversation_id'] as String;
-      await sendMessage(
-        chatId: chatId,
-        sender: sender,
-        receiver: receiver,
-        message: message.copyWith(sharedPostId: id),
-        postAuthor: postAuthor,
-      );
+      await Future.wait([
+        sendMessage(
+          chatId: chatId,
+          sender: sender,
+          receiver: receiver,
+          message: sharedPostMessage,
+          postAuthor: postAuthor,
+        ),
+        if (message != null)
+          sendMessage(
+            chatId: chatId,
+            sender: sender,
+            receiver: receiver,
+            message: message,
+          ),
+      ]);
       return;
     }
     final newChatId = uuid.v4();
@@ -978,13 +989,22 @@ insert into
     await createdConversation
         .whenComplete(() => Future.wait([addParticipant1, addParticipant2]));
 
-    await sendMessage(
-      chatId: newChatId,
-      sender: sender,
-      receiver: receiver,
-      message: message.copyWith(sharedPostId: id),
-      postAuthor: postAuthor,
-    );
+    await Future.wait([
+      sendMessage(
+        chatId: newChatId,
+        sender: sender,
+        receiver: receiver,
+        message: sharedPostMessage,
+        postAuthor: postAuthor,
+      ),
+      if (message != null)
+        sendMessage(
+          chatId: newChatId,
+          sender: sender,
+          receiver: receiver,
+          message: message,
+        ),
+    ]);
   }
 
   @override
@@ -1326,7 +1346,7 @@ values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 
           await Isolate.spawn(sendBackgroundNotification, [
             receivePort.sendPort,
-            receiver.pushToken,
+            receiver,
             sender,
             message,
             postAuthor,
@@ -1340,7 +1360,7 @@ values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   /// Sends notification in a background isolate.
   static Future<void> sendBackgroundNotification(List<dynamic> args) async {
     await sendNotification(
-      sendToPushToken: args[1] as String?,
+      reciever: args[1] as User,
       sender: args[2] as User,
       message: args[3] as Message,
       postAuthor: args[4] as PostAuthor?,
@@ -1351,22 +1371,25 @@ values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 
   /// Sends notification using Google APIs to user.
   static Future<void> sendNotification({
-    required String? sendToPushToken,
+    required User reciever,
+    required User sender,
     String? chatId,
-    User? sender,
     Message? message,
     PostAuthor? postAuthor,
   }) async {
-    final notificationBody = postAuthor != null
-        ? 'Sent post ${postAuthor.username}'
+    final notificationMessage = postAuthor != null
+        ? 'Sent post by ${postAuthor.username}'
         : message?.message;
+    final notificationBody =
+        '(${reciever.displayUsername}): ${sender.displayUsername}: '
+        '$notificationMessage';
 
     final data = {
-      'to': sendToPushToken,
+      'to': reciever.pushToken,
       'content_available': true,
       'priority': 10,
       'notification': {
-        'title': sender?.username,
+        'title': 'Instagram',
         'body': notificationBody,
         'click_action': 'FLUTTER_NOTIFICATION_CLICK',
       },

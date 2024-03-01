@@ -65,25 +65,28 @@ class StoriesListView extends StatelessWidget {
                                     author: user,
                                     contentType: StoryContentType.image,
                                     filePath: path,
-                                    onError: (_, __) => openSnackbar(
-                                      SnackbarMessage.error(
-                                        title:
-                                            context.l10n.somethingWentWrongText,
-                                        description: context
-                                            .l10n.failedToCreateStoryText,
-                                      ),
-                                    ),
-                                    onLoading: () => openSnackbar(
-                                      const SnackbarMessage.loading(),
-                                      clearIfQueue: true,
-                                    ),
-                                    onStoryCreated: () => openSnackbar(
-                                      SnackbarMessage.success(
-                                        title: context
-                                            .l10n.successfullyCreatedStoryText,
-                                      ),
-                                      clearIfQueue: true,
-                                    ),
+                                    onError: (_, __) {
+                                      toggleLoadingIndeterminate(enable: false);
+                                      openSnackbar(
+                                        SnackbarMessage.error(
+                                          title: context
+                                              .l10n.somethingWentWrongText,
+                                          description: context
+                                              .l10n.failedToCreateStoryText,
+                                        ),
+                                      );
+                                    },
+                                    onLoading: toggleLoadingIndeterminate,
+                                    onStoryCreated: () {
+                                      toggleLoadingIndeterminate(enable: false);
+                                      openSnackbar(
+                                        SnackbarMessage.success(
+                                          title: context.l10n
+                                              .successfullyCreatedStoryText,
+                                        ),
+                                        clearIfQueue: true,
+                                      );
+                                    },
                                   ),
                                 );
                             context.pop();

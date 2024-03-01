@@ -11,7 +11,6 @@ import 'package:flutter_instagram_offline_first_clone/reels/reels.dart';
 import 'package:flutter_instagram_offline_first_clone/user_profile/widgets/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
-import 'package:posts_repository/posts_repository.dart';
 import 'package:shared/shared.dart';
 
 class ReelsPage extends StatelessWidget {
@@ -19,12 +18,7 @@ class ReelsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => ReelsBloc(
-        postsRepository: context.read<PostsRepository>(),
-      )..add(const ReelsPageRequested()),
-      child: const ReelsView(),
-    );
+    return const ReelsView();
   }
 }
 
@@ -43,6 +37,7 @@ class _ReelsViewState extends State<ReelsView> {
   @override
   void initState() {
     super.initState();
+    context.read<ReelsBloc>().add(const ReelsPageRequested());
     _pageController = PageController(keepPage: false);
 
     _currentIndex = ValueNotifier(0);
@@ -127,7 +122,7 @@ class _ReelsViewState extends State<ReelsView> {
           child: Tappable(
             onTap: () => PickImage().pickVideo(
               context,
-              onMediaPicked: (context, details) => context.pushNamed(
+              onMediaPicked: (_, details) => context.pushNamed(
                 'publish_post',
                 extra: CreatePostProps(
                   details: details,

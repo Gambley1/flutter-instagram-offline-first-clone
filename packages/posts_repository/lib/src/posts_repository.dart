@@ -107,12 +107,14 @@ class PostsRepository implements PostsBaseRepository {
     required String id,
     required User sender,
     required User receiver,
-    required Message message,
+    required Message sharedPostMessage,
+    Message? message,
     PostAuthor? postAuthor,
   }) =>
       _client.sharePost(
         id: id,
         sender: sender,
+        sharedPostMessage: sharedPostMessage,
         message: message,
         receiver: receiver,
         postAuthor: postAuthor,

@@ -66,6 +66,7 @@ final class PostDeleteRequested extends PostEvent {
 
 final class PostShareRequested extends PostEvent {
   const PostShareRequested({
+    required this.sharedPostMessage,
     required this.sender,
     required this.message,
     required this.receiver,
@@ -74,6 +75,7 @@ final class PostShareRequested extends PostEvent {
 
   final User sender;
   final User receiver;
+  final Message sharedPostMessage;
+  final Message? message;
   final PostAuthor? postAuthor;
-  final Message message;
 }
