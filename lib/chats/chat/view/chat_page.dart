@@ -269,6 +269,9 @@ class _ChatMessagesListViewState extends State<ChatMessagesListView> {
 
   Timer? _highlightTimer;
 
+  MessageSettings get settings => widget.messageSettings;
+  List<Message> get messages => widget.messages;
+
   @override
   void initState() {
     super.initState();
@@ -314,9 +317,6 @@ class _ChatMessagesListViewState extends State<ChatMessagesListView> {
 
   @override
   Widget build(BuildContext context) {
-    final settings = widget.messageSettings;
-    final messages = widget.messages;
-
     return Stack(
       children: [
         const ChatBackground(),
@@ -403,14 +403,12 @@ class _ChatMessagesListViewState extends State<ChatMessagesListView> {
                           : const Radius.circular(22),
                   bottomLeft: isMine
                       ? const Radius.circular(22)
-                      : (isPreviusUserSame &&
-                              !hasTimeDifferenceWithPrevious)
+                      : (isPreviusUserSame && !hasTimeDifferenceWithPrevious)
                           ? const Radius.circular(4)
                           : Radius.zero,
                   bottomRight: !isMine
                       ? const Radius.circular(22)
-                      : (isPreviusUserSame &&
-                              !hasTimeDifferenceWithPrevious)
+                      : (isPreviusUserSame && !hasTimeDifferenceWithPrevious)
                           ? const Radius.circular(4)
                           : Radius.zero,
                 ),

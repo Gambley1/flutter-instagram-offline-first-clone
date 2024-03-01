@@ -47,7 +47,11 @@ class FloatingDateSeparator extends StatelessWidget {
         if (index == null) return const SizedBox.shrink();
 
         if (reverse) {
-          index = messages.length - 1 - index;
+          if (index == messages.length) {
+            index = messages.length - index;
+          } else {
+            index = messages.length - 1 - index;
+          }
         }
 
         final message = messages[index];

@@ -78,7 +78,7 @@ class _ReelState extends State<Reel> {
     if (_isPaused.value) {
       _videoController?.pause();
     } else {
-      _videoController?.play();
+      Future<void>.delayed(300.ms, () => _videoController?.play());
     }
   }
 

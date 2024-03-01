@@ -203,10 +203,13 @@ class _ChatMessageTextFieldInputState extends State<ChatMessageTextFieldInput>
       setState(_effectiveController.resetAll);
       widget.focusNode.requestFocus();
       if (!wasEditing) {
-        widget.itemScrollController.scrollTo(
-          index: 0,
-          duration: 250.ms,
-          curve: Curves.easeIn,
+        Future<void>.delayed(
+          50.ms,
+          () => widget.itemScrollController.scrollTo(
+            index: 0,
+            duration: 250.ms,
+            curve: Curves.easeIn,
+          ),
         );
       }
     }
