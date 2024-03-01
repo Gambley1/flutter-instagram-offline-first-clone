@@ -97,7 +97,7 @@ class ReelsBloc extends Bloc<ReelsEvent, ReelsState> {
           isCreate: true,
         ),
       );
-      loadingIndeterminateKey.currentState?.setVisibility(visible: false);
+      toggleLoadingIndeterminate(enable: false);
       openSnackbar(
         const SnackbarMessage.success(title: 'Successfully created reel!'),
       );
@@ -109,7 +109,7 @@ class ReelsBloc extends Bloc<ReelsEvent, ReelsState> {
       );
       addError(error, stackTrace);
       emit(state.failure());
-      loadingIndeterminateKey.currentState?.setVisibility(visible: false);
+      toggleLoadingIndeterminate(enable: false);
       openSnackbar(
         const SnackbarMessage.error(
           title: 'Failed to create reel!',

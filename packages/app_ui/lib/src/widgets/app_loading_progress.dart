@@ -27,9 +27,14 @@ class AppLoadingIndeterminateState extends State<ApplLoadingIndeterminate> {
     // _opacity = ValueNotifier(0);
   }
 
-  void setVisibility({required bool visible, double? opacity}) {
+  void setVisibility({
+    required bool visible,
+    double? opacity,
+    bool autoHide = true,
+  }) {
     _visible.value = visible;
     _opacity.value = visible == false ? 1 : opacity ?? 1;
+    if (!autoHide && !visible) return;
     _debouncer.run(() {
       _visible.value = false;
     });

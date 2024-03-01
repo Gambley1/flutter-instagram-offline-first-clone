@@ -449,7 +449,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         );
       }
       emit(state.populated());
-      loadingIndeterminateKey.currentState?.setVisibility(visible: false);
+      toggleLoadingIndeterminate(enable: false);
       openSnackbar(
         const SnackbarMessage.success(
           title: 'Successfully created post!',
