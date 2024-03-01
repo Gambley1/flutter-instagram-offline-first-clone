@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
+import 'package:instagram_blocks_ui/src/block_actiond_callback.dart';
 import 'package:instagram_blocks_ui/src/like_button.dart';
 import 'package:instagram_blocks_ui/src/post_large/post_header.dart';
 import 'package:shared/shared.dart';
@@ -19,6 +20,7 @@ class PostSponsored extends StatelessWidget {
     required this.onCommentsTap,
     required this.onPostShareTap,
     required this.onPressed,
+    required this.onUserTap,
     required this.withInViewNotifier,
     required this.postOptionsSettings,
     this.postAuthorAvatarBuilder,
@@ -39,7 +41,8 @@ class PostSponsored extends StatelessWidget {
   final bool enableFollowButton;
   final ValueSetter<bool> onCommentsTap;
   final void Function(String, PostAuthor) onPostShareTap;
-  final void Function(BlockAction? action, String? avatarUrl) onPressed;
+  final OptionalBlockActionCallback onPressed;
+  final UserTapCallback onUserTap;
   final PostOptionsSettings postOptionsSettings;
   final AvatarBuilder? postAuthorAvatarBuilder;
   final VideoPlayerBuilder? videoPlayerBuilder;
@@ -51,6 +54,7 @@ class PostSponsored extends StatelessWidget {
     return PostLarge(
       block: block,
       onPressed: onPressed,
+      onUserTap: onUserTap,
       isOwner: isOwner,
       isLiked: isLiked,
       likePost: likePost,

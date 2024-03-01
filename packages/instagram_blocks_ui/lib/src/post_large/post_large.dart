@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:instagram_blocks_ui/src/block_actiond_callback.dart';
 import 'package:instagram_blocks_ui/src/carousel_indicator_controller.dart';
 import 'package:instagram_blocks_ui/src/like_button.dart';
 import 'package:instagram_blocks_ui/src/media_carousel_settings.dart';
@@ -22,6 +23,7 @@ class PostLarge extends StatelessWidget {
     required this.onCommentsTap,
     required this.onPostShareTap,
     required this.onPressed,
+    required this.onUserTap,
     required this.withInViewNotifier,
     required this.postOptionsSettings,
     this.postAuthorAvatarBuilder,
@@ -41,9 +43,10 @@ class PostLarge extends StatelessWidget {
   final int likesCount;
   final int commentsCount;
   final bool enableFollowButton;
-  final void Function(BlockAction? action, String? avatarUrl) onPressed;
+  final OptionalBlockActionCallback onPressed;
   final ValueSetter<bool> onCommentsTap;
   final void Function(String, PostAuthor) onPostShareTap;
+  final UserTapCallback onUserTap;
   final PostOptionsSettings postOptionsSettings;
   final AvatarBuilder? postAuthorAvatarBuilder;
   final VideoPlayerBuilder? videoPlayerBuilder;
@@ -80,7 +83,7 @@ class PostLarge extends StatelessWidget {
           postOptionsSettings: postOptionsSettings,
           onAvatarTap: !block.hasNavigationAction
               ? null
-              : (avatarUrl) => onPressed(block.action, avatarUrl),
+              : (_) => onPressed(block.action),
         );
 
     return Column(
@@ -105,7 +108,8 @@ class PostLarge extends StatelessWidget {
           likePost: likePost,
           likesCount: likesCount,
           commentsCount: commentsCount,
-          onAvatarTap: (avatarUrl) => onPressed(block.action, avatarUrl),
+          onAvatarTap: (_) => onPressed(block.action),
+          onUserTap: onUserTap,
           onCommentsTap: onCommentsTap,
           onPostShareTap: onPostShareTap,
           likesCountBuilder: likesCountBuilder,

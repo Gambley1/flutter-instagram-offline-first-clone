@@ -24,6 +24,7 @@ class PostFooter extends StatelessWidget {
     required this.commentsCount,
     required this.likesCount,
     required this.onAvatarTap,
+    required this.onUserTap,
     required this.onCommentsTap,
     required this.onPostShareTap,
     this.likesCountBuilder,
@@ -37,7 +38,8 @@ class PostFooter extends StatelessWidget {
   final int commentsCount;
   final LikeCallback likePost;
   final List<String> imagesUrl;
-  final OnAvatarTapCallback onAvatarTap;
+  final AvatarTapCallback onAvatarTap;
+  final UserTapCallback onUserTap;
   final ValueSetter<bool> onCommentsTap;
   final void Function(String, PostAuthor) onPostShareTap;
   final Widget? Function(String? name, String? userId, int count)?
@@ -149,19 +151,15 @@ class PostFooter extends StatelessWidget {
                         key: ValueKey(block.id),
                         count: likesCount,
                         textBuilder: (count) {
-                          final name = likersInFollowings
-                              .firstWhere(
-                                (user) => user.username != null,
-                                orElse: () => User.anonymous,
-                              )
-                              .username;
-                          final userId = likersInFollowings.firstOrNull?.id;
+                          final user = likersInFollowings.firstOrNull;
+                          final name = user?.displayUsername;
+                          final userId = user?.id;
                           if (name == null || name.trim().isEmpty) {
                             return null;
                           }
 
                           final onTap =
-                              userId == null ? null : () => onAvatarTap(userId);
+                              userId == null ? null : () => onUserTap(userId);
 
                           return Text.rich(
                             BlockSettings().postTextDelegate.likedByText(

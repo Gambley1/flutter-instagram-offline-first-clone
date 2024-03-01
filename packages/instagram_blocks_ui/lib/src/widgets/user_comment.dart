@@ -13,7 +13,7 @@ import 'package:user_repository/user_repository.dart';
 typedef CommentUserAvatarBuilder = Widget Function(
   BuildContext context,
   User author,
-  OnAvatarTapCallback onAvatarTap,
+  AvatarTapCallback onAvatarTap,
   double? radius,
 );
 

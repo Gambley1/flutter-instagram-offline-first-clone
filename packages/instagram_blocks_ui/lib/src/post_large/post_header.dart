@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:shared/shared.dart';
 
-typedef OnAvatarTapCallback = void Function(String? avatarUrl);
+typedef AvatarTapCallback = void Function(String? avatarUrl);
+typedef UserTapCallback = void Function(String userId);
 
 typedef AvatarBuilder = Widget Function(
   BuildContext context,
   PostAuthor author,
-  OnAvatarTapCallback? onAvatarTap,
+  AvatarTapCallback? onAvatarTap,
 );
 
 class PostHeader extends StatelessWidget {
@@ -35,7 +36,7 @@ class PostHeader extends StatelessWidget {
 
   final bool wasFollowed;
 
-  final OnAvatarTapCallback? onAvatarTap;
+  final AvatarTapCallback? onAvatarTap;
 
   final VoidCallback follow;
 

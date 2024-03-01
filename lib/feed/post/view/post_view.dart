@@ -130,7 +130,11 @@ class PostLargeView extends StatelessWidget {
           );
         },
         postOptionsSettings: const PostOptionsSettings.viewer(),
-        onPressed: (action, _) => action?.when(
+        onUserTap: (userId) => context.pushNamed(
+          'user_profile',
+          pathParameters: {'user_id': userId},
+        ),
+        onPressed: (action) => action?.when(
           navigateToPostAuthor: (action) => context.pushNamed(
             'user_profile',
             pathParameters: {'user_id': action.authorId},
@@ -232,7 +236,11 @@ class PostLargeView extends StatelessWidget {
           draggableScrollController: draggableScrollController,
         ),
       ),
-      onPressed: (action, _) => action?.when(
+      onUserTap: (userId) => context.pushNamed(
+        'user_profile',
+        pathParameters: {'user_id': userId},
+      ),
+      onPressed: (action) => action?.when(
         navigateToPostAuthor: (action) => context.pushNamed(
           'user_profile',
           pathParameters: {'user_id': action.authorId},
