@@ -15,6 +15,7 @@ import 'package:stories_editor/src/domain/providers/notifiers/gradient_notifier.
 import 'package:stories_editor/src/domain/providers/notifiers/painting_notifier.dart';
 import 'package:stories_editor/src/domain/providers/notifiers/scroll_notifier.dart';
 import 'package:stories_editor/src/domain/providers/notifiers/text_editing_notifier.dart';
+import 'package:stories_editor/src/l10n/stories_editor_localization.dart';
 import 'package:stories_editor/src/presentation/bar_tools/bottom_tools.dart';
 import 'package:stories_editor/src/presentation/bar_tools/top_tools.dart';
 import 'package:stories_editor/src/presentation/draggable_items/delete_item.dart';
@@ -63,9 +64,12 @@ class MainView extends StatefulWidget {
   /// editor custom color palette list
   final List<Color>? colorList;
 
+  final StoriesEditorLocalizationDelegate? storiesEditorLocalizationDelegate;
+
   const MainView({
     super.key,
     required this.onDone,
+    this.storiesEditorLocalizationDelegate,
     this.onGoBack,
     this.middleBottomWidget,
     this.colorList,
@@ -102,6 +106,11 @@ class _MainViewState extends State<MainView> with SafeSetStateMixin {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      StoriesEditorLocalization().init(
+        storiesEditorLocalizationDelegate:
+            widget.storiesEditorLocalizationDelegate,
+      );
+
       var control = Provider.of<ControlNotifier>(context, listen: false);
 
       /// initialize control variable provider
@@ -289,20 +298,26 @@ class _MainViewState extends State<MainView> with SafeSetStateMixin {
                               ignoring: true,
                               child: Align(
                                 alignment: const Alignment(0, -0.1),
-                                child: Text('Tap to type',
-                                    style: TextStyle(
-                                        fontFamily: 'Alegreya',
-                                        package: 'stories_editor',
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 30,
-                                        color: Colors.white.withOpacity(0.5),
-                                        shadows: <Shadow>[
-                                          Shadow(
-                                              offset: const Offset(1.0, 1.0),
-                                              blurRadius: 3.0,
-                                              color: Colors.black45
-                                                  .withOpacity(0.3))
-                                        ])),
+                                child: Text(
+                                  StoriesEditorLocalization()
+                                      .delegate
+                                      .tapToTypeText,
+                                  style: TextStyle(
+                                    fontFamily: 'Alegreya',
+                                    package: 'stories_editor',
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 30,
+                                    color: Colors.white.withOpacity(0.5),
+                                    shadows: <Shadow>[
+                                      Shadow(
+                                          offset: const Offset(1.0, 1.0),
+                                          blurRadius: 3.0,
+                                          color:
+                                              Colors.black45.withOpacity(0.3))
+                                    ],
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
                               ),
                             ),
 
@@ -387,9 +402,9 @@ class _MainViewState extends State<MainView> with SafeSetStateMixin {
                                   color: Colors.white,
                                   width: 1.2,
                                 )),
-                            child: const Text(
-                              'Cancel',
-                              style: TextStyle(
+                            child: Text(
+                              StoriesEditorLocalization().delegate.cancelText,
+                              style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 15,
                                   fontWeight: FontWeight.w400),

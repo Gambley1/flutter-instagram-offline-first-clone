@@ -2,7 +2,6 @@ import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:instagram_blocks_ui/src/like_button.dart';
-import 'package:instagram_blocks_ui/src/widgets/popping_icon_overlay.dart';
 import 'package:shared/shared.dart';
 
 class PostMedia extends StatelessWidget {

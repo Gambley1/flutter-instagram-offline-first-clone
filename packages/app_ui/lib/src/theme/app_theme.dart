@@ -206,4 +206,11 @@ class SystemUiOverlayTheme {
     statusBarIconBrightness: Brightness.light,
     systemNavigationBarIconBrightness: Brightness.light,
   );
+
+  /// Defines a portrait only orientation for any device.
+  static void setPortraitOrientation() {
+    SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown],
+    );
+  }
 }

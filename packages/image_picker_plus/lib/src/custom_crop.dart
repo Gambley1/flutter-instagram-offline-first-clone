@@ -697,7 +697,7 @@ class _DisplayVideoState extends State<_DisplayVideo> {
     _initVideoController();
   }
 
-  Future<void> _initVideoController() async {
+  void _initVideoController() {
     _controller = VideoPlayerController.file(widget.selectedFile);
     _initializeVideoPlayerFuture = _controller.initialize();
     _controller.setLooping(true);

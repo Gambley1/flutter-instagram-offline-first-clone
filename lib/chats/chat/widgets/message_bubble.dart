@@ -17,8 +17,8 @@ typedef MessageTapCallback<T> = Future<T?> Function(
 class MessageBubble extends StatelessWidget {
   const MessageBubble({
     required this.message,
-    required this.onMessageTap,
     required this.highlightMessageId,
+    this.onMessageTap,
     this.onEditTap,
     this.onReplyTap,
     this.onDeleteTap,
@@ -33,7 +33,7 @@ class MessageBubble extends StatelessWidget {
   final ValueSetter<Message>? onDeleteTap;
   final ValueSetter<String>? onRepliedMessageTap;
   final BorderRadiusGeometry Function({required bool isMine})? borderRadius;
-  final MessageTapCallback<MessageAction> onMessageTap;
+  final MessageTapCallback<MessageAction>? onMessageTap;
   final ValueListenable<String?>? highlightMessageId;
 
   @override
@@ -54,7 +54,7 @@ class MessageBubble extends StatelessWidget {
           noText: context.l10n.cancelText,
           fn: () => this.onDeleteTap?.call(message),
         );
-        final option = await onMessageTap.call(
+        final option = await onMessageTap?.call(
           details,
           message.id,
           isMine: isMine,

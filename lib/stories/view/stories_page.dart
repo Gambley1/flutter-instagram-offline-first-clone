@@ -276,7 +276,7 @@ class StoryOptions extends StatelessWidget {
               const Icon(Icons.more_vert_outlined),
               const SizedBox(height: AppSpacing.sm),
               Text(
-                'More',
+                context.l10n.moreText,
                 style: context.bodyMedium?.copyWith(
                   fontWeight: AppFontWeight.bold,
                   letterSpacing: 0.4,

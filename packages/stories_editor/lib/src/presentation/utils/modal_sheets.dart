@@ -8,6 +8,7 @@ import 'package:stories_editor/src/domain/providers/notifiers/draggable_widget_n
 import 'package:stories_editor/src/domain/providers/notifiers/painting_notifier.dart';
 import 'package:stories_editor/src/domain/providers/notifiers/text_editing_notifier.dart';
 import 'package:stories_editor/src/domain/sevices/save_as_image.dart';
+import 'package:stories_editor/src/l10n/stories_editor_localization.dart';
 import 'package:stories_editor/src/presentation/utils/Extensions/hexColor.dart';
 import 'package:stories_editor/src/presentation/widgets/animated_onTap_button.dart';
 
@@ -29,12 +30,7 @@ Future<bool?> exitDialog({
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30),
           child: Container(
-            padding: const EdgeInsets.only(
-              top: 25,
-              bottom: 5,
-              right: 20,
-              left: 20,
-            ),
+            padding: const EdgeInsets.only(top: 25, bottom: 5),
             decoration: BoxDecoration(
                 shape: BoxShape.rectangle,
                 color: HexColor.fromHex('#262626'),
@@ -49,38 +45,40 @@ Future<bool?> exitDialog({
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                const Text(
-                  'Discard Edits?',
-                  style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                      letterSpacing: 0.5),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    children: [
+                      Text(
+                        StoriesEditorLocalization().delegate.discardEditsText,
+                        style: const TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                            letterSpacing: 0.5),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 20),
+                      Text(
+                        StoriesEditorLocalization().delegate.loseAllEditsText,
+                        style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.white54,
+                            letterSpacing: 0.1),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 40),
+                    ],
+                  ),
                 ),
-                const SizedBox(
-                  height: 20,
-                ),
-                const Text(
-                  "If you go back now, you'll lose all the edits you've made.",
-                  style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.white54,
-                      letterSpacing: 0.1),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(
-                  height: 40,
-                ),
-
-                /// discard
                 AnimatedOnTapButton(
                   onTap: () async {
                     _resetDefaults(context: context);
                     Navigator.of(context, rootNavigator: true).pop(true);
                   },
                   child: Text(
-                    'Discard',
+                    StoriesEditorLocalization().delegate.discardText,
                     style: TextStyle(
                         fontSize: 16,
                         color: Colors.redAccent.shade200,
@@ -95,8 +93,6 @@ Future<bool?> exitDialog({
                     color: Colors.white10,
                   ),
                 ),
-
-                /// save and exit
                 AnimatedOnTapButton(
                   onTap: () async {
                     final paintingProvider =
@@ -114,17 +110,29 @@ Future<bool?> exitDialog({
                       );
                       if (response) {
                         _dispose(
-                            context: context, message: 'Successfully saved');
+                          context: context,
+                          message: StoriesEditorLocalization()
+                              .delegate
+                              .successfullySavedText,
+                        );
                       } else {
-                        _dispose(context: context, message: 'Error');
+                        _dispose(
+                          context: context,
+                          message:
+                              StoriesEditorLocalization().delegate.errorText,
+                        );
                       }
                     } else {
-                      _dispose(context: context, message: 'Draft Empty');
+                      _dispose(
+                        context: context,
+                        message:
+                            StoriesEditorLocalization().delegate.draftEmpty,
+                      );
                     }
                   },
-                  child: const Text(
-                    'Save Draft',
-                    style: TextStyle(
+                  child: Text(
+                    StoriesEditorLocalization().delegate.saveDraft,
+                    style: const TextStyle(
                         fontSize: 16,
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -143,9 +151,9 @@ Future<bool?> exitDialog({
                 AnimatedOnTapButton(
                   onTap: () =>
                       Navigator.of(context, rootNavigator: true).pop(false),
-                  child: const Text(
-                    'Cancel',
-                    style: TextStyle(
+                  child: Text(
+                    StoriesEditorLocalization().delegate.cancelText,
+                    style: const TextStyle(
                         fontSize: 16,
                         color: Colors.white,
                         fontWeight: FontWeight.bold,

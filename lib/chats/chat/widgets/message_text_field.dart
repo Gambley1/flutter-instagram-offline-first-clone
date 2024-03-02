@@ -156,64 +156,64 @@ class _ChatMessageTextFieldInputState extends State<ChatMessageTextFieldInput>
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final user = context.select((AppBloc bloc) => bloc.state.user);
-
-    void onSend() {
-      final wasEditing = _effectiveController.editingMessage != null;
-      final hasEditingMessage = _effectiveController.editingMessage != null;
-      final hasChanges = hasEditingMessage &&
-          _effectiveController.editingMessage?.message !=
-              _effectiveController.message.message;
-      void sendMessage(Message message) {
-        context.read<ChatBloc>().add(
-              ChatSendMessageRequested(
-                message: message,
-                receiver: widget.chat.participant,
-                sender: user,
-              ),
-            );
-      }
-
-      void updateMessage({
-        required Message oldMessage,
-        required Message newMessage,
-      }) {
-        context.read<ChatBloc>().add(
-              ChatMessageEditRequested(
-                oldMessage: oldMessage,
-                newMessage: newMessage,
-              ),
-            );
-      }
-
-      if (_effectiveController.message.message.trim().isEmpty) return;
-      final message = _effectiveController.message;
-
-      if (!hasEditingMessage) {
-        sendMessage(message);
-      } else if (hasEditingMessage && hasChanges) {
-        updateMessage(
-          oldMessage: _effectiveController.editingMessage!,
-          newMessage: message,
-        );
-      }
-
-      setState(_effectiveController.resetAll);
-      widget.focusNode.requestFocus();
-      if (!wasEditing) {
-        Future<void>.delayed(
-          50.ms,
-          () => widget.itemScrollController.scrollTo(
-            index: 0,
-            duration: 250.ms,
-            curve: Curves.easeIn,
-          ),
-        );
-      }
+  void _onSend() {
+    final user = context.read<AppBloc>().state.user;
+    final wasEditing = _effectiveController.editingMessage != null;
+    final hasEditingMessage = _effectiveController.editingMessage != null;
+    final hasChanges = hasEditingMessage &&
+        _effectiveController.editingMessage?.message !=
+            _effectiveController.message.message;
+            
+    void sendMessage(Message message) {
+      context.read<ChatBloc>().add(
+            ChatSendMessageRequested(
+              message: message,
+              receiver: widget.chat.participant,
+              sender: user,
+            ),
+          );
     }
 
+    void updateMessage({
+      required Message oldMessage,
+      required Message newMessage,
+    }) {
+      context.read<ChatBloc>().add(
+            ChatMessageEditRequested(
+              oldMessage: oldMessage,
+              newMessage: newMessage,
+            ),
+          );
+    }
+
+    if (_effectiveController.message.message.trim().isEmpty) return;
+    final message = _effectiveController.message;
+
+    if (!hasEditingMessage) {
+      sendMessage(message);
+    } else if (hasEditingMessage && hasChanges) {
+      updateMessage(
+        oldMessage: _effectiveController.editingMessage!,
+        newMessage: message,
+      );
+    }
+
+    setState(_effectiveController.resetAll);
+    widget.focusNode.requestFocus();
+    if (!wasEditing) {
+      Future<void>.delayed(
+        150.ms,
+        () => widget.itemScrollController.scrollTo(
+          index: 0,
+          duration: 350.ms,
+          curve: Curves.easeIn,
+        ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return ValueListenableBuilder(
       valueListenable: _effectiveController,
       builder: (context, value, child) {
@@ -234,9 +234,9 @@ class _ChatMessageTextFieldInputState extends State<ChatMessageTextFieldInput>
                   ? null
                   : ChatSendMessageButton(
                       message: _effectiveController.text,
-                      onSendMessage: onSend,
+                      onSendMessage: _onSend,
                     ),
-              onFieldSubmitted: (_) => onSend.call(),
+              onFieldSubmitted: (_) => _onSend.call(),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(32),
                 borderSide: BorderSide.none,

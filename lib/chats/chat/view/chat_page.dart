@@ -23,80 +23,42 @@ class MessageSettings extends Equatable {
     required this.onReplyTap,
     required this.onEditTap,
     required this.onDeleteTap,
-  });
+    MessageTapCallback<MessageAction>? onMessageTap,
+  }) : _onMessageTap = onMessageTap;
 
   MessageSettings.create({
     MessageCallback? onEditTap,
     MessageCallback? onReplyTap,
     MessageCallback? onDeleteTap,
+    MessageTapCallback<MessageAction>? onMessageTap,
   }) : this._(
           onReplyTap: onReplyTap ?? (_) {},
           onEditTap: onEditTap ?? (_) {},
           onDeleteTap: onDeleteTap ?? (_) {},
+          onMessageTap: onMessageTap,
         );
 
   final MessageCallback onReplyTap;
   final MessageCallback onEditTap;
   final MessageCallback onDeleteTap;
+  final MessageTapCallback<MessageAction>? _onMessageTap;
 
-  @override
-  List<Object?> get props => [onReplyTap, onEditTap, onDeleteTap];
-
-  MessageSettings copyWith({
-    MessageCallback? onReplyTap,
-    MessageCallback? onEditTap,
-    MessageCallback? onDeleteTap,
-  }) {
-    return MessageSettings._(
-      onReplyTap: onReplyTap ?? this.onReplyTap,
-      onEditTap: onEditTap ?? this.onEditTap,
-      onDeleteTap: onDeleteTap ?? this.onDeleteTap,
-    );
-  }
-}
-
-class ChatPage extends StatelessWidget {
-  const ChatPage({required this.chatId, required this.chat, super.key});
-
-  final ChatInbox chat;
-  final String chatId;
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => ChatBloc(
-        chatId: chatId,
-        chatsRepository: context.read<ChatsRepository>(),
-      )..add(const ChatMessagesSubscriptionRequested()),
-      child: ChatView(chat: chat),
-    );
-  }
-}
-
-class ChatView extends StatefulWidget {
-  const ChatView({required this.chat, super.key});
-
-  final ChatInbox chat;
-
-  @override
-  State<ChatView> createState() => _ChatViewState();
-}
-
-class _ChatViewState extends State<ChatView> {
-  late MessageInputController _messageInputController;
-  late FocusNode _focusNode;
-
-  late ItemScrollController _itemScrollController;
-  late ItemPositionsListener _itemPositionsListener;
-  late ScrollOffsetController _scrollOffsetController;
-  late ScrollOffsetListener _scrollOffsetListener;
-
-  Future<MessageAction?> _onMessageTap(
+  Future<MessageAction?> onMessageTap(
     TapUpDetails details,
     String messageId, {
+    required BuildContext context,
     required bool isMine,
     required bool hasSharedPost,
   }) async {
+    if (_onMessageTap != null) {
+      return await _onMessageTap?.call(
+        details,
+        messageId,
+        isMine: isMine,
+        hasSharedPost: hasSharedPost,
+      );
+    }
+
     final box = context.findRenderObject()! as RenderBox;
     final localOffset = box.globalToLocal(details.globalPosition);
 
@@ -150,6 +112,58 @@ class _ChatViewState extends State<ChatView> {
       ),
     );
   }
+
+  @override
+  List<Object?> get props => [onReplyTap, onEditTap, onDeleteTap];
+
+  MessageSettings copyWith({
+    MessageCallback? onReplyTap,
+    MessageCallback? onEditTap,
+    MessageCallback? onDeleteTap,
+  }) {
+    return MessageSettings._(
+      onReplyTap: onReplyTap ?? this.onReplyTap,
+      onEditTap: onEditTap ?? this.onEditTap,
+      onDeleteTap: onDeleteTap ?? this.onDeleteTap,
+    );
+  }
+}
+
+class ChatPage extends StatelessWidget {
+  const ChatPage({required this.chatId, required this.chat, super.key});
+
+  final ChatInbox chat;
+  final String chatId;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => ChatBloc(
+        chatId: chatId,
+        chatsRepository: context.read<ChatsRepository>(),
+      )..add(const ChatMessagesSubscriptionRequested()),
+      child: ChatView(chat: chat),
+    );
+  }
+}
+
+class ChatView extends StatefulWidget {
+  const ChatView({required this.chat, super.key});
+
+  final ChatInbox chat;
+
+  @override
+  State<ChatView> createState() => _ChatViewState();
+}
+
+class _ChatViewState extends State<ChatView> {
+  late MessageInputController _messageInputController;
+  late FocusNode _focusNode;
+
+  late ItemScrollController _itemScrollController;
+  late ItemPositionsListener _itemPositionsListener;
+  late ScrollOffsetController _scrollOffsetController;
+  late ScrollOffsetListener _scrollOffsetListener;
 
   Future<void> _reply(Message message) async {
     _messageInputController.setReplyingMessage(message);
@@ -206,7 +220,6 @@ class _ChatViewState extends State<ChatView> {
                 final messages = state.messages;
                 return ChatMessagesListView(
                   messages: messages,
-                  onMessageTap: _onMessageTap,
                   messageSettings: MessageSettings.create(
                     onReplyTap: (message) => _reply.call(
                       message.copyWith(
@@ -241,7 +254,6 @@ class _ChatViewState extends State<ChatView> {
 class ChatMessagesListView extends StatefulWidget {
   const ChatMessagesListView({
     required this.messages,
-    required this.onMessageTap,
     required this.itemScrollController,
     required this.itemPositionsListener,
     required this.scrollOffsetController,
@@ -251,7 +263,6 @@ class ChatMessagesListView extends StatefulWidget {
   });
 
   final List<Message> messages;
-  final MessageTapCallback<MessageAction> onMessageTap;
   final MessageSettings messageSettings;
   final ItemScrollController itemScrollController;
   final ItemPositionsListener itemPositionsListener;
@@ -389,7 +400,19 @@ class _ChatMessagesListViewState extends State<ChatMessagesListView> {
                 onRepliedMessageTap: (repliedMessageId) =>
                     _onRepliedMessageTap(repliedMessageId, messages),
                 message: message,
-                onMessageTap: widget.onMessageTap,
+                onMessageTap: (
+                  details,
+                  messageId, {
+                  required isMine,
+                  required hasSharedPost,
+                }) =>
+                    settings.onMessageTap(
+                  details,
+                  messageId,
+                  context: context,
+                  isMine: isMine,
+                  hasSharedPost: hasSharedPost,
+                ),
                 borderRadius: ({required isMine}) => BorderRadius.only(
                   topLeft: isMine
                       ? const Radius.circular(22)
@@ -543,7 +566,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
       title: ListTile(
         contentPadding: EdgeInsets.zero,
         title: Text(participant.displayUsername),
-        subtitle: const Text('online'),
+        subtitle: Text(context.l10n.onlineText),
         leading: UserStoriesAvatar(
           author: participant,
           enableUnactiveBorder: false,

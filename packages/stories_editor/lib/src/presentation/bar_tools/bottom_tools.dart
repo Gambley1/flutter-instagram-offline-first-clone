@@ -6,6 +6,7 @@ import 'package:stories_editor/src/domain/providers/notifiers/control_provider.d
 import 'package:stories_editor/src/domain/providers/notifiers/draggable_widget_notifier.dart';
 import 'package:stories_editor/src/domain/providers/notifiers/scroll_notifier.dart';
 import 'package:stories_editor/src/domain/sevices/save_as_image.dart';
+import 'package:stories_editor/src/l10n/stories_editor_localization.dart';
 import 'package:stories_editor/src/presentation/widgets/animated_onTap_button.dart';
 
 class BottomTools extends StatelessWidget {
@@ -123,9 +124,11 @@ class BottomTools extends StatelessWidget {
                                 child: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      const Text(
-                                        'Upload',
-                                        style: TextStyle(
+                                      Text(
+                                        StoriesEditorLocalization()
+                                            .delegate
+                                            .uploadText,
+                                        style: const TextStyle(
                                             color: Colors.white,
                                             letterSpacing: 1.5,
                                             fontSize: 16,

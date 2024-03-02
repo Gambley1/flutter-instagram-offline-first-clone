@@ -171,11 +171,11 @@ class SearchInputField extends StatelessWidget {
     const unactiveColor = AppColors.grey;
 
     final search = AppTextField(
-      textController: textController,
-      focusNode: focusNode,
       filled: true,
+      focusNode: focusNode,
       readOnly: readOnly,
       autofocus: !readOnly,
+      textController: textController,
       onChanged: textController == null
           ? null
           : (query) {
@@ -195,8 +195,8 @@ class SearchInputField extends StatelessWidget {
       border: outlinedBorder(borderRadius: 14),
     );
     if (textController != null) {
-      return AnimatedBuilder(
-        animation: Listenable.merge([textController]),
+      return ListenableBuilder(
+        listenable: textController!,
         builder: (context, child) => search,
       );
     }

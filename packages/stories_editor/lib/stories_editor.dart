@@ -11,8 +11,10 @@ import 'package:stories_editor/src/domain/providers/notifiers/gradient_notifier.
 import 'package:stories_editor/src/domain/providers/notifiers/painting_notifier.dart';
 import 'package:stories_editor/src/domain/providers/notifiers/scroll_notifier.dart';
 import 'package:stories_editor/src/domain/providers/notifiers/text_editing_notifier.dart';
+import 'package:stories_editor/src/l10n/stories_editor_localization.dart';
 import 'package:stories_editor/src/presentation/main_view/main_view.dart';
 
+export 'src/l10n/l10n.dart';
 export 'package:stories_editor/stories_editor.dart';
 
 class StoriesEditor extends StatelessWidget {
@@ -50,6 +52,8 @@ class StoriesEditor extends StatelessWidget {
   /// gallery thumbnail quality
   final int? galleryThumbnailQuality;
 
+  final StoriesEditorLocalizationDelegate? storiesEditorLocalizationDelegate;
+
   const StoriesEditor({
     super.key,
     required this.onDone,
@@ -63,6 +67,7 @@ class StoriesEditor extends StatelessWidget {
     this.onDoneButtonStyle,
     this.editorBackgroundColor,
     this.galleryThumbnailQuality,
+    this.storiesEditorLocalizationDelegate,
   });
 
   @override
@@ -94,6 +99,7 @@ class StoriesEditor extends StatelessWidget {
             onBackPress: onBackPress,
             editorBackgroundColor: editorBackgroundColor,
             galleryThumbnailQuality: galleryThumbnailQuality,
+            storiesEditorLocalizationDelegate: storiesEditorLocalizationDelegate,
           ),
         ),
       ),

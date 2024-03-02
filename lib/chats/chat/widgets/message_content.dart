@@ -524,7 +524,7 @@ class MessageStatuses extends StatelessWidget {
       children: <Widget>[
         if (isEdited)
           Text(
-            'edited',
+            context.l10n.editedText,
             style: context.bodySmall?.apply(color: effectiveSecondaryTextColor),
           ),
         Text(

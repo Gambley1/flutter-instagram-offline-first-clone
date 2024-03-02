@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -62,6 +64,9 @@ class Reel extends StatefulWidget {
 class _ReelState extends State<Reel> {
   VideoPlayerController? _videoController;
   late ValueNotifier<bool> _isPaused;
+  late ValueNotifier<bool> _isLiked;
+
+  late StreamSubscription<PostState> _postStateSubscription;
 
   @override
   void initState() {
@@ -72,6 +77,9 @@ class _ReelState extends State<Reel> {
             Uri.parse((widget.block as PostReelBlock).reel!.url),
           );
     _isPaused = ValueNotifier(false)..addListener(_isPausedListener);
+    _isLiked = ValueNotifier(false);
+
+    _postStateSubscription = _isLikedListener();
   }
 
   void _isPausedListener() {
@@ -82,12 +90,19 @@ class _ReelState extends State<Reel> {
     }
   }
 
+  StreamSubscription<PostState> _isLikedListener() =>
+      context.read<PostBloc>().stream.listen((state) {
+        _isLiked.value = state.isLiked;
+      });
+
   @override
   void dispose() {
     _videoController?.dispose();
     _isPaused
       ..removeListener(_isPausedListener)
       ..dispose();
+    _isLiked.dispose();
+    _postStateSubscription.cancel();
     super.dispose();
   }
 
@@ -105,88 +120,102 @@ class _ReelState extends State<Reel> {
     }
     final block = widget.block as PostReelBlock;
 
-    return GestureDetector(
-      onLongPressStart: (_) => _isPaused.value = true,
-      onLongPressEnd: (_) => _isPaused.value = false,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          VideoPlay(
-            url: block.reel!.url,
-            play: widget.play,
-            blurHash: block.reel!.blurHash,
-            withSound: widget.withSound || true,
-            aspectRatio: 9 / 15,
-            withSoundButton: false,
-            withPlayControll: false,
-            controller: _videoController,
-            loadingBuilder: (context) => const ReelShimmerLoading(),
-            stackedWidget: ValueListenableBuilder<bool>(
-              valueListenable: _isPaused,
-              child: Stack(
-                children: [
-                  VerticalButtons(block),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      bottom: AppSpacing.md,
-                      left: AppSpacing.lg,
-                    ),
-                    child: Align(
-                      alignment: Alignment.bottomLeft,
-                      child: ConstrainedBox(
-                        constraints: BoxConstraints.tightFor(
-                          width: context.screenWidth * .8,
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            ReelAuthorListTile(block: block),
-                            if (block.caption.isNotEmpty) ...[
-                              const SizedBox(height: AppSpacing.md),
-                              ReelCaption(caption: block.caption),
-                            ],
-                            const SizedBox(height: AppSpacing.sm),
-                            SizedBox(
-                              height: 32,
-                              child: ReelParticipants(
-                                participant: block.author.username,
+    return ValueListenableBuilder<bool>(
+      valueListenable: _isLiked,
+      child: GestureDetector(
+        onLongPressStart: (_) => _isPaused.value = true,
+        onLongPressEnd: (_) => _isPaused.value = false,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            VideoPlay(
+              url: block.reel!.url,
+              play: widget.play,
+              blurHash: block.reel!.blurHash,
+              withSound: widget.withSound || true,
+              aspectRatio: 9 / 15,
+              withSoundButton: false,
+              withPlayControll: false,
+              controller: _videoController,
+              loadingBuilder: (context) => const ReelShimmerLoading(),
+              stackedWidget: ValueListenableBuilder<bool>(
+                valueListenable: _isPaused,
+                child: Stack(
+                  children: [
+                    VerticalButtons(block),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        bottom: AppSpacing.md,
+                        left: AppSpacing.lg,
+                      ),
+                      child: Align(
+                        alignment: Alignment.bottomLeft,
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints.tightFor(
+                            width: context.screenWidth * .8,
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ReelAuthorListTile(block: block),
+                              if (block.caption.isNotEmpty) ...[
+                                const SizedBox(height: AppSpacing.md),
+                                ReelCaption(caption: block.caption),
+                              ],
+                              const SizedBox(height: AppSpacing.sm),
+                              SizedBox(
+                                height: 32,
+                                child: ReelParticipants(
+                                  participant: block.author.username,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
+                  ],
+                ),
+                builder: (context, isPaused, child) {
+                  return AnimatedOpacity(
+                    opacity: isPaused ? 0 : 1,
+                    duration: 150.ms,
+                    child: child,
+                  );
+                },
+              ),
+            ),
+            if (_videoController != null)
+              ValueListenableBuilder<bool>(
+                valueListenable: _isPaused,
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: SmoothVideoProgressIndicator(
+                    controller: _videoController!,
                   ),
-                ],
+                ),
+                builder: (context, isPaused, child) {
+                  return AnimatedOpacity(
+                    opacity: isPaused ? 0 : 1,
+                    duration: 150.ms,
+                    child: child,
+                  );
+                },
               ),
-              builder: (context, isPaused, child) {
-                return AnimatedOpacity(
-                  opacity: isPaused ? 0 : 1,
-                  duration: 150.ms,
-                  child: child,
-                );
-              },
-            ),
-          ),
-          if (_videoController != null)
-            ValueListenableBuilder<bool>(
-              valueListenable: _isPaused,
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child:
-                    SmoothVideoProgressIndicator(controller: _videoController!),
-              ),
-              builder: (context, isPaused, child) {
-                return AnimatedOpacity(
-                  opacity: isPaused ? 0 : 1,
-                  duration: 150.ms,
-                  child: child,
-                );
-              },
-            ),
-        ],
+          ],
+        ),
       ),
+      builder: (context, isLiked, child) {
+        return PoppingIconAnimationOverlay(
+          onTap: () => context
+              .read<PostBloc>()
+              .add(PostLikeRequested(context.read<AppBloc>().state.user.id)),
+          isLiked: isLiked,
+          child: child!,
+        );
+      },
     );
   }
 }
@@ -420,28 +449,27 @@ class ReelAuthorListTile extends StatelessWidget {
                       currentUserId: user.id,
                     ),
                   ),
-              child: FittedBox(
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.all(Radius.circular(8)),
-                    border: Border.all(color: AppColors.white),
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(8)),
+                  border: Border.all(color: AppColors.white),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.md,
+                    vertical: AppSpacing.xxs,
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.md,
-                      vertical: AppSpacing.xxs,
-                    ),
-                    child: Align(
-                      child: Text(
-                        isFollowed ?? false
-                            ? l10n.followingUser
-                            : l10n.followUser,
-                        style: context.bodyLarge?.copyWith(
-                          color: AppColors.white,
-                          fontWeight: AppFontWeight.bold,
-                        ),
-                        overflow: TextOverflow.visible,
+                  child: Align(
+                    child: Text(
+                      isFollowed ?? false
+                          ? l10n.followingUser
+                          : l10n.followUser,
+                      style: context.bodyLarge?.copyWith(
+                        color: AppColors.white,
+                        fontWeight: AppFontWeight.bold,
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ),
@@ -478,7 +506,6 @@ class ReelParticipants extends StatelessWidget {
     return Row(
       children: <Widget>[
         Flexible(
-          flex: 4,
           child: Tappable(
             onTap: () {},
             child: DecoratedBox(
@@ -491,7 +518,6 @@ class ReelParticipants extends StatelessWidget {
                 borderRadius: const BorderRadius.all(Radius.circular(16)),
               ),
               child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   const Flexible(
                     child: Padding(
@@ -507,9 +533,12 @@ class ReelParticipants extends StatelessWidget {
                   Flexible(
                     flex: 6,
                     child: RunningText(
-                      text: '$participant • Original audio',
+                      text: '$participant • ${context.l10n.originalAudioText}',
                       velocity: 40,
-                      style: context.bodyMedium?.apply(color: AppColors.white),
+                      style: context.bodyMedium?.apply(
+                        color: AppColors.white,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                   ),
                 ],
@@ -517,44 +546,39 @@ class ReelParticipants extends StatelessWidget {
             ),
           ),
         ),
-        Flexible(
-          flex: 3,
-          child: FittedBox(
-            child: Tappable(
-              onTap: () {},
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: context.customReversedAdaptiveColor(
-                    light: AppColors.lightDark,
-                    dark: AppColors.dark,
-                  ),
-                  border: Border.all(color: AppColors.borderOutline),
-                  borderRadius: const BorderRadius.all(Radius.circular(16)),
+        Tappable(
+          onTap: () {},
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: context.customReversedAdaptiveColor(
+                light: AppColors.lightDark,
+                dark: AppColors.dark,
+              ),
+              border: Border.all(color: AppColors.borderOutline),
+              borderRadius: const BorderRadius.all(Radius.circular(16)),
+            ),
+            child: Align(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.md,
+                  vertical: AppSpacing.xs,
                 ),
-                child: Align(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.md,
-                      vertical: AppSpacing.xs,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    const Icon(
+                      Icons.person,
+                      size: AppSize.iconSizeSmall,
+                      color: AppColors.white,
                     ),
-                    child: Row(
-                      children: <Widget>[
-                        const Icon(
-                          Icons.person,
-                          size: AppSize.iconSizeSmall,
-                          color: AppColors.white,
-                        ),
-                        Text(
-                          participant,
-                          style:
-                              context.bodyMedium?.apply(color: AppColors.white),
-                        ),
-                      ].insertBetween(
-                        const SizedBox(
-                          width: AppSpacing.xs,
-                        ),
-                      ),
+                    Text(
+                      participant,
+                      style: context.bodyMedium?.apply(color: AppColors.white),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
+                  ].insertBetween(
+                    const SizedBox(width: AppSpacing.xs),
                   ),
                 ),
               ),

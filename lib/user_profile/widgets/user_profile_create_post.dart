@@ -131,75 +131,78 @@ class _CreatePostPageState extends State<CreatePostPage> {
         centerTitle: false,
         title: Text(context.l10n.newPostText),
       ),
-      bottomNavigationBar: BottomAppBar(
-        elevation: 0,
-        color: context.reversedAdaptiveColor,
-        padding: EdgeInsets.zero,
+      bottomNavigationBar: PublishPostButton(
+        onShareTap: () => _onShareTap(_captionController.text.trim()),
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.sm,
+          vertical: AppSpacing.sm,
+        ),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const AppDivider(),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.md,
-                vertical: AppSpacing.md,
+            PostMedia(
+              media: _media,
+              withLikeOverlay: false,
+              withInViewNotifier: false,
+              autoHideCurrentIndex: false,
+              mediaCarouselSettings: const MediaCarouselSettings.empty(
+                viewportFraction: .9,
               ),
-              child: Tappable(
-                onTap: () => _onShareTap(_captionController.text),
-                borderRadius: 6,
-                color: AppColors.blue,
-                child: Align(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: AppSpacing.md,
-                      horizontal: AppSpacing.sm,
-                    ),
-                    child: Text(
-                      context.l10n.sharePostText,
-                      style: context.labelLarge,
-                    ),
-                  ),
-                ),
-              ),
+            ),
+            const Gap.v(AppSpacing.sm),
+            CaptionInputField(
+              captionController: _captionController,
+              caption: _captionController.text.trim(),
+              onSubmitted: _onShareTap,
             ),
           ],
         ),
       ),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          return SingleChildScrollView(
+    );
+  }
+}
+
+class PublishPostButton extends StatelessWidget {
+  const PublishPostButton({required this.onShareTap, super.key});
+
+  final VoidCallback onShareTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return BottomAppBar(
+      elevation: 0,
+      color: context.reversedAdaptiveColor,
+      padding: EdgeInsets.zero,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const AppDivider(),
+          Padding(
             padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.sm,
-              vertical: AppSpacing.sm,
+              horizontal: AppSpacing.md,
+              vertical: AppSpacing.md,
             ),
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                minWidth: constraints.maxWidth,
-                minHeight: constraints.maxHeight,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  PostMedia(
-                    media: _media,
-                    withLikeOverlay: false,
-                    withInViewNotifier: false,
-                    autoHideCurrentIndex: false,
-                    mediaCarouselSettings: const MediaCarouselSettings.empty(
-                      viewportFraction: .9,
-                    ),
+            child: Tappable(
+              onTap: onShareTap,
+              borderRadius: 6,
+              color: AppColors.blue,
+              child: Align(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: AppSpacing.md,
+                    horizontal: AppSpacing.sm,
                   ),
-                  const Gap.v(AppSpacing.sm),
-                  CaptionInputField(
-                    captionController: _captionController,
-                    caption: _captionController.text.trim(),
-                    onSubmitted: _onShareTap,
+                  child: Text(
+                    context.l10n.sharePostText,
+                    style: context.labelLarge,
                   ),
-                ],
+                ),
               ),
             ),
-          );
-        },
+          ),
+        ],
       ),
     );
   }

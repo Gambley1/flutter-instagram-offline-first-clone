@@ -41,8 +41,8 @@ class ChatInboxTile extends StatelessWidget {
         withAdaptiveBorder: false,
         radius: 26,
       ),
-      title: Text(participant.fullName ?? participant.username ?? ''),
-      subtitle: Text(chat.lastMessage ?? 'No last messages'),
+      title: Text(participant.displayFullName),
+      subtitle: Text(chat.lastMessage ?? context.l10n.noLastMessagesText),
     );
   }
 }

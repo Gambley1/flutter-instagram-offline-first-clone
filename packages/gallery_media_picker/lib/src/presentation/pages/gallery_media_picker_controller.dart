@@ -48,8 +48,7 @@ mixin PhotoDataController on ChangeNotifier {
     int Function(
       AssetPathEntity a,
       AssetPathEntity b,
-    )
-        sortBy = _defaultSort,
+    ) sortBy = _defaultSort,
   }) {
     list.sort(sortBy);
     pathList.clear();

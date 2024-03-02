@@ -160,13 +160,6 @@ class AppButton extends StatelessWidget {
           } else {
             return TextButton(
               onPressed: onPressed,
-              style: const ButtonStyle(
-                shape: MaterialStatePropertyAll(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(6)),
-                  ),
-                ),
-              ),
               child: effectiveChild,
             );
           }

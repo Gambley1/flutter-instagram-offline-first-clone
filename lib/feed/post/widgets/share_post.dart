@@ -98,9 +98,12 @@ class _SharPostState extends State<SharePostView> with SafeSetStateMixin {
 
   @override
   void dispose() {
+    _searchController.dispose();
     _focusNode
       ..removeListener(_focusListener)
       ..dispose();
+    _selectedUsers.dispose();
+    _foundUsers.dispose();
     super.dispose();
   }
 

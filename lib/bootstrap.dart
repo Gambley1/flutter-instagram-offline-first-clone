@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:app_ui/app_ui.dart';
 import 'package:firebase_config/firebase_config.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -80,6 +81,8 @@ Future<void> bootstrap(
           FirebaseConfig(firebaseRemoteConfig: firebaseRemoteConfig);
 
       await remoteConfig.init();
+
+      SystemUiOverlayTheme.setPortraitOrientation();
 
       runApp(
         TranslationProvider(

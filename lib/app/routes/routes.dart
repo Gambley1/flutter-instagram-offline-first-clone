@@ -8,6 +8,7 @@ import 'package:firebase_config/firebase_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
+import 'package:flutter_instagram_offline_first_clone/app/view/app_init_utilities.dart';
 import 'package:flutter_instagram_offline_first_clone/auth/auth.dart';
 import 'package:flutter_instagram_offline_first_clone/chats/chat/chat.dart';
 import 'package:flutter_instagram_offline_first_clone/chats/widgets/search_users.dart';
@@ -360,6 +361,8 @@ GoRouter router(AppBloc appBloc) => GoRouter(
                           key: state.pageKey,
                           child: StoriesEditor(
                             onDone: onDone,
+                            storiesEditorLocalizationDelegate:
+                                storiesEditorLocalizationDelegate(context),
                             galleryThumbnailQuality: 900,
                           ),
                           transitionsBuilder:

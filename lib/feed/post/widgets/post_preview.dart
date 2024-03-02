@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/feed.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/post/post.dart';
+import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:shared/shared.dart';
 
 class PostPreviewPage extends StatelessWidget {
@@ -44,7 +45,7 @@ class PostPreviewEmptyDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Text(
-        'No post found!',
+        context.l10n.noPostFoundText,
         style: context.headlineMedium,
       ),
     );

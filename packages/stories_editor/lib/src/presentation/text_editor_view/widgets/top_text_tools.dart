@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:stories_editor/src/domain/providers/notifiers/text_editing_notifier.dart';
+import 'package:stories_editor/src/l10n/stories_editor_localization.dart';
 import 'package:stories_editor/src/presentation/widgets/tool_button.dart';
 
 class TopTextTools extends StatelessWidget {
   final void Function() onDone;
-  
+
   const TopTextTools({super.key, required this.onDone});
 
   @override
@@ -139,9 +140,9 @@ class TopTextTools extends StatelessWidget {
                           color: Colors.transparent,
                           border: Border.all(color: Colors.white, width: 1.5),
                           borderRadius: BorderRadius.circular(15)),
-                      child: const Text(
-                        'Done',
-                        style: TextStyle(
+                      child: Text(
+                        StoriesEditorLocalization().delegate.doneText,
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 15,
                           fontWeight: FontWeight.w500,

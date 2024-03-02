@@ -21,6 +21,7 @@ export 'src/widgets/widgets.dart'
         ExpandableText,
         FollowButton,
         MediaCarousel,
+        PoppingIconAnimationOverlay,
         PostSponsored,
         PromoFloatingAction,
         RunningText,

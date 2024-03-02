@@ -226,14 +226,11 @@ class _ImagesViewPageState extends State<ImagesViewPage>
                     ),
                   ),
                   if (media[i].type == AssetType.video) ...[
-                    const Align(
-                      alignment: Alignment.bottomRight,
+                    Align(
+                      alignment: Alignment.bottomCenter,
                       child: Padding(
-                        padding: EdgeInsets.only(right: 5, bottom: 5),
-                        child: Icon(
-                          Icons.slow_motion_video_rounded,
-                          color: Colors.white,
-                        ),
+                        padding: const EdgeInsets.only(left: 2, bottom: 2),
+                        child: VideoThumbnailFooter(asset: media[i]),
                       ),
                     ),
                   ]
@@ -859,4 +856,44 @@ class _ImagesViewPageState extends State<ImagesViewPage>
 
   @override
   bool get wantKeepAlive => true;
+}
+
+class VideoThumbnailFooter extends StatelessWidget {
+  const VideoThumbnailFooter({required this.asset, super.key});
+
+  final AssetEntity asset;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Icon(
+          Icons.slow_motion_video_rounded,
+          color: Colors.white,
+          size: 18,
+        ),
+        const SizedBox(width: 4),
+        Text(
+          parseDuration(asset.videoDuration.inSeconds),
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w600,
+            fontSize: 14,
+            overflow: TextOverflow.visible,
+          ),
+        ),
+      ],
+    );
+  }
+
+  String parseDuration(int seconds) {
+    if (seconds < 600) {
+      return '${Duration(seconds: seconds)}'.toString().substring(3, 7);
+    } else if (seconds > 600 && seconds < 3599) {
+      return '${Duration(seconds: seconds)}'.toString().substring(2, 7);
+    } else {
+      return '${Duration(seconds: seconds)}'.toString().substring(1, 7);
+    }
+  }
 }

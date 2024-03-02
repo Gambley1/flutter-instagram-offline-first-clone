@@ -292,7 +292,7 @@ class TimelineError extends StatelessWidget {
                       children: <Widget>[
                         const Icon(Icons.refresh),
                         Text(
-                          'Try again',
+                          context.l10n.refreshText,
                           style: context.labelLarge,
                         ),
                       ].insertBetween(const SizedBox(width: AppSpacing.md)),
