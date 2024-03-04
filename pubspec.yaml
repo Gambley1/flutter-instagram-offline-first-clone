@@ -69,7 +69,7 @@ dependencies:
     path: packages/shared
   shimmer: ^3.0.0
   slang: ^3.29.0
-  slang_flutter: ^3.29.0
+  slang_flutter: ^3.30.0
   sliver_tools: ^0.2.12
   sprung: ^3.0.1
   stories_editor:
