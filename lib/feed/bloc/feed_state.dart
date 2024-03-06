@@ -17,19 +17,19 @@ class FeedState extends Equatable {
   const FeedState.initial()
       : this._(
           status: FeedStatus.initial,
-          feed: const FeedPage.empty(),
+          feed: const Feed.empty(),
         );
 
-  final FeedPage feed;
+  final Feed feed;
   final FeedStatus status;
 
   FeedState loading() => copyWith(status: FeedStatus.loading);
-  FeedState populated({FeedPage? feed}) =>
+  FeedState populated({Feed? feed}) =>
       copyWith(status: FeedStatus.populated, feed: feed);
   FeedState failure() => copyWith(status: FeedStatus.failure);
 
   FeedState copyWith({
-    FeedPage? feed,
+    Feed? feed,
     FeedStatus? status,
   }) {
     return FeedState._(

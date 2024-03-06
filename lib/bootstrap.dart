@@ -53,9 +53,6 @@ Future<void> bootstrap(
     () async {
       WidgetsFlutterBinding.ensureInitialized();
 
-      LocaleSettings.useDeviceLocale();
-      LocaleSettings.setLocale(AppLocale.en);
-
       await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform,
       );

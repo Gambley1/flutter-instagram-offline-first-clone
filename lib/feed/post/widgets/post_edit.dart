@@ -60,8 +60,10 @@ class _PostEditViewState extends State<PostEditView> {
       context.read<PostBloc>().add(
             PostUpdateRequested(
               caption: value,
-              onPostUpdated: (post) {
-                context.read<FeedBloc>().add(FeedUpdateRequested(block: post));
+              onPostUpdated: (block) {
+                context
+                    .read<FeedBloc>()
+                    .add(FeedUpdateRequested(post: block.toPost));
                 context.pop();
               },
             ),

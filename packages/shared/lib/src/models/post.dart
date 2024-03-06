@@ -17,9 +17,9 @@ class Post {
   /// {@macro post}
   const Post({
     required this.id,
+    required this.createdAt,
     required this.author,
     required this.caption,
-    required this.createdAt,
     this.media = const [],
     this.updatedAt,
   });
@@ -77,4 +77,14 @@ class Post {
       media: media ?? this.media,
     );
   }
+}
+
+extension PostConverter on PostBlock {
+  Post get toPost => Post(
+        id: id,
+        author: author.toUser,
+        caption: caption,
+        createdAt: createdAt,
+        media: media,
+      );
 }

@@ -12,7 +12,7 @@ export 'src/block_action.dart'
 export 'src/block_action_converter.dart' show BlockActionConverter;
 export 'src/divider_horizontal_block.dart' show DividerHorizontalBlock;
 export 'src/insta_block.dart' show InstaBlock;
-export 'src/models/models.dart' show Feed, PostAuthor;
+export 'src/models/models.dart' show FeedPage, PostAuthor, ReelsPage;
 export 'src/post_block.dart' show PostBlock, PostBlockActions;
 export 'src/post_large_block.dart' show PostLargeBlock;
 export 'src/post_reel_block.dart' show PostReelBlock;

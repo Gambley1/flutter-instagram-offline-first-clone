@@ -4,10 +4,10 @@ import 'package:app_ui/app_ui.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_instagram_offline_first_clone/feed/feed.dart';
 import 'package:flutter_instagram_offline_first_clone/home/home.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:flutter_instagram_offline_first_clone/reels/reel/reel.dart';
-import 'package:flutter_instagram_offline_first_clone/reels/reels.dart';
 import 'package:flutter_instagram_offline_first_clone/user_profile/widgets/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
@@ -37,7 +37,7 @@ class _ReelsViewState extends State<ReelsView> {
   @override
   void initState() {
     super.initState();
-    context.read<ReelsBloc>().add(const ReelsPageRequested());
+    context.read<FeedBloc>().add(const FeedReelsPageRequested());
     _pageController = PageController(keepPage: false);
 
     _currentIndex = ValueNotifier(0);
@@ -58,23 +58,25 @@ class _ReelsViewState extends State<ReelsView> {
       fit: StackFit.expand,
       children: [
         AppScaffold(
-          body: BlocBuilder<ReelsBloc, ReelsState>(
+          body: BlocBuilder<FeedBloc, FeedState>(
             buildWhen: (previous, current) {
-              if (const ListEquality<PostBlock>()
-                  .equals(previous.blocks, current.blocks)) {
+              if (const ListEquality<InstaBlock>().equals(
+                previous.feed.reelsPage.blocks,
+                current.feed.reelsPage.blocks,
+              )) {
                 return false;
               }
               if (previous.status == current.status) return false;
               return true;
             },
             builder: (context, state) {
-              final blocks = state.blocks;
+              final blocks = state.feed.reelsPage.blocks;
               if (blocks.isEmpty) {
                 return const NoReelsFound();
               }
               return RefreshIndicator.adaptive(
                 onRefresh: () async {
-                  context.read<ReelsBloc>().add(const ReelsPageRequested());
+                  context.read<FeedBloc>().add(const FeedReelsPageRequested());
                   unawaited(
                     _pageController.animateToPage(
                       0,
@@ -102,11 +104,17 @@ class _ReelsViewState extends State<ReelsView> {
                       builder: (context, _) {
                         final isCurrent = index == _currentIndex.value;
                         final block = blocks[index];
-                        return ReelView(
-                          key: ValueKey(block.id),
-                          play: isCurrent && videoPlayer.shouldPlayReels.value,
-                          withSound: videoPlayer.withSound.value,
-                          block: block,
+                        if (block is PostReelBlock) {
+                          return ReelView(
+                            key: ValueKey(block.id),
+                            play:
+                                isCurrent && videoPlayer.shouldPlayReels.value,
+                            withSound: videoPlayer.withSound.value,
+                            block: block,
+                          );
+                        }
+                        return Center(
+                          child: Text('Unknown block type: ${block.type}'),
                         );
                       },
                     );
@@ -159,7 +167,7 @@ class NoReelsFound extends StatelessWidget {
           child: FittedBox(
             child: Tappable(
               onTap: () =>
-                  context.read<ReelsBloc>().add(const ReelsPageRequested()),
+                  context.read<FeedBloc>().add(const FeedReelsPageRequested()),
               throttle: true,
               throttleDuration: 550.ms,
               child: DecoratedBox(

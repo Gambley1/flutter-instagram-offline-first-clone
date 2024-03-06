@@ -1,5 +1,5 @@
 import 'package:app_ui/app_ui.dart';
-import 'package:fast_immutable_collections/fast_immutable_collections.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
@@ -55,12 +55,10 @@ class TimelineView extends StatelessWidget {
             ),
             BlocBuilder<TimelineBloc, TimelineState>(
               buildWhen: (previous, current) {
-                // if (previous.timeline.feed.blocks.isEmpty &&
-                //     current.timeline.feed.blocks.isEmpty) return false;
                 if (previous.status == TimelineStatus.populated &&
-                    areImmutableCollectionsWithEqualItems(
-                      previous.timeline.feed.blocks.toIList(),
-                      current.timeline.feed.blocks.toIList(),
+                    const ListEquality<InstaBlock>().equals(
+                      previous.timeline.blocks,
+                      current.timeline.blocks,
                     )) {
                   return false;
                 }
@@ -76,8 +74,7 @@ class TimelineView extends StatelessWidget {
                   final imageBlocks = <PostBlock>[];
                   final videoBlocks = <PostBlock>[];
 
-                  for (final block
-                      in state.timeline.feed.blocks.cast<PostBlock>()) {
+                  for (final block in state.timeline.blocks.cast<PostBlock>()) {
                     final isImage = block.hasBothMediaTypes || !block.isReel;
                     if (isImage) {
                       imageBlocks.add(block);

@@ -24,7 +24,7 @@ class TabsTexts {
     this.notFoundingCameraText = "No secondary camera found",
     this.holdButtonText = "Press and hold to record",
     this.noImagesFounded = "There is no images",
-    this.acceptAllPermissions = "Failed! accept all access permissions.",
+    this.acceptAllPermissions = "Failed! Accept all access permissions.",
     this.noCameraFoundText = 'No camera found!',
     this.newPostText = 'New post',
   });

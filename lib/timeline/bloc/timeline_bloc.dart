@@ -53,10 +53,8 @@ class TimelineBloc extends Bloc<TimelineEvent, TimelineState> {
       final timeline = state.timeline.copyWith(
         page: newPage,
         hasMore: hasMore,
-        feed: state.timeline.feed.copyWith(
-          blocks: [...state.timeline.feed.blocks, ...blocks],
-          totalBlocks: state.timeline.feed.totalBlocks + blocks.length,
-        ),
+        blocks: [...state.timeline.blocks, ...blocks],
+        totalBlocks: state.timeline.totalBlocks + blocks.length,
       );
 
       emit(
@@ -99,10 +97,8 @@ class TimelineBloc extends Bloc<TimelineEvent, TimelineState> {
       final timeline = state.timeline.copyWith(
         page: newPage,
         hasMore: hasMore,
-        feed: state.timeline.feed.copyWith(
-          blocks: blocks,
-          totalBlocks: blocks.length,
-        ),
+        blocks: blocks,
+        totalBlocks: blocks.length,
       );
 
       emit(

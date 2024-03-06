@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/feed.dart';
-import 'package:flutter_instagram_offline_first_clone/reels/reels.dart';
 import 'package:flutter_instagram_offline_first_clone/selector/selector.dart';
 import 'package:posts_repository/posts_repository.dart';
 import 'package:search_repository/search_repository.dart';
@@ -69,11 +68,6 @@ class App extends StatelessWidget {
             create: (context) => FeedBloc(
               postsRepository: context.read<PostsRepository>(),
               remoteConfig: context.read<FirebaseConfig>(),
-            ),
-          ),
-          BlocProvider(
-            create: (context) => ReelsBloc(
-              postsRepository: context.read<PostsRepository>(),
             ),
           ),
         ],

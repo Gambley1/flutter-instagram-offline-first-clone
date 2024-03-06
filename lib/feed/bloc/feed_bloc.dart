@@ -24,6 +24,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         _remoteConfig = remoteConfig,
         super(const FeedState.initial()) {
     on<FeedPageRequested>(_onPageRequested, transformer: throttleDroppable());
+    on<FeedReelsPageRequested>(_onFeedReelsPageRequested);
     on<FeedRefreshRequested>(
       _onRefreshRequested,
       transformer: throttleDroppable(duration: 550.ms),
@@ -231,7 +232,8 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     ),
   ].withNavigateToPostAuthorAction;
 
-  static const _pageLimit = 10;
+  static const _feedPageLimit = 10;
+  static const _reelsPageLimit = 10;
 
   final PostsRepository _postsRepository;
   final FirebaseConfig _remoteConfig;
@@ -273,10 +275,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       previosSkipRangeIs1 = randomSkipRange == 1;
 
       tempBlocks = tempBlocks.sublist(randomSkipRange);
-      blocks.insert(
-        blocks.length - tempBlocks.length,
-        randomSponsoredPost,
-      );
+      blocks.insert(blocks.length - tempBlocks.length, randomSponsoredPost);
       tempDataLength = tempBlocks.length;
     }
 
@@ -296,10 +295,10 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
   ) async {
     emit(state.loading());
     try {
-      final currentPage = event.page ?? state.feed.page;
+      final currentPage = event.page ?? state.feed.feedPage.page;
       final posts = await _postsRepository.getPage(
-        offset: currentPage * _pageLimit,
-        limit: _pageLimit,
+        offset: currentPage * _feedPageLimit,
+        limit: _feedPageLimit,
       );
       final postLikersFutures = posts.map(
         (post) => _postsRepository.getPostLikersInFollowings(postId: post.id),
@@ -308,7 +307,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
       final newPage = currentPage + 1;
 
-      final hasMore = posts.length >= _pageLimit;
+      final hasMore = posts.length >= _feedPageLimit;
 
       final instaBlocks = List<InstaBlock>.generate(posts.length, (index) {
         final likersInFollowings = postLikers[index];
@@ -323,11 +322,11 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       );
 
       final feed = state.feed.copyWith(
-        page: newPage,
-        hasMore: hasMore,
-        feed: state.feed.feed.copyWith(
-          blocks: [...state.feed.feed.blocks, ...blocks],
-          totalBlocks: state.feed.feed.totalBlocks + blocks.length,
+        feedPage: state.feed.feedPage.copyWith(
+          page: newPage,
+          hasMore: hasMore,
+          blocks: [...state.feed.feedPage.blocks, ...blocks],
+          totalBlocks: state.feed.feedPage.totalBlocks + blocks.length,
         ),
       );
 
@@ -345,6 +344,48 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     }
   }
 
+  Future<void> _onFeedReelsPageRequested(
+    FeedReelsPageRequested event,
+    Emitter<FeedState> emit,
+  ) async {
+    emit(state.loading());
+    try {
+      final currentPage = event.page ?? state.feed.reelsPage.page;
+      final posts = await _postsRepository.getPage(
+        offset: currentPage * _reelsPageLimit,
+        limit: _reelsPageLimit,
+        onlyReels: true,
+      );
+      final instaBlocks = <PostBlock>[];
+
+      final newPage = currentPage + 1;
+      final hasMore = posts.length >= _reelsPageLimit;
+
+      for (final post in posts.where((post) => post.media.isReel)) {
+        final reel = post.toPostReelBlock;
+        instaBlocks.add(reel);
+      }
+
+      final feed = state.feed.copyWith(
+        reelsPage: state.feed.reelsPage.copyWith(
+          page: newPage,
+          hasMore: hasMore,
+          blocks: [...state.feed.reelsPage.blocks, ...instaBlocks],
+          totalBlocks: state.feed.reelsPage.totalBlocks + instaBlocks.length,
+        ),
+      );
+      emit(state.populated(feed: feed));
+    } catch (error, stackTrace) {
+      logE(
+        '[FeedBloc] Feed Reels page fetching failed.',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      addError(error, stackTrace);
+      emit(state.failure());
+    }
+  }
+
   Future<void> _onRefreshRequested(
     FeedRefreshRequested event,
     Emitter<FeedState> emit,
@@ -353,15 +394,15 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     try {
       const page = 0;
       final posts = await _postsRepository.getPage(
-        offset: page * _pageLimit,
-        limit: _pageLimit,
+        offset: page * _feedPageLimit,
+        limit: _feedPageLimit,
       );
       final postLikersFutures = posts.map(
         (post) => _postsRepository.getPostLikersInFollowings(postId: post.id),
       );
       final postLikers = await Future.wait(postLikersFutures);
 
-      final hasMore = posts.length >= _pageLimit;
+      final hasMore = posts.length >= _feedPageLimit;
       final instaBlocks = List<InstaBlock>.generate(posts.length, (index) {
         final likersInFollowings = postLikers[index];
         final post = posts[index]
@@ -374,10 +415,13 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         page: page,
       );
 
-      final feed = FeedPage(
-        feed: Feed(blocks: blocks, totalBlocks: blocks.length),
-        page: page + 1,
-        hasMore: hasMore,
+      final feed = state.feed.copyWith(
+        feedPage: FeedPage(
+          blocks: blocks,
+          totalBlocks: blocks.length,
+          page: page + 1,
+          hasMore: hasMore,
+        ),
       );
 
       emit(state.populated(feed: feed));
@@ -413,11 +457,11 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       );
 
       final feed = state.feed.copyWith(
-        page: state.feed.page,
-        hasMore: state.feed.hasMore,
-        feed: state.feed.feed.copyWith(
-          blocks: [...state.feed.feed.blocks, ...blocks],
-          totalBlocks: state.feed.feed.totalBlocks + blocks.length,
+        feedPage: state.feed.feedPage.copyWith(
+          page: state.feed.feedPage.page,
+          hasMore: state.feed.feedPage.hasMore,
+          blocks: [...state.feed.feedPage.blocks, ...blocks],
+          totalBlocks: state.feed.feedPage.totalBlocks + blocks.length,
         ),
       );
 
@@ -443,7 +487,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       if (newPost != null) {
         add(
           FeedUpdateRequested(
-            block: newPost.toPostLargeBlock(),
+            post: newPost,
             isCreate: true,
           ),
         );
@@ -467,29 +511,52 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     Emitter<FeedState> emit,
   ) async {
     emit(state.loading());
-    final oldFeed = state.feed.feed;
+    final oldFeed = state.feed;
 
     try {
-      final feedPost = oldFeed.blocks.firstWhereOrNull(
+      final feedPost = oldFeed.feedPage.blocks.firstWhereOrNull(
         (block) =>
             (block.type == PostLargeBlock.identifier ||
                 block.type == PostSponsoredBlock.identifier) &&
             (block is PostBlock) &&
-            block.id == event.block.id,
+            block.id == event.post.id,
       ) as PostBlock?;
-      if (feedPost == null && !event.isCreate) {
+      final reel = oldFeed.reelsPage.blocks.firstWhereOrNull(
+        (block) =>
+            (block.type == PostReelBlock.identifier) &&
+            (block is PostBlock) &&
+            block.id == event.post.id,
+      ) as PostBlock?;
+      if (feedPost == null && reel == null && !event.isCreate) {
         emit(state.populated());
         return;
       }
-      final updatedBlocks = _updateBlocks(
-        blocks: oldFeed.blocks.whereType<PostBlock>().toList(),
-        newBlock: event.block,
+      final updatedFeedBlocks = _updateBlocks(
+        blocks: oldFeed.feedPage.blocks.whereType<PostBlock>().toList(),
+        newBlock: event.post.toPostLargeBlock(),
         isDelete: event.isDelete,
+        isFeedPage: true,
       );
+      List<InstaBlock>? updatedReelsBlocks;
+      if (((!event.isCreate && !event.isDelete) && reel != null) ||
+          (event.post.media.isReel)) {
+        updatedReelsBlocks = _updateBlocks(
+          blocks: oldFeed.reelsPage.blocks.whereType<PostBlock>().toList(),
+          newBlock: event.post.toPostReelBlock,
+          isDelete: event.isDelete,
+          isFeedPage: false,
+        );
+      }
 
       final feed = state.feed.copyWith(
-        feed: state.feed.feed
-            .copyWith(blocks: updatedBlocks, totalBlocks: updatedBlocks.length),
+        feedPage: state.feed.feedPage.copyWith(
+          blocks: updatedFeedBlocks,
+          totalBlocks: updatedFeedBlocks.length,
+        ),
+        reelsPage: state.feed.reelsPage.copyWith(
+          blocks: updatedReelsBlocks,
+          totalBlocks: updatedReelsBlocks?.length,
+        ),
       );
 
       emit(state.populated(feed: feed));
@@ -504,14 +571,24 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     required List<PostBlock> blocks,
     required PostBlock newBlock,
     required bool isDelete,
-  }) =>
-      blocks.updateWith<PostLargeBlock>(
+    required bool isFeedPage,
+  }) {
+    if (isFeedPage) {
+      return blocks.updateWith<PostLargeBlock>(
         newItem: newBlock,
         findCallback: (block, newBlock) => block.id == newBlock.id,
         onUpdate: (block, newBlock) =>
             block.copyWith(caption: newBlock.caption),
         isDelete: isDelete,
       );
+    }
+    return blocks.updateWith<PostReelBlock>(
+      newItem: newBlock,
+      findCallback: (block, newBlock) => block.id == newBlock.id,
+      onUpdate: (block, newBlock) => block.copyWith(caption: newBlock.caption),
+      isDelete: isDelete,
+    );
+  }
 }
 
 extension PostX on Post {

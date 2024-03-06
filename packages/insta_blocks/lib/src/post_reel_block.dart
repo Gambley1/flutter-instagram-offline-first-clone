@@ -28,7 +28,7 @@ class PostReelBlock extends PostBlock {
   static const identifier = '__post_reel__';
 
   /// The video media of the [PostReelBlock]'s reel.
-  VideoMedia? get reel => media.firstOrNull as VideoMedia?;
+  VideoMedia get reel => media.first as VideoMedia;
 
   @override
   PostReelBlock copyWith({

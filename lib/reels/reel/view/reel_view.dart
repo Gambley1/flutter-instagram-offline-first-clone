@@ -6,11 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/bloc/app_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/comments/comments.dart';
+import 'package:flutter_instagram_offline_first_clone/feed/feed.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/post/post.dart';
 import 'package:flutter_instagram_offline_first_clone/home/home.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:flutter_instagram_offline_first_clone/reels/reel/reel.dart';
-import 'package:flutter_instagram_offline_first_clone/reels/reels.dart';
 import 'package:flutter_instagram_offline_first_clone/stories/user_stories/user_stories.dart';
 import 'package:go_router/go_router.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
@@ -74,7 +74,7 @@ class _ReelState extends State<Reel> {
     _videoController = widget.block is! PostReelBlock
         ? null
         : VideoPlayerController.networkUrl(
-            Uri.parse((widget.block as PostReelBlock).reel!.url),
+            Uri.parse((widget.block as PostReelBlock).reel.url),
           );
     _isPaused = ValueNotifier(false)..addListener(_isPausedListener);
     _isLiked = ValueNotifier(false);
@@ -129,9 +129,9 @@ class _ReelState extends State<Reel> {
           alignment: Alignment.center,
           children: [
             VideoPlay(
-              url: block.reel!.url,
+              url: block.reel.url,
               play: widget.play,
-              blurHash: block.reel!.blurHash,
+              blurHash: block.reel.blurHash,
               withSound: widget.withSound || true,
               aspectRatio: 9 / 15,
               withSoundButton: false,
@@ -362,9 +362,9 @@ class VerticalButtons extends StatelessWidget {
                               context
                                   .read<PostBloc>()
                                   .add(const PostDeleteRequested());
-                              context.read<ReelsBloc>().add(
-                                    ReelsUpdateRequested(
-                                      block: block,
+                              context.read<FeedBloc>().add(
+                                    FeedUpdateRequested(
+                                      post: block.toPost,
                                       isDelete: true,
                                     ),
                                   );

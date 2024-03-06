@@ -11,6 +11,7 @@ import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/chats/chat/chat.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:flutter_instagram_offline_first_clone/stories/user_stories/user_stories.dart';
+import 'package:inview_notifier_list/inview_notifier_list.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:shared/shared.dart';
 import 'package:user_repository/user_repository.dart';
@@ -343,142 +344,156 @@ class _ChatMessagesListViewState extends State<ChatMessagesListView> {
 
             return false;
           },
-          child: ScrollablePositionedList.separated(
-            itemCount: messages.length,
-            reverse: true,
-            itemScrollController: widget.itemScrollController,
-            itemPositionsListener: widget.itemPositionsListener,
-            scrollOffsetController: widget.scrollOffsetController,
-            scrollOffsetListener: widget.scrollOffsetListener,
-            itemBuilder: (context, index) {
-              final isFirst =
-                  messages.length - 1 - index == messages.length - 1;
-              final isLast = messages.length - 1 - index <= 0;
-              final isPreviosLast =
-                  messages.length - index > messages.length - 1;
-              final message = messages[messages.length - 1 - index];
-              final nextMessage =
-                  isLast ? null : messages[messages.length - 2 - index];
-              final previosMessage =
-                  isPreviosLast ? null : messages[messages.length - index];
-              final isNextUserSame = nextMessage != null &&
-                  message.sender!.id == nextMessage.sender!.id;
-              final isPreviusUserSame = previosMessage != null &&
-                  message.sender!.id == previosMessage.sender!.id;
-
-              bool checkTimeDifference(
-                DateTime date1,
-                DateTime date2,
-              ) =>
-                  !Jiffy.parseFromDateTime(date1).isSame(
-                    Jiffy.parseFromDateTime(date2),
-                    unit: Unit.minute,
-                  );
-
-              var hasTimeDifferenceWithNext = false;
-              if (nextMessage != null) {
-                hasTimeDifferenceWithNext = checkTimeDifference(
-                  message.createdAt,
-                  nextMessage.createdAt,
-                );
-              }
-
-              var hasTimeDifferenceWithPrevious = false;
-              if (previosMessage != null) {
-                hasTimeDifferenceWithPrevious = checkTimeDifference(
-                  message.createdAt,
-                  previosMessage.createdAt,
-                );
-              }
-
-              final messageWidget = MessageBubble(
-                key: ValueKey(message.id),
-                highlightMessageId: _highlightMessageId,
-                onEditTap: settings.onEditTap,
-                onReplyTap: settings.onReplyTap,
-                onDeleteTap: settings.onDeleteTap,
-                onRepliedMessageTap: (repliedMessageId) =>
-                    _onRepliedMessageTap(repliedMessageId, messages),
-                message: message,
-                onMessageTap: (
-                  details,
-                  messageId, {
-                  required isMine,
-                  required hasSharedPost,
-                }) =>
-                    settings.onMessageTap(
-                  details,
-                  messageId,
-                  context: context,
-                  isMine: isMine,
-                  hasSharedPost: hasSharedPost,
-                ),
-                borderRadius: ({required isMine}) => BorderRadius.only(
-                  topLeft: isMine
-                      ? const Radius.circular(22)
-                      : (isNextUserSame && !hasTimeDifferenceWithNext)
-                          ? const Radius.circular(4)
-                          : const Radius.circular(22),
-                  topRight: !isMine
-                      ? const Radius.circular(22)
-                      : (isNextUserSame && !hasTimeDifferenceWithNext)
-                          ? const Radius.circular(4)
-                          : const Radius.circular(22),
-                  bottomLeft: isMine
-                      ? const Radius.circular(22)
-                      : (isPreviusUserSame && !hasTimeDifferenceWithPrevious)
-                          ? const Radius.circular(4)
-                          : Radius.zero,
-                  bottomRight: !isMine
-                      ? const Radius.circular(22)
-                      : (isPreviusUserSame && !hasTimeDifferenceWithPrevious)
-                          ? const Radius.circular(4)
-                          : Radius.zero,
-                ),
-              );
-
-              final padding = isFirst
-                  ? const EdgeInsets.only(bottom: AppSpacing.md)
-                  : isLast
-                      ? const EdgeInsets.only(top: AppSpacing.md)
-                      : null;
-
-              return SwipeableMessage(
-                id: message.id,
-                onSwiped: (_) => settings.onReplyTap.call(message),
-                child: Padding(
-                  padding: padding ?? EdgeInsets.zero,
-                  child: messageWidget,
-                ),
-              );
+          child: InViewNotifierCustomScrollView(
+            initialInViewIds: [messages.lastOrNull?.id ?? ''],
+            isInViewPortCondition: (deltaTop, deltaBottom, vpHeight) {
+              return deltaTop < (0.5 * vpHeight) + 80.0 &&
+                  deltaBottom > (0.5 * vpHeight) - 80.0;
             },
-            separatorBuilder: (context, index) {
-              final isLast = messages.length - 1 - index == 1;
-              final message = messages[messages.length - 1 - index];
-              final nextMessage =
-                  isLast ? null : messages[messages.length - 2 - index];
-              if (message.createdAt.day != nextMessage?.createdAt.day) {
-                return MessageDateTimeSeparator(date: message.createdAt);
-              }
-              final isNextUserSame = nextMessage != null &&
-                  message.sender?.id == nextMessage.sender?.id;
+            slivers: [
+              SliverFillRemaining(
+                child: ScrollablePositionedList.separated(
+                  itemCount: messages.length,
+                  reverse: true,
+                  itemScrollController: widget.itemScrollController,
+                  itemPositionsListener: widget.itemPositionsListener,
+                  scrollOffsetController: widget.scrollOffsetController,
+                  scrollOffsetListener: widget.scrollOffsetListener,
+                  itemBuilder: (context, index) {
+                    final isFirst =
+                        messages.length - 1 - index == messages.length - 1;
+                    final isLast = messages.length - 1 - index <= 0;
+                    final isPreviosLast =
+                        messages.length - index > messages.length - 1;
+                    final message = messages[messages.length - 1 - index];
+                    final nextMessage =
+                        isLast ? null : messages[messages.length - 2 - index];
+                    final previosMessage = isPreviosLast
+                        ? null
+                        : messages[messages.length - index];
+                    final isNextUserSame = nextMessage != null &&
+                        message.sender!.id == nextMessage.sender!.id;
+                    final isPreviusUserSame = previosMessage != null &&
+                        message.sender!.id == previosMessage.sender!.id;
 
-              var hasTimeDifference = false;
+                    bool checkTimeDifference(
+                      DateTime date1,
+                      DateTime date2,
+                    ) =>
+                        !Jiffy.parseFromDateTime(date1).isSame(
+                          Jiffy.parseFromDateTime(date2),
+                          unit: Unit.minute,
+                        );
 
-              if (nextMessage != null) {
-                hasTimeDifference =
-                    !Jiffy.parseFromDateTime(message.createdAt).isSame(
-                  Jiffy.parseFromDateTime(nextMessage.createdAt),
-                  unit: Unit.minute,
-                );
-              }
+                    var hasTimeDifferenceWithNext = false;
+                    if (nextMessage != null) {
+                      hasTimeDifferenceWithNext = checkTimeDifference(
+                        message.createdAt,
+                        nextMessage.createdAt,
+                      );
+                    }
 
-              if (isNextUserSame && !hasTimeDifference) {
-                return const SizedBox(height: AppSpacing.xxs);
-              }
+                    var hasTimeDifferenceWithPrevious = false;
+                    if (previosMessage != null) {
+                      hasTimeDifferenceWithPrevious = checkTimeDifference(
+                        message.createdAt,
+                        previosMessage.createdAt,
+                      );
+                    }
 
-              return const SizedBox(height: AppSpacing.sm);
-            },
+                    final messageWidget = MessageBubble(
+                      key: ValueKey(message.id),
+                      highlightMessageId: _highlightMessageId,
+                      onEditTap: settings.onEditTap,
+                      onReplyTap: settings.onReplyTap,
+                      onDeleteTap: settings.onDeleteTap,
+                      onRepliedMessageTap: (repliedMessageId) =>
+                          _onRepliedMessageTap(repliedMessageId, messages),
+                      message: message,
+                      onMessageTap: (
+                        details,
+                        messageId, {
+                        required isMine,
+                        required hasSharedPost,
+                      }) =>
+                          settings.onMessageTap(
+                        details,
+                        messageId,
+                        context: context,
+                        isMine: isMine,
+                        hasSharedPost: hasSharedPost,
+                      ),
+                      borderRadius: ({required isMine}) => BorderRadius.only(
+                        topLeft: isMine
+                            ? const Radius.circular(22)
+                            : (isNextUserSame && !hasTimeDifferenceWithNext)
+                                ? const Radius.circular(4)
+                                : const Radius.circular(22),
+                        topRight: !isMine
+                            ? const Radius.circular(22)
+                            : (isNextUserSame && !hasTimeDifferenceWithNext)
+                                ? const Radius.circular(4)
+                                : const Radius.circular(22),
+                        bottomLeft: isMine
+                            ? const Radius.circular(22)
+                            : (isPreviusUserSame &&
+                                    !hasTimeDifferenceWithPrevious)
+                                ? const Radius.circular(4)
+                                : Radius.zero,
+                        bottomRight: !isMine
+                            ? const Radius.circular(22)
+                            : (isPreviusUserSame &&
+                                    !hasTimeDifferenceWithPrevious)
+                                ? const Radius.circular(4)
+                                : Radius.zero,
+                      ),
+                    );
+
+                    final padding = isFirst
+                        ? const EdgeInsets.only(bottom: AppSpacing.md)
+                        : isLast
+                            ? const EdgeInsets.only(top: AppSpacing.md)
+                            : null;
+
+                    return SwipeableMessage(
+                      id: message.id,
+                      onSwiped: (_) => settings.onReplyTap.call(message),
+                      child: Padding(
+                        padding: padding ?? EdgeInsets.zero,
+                        child: messageWidget,
+                      ),
+                    );
+                  },
+                  separatorBuilder: (context, index) {
+                    final isLast = messages.length - 1 - index == 1;
+                    final message = messages[messages.length - 1 - index];
+                    final nextMessage =
+                        isLast ? null : messages[messages.length - 2 - index];
+                    if (message.createdAt.day != nextMessage?.createdAt.day) {
+                      return MessageDateTimeSeparator(date: message.createdAt);
+                    }
+                    final isNextUserSame = nextMessage != null &&
+                        message.sender?.id == nextMessage.sender?.id;
+
+                    var hasTimeDifference = false;
+
+                    if (nextMessage != null) {
+                      hasTimeDifference =
+                          !Jiffy.parseFromDateTime(message.createdAt).isSame(
+                        Jiffy.parseFromDateTime(nextMessage.createdAt),
+                        unit: Unit.minute,
+                      );
+                    }
+
+                    if (isNextUserSame && !hasTimeDifference) {
+                      return const SizedBox(height: AppSpacing.xxs);
+                    }
+
+                    return const SizedBox(height: AppSpacing.sm);
+                  },
+                ),
+              ),
+            ],
           ),
         ),
         ValueListenableBuilder<bool>(

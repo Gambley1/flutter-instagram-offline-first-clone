@@ -157,8 +157,8 @@ class _FeedBodyState extends State<FeedBody> {
             buildWhen: (previous, current) {
               if (previous.status == FeedStatus.populated &&
                   const ListEquality<InstaBlock>().equals(
-                    previous.feed.feed.blocks,
-                    current.feed.feed.blocks,
+                    previous.feed.feedPage.blocks,
+                    current.feed.feedPage.blocks,
                   )) {
                 return false;
               }
@@ -166,18 +166,18 @@ class _FeedBodyState extends State<FeedBody> {
               return true;
             },
             builder: (context, state) {
-              final feed = state.feed.feed;
-              final hasMorePosts = state.feed.hasMore;
+              final feedPage = state.feed.feedPage;
+              final hasMorePosts = feedPage.hasMore;
               final isFailure = state.status == FeedStatus.failure;
 
               return SliverList.builder(
-                itemCount: feed.blocks.length,
+                itemCount: feedPage.blocks.length,
                 itemBuilder: (context, index) {
-                  final block = feed.blocks[index];
+                  final block = feedPage.blocks[index];
                   return _buildBlock(
                     context: context,
                     index: index,
-                    feedLength: feed.totalBlocks,
+                    feedLength: feedPage.totalBlocks,
                     block: block,
                     bloc: context.read<FeedBloc>(),
                     controller: animationController,
@@ -235,7 +235,7 @@ class _FeedBodyState extends State<FeedBody> {
           onRetry: () {
             context
                 .read<FeedBloc>()
-                .add(FeedPageRequested(page: bloc.state.feed.page));
+                .add(FeedPageRequested(page: bloc.state.feed.feedPage.page));
           },
         );
       } else {

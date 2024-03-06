@@ -3,8 +3,8 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
+import 'package:flutter_instagram_offline_first_clone/feed/bloc/feed_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/feed.dart';
-import 'package:flutter_instagram_offline_first_clone/reels/reels.dart';
 import 'package:go_router/go_router.dart';
 import 'package:powersync_repository/powersync_repository.dart';
 import 'package:shared/shared.dart';
@@ -59,23 +59,25 @@ class FeedPageController extends ChangeNotifier {
     required bool isReel,
     BuildContext? context,
   }) async {
+    final navigateToReelPage = isReel ||
+        (selectedFiles.length == 1 &&
+            selectedFiles.every((e) => !e.isThatImage));
     final user = _context.read<AppBloc>().state.user;
     StatefulNavigationShell.of(_context)
-        .goBranch(isReel ? 3 : 0, initialLocation: true);
+        .goBranch(navigateToReelPage ? 3 : 0, initialLocation: true);
+    void uploadPost({
+      required String id,
+      required List<Map<String, dynamic>> media,
+    }) =>
+        _context.read<FeedBloc>().add(
+              FeedPostCreateRequested(
+                postId: id,
+                userId: user.id,
+                caption: caption,
+                media: media,
+              ),
+            );
     if (isReel) {
-      void uploadReel({
-        required String id,
-        required List<Map<String, dynamic>> media,
-      }) =>
-          context?.read<ReelsBloc>().add(
-                ReelsCreateReelRequested(
-                  id: id,
-                  userId: user.id,
-                  caption: '',
-                  media: media,
-                ),
-              );
-
       try {
         late final postId = uuid.v4();
         late final storage = Supabase.instance.client.storage.from('posts');
@@ -134,7 +136,7 @@ class FeedPageController extends ChangeNotifier {
             'first_frame_url': firstFrameUrl,
           }
         ];
-        uploadReel(media: media, id: postId);
+        uploadPost(media: media, id: postId);
       } catch (error, stackTrace) {
         logE(
           'Failed to create reel!',
@@ -232,16 +234,7 @@ class FeedPageController extends ChangeNotifier {
           });
         }
       }
-      await Future.microtask(
-        () => _context.read<FeedBloc>().add(
-              FeedPostCreateRequested(
-                postId: postId,
-                userId: user.id,
-                caption: caption,
-                media: media,
-              ),
-            ),
-      );
+      uploadPost(id: postId, media: media);
     }
   }
 }

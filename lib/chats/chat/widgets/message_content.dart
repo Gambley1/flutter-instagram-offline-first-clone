@@ -7,6 +7,7 @@ import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:go_router/go_router.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:intl/intl.dart';
+import 'package:inview_notifier_list/inview_notifier_list.dart';
 import 'package:shared/shared.dart';
 
 class MessageBubbleContent extends StatelessWidget {
@@ -249,23 +250,12 @@ class MessageSharedPost extends StatelessWidget {
                     child: Builder(
                       builder: (_) {
                         if (sharedPost.isReel) {
-                          return Container(
-                            decoration: const BoxDecoration(
-                              boxShadow: [
-                                BoxShadow(
-                                  color: AppColors.dark,
-                                  blurRadius: 15,
-                                  offset: Offset(2, 2),
-                                ),
-                              ],
-                            ),
-                            child: Assets.icons.instagramReel.svg(
-                              height: AppSize.iconSizeBig,
-                              width: AppSize.iconSizeBig,
-                              colorFilter: const ColorFilter.mode(
-                                AppColors.white,
-                                BlendMode.srcIn,
-                              ),
+                          return Assets.icons.instagramReel.svg(
+                            height: AppSize.iconSizeBig,
+                            width: AppSize.iconSizeBig,
+                            colorFilter: const ColorFilter.mode(
+                              AppColors.white,
+                              BlendMode.srcIn,
                             ),
                           );
                         }
@@ -366,14 +356,20 @@ class MessageSharedReel extends StatelessWidget {
           ),
           child: Stack(
             children: [
-              AspectRatio(
-                aspectRatio: 1,
-                child: ImageAttachmentThumbnail(
-                  image: Attachment(
-                    imageUrl: sharedPost.firstMediaUrl,
-                  ),
-                  // fit: BoxFit.fitHeight,
-                ),
+              InViewNotifierWidget(
+                id: message.id,
+                builder: (context, isInView, _) {
+                  return VideoPlay(
+                    aspectRatio: 1,
+                    play: isInView,
+                    id: sharedPost.id,
+                    blurHash: sharedPost.firstMedia?.blurHash,
+                    url: sharedPost.firstMedia?.url,
+                    withSound: false,
+                    withPlayControll: false,
+                    withSoundButton: false,
+                  );
+                },
               ),
               Positioned(
                 top: AppSpacing.sm,
@@ -384,9 +380,6 @@ class MessageSharedReel extends StatelessWidget {
                       return const Icon(
                         Icons.layers,
                         size: AppSize.iconSizeBig,
-                        shadows: [
-                          Shadow(blurRadius: 2),
-                        ],
                       );
                     }
                     return const SizedBox.shrink();
@@ -414,24 +407,15 @@ class MessageSharedReel extends StatelessWidget {
                       fontWeight: AppFontWeight.bold,
                       color: effectiveTextColor,
                     ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  trailing: Container(
-                    decoration: const BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.dark,
-                          blurRadius: 15,
-                          offset: Offset(2, 2),
-                        ),
-                      ],
-                    ),
-                    child: Assets.icons.instagramReel.svg(
-                      height: AppSize.iconSizeBig,
-                      width: AppSize.iconSizeBig,
-                      colorFilter: const ColorFilter.mode(
-                        AppColors.white,
-                        BlendMode.srcIn,
-                      ),
+                  trailing: Assets.icons.instagramReel.svg(
+                    height: AppSize.iconSizeBig,
+                    width: AppSize.iconSizeBig,
+                    colorFilter: const ColorFilter.mode(
+                      AppColors.white,
+                      BlendMode.srcIn,
                     ),
                   ),
                 ),

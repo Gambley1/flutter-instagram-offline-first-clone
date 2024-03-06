@@ -221,9 +221,12 @@ class PostLargeView extends StatelessWidget {
                   context.pushNamed('post_edit', extra: block),
               onPostDelete: (_) {
                 bloc.add(const PostDeleteRequested());
-                context
-                    .read<FeedBloc>()
-                    .add(FeedUpdateRequested(block: block, isDelete: true));
+                context.read<FeedBloc>().add(
+                      FeedUpdateRequested(
+                        post: block.toPost,
+                        isDelete: true,
+                      ),
+                    );
               },
             )
           : const PostOptionsSettings.viewer(),
