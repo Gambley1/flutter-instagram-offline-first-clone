@@ -71,6 +71,7 @@ class _ReelsViewState extends State<ReelsView> {
             },
             builder: (context, state) {
               final blocks = state.feed.reelsPage.blocks;
+
               if (blocks.isEmpty) {
                 return const NoReelsFound();
               }
@@ -86,15 +87,15 @@ class _ReelsViewState extends State<ReelsView> {
                   );
                 },
                 child: PageView.builder(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  scrollDirection: Axis.vertical,
-                  allowImplicitScrolling: true,
-                  itemCount: blocks.length,
-                  onPageChanged: (index) => _currentIndex.value = index,
                   controller: _pageController,
+                  itemCount: blocks.length,
+                  allowImplicitScrolling: true,
+                  scrollDirection: Axis.vertical,
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  onPageChanged: (index) => _currentIndex.value = index,
                   itemBuilder: (context, index) {
-                    return AnimatedBuilder(
-                      animation: Listenable.merge(
+                    return ListenableBuilder(
+                      listenable: Listenable.merge(
                         [
                           videoPlayer.shouldPlayReels,
                           videoPlayer.withSound,

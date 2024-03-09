@@ -1,6 +1,6 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
+import 'package:shared/shared.dart';
 
 /// Renders a widget containing a progress indicator that calls
 /// [onPresented] when the item becomes visible.
@@ -18,6 +18,7 @@ class _FeedLoaderItemState extends State<FeedLoaderItem> {
   @override
   void initState() {
     super.initState();
+    logI('On presented');
     Future.delayed(350.ms, () => widget.onPresented?.call());
   }
 

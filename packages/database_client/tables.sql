@@ -19,7 +19,7 @@ create policy "Anyone can delete their own avatar." on storage.objects for delet
 
 -- Set up storage for posts.
 insert into storage.buckets (id, name)
-  values ('posts', 'posts')
+  values ('posts', 'posts');
 
 create policy "Only authenticated users can see post media." on storage.objects for
 select
@@ -44,32 +44,9 @@ for update
     bucket_id = 'posts'
   );
 
-create or replace function clear_posts_objects () returns trigger as $$
-begin
-  delete from storage.objects where bucket_id = 'posts';
-  return null;
-end;
-$$ language plpgsql;
-
-create trigger clear_posts_trigger
-after
-truncate on public.posts for each statement
-execute function clear_posts_objects ();
-
-create or replace function handle_delete_post_media () returns trigger as $$
-BEGIN
-  DELETE FROM storage.objects WHERE bucket_id = 'posts' AND (storage.foldername (name))[1] = OLD.id::text;
-  RETURN OLD;
-END;
-$$ language plpgsql;
-
-create trigger on_post_deleted
-after delete on posts for each row
-execute function handle_delete_post_media();
-
 -- Set up storage for stories!
 insert into storage.buckets (id, name)
-  values ('stories', 'stories')
+  values ('stories', 'stories');
 
 create policy "Only authenticated user can see stories media." on storage.objects for
 select
@@ -93,29 +70,6 @@ for update
   to authenticated using (
     bucket_id = 'stories'
   );
-
-create or replace function clear_stories_objects () returns trigger as $$
-begin
-  delete from storage.objects where bucket_id = 'stories';
-  return null;
-end;
-$$ language plpgsql;
-
-create trigger clear_stories_trigger
-after
-truncate on public.stories for each statement
-execute function clear_stories_objects ();
-
-create or replace function handle_delete_story_media () returns trigger as $$
-BEGIN
-  DELETE FROM storage.objects WHERE bucket_id = 'stories' AND (storage.foldername (name))[1] = OLD.id::text;
-  RETURN OLD;
-END;
-$$ language plpgsql;
-
-create trigger on_story_deleted
-after delete on stories for each row
-execute function handle_delete_story_media();
 
 create table
   public.profiles (
@@ -242,6 +196,37 @@ using (
     auth.uid() = owner_id
   );
 
+-- Create comments table
+
+create table
+  public.comments (
+    id uuid not null,
+    post_id uuid not null,
+    user_id uuid not null,
+    content text not null,
+    created_at timestamp with time zone not null default now(),
+    replied_to_comment_id uuid null,
+    constraint comments_pkey primary key (id),
+    constraint comments_post_id_fkey foreign key (post_id) references posts (id) on update cascade on delete cascade,
+    constraint comments_replied_to_comment_id_fkey foreign key (replied_to_comment_id) references comments (id) on update cascade on delete cascade,
+    constraint comments_user_id_fkey foreign key (user_id) references profiles (id) on update cascade on delete cascade
+  ) tablespace pg_default;
+
+alter table comments enable row level security;
+
+create policy "Everyone can see posts comments." on public.comments for select using (true);
+
+create policy "Only owners can update comment." on public.comments for update with check(
+    auth.uid() = user_id
+  );
+
+create policy "Only authenticated can upload comments." on public.comments for insert to authenticated with check (true);
+
+create policy "Only owners can delete comment." on public.comments for delete to authenticated
+using (
+    auth.uid() = user_id
+  );
+
 -- Create Likes table
   
 create table
@@ -288,35 +273,6 @@ using (
   );
 
 create table
-  public.comments (
-    id uuid not null,
-    post_id uuid not null,
-    user_id uuid not null,
-    content text not null,
-    created_at timestamp with time zone not null default now(),
-    replied_to_comment_id uuid null,
-    constraint comments_pkey primary key (id),
-    constraint comments_post_id_fkey foreign key (post_id) references posts (id) on update cascade on delete cascade,
-    constraint comments_replied_to_comment_id_fkey foreign key (replied_to_comment_id) references comments (id) on update cascade on delete cascade,
-    constraint comments_user_id_fkey foreign key (user_id) references profiles (id) on update cascade on delete cascade
-  ) tablespace pg_default;
-
-alter table comments enable row level security;
-
-create policy "Everyone can see posts comments." on public.comments for select using (true);
-
-create policy "Only owners can update comment." on public.comments for update with check(
-    auth.uid() = user_id
-  );
-
-create policy "Only authenticated can upload comments." on public.comments for insert to authenticated with check (true);
-
-create policy "Only owners can delete comment." on public.comments for delete to authenticated
-using ((auth.uid() = user_id) OR (auth.uid() IN ( SELECT posts.user_id
-   FROM posts
-  WHERE (posts.id = comments.post_id))))
-
-create table
   public.subscriptions (
     id uuid not null,
     subscriber_id uuid not null,
@@ -361,7 +317,21 @@ create policy "Only authenticated users can create conversations with other user
  for insert to authenticated with check(true);
 
 create policy "Only authentiaceted users can delete conversations they participate in." on public.conversations 
-  for delete to authenticated using true; 
+  for delete to authenticated using (true); 
+
+-- Create participants talbe
+create table
+  public.participants (
+    id uuid not null default gen_random_uuid (),
+    user_id uuid not null,
+    conversation_id uuid not null,
+    constraint participants_pkey primary key (id),
+    constraint unique_participant unique (user_id, conversation_id),
+    constraint participants_conversation_id_fkey foreign key (conversation_id) references conversations (id) on update cascade on delete cascade,
+    constraint participants_user_id_fkey foreign key (user_id) references profiles (id) on update cascade on delete cascade
+  ) tablespace pg_default;
+
+alter table participants enable row level security;
 
 create type message_type as enum('text', 'image', 'video', 'voice');
 
@@ -395,11 +365,11 @@ create policy "Everybody can see messages in the conversation." on public.messag
   for select using (true);
 
 create policy "Only owner can update the message." on public.messages
-  for update to authenticated with check true;
+  for update to authenticated with check (true);
 
 create policy "Only authenticated users can create message in the conversations with other users." 
   on public.messages
-    for insert to authenticated with check (auth.uid() = from_id);
+    for insert to authenticated with check (true);
 
 create policy "Only authenticated users can delete their own messages in the conversations they participate in." 
   on public.messages 
@@ -430,7 +400,7 @@ alter table attachments enable row level security;
 create policy "Everybody can see their messages' attachments." on public.attachments
   for select using (true);
 
-create policy "Everybody can see their messages' attachments." on public.attachments
+create policy "Everybody can update their messages' attachments." on public.attachments
   for update using (true) with check (true);
 
 create policy "Only authenticated users can add attachments." 
@@ -440,19 +410,6 @@ create policy "Only authenticated users can add attachments."
 create policy "Only owners can remove attachments." 
   on public.attachments 
     for delete to authenticated using (true);
-
-create table
-  public.participants (
-    id uuid not null default gen_random_uuid (),
-    user_id uuid not null,
-    conversation_id uuid not null,
-    constraint participants_pkey primary key (id),
-    constraint unique_participant unique (user_id, conversation_id),
-    constraint participants_conversation_id_fkey foreign key (conversation_id) references conversations (id) on update cascade on delete cascade,
-    constraint participants_user_id_fkey foreign key (user_id) references profiles (id) on update cascade on delete cascade
-  ) tablespace pg_default;
-
-alter table participants enable row level security;
 
 create policy "Everybody can see their participation with conversations." on public.participants
   for select using (true);
@@ -504,6 +461,52 @@ create policy "Only owners can update stories."
 create publication powersync for all tables;
 
 -- Create useful functions and triggers to manage storage objects and relevant data ->
+
+create or replace function handle_delete_post_media () returns trigger as $$
+BEGIN
+  DELETE FROM storage.objects WHERE bucket_id = 'posts' AND (storage.foldername (name))[1] = OLD.id::text;
+  RETURN OLD;
+END;
+$$ language plpgsql;
+
+create trigger on_post_deleted
+after delete on posts for each row
+execute function handle_delete_post_media();
+
+create or replace function clear_posts_objects () returns trigger as $$
+begin
+  delete from storage.objects where bucket_id = 'posts';
+  return null;
+end;
+$$ language plpgsql;
+
+create trigger clear_posts_trigger
+after
+truncate on public.posts for each statement
+execute function clear_posts_objects ();
+
+create or replace function clear_stories_objects () returns trigger as $$
+begin
+  delete from storage.objects where bucket_id = 'stories';
+  return null;
+end;
+$$ language plpgsql;
+
+create trigger clear_stories_trigger
+after
+truncate on public.stories for each statement
+execute function clear_stories_objects ();
+
+create or replace function handle_delete_story_media () returns trigger as $$
+BEGIN
+  DELETE FROM storage.objects WHERE bucket_id = 'stories' AND (storage.foldername (name))[1] = OLD.id::text;
+  RETURN OLD;
+END;
+$$ language plpgsql;
+
+create trigger on_story_deleted
+after delete on stories for each row
+execute function handle_delete_story_media();
 
 create or replace function delete_storage_object(bucket text, object text, out status int, out content text)
  returns record
@@ -589,16 +592,6 @@ create or replace function delete_storage_object(bucket text, object text, out s
    before delete on auth.users
    for each row execute function public.delete_old_profile();
 
--- Update user
-UPDATE profiles
-      SET 
-        full_name = coalesce(?, full_name),
-        email = coalesce(?, email),
-        username = coalesce(?, username),
-        avatar_url = coalesce(?, avatar_url)
-      WHERE id = ?
-      RETURNING *
-
 create or replace function public.handle_new_user()
 returns trigger
 language plpgsql
@@ -643,35 +636,3 @@ create trigger on_auth_user_updated
 after
 update on auth.users for each row
 execute procedure public.handle_update_user();
-
-bucket_definitions:
-  global_media:
-    data:
-        - select * from images
-        - select * from videos
-  global_posts:
-    data:
-        - select * from posts
-        - select * from likes
-        - select * from comments
-  global_stories:
-    data:
-        - select * from stories
-  global_profiles:
-    data:
-        - select * from profiles
-  global_subscriptions:
-    data:
-        - select * from subscriptions
-  global_participants:
-    data:
-        - select * from participants
-  global_messages:
-    parameters: select id as message_id from messages
-    data:
-        - select * from messages where id = bucket.message_id
-        - select * from attachments where message_id = bucket.message_id
-  user_conversations:
-    parameters: select conversation_id from participants where user_id = token_parameters.user_id
-    data: 
-        - select * from conversations where id = bucket.conversation_id
