@@ -15,6 +15,14 @@ class AuthProviderSignInButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final effectiveIcon = switch (provider) {
+      AuthProvider.facebook => Assets.icons.facebook.svg(),
+      AuthProvider.google => Assets.icons.google.svg(),
+    };
+    final icon = SizedBox.square(
+      dimension: 24,
+      child: effectiveIcon,
+    );
     return ConstrainedBox(
       constraints: BoxConstraints(
         minWidth: switch (context.screenWidth) {
@@ -23,7 +31,7 @@ class AuthProviderSignInButton extends StatelessWidget {
         },
       ),
       child: AppButton(
-        icon: const Icon(Icons.wordpress_outlined),
+        icon: icon,
         text: context.l10n.signInWithText(provider.value),
         textStyle:
             context.labelLarge?.copyWith(overflow: TextOverflow.ellipsis),

@@ -22,4 +22,12 @@ abstract class EnvProd {
   /// Firebase cloud messaging server key secret.
   @EnviedField(varName: 'FCM_SERVER_KEY', obfuscate: true)
   static String fcmServerKey = _EnvProd.fcmServerKey;
+
+  /// iOS client id key secret.
+  @EnviedField(varName: 'IOS_CLIENT_ID', obfuscate: true)
+  static String iOSClientId = _EnvProd.iOSClientId;
+
+  /// Web client id key secret.
+  @EnviedField(varName: 'WEB_CLIENT_ID', obfuscate: true)
+  static String webClientId = _EnvProd.webClientId;
 }

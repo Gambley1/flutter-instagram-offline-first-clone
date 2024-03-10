@@ -21,6 +21,14 @@ void main() {
         expect(EnvDev.fcmServerKey, isNotNull);
         logI(EnvDev.fcmServerKey);
       });
+      test('ios client id not null', () {
+        expect(EnvDev.iOSClientId, isNotNull);
+        logI(EnvDev.iOSClientId);
+      });
+      test('web client id not null', () {
+        expect(EnvDev.webClientId, isNotNull);
+        logI(EnvDev.webClientId);
+      });
     });
     group('Prod', () {
       test('supabase url not null', () {
@@ -38,6 +46,14 @@ void main() {
       test('fcm server key not null', () {
         expect(EnvProd.fcmServerKey, isNotNull);
         logI(EnvProd.fcmServerKey);
+      });
+      test('ios client id not null', () {
+        expect(EnvProd.iOSClientId, isNotNull);
+        logI(EnvProd.iOSClientId);
+      });
+      test('web client id not null', () {
+        expect(EnvProd.webClientId, isNotNull);
+        logI(EnvProd.webClientId);
       });
     });
   });

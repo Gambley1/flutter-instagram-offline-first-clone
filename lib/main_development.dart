@@ -2,6 +2,7 @@
 
 import 'package:chats_repository/chats_repository.dart';
 import 'package:database_client/database_client.dart';
+import 'package:env/env.dart';
 import 'package:firebase_notifications_client/firebase_notifications_client.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/bootstrap.dart';
@@ -27,10 +28,8 @@ void main() {
 
       final tokenStorage = InMemoryTokenStorage();
 
-      const iosClientId =
-          '252024091655-mbgan2drcc8kt01ice9jn8ihng58lkfa.apps.googleusercontent.com';
-      const webClientId =
-          '252024091655-0o1roll36n9f5lpv2vj9e3hir3trsl1f.apps.googleusercontent.com';
+      final iosClientId = EnvDev.iOSClientId;
+      final webClientId = EnvDev.webClientId;
       final googleSignIn =
           GoogleSignIn(clientId: iosClientId, serverClientId: webClientId);
 
