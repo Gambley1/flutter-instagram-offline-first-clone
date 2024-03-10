@@ -97,7 +97,7 @@ dev_dependencies:
     sdk: flutter
   json_serializable: ^6.7.1
   mocktail: ^1.0.3
-  slang_build_runner: ^3.29.0
+  slang_build_runner: ^3.30.0
   very_good_analysis: ^5.1.0
 
 flutter:
