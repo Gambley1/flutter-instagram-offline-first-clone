@@ -286,28 +286,26 @@ class UserProfileAppBar extends StatelessWidget {
         centerTitle: false,
         pinned: !ModalRoute.of(context)!.isFirst,
         floating: ModalRoute.of(context)!.isFirst,
-        title: user.username == null
-            ? null
-            : Row(
-                children: [
-                  Flexible(
-                    flex: 12,
-                    child: Text(
-                      '${user.username} ',
-                      style: context.titleLarge?.copyWith(
-                        fontWeight: AppFontWeight.bold,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  Flexible(
-                    child: Assets.icons.verifiedUser.svg(
-                      width: AppSize.iconSizeSmall,
-                      height: AppSize.iconSizeSmall,
-                    ),
-                  ),
-                ],
+        title: Row(
+          children: [
+            Flexible(
+              flex: 12,
+              child: Text(
+                '${user.displayUsername} ',
+                style: context.titleLarge?.copyWith(
+                  fontWeight: AppFontWeight.bold,
+                ),
+                overflow: TextOverflow.ellipsis,
               ),
+            ),
+            Flexible(
+              child: Assets.icons.verifiedUser.svg(
+                width: AppSize.iconSizeSmall,
+                height: AppSize.iconSizeSmall,
+              ),
+            ),
+          ],
+        ),
         actions: userId != null && userId != currentUser.id ||
                 (userId == null && !ModalRoute.of(context)!.isFirst)
             ? const [

@@ -47,6 +47,12 @@ class CustomCrop extends StatefulWidget {
 }
 
 class CustomCropState extends State<CustomCrop> with TickerProviderStateMixin {
+  @override
+  void setState(VoidCallback fn) {
+    if (!mounted) return;
+    super.setState(fn);
+  }
+
   final _surfaceKey = GlobalKey();
 
   late final AnimationController _activeController;

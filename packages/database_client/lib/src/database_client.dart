@@ -379,7 +379,8 @@ SELECT
   posts.*,
   p.id as user_id,
   p.avatar_url as avatar_url,
-  p.username as username
+  p.username as username,
+  p.full_name as full_name
 FROM
   posts
   left join profiles p on posts.user_id = p.id 
@@ -398,7 +399,8 @@ ORDER BY created_at DESC
 SELECT
   posts.*,
   p.avatar_url as avatar_url,
-  p.username as username
+  p.username as username,
+  p.full_name as full_name
 FROM
   posts
   left join profiles p on posts.user_id = p.id 
@@ -524,7 +526,8 @@ SELECT
   posts.*,
   p.id as user_id,
   p.avatar_url as avatar_url,
-  p.username as username
+  p.username as username,
+  p.full_name as full_name
 FROM
   posts
   inner join profiles p on posts.user_id = p.id 
@@ -600,7 +603,8 @@ SELECT
   posts.*,
   p.id as user_id,
   p.avatar_url as avatar_url,
-  p.username as username
+  p.username as username,
+  p.full_name as full_name
 FROM
   posts
   join profiles p on posts.user_id = p.id 
@@ -1134,6 +1138,7 @@ SELECT
   p.media as shared_post_media,
   p_author.id as shared_post_author_id,
   p_author.username as shared_post_author_username,
+  p_author.full_name as shared_post_author_full_name,
   p_author.avatar_url as shared_post_author_avatar_url
 FROm
   messages m

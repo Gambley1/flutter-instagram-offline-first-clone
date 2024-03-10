@@ -163,7 +163,7 @@ class _ChatMessageTextFieldInputState extends State<ChatMessageTextFieldInput>
     final hasChanges = hasEditingMessage &&
         _effectiveController.editingMessage?.message !=
             _effectiveController.message.message;
-            
+
     void sendMessage(Message message) {
       context.read<ChatBloc>().add(
             ChatSendMessageRequested(
@@ -460,19 +460,17 @@ class ReplyMessagePreview extends StatelessWidget {
                     withAdaptiveColors: false,
                     borderRadius: 4,
                   ),
-            title: replyingMessage.replyMessageUsername == null
-                ? null
-                : Text(
-                    context.l10n.replyToText(
-                      replyingMessage.replyMessageUsername ?? 'unknown',
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: context.bodyLarge?.copyWith(
-                      fontWeight: AppFontWeight.bold,
-                      color: AppColors.blue,
-                    ),
-                  ),
+            title: Text(
+              context.l10n.replyToText(
+                replyingMessage.sender?.username ?? 'unknown',
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: context.bodyLarge?.copyWith(
+                fontWeight: AppFontWeight.bold,
+                color: AppColors.blue,
+              ),
+            ),
             subtitle: replyingMessage.message.isEmpty &&
                     replyingMessage.sharedPost == null
                 ? null

@@ -41,13 +41,13 @@ class PostAuthor {
 
   /// {@macro post_author.confirmed}
   const PostAuthor.confirmed({
-    String? id,
+    required String id,
     String? avatarUrl,
     String? username,
   }) : this(
+          id: id,
           avatarUrl: avatarUrl ?? '',
-          id: id ?? '67c36f68-3b92-4e11-89e9-cd7a22f3c37b',
-          username: username ?? 'emil.zulufov',
+          username: username ?? '',
           isConfirmed: true,
         );
 
@@ -75,7 +75,8 @@ class PostAuthor {
   factory PostAuthor.fromShared(Map<String, dynamic> shared) => PostAuthor(
         id: shared['shared_post_author_id'] as String,
         avatarUrl: shared['shared_post_author_avatar_url'] as String? ?? '',
-        username: shared['shared_post_author_username'] as String,
+        username: shared['shared_post_author_username'] as String? ??
+            shared['shared_post_author_full_name'] as String,
       );
 
   /// The empty instance of the [PostAuthor].

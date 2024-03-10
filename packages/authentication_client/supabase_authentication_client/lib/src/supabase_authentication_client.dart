@@ -2,6 +2,7 @@ import 'package:authentication_client/authentication_client.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:powersync_repository/powersync_repository.dart';
+import 'package:shared/shared.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 import 'package:token_storage/token_storage.dart';
 
@@ -13,10 +14,10 @@ class SupabaseAuthenticationClient implements AuthenticationClient {
   SupabaseAuthenticationClient({
     required PowerSyncRepository powerSyncRepository,
     required TokenStorage tokenStorage,
-    GoogleSignIn? googleSignIn,
+    required GoogleSignIn googleSignIn,
   })  : _tokenStorage = tokenStorage,
         _powerSyncRepository = powerSyncRepository,
-        _googleSignIn = googleSignIn ?? GoogleSignIn.standard() {
+        _googleSignIn = googleSignIn {
     user.listen(_onUserChanged);
   }
 
@@ -59,19 +60,6 @@ class SupabaseAuthenticationClient implements AuthenticationClient {
     }
   }
 
-  /// Starts the Sign In with Apple Flow.
-  ///
-  /// Throws a [LogInWithAppleFailure] if an exception occurs.
-  @override
-  Future<void> logInWithApple() async {
-    try {
-      await _powerSyncRepository.supabase.auth
-          .signInWithOAuth(OAuthProvider.apple);
-    } catch (error, stackTrace) {
-      Error.throwWithStackTrace(LogInWithAppleFailure(error), stackTrace);
-    }
-  }
-
   /// Starts the Sign In with Google Flow.
   ///
   /// Throws a [LogInWithGoogleCanceled] if the flow is canceled by the user.
@@ -82,9 +70,17 @@ class SupabaseAuthenticationClient implements AuthenticationClient {
       final googleUser = await _googleSignIn.signIn();
       if (googleUser == null) {
         throw LogInWithGoogleCanceled(
-          Exception('Sign in with Google canceled'),
+          Exception('Sign in with Google canceled. No user found!'),
         );
       }
+      logI(
+        (
+          email: googleUser.email,
+          username: googleUser.displayName,
+          id: googleUser.id,
+          photoUrl: googleUser.photoUrl,
+        ),
+      );
       final googleAuth = await googleUser.authentication;
       final accessToken = googleAuth.accessToken;
       final idToken = googleAuth.idToken;
@@ -97,8 +93,8 @@ class SupabaseAuthenticationClient implements AuthenticationClient {
 
       await _powerSyncRepository.supabase.auth.signInWithIdToken(
         provider: OAuthProvider.google,
-        accessToken: accessToken,
         idToken: idToken,
+        accessToken: accessToken,
       );
     } on LogInWithGoogleCanceled {
       rethrow;
@@ -117,19 +113,6 @@ class SupabaseAuthenticationClient implements AuthenticationClient {
       rethrow;
     } catch (error, stackTrace) {
       Error.throwWithStackTrace(LogInWithFacebookFailure(error), stackTrace);
-    }
-  }
-
-  /// Starts the Sign In with Twitter Flow.
-  ///
-  /// Throws a [LogInWithTwitterCanceled] if the flow is canceled by the user.
-  /// Throws a [LogInWithTwitterFailure] if an exception occurs.
-  @override
-  Future<void> logInWithTwitter() async {
-    try {} on LogInWithTwitterCanceled {
-      rethrow;
-    } catch (error, stackTrace) {
-      Error.throwWithStackTrace(LogInWithTwitterFailure(error), stackTrace);
     }
   }
 
@@ -161,75 +144,6 @@ class SupabaseAuthenticationClient implements AuthenticationClient {
       );
     } catch (error, stackTrace) {
       Error.throwWithStackTrace(SignUpWithPasswordFailure(error), stackTrace);
-    }
-  }
-
-  /// Sends an authentication link to the provided [email].
-  ///
-  /// Opening the link redirects to the app with [appPackageName]
-  /// using Firebase Dynamic Links and authenticates the user
-  /// based on the provided email link.
-  ///
-  /// Throws a [SendLoginEmailLinkFailure] if an exception occurs.
-  @override
-  Future<void> sendLoginEmailLink({
-    required String email,
-    required String appPackageName,
-  }) async {
-    try {
-      // final redirectUrl = Uri.https(
-      //   const String.fromEnvironment('FLAVOR_DEEP_LINK_DOMAIN'),
-      //   const String.fromEnvironment('FLAVOR_DEEP_LINK_PATH'),
-      //   <String, String>{'email': email},
-      // );
-
-      // final actionCodeSettings = firebase_auth.ActionCodeSettings(
-      //   url: redirectUrl.toString(),
-      //   handleCodeInApp: true,
-      //   iOSBundleId: appPackageName,
-      //   androidPackageName: appPackageName,
-      //   androidInstallApp: true,
-      // );
-
-      // await _firebaseAuth.sendSignInLinkToEmail(
-      //   email: email,
-      //   actionCodeSettings: actionCodeSettings,
-      // );
-    } catch (error, stackTrace) {
-      Error.throwWithStackTrace(SendLoginEmailLinkFailure(error), stackTrace);
-    }
-  }
-
-  /// Checks if an incoming [emailLink] is a sign-in with email link.
-  ///
-  /// Throws a [IsLogInWithEmailLinkFailure] if an exception occurs.
-  @override
-  bool isLogInWithEmailLink({required String emailLink}) {
-    try {
-      // return _firebaseAuth.isSignInWithEmailLink(emailLink);
-      return false;
-    } catch (error, stackTrace) {
-      Error.throwWithStackTrace(IsLogInWithEmailLinkFailure(error), stackTrace);
-    }
-  }
-
-  /// Signs in with the provided [emailLink].
-  ///
-  /// Throws a [LogInWithEmailLinkFailure] if an exception occurs.
-  @override
-  Future<void> logInWithEmailLink({
-    required String email,
-    required String emailLink,
-  }) async {
-    try {
-      await _powerSyncRepository.supabase.auth.signInWithOtp(
-        email: email,
-        emailRedirectTo: kIsWeb
-            ? null
-            : 'io._powerSyncRepository.supabase.flutterquickstart://login-callback/',
-      );
-    } catch (error, stackTrace) {
-      Error.throwWithStackTrace(LogInWithEmailLinkFailure(error), stackTrace);
     }
   }
 
