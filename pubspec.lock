@@ -13,10 +13,10 @@ packages:
     dependency: transitive
     description:
       name: _flutterfire_internals
-      sha256: fe4c077084ddda88f327dc1c96d16631cd68d4948644593fcbcd911c2c89e2fa
+      sha256: "2489c399d8b23a12704bd9e056e3df957c69ceec621f4fc8d69fa7cd5211d1f4"
       url: "https://pub.dev"
     source: hosted
-    version: "1.3.23"
+    version: "1.3.24"
   align_positioned:
     dependency: transitive
     description:
@@ -567,10 +567,10 @@ packages:
     dependency: "direct main"
     description:
       name: firebase_core
-      sha256: "797379ea206eaeeb62499775de812761493d0692890fdc7f90b6183a3369176d"
+      sha256: a746f861618eef57a11d8b658a2db1fa5a336fc82ba65b7763d7e2292687de2b
       url: "https://pub.dev"
     source: hosted
-    version: "2.25.5"
+    version: "2.26.0"
   firebase_core_platform_interface:
     dependency: transitive
     description:
@@ -591,26 +591,26 @@ packages:
     dependency: "direct main"
     description:
       name: firebase_messaging
-      sha256: "1e15c5d90cd1dab98cdd169e258bceece1e98d3855350abe4196146443bbb08a"
+      sha256: d6a0abd7cc6e95235819962703670b54a2729b0ef5ff5a44ef51a9ac2cb44a30
       url: "https://pub.dev"
     source: hosted
-    version: "14.7.17"
+    version: "14.7.18"
   firebase_messaging_platform_interface:
     dependency: transitive
     description:
       name: firebase_messaging_platform_interface
-      sha256: "5e00f3e5c8b3f24b082dc20edb0c80d653ca87a87757db71218e045070fc7f8e"
+      sha256: "1109a16b69c3b4653f5dc266b1ac0a00f53c82a2ab13dd92ce58cfcd1038b6e3"
       url: "https://pub.dev"
     source: hosted
-    version: "4.5.25"
+    version: "4.5.26"
   firebase_messaging_web:
     dependency: transitive
     description:
       name: firebase_messaging_web
-      sha256: "59de3f85715416f97a842f307b54c23540cbba4a109a7125e2150082bb041966"
+      sha256: fb46f47c860be8268023b92faacfea6a4ed74e7197836dc19e7a272854903610
       url: "https://pub.dev"
     source: hosted
-    version: "3.6.6"
+    version: "3.6.7"
   firebase_notifications_client:
     dependency: "direct main"
     description:
@@ -784,10 +784,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_markdown
-      sha256: a64c5323ac83ed2b7940d2b6288d160aa1753ff271ba9d9b2a86770414aa3eab
+      sha256: cb44f7831b23a6bdd0f501718b0d2e8045cbc625a15f668af37ddb80314821db
       url: "https://pub.dev"
     source: hosted
-    version: "0.6.20+1"
+    version: "0.6.21"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
