@@ -17,4 +17,4 @@ jobs:
     uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/flutter_package.yml@v1
     with:
       flutter_version: 3.16.9
-      working_directory: ./packages/instagram_blocks_ui
+      working_directory: packages/instagram_blocks_ui

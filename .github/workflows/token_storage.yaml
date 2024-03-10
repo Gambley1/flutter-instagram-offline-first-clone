@@ -17,4 +17,4 @@ jobs:
     uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/dart_package.yml@v1
     with:
       dart_sdk: 3.2.6
-      working_directory: ./packages/authentication_client/token_storage
+      working_directory: packages/authentication_client/token_storage

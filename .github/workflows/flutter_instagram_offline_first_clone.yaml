@@ -41,7 +41,7 @@ jobs:
       - name: Install Dependencies
         run: |
           flutter pub global activate very_good_cli
-          very_good packages get --recursive
+          very_good packages get
 
       - name: Format
         run: dart format --set-exit-if-changed lib test
