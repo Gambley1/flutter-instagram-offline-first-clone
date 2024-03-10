@@ -319,7 +319,6 @@
       }
     }
   },
-  "searchText": "Search",
   "somethingWentWrongText": "Something went wrong!",
   "failedToCreateStoryText": "Failed to create story",
   "successfullyCreatedStoryText": "Successfully created story!",
@@ -374,21 +373,15 @@
   "themeText": "Theme",
   "systemOption": "System",
   "@systemOption": {
-    "description": "The option to use system-wide theme in the theme selector menu",
-    "type": "String",
-    "placeholders": {}
+    "description": "The option to use system-wide theme in the theme selector menu"
   },
   "lightModeOption": "Light",
   "@lightModeOption": {
-    "description": "The option for light mode in the theme selector menu",
-    "type": "String",
-    "placeholders": {}
+    "description": "The option for light mode in the theme selector menu"
   },
   "darkModeOption": "Dark",
   "@darkModeOption": {
-    "description": "The option for dark mode in the theme selector menu",
-    "type": "String",
-    "placeholders": {}
+    "description": "The option for dark mode in the theme selector menu"
   },
   "languageText": "Language",
   "ruOptionText": "Russian",
@@ -465,12 +458,10 @@
   },
   "networkError": "A network error has occured.\nCheck your connection and try again.",
   "@networkError": {
-    "description": "Text displayed when a network error occurs.",
-    "type": "String"
+    "description": "Text displayed when a network error occurs."
   },
   "networkErrorButton": "Try Again",
   "@networkErrorButton": {
-    "description": "Text displayed on the refresh button when a network error occurs.",
-    "type": "String"
+    "description": "Text displayed on the refresh button when a network error occurs."
   }
 }

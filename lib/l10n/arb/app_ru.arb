@@ -32,7 +32,7 @@
   "tapToTypeText": "Нажмите, чтобы печатать...",
   "uploadText": "Загрузить",
   "loseAllEditsText": "Если вы вернетесь сейчас, вы потеряете все внесенные вами изменения.",
-  "successfullySaved": "Успешно сохранено",
+  "successfullySavedText": "Успешно сохранено",
   "saveDraft": "Сохранить черновик",
   "draftEmpty": "Черновик пустой",
   "errorText": "Ошибка",
@@ -241,7 +241,7 @@
   "deletePostConfirmationText": "Вы уверены что хотите удальть эту публикацию?",
   "cancelText": "Отмена",
   "captionText": "Описание",
-  "noCameraFound": "Камера не найдена!",
+  "noCameraFoundText": "Камера не найдена!",
   "videoText": "ВИДЕО",
   "photoText": "ФОТО",
   "clearImagesText": "Очистить выбранные изображения",
@@ -251,7 +251,6 @@
   "holdButtonText": "Нажмите и удерживайте, чтобы записать",
   "noImagesFoundedText": "Нет изображений",
   "acceptAllPermissionsText": "Примите все необходимые разрешения!",
-  "searchText": "Поиск",
   "addMessageText": "Сообщение",
   "messageText": "Сообщение",
   "editPictureText": "Изменить фото",
@@ -324,10 +323,10 @@
   "emailText": "Почта",
   "passwordText": "Пароль",
   "loginText": "Войти",
-  "signUp": "Зарегестрироваться",
+  "signUpText": "Зарегестрироваться",
   "bioText": "Биография",
   "postUnavailableText": "Пост недоступен",
-  "postUnavailableDescription": "Этот пост недоступен",
+  "postUnavailableDescriptionText": "Этот пост недоступен",
   "editedText": "изменено",
   "editText": "Редактировать",
   "deleteText": "Удалить",
@@ -344,21 +343,15 @@
   "themeText": "Тема",
   "systemOption": "Системная",
   "@systemOption": {
-    "description": "The option to use system-wide theme in the theme selector menu",
-    "type": "String",
-    "placeholders": {}
+    "description": "The option to use system-wide theme in the theme selector menu"
   },
   "lightModeOption": "Светлая",
   "@lightModeOption": {
-    "description": "The option for light mode in the theme selector menu",
-    "type": "String",
-    "placeholders": {}
+    "description": "The option for light mode in the theme selector menu"
   },
   "darkModeOption": "Тёмная",
   "@darkModeOption": {
-    "description": "The option for dark mode in the theme selector menu",
-    "type": "String",
-    "placeholders": {}
+    "description": "The option for dark mode in the theme selector menu"
   },
   "languageText": "Язык",
   "ruOptionText": "Русский",
@@ -435,12 +428,10 @@
   },
   "networkError": "Произошла сетевая ошибка.\nПроверьте подключение и повторите попытку.",
   "@networkError": {
-    "description": "Текст, отображаемый при возникновении сетевой ошибки.",
-    "type": "String"
+    "description": "Текст, отображаемый при возникновении сетевой ошибки."
   },
   "networkErrorButton": "Попробуйте ещё раз",
   "@networkErrorButton": {
-    "description": "Текст, отображаемый на кнопке обновления при возникновении сетевой ошибки.",
-    "type": "String"
+    "description": "Текст, отображаемый на кнопке обновления при возникновении сетевой ошибки."
   }
 }
