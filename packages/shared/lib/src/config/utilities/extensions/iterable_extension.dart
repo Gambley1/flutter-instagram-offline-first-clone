@@ -1,5 +1,3 @@
-import 'dart:developer' as dev;
-
 import 'package:shared/shared.dart';
 
 /// Iterable extensions
@@ -32,8 +30,10 @@ extension IterableExtension<T> on Iterable<T> {
       map((e) {
         try {
           return toElement(e);
-        } catch (e) {
-          if (logError) logE('Error in safeMap: $e');
+        } catch (error, stackTrace) {
+          if (logError) {
+            logE('Error in safeMap.', error: error, stackTrace: stackTrace);
+          }
           return null;
         }
       });
@@ -50,8 +50,10 @@ extension IterableExtension<T> on Iterable<T> {
     for (final element in this) {
       try {
         yield toElement(element);
-      } catch (error) {
-        if (logError) dev.log('Error in safeMap: $error');
+      } catch (error, stackTrace) {
+        if (logError) {
+          logE('Error in safeMap.', error: error, stackTrace: stackTrace);
+        }
       }
     }
   }

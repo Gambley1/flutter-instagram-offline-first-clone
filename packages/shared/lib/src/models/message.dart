@@ -141,7 +141,9 @@ class Message extends Equatable {
       sender: PostAuthor.confirmed(
         id: row['from_id'] as String,
         avatarUrl: row['avatar_url'] as String?,
-        username: row['username'] as String,
+        username: row['username'] == null
+            ? row['full_name'] as String
+            : row['username'] as String,
       ),
       type: (row['type'] as String).toMessageType ?? MessageType.text,
       message: row['message'] as String,

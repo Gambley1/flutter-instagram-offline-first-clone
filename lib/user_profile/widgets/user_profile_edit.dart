@@ -101,7 +101,7 @@ class _UserProfileEditViewState extends State<UserProfileEditView> {
                           value: user.username,
                           label: context.l10n.usernameText,
                           description: context.l10n.usernameEditDescription(
-                            user.username!,
+                            user.username ?? '',
                           ),
                           infoType: ProfileEditInfoType.username,
                         ),

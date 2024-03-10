@@ -30,19 +30,6 @@ class UserRepository implements UserBaseRepository {
   Stream<AuthState> authStateChanges() =>
       Supabase.instance.client.auth.onAuthStateChange.asBroadcastStream();
 
-  /// Starts the Sign In with Apple Flow.
-  ///
-  /// Throws a [LogInWithAppleFailure] if an exception occurs.
-  Future<void> logInWithApple() async {
-    try {
-      await _authenticationClient.logInWithApple();
-    } on LogInWithAppleFailure {
-      rethrow;
-    } catch (error, stackTrace) {
-      Error.throwWithStackTrace(LogInWithAppleFailure(error), stackTrace);
-    }
-  }
-
   /// Starts the Sign In with Google Flow.
   ///
   /// Throws a [LogInWithGoogleCanceled] if the flow is canceled by the user.
@@ -59,22 +46,6 @@ class UserRepository implements UserBaseRepository {
     }
   }
 
-  /// Starts the Sign In with Twitter Flow.
-  ///
-  /// Throws a [LogInWithTwitterCanceled] if the flow is canceled by the user.
-  /// Throws a [LogInWithTwitterFailure] if an exception occurs.
-  Future<void> logInWithTwitter() async {
-    try {
-      await _authenticationClient.logInWithTwitter();
-    } on LogInWithTwitterFailure {
-      rethrow;
-    } on LogInWithTwitterCanceled {
-      rethrow;
-    } catch (error, stackTrace) {
-      Error.throwWithStackTrace(LogInWithTwitterFailure(error), stackTrace);
-    }
-  }
-
   /// Starts the Sign In with Facebook Flow.
   ///
   /// Throws a [LogInWithFacebookCanceled] if the flow is canceled by the user.
@@ -88,43 +59,6 @@ class UserRepository implements UserBaseRepository {
       rethrow;
     } catch (error, stackTrace) {
       Error.throwWithStackTrace(LogInWithFacebookFailure(error), stackTrace);
-    }
-  }
-
-  /// Sends an authentication link to the provided [email].
-  ///
-  /// Throws a [SendLoginEmailLinkFailure] if an exception occurs.
-  Future<void> sendLoginEmailLink({
-    required String email,
-  }) async {
-    try {
-      await _authenticationClient.sendLoginEmailLink(
-        email: email,
-        appPackageName: 'gambley1_instagram_clone',
-      );
-    } on SendLoginEmailLinkFailure {
-      rethrow;
-    } catch (error, stackTrace) {
-      Error.throwWithStackTrace(SendLoginEmailLinkFailure(error), stackTrace);
-    }
-  }
-
-  /// Signs in with the provided [email] and [emailLink].
-  ///
-  /// Throws a [LogInWithEmailLinkFailure] if an exception occurs.
-  Future<void> logInWithEmailLink({
-    required String email,
-    required String emailLink,
-  }) async {
-    try {
-      await _authenticationClient.logInWithEmailLink(
-        email: email,
-        emailLink: emailLink,
-      );
-    } on LogInWithEmailLinkFailure {
-      rethrow;
-    } catch (error, stackTrace) {
-      Error.throwWithStackTrace(LogInWithEmailLinkFailure(error), stackTrace);
     }
   }
 

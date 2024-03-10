@@ -32,7 +32,7 @@ class Post {
             () => {
               'id': json['user_id'],
               'avatar_url': json['avatar_url'],
-              'username': json['username'],
+              'username': json['username'] ?? json['full_name'],
             },
           ),
       );

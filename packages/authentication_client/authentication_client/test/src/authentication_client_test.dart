@@ -9,34 +9,6 @@ void main() {
     expect(FakeAuthenticationClient.new, returnsNormally);
   });
 
-  test('exports SendLoginEmailLinkFailure', () {
-    expect(
-      () => const SendLoginEmailLinkFailure('oops'),
-      returnsNormally,
-    );
-  });
-
-  test('exports IsLogInWithEmailLinkFailure', () {
-    expect(
-      () => const IsLogInWithEmailLinkFailure('oops'),
-      returnsNormally,
-    );
-  });
-
-  test('exports LogInWithEmailLinkFailure', () {
-    expect(
-      () => const LogInWithEmailLinkFailure('oops'),
-      returnsNormally,
-    );
-  });
-
-  test('exports LogInWithAppleFailure', () {
-    expect(
-      () => const LogInWithAppleFailure('oops'),
-      returnsNormally,
-    );
-  });
-
   test('exports LogInWithGoogleFailure', () {
     expect(
       () => const LogInWithGoogleFailure('oops'),
@@ -61,20 +33,6 @@ void main() {
   test('exports LogInWithFacebookCanceled', () {
     expect(
       () => const LogInWithFacebookCanceled('oops'),
-      returnsNormally,
-    );
-  });
-
-  test('exports LogInWithTwitterFailure', () {
-    expect(
-      () => const LogInWithTwitterFailure('oops'),
-      returnsNormally,
-    );
-  });
-
-  test('exports LogInWithTwitterCanceled', () {
-    expect(
-      () => const LogInWithTwitterCanceled('oops'),
       returnsNormally,
     );
   });

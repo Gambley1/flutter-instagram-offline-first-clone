@@ -291,8 +291,8 @@ class _SharePostButtonState extends State<SharePostButton> {
                 sharedPostMessage: Message(
                   sender: PostAuthor(
                     id: user.id,
-                    avatarUrl: user.avatarUrl!,
-                    username: user.username!,
+                    avatarUrl: user.avatarUrl ?? '',
+                    username: user.displayUsername,
                   ),
                 ),
                 message: _messageController.text.trim().isEmpty
@@ -310,15 +310,14 @@ class _SharePostButtonState extends State<SharePostButton> {
       ),
     );
     try {
-      await Future.wait(postShareFutures).whenComplete(() {
-        pop.call();
-        openSnackbar(
-          const SnackbarMessage.success(
-            title: 'Successfully shared post!',
-          ),
-        );
-        toggleLoadingIndeterminate(enable: false);
-      });
+      await Future.wait(postShareFutures);
+      pop.call();
+      openSnackbar(
+        const SnackbarMessage.success(
+          title: 'Successfully shared post!',
+        ),
+      );
+      toggleLoadingIndeterminate(enable: false);
     } catch (error, stackTrace) {
       logE(
         'Failed to share post.',

@@ -115,6 +115,14 @@ class LoginCubit extends Cubit<LoginState> {
     emit(initalState);
   }
 
+  Future<void> loginWithGoogle() async {
+    try {
+      await _userRepository.logInWithGoogle();
+    } catch (error, stackTrace) {
+      _errorFormatter(error, stackTrace);
+    }
+  }
+
   /// Taking into account current [Email] and [Password] state, checking its
   /// value and validates it, in order to check if form itself valid
   /// to proccess to login, in order to prevent invalid user authorizing
@@ -149,7 +157,7 @@ class LoginCubit extends Cubit<LoginState> {
 
   /// Formats error, that occured during login process.
   void _errorFormatter(Object e, StackTrace stackTrace) {
-    // print('$e $stackTrace');
+    logE('Failed to login.', error: e, stackTrace: stackTrace);
     addError(e, stackTrace);
     LoginSubmissionStatus status() {
       if (e is AuthException) {

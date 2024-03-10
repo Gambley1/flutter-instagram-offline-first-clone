@@ -1,10 +1,12 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/view/view.dart';
 import 'package:flutter_instagram_offline_first_clone/auth/components/login/components/auth_provider_signin_button.dart';
 import 'package:flutter_instagram_offline_first_clone/auth/components/login/components/components.dart';
 import 'package:flutter_instagram_offline_first_clone/auth/components/login/components/login_form.dart';
 import 'package:flutter_instagram_offline_first_clone/auth/components/login/components/signin_button.dart';
+import 'package:flutter_instagram_offline_first_clone/auth/components/login/cubit/login_cubit.dart';
 
 class LoginView extends StatelessWidget {
   const LoginView({super.key});
@@ -23,12 +25,12 @@ class LoginView extends StatelessWidget {
                 minWidth: constraints.maxWidth,
                 minHeight: constraints.maxHeight,
               ),
-              child: const IntrinsicHeight(
+              child: IntrinsicHeight(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SizedBox(height: AppSpacing.xxxlg + AppSpacing.xxxlg),
-                    AppLogo(
+                    const SizedBox(height: AppSpacing.xxxlg + AppSpacing.xxxlg),
+                    const AppLogo(
                       height: AppSpacing.xxxlg,
                       fit: BoxFit.fitHeight,
                       width: double.infinity,
@@ -37,8 +39,8 @@ class LoginView extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          LoginForm(),
-                          Padding(
+                          const LoginForm(),
+                          const Padding(
                             padding: EdgeInsets.only(
                               bottom: AppSpacing.md,
                               top: AppSpacing.xs,
@@ -48,8 +50,8 @@ class LoginView extends StatelessWidget {
                               child: ForgotPasswordButton(),
                             ),
                           ),
-                          Align(child: SignInButton()),
-                          Padding(
+                          const Align(child: SignInButton()),
+                          const Padding(
                             padding: EdgeInsets.symmetric(
                               vertical: AppSpacing.md,
                             ),
@@ -58,11 +60,11 @@ class LoginView extends StatelessWidget {
                           Align(
                             child: AuthProviderSignInButton(
                               provider: AuthProvider.google,
-                              // TODO(googlesignin): Implement google sign in
-                              onPressed: showCurrentlyUnavailableFeature,
+                              onPressed: () =>
+                                  context.read<LoginCubit>().loginWithGoogle(),
                             ),
                           ),
-                          Align(
+                          const Align(
                             child: AuthProviderSignInButton(
                               provider: AuthProvider.facebook,
                               // TODO(facebooksignin): Implement facebook login
@@ -72,7 +74,7 @@ class LoginView extends StatelessWidget {
                         ],
                       ),
                     ),
-                    SignupNewAccountButton(),
+                    const SignupNewAccountButton(),
                   ],
                 ),
               ),

@@ -599,7 +599,7 @@ extension PostX on Post {
         author: PostAuthor.confirmed(
           id: author.id,
           avatarUrl: author.avatarUrl,
-          username: author.username,
+          username: author.displayUsername,
         ),
         createdAt: createdAt,
         media: media,
@@ -614,7 +614,7 @@ extension PostX on Post {
         author: PostAuthor.confirmed(
           id: author.id,
           avatarUrl: author.avatarUrl,
-          username: author.username,
+          username: author.displayUsername,
         ),
         createdAt: createdAt,
         media: media,
@@ -627,7 +627,7 @@ extension PostX on Post {
         author: PostAuthor.confirmed(
           id: author.id,
           avatarUrl: author.avatarUrl,
-          username: author.username,
+          username: author.displayUsername,
         ),
         createdAt: createdAt,
         media: media,
