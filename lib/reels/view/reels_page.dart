@@ -153,9 +153,7 @@ class _ReelsViewState extends State<ReelsView> {
 }
 
 class NoReelsFound extends StatelessWidget {
-  const NoReelsFound({
-    super.key,
-  });
+  const NoReelsFound({super.key});
 
   @override
   Widget build(BuildContext context) {

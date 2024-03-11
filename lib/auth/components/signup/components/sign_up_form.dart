@@ -3,23 +3,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/auth/components/signup/components/components.dart';
-import 'package:flutter_instagram_offline_first_clone/auth/components/signup/cubit/signup_cubit.dart';
+import 'package:flutter_instagram_offline_first_clone/auth/components/signup/cubit/sign_up_cubit.dart';
 
-/// {@template signup_form}
-/// Signup form that contains email and password fields.
+/// {@template sign_up_form}
+/// Sign up form that contains email and password fields.
 /// {@endtemplate}
-class SignupForm extends StatefulWidget {
-  /// {@macro signup_form}
-  const SignupForm({super.key});
+class SignUpForm extends StatefulWidget {
+  /// {@macro sign_up_form}
+  const SignUpForm({super.key});
 
   @override
-  State<SignupForm> createState() => _SignupFormState();
+  State<SignUpForm> createState() => _SignUpFormState();
 }
 
-class _SignupFormState extends State<SignupForm> {
+class _SignUpFormState extends State<SignUpForm> {
   @override
   Widget build(BuildContext context) {
-    return BlocListener<SignupCubit, SignupState>(
+    return BlocListener<SignUpCubit, SignupState>(
       listener: (context, state) {
         if (state.isError) {
           openSnackbar(

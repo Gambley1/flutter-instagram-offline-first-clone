@@ -7,62 +7,74 @@ part of 'login_cubit.dart';
 typedef LoginErrorMessage = String;
 
 /// [LoginState] submission status, indicating current state of user loginng in.
-enum LoginSubmissionStatus {
-  /// [LoginSubmissionStatus.idle] indicates that user has not yet submitted
+enum LogInSubmissionStatus {
+  /// [LogInSubmissionStatus.idle] indicates that user has not yet submitted
   /// login form.
   idle,
 
-  /// [LoginSubmissionStatus.inProgress] indicates that user has submitted
+  /// [LogInSubmissionStatus.loading] indicates that user has submitted
   /// login form and is currently waiting for response from backend.
-  inProgress,
+  loading,
 
-  /// [LoginSubmissionStatus.success] indicates that user has successfully
+  /// [LogInSubmissionStatus.googleAuthInProgress] indicates that user has
+  /// submitted login with google.
+  googleAuthInProgress,
+
+  /// [LogInSubmissionStatus.success] indicates that user has successfully
   /// submitted login form and is currently waiting for response from backend.
   success,
 
-  /// [LoginSubmissionStatus.invalidCredentials] indicates that user has
+  /// [LogInSubmissionStatus.invalidCredentials] indicates that user has
   /// submitted login form with invalid credentials.
   invalidCredentials,
 
-  /// [LoginSubmissionStatus.userNotFound] indicates that user with provided
+  /// [LogInSubmissionStatus.userNotFound] indicates that user with provided
   /// credentials was not found in database.
   userNotFound,
 
-  /// [LoginSubmissionStatus.inProgress] indicates that user has no iternet
+  /// [LogInSubmissionStatus.loading] indicates that user has no iternet
   /// connection,during network request.
   networkError,
 
-  /// [LoginSubmissionStatus.error] indicates that something unexpected happen.
+  /// [LogInSubmissionStatus.error] indicates that something unexpected happen.
   error,
+
+  /// [LogInSubmissionStatus.googleLogInFailure] indicates that some went
+  /// wrong during google login process.
+  googleLogInFailure,
 }
 
-/// Extension on [LoginSubmissionStatus] that checks current status.
-extension SubmissionStatusX on LoginSubmissionStatus {
+/// Extension on [LogInSubmissionStatus] that checks current status.
+extension SubmissionStatusX on LogInSubmissionStatus {
   /// Checks if current submission status is success.
-  bool get isSuccess => this == LoginSubmissionStatus.success;
+  bool get isSuccess => this == LogInSubmissionStatus.success;
 
   /// Checks if current submission status is in progress.
-  bool get isLoading => this == LoginSubmissionStatus.inProgress;
+  bool get isLoading => this == LogInSubmissionStatus.loading;
+
+  /// Whether authentication with google provider is in progress.
+  bool get isGoogleAuthInProgress =>
+      this == LogInSubmissionStatus.googleAuthInProgress;
 
   /// Checks if current submission status is invalid credentials.
   bool get isInvalidCredentials =>
-      this == LoginSubmissionStatus.invalidCredentials;
+      this == LogInSubmissionStatus.invalidCredentials;
 
   /// Checks if current submission status is network error.
-  bool get isNetworkError => this == LoginSubmissionStatus.networkError;
+  bool get isNetworkError => this == LogInSubmissionStatus.networkError;
 
   /// Checks if current submission status is user not found.
-  bool get isUserNotFound => this == LoginSubmissionStatus.userNotFound;
+  bool get isUserNotFound => this == LogInSubmissionStatus.userNotFound;
 
   /// Checks if current submission status is error.
   bool get isError =>
-      this == LoginSubmissionStatus.error ||
+      this == LogInSubmissionStatus.error ||
       isUserNotFound ||
       isNetworkError ||
       isInvalidCredentials;
 }
 
-/// Extension on [LoginSubmissionStatus] that returns associated error message.
+/// Extension on [LogInSubmissionStatus] that returns associated error message.
 /// If there is no error message associated with current submission status,
 /// returns empty string.
 extension FormFieldsValidationErrorExtension on LoginState {
@@ -105,7 +117,7 @@ class LoginState {
   /// Initial login state.
   const LoginState.initial()
       : this._(
-          status: LoginSubmissionStatus.idle,
+          status: LogInSubmissionStatus.idle,
           message: '',
           showPassword: false,
           email: const Email.unvalidated(),
@@ -113,7 +125,7 @@ class LoginState {
         );
 
   /// Submission status, used to indicate current login state.
-  final LoginSubmissionStatus status;
+  final LogInSubmissionStatus status;
 
   /// Error message, thrown during network request or user wrong enteractions.
   final LoginErrorMessage message;
@@ -130,7 +142,7 @@ class LoginState {
   /// Copywith method to make it possible to clone or duplicate current login
   /// state to make mutations and persist other parameters.
   LoginState copyWith({
-    LoginSubmissionStatus? status,
+    LogInSubmissionStatus? status,
     LoginErrorMessage? message,
     bool? showPassword,
     Email? email,
@@ -147,15 +159,19 @@ class LoginState {
 }
 
 final loginSubmissionStatusMessage =
-    <LoginSubmissionStatus, SubmissionStatusMessage>{
-  LoginSubmissionStatus.error: const SubmissionStatusMessage.genericError(),
-  LoginSubmissionStatus.networkError:
+    <LogInSubmissionStatus, SubmissionStatusMessage>{
+  LogInSubmissionStatus.error: const SubmissionStatusMessage.genericError(),
+  LogInSubmissionStatus.networkError:
       const SubmissionStatusMessage.networkError(),
-  LoginSubmissionStatus.invalidCredentials: const SubmissionStatusMessage(
+  LogInSubmissionStatus.invalidCredentials: const SubmissionStatusMessage(
     title: 'Email and/or password are incorrect.',
   ),
-  LoginSubmissionStatus.userNotFound: const SubmissionStatusMessage(
+  LogInSubmissionStatus.userNotFound: const SubmissionStatusMessage(
     title: 'User with this email not found!',
     description: 'Try to sign up.',
+  ),
+  LogInSubmissionStatus.googleLogInFailure: const SubmissionStatusMessage(
+    title: 'Google login failed!',
+    description: 'Try again later.',
   ),
 };

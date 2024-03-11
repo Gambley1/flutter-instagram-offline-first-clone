@@ -2,10 +2,10 @@ import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/view/view.dart';
-import 'package:flutter_instagram_offline_first_clone/auth/components/login/components/auth_provider_signin_button.dart';
+import 'package:flutter_instagram_offline_first_clone/auth/components/login/components/auth_provider_sign_in_button.dart';
 import 'package:flutter_instagram_offline_first_clone/auth/components/login/components/components.dart';
 import 'package:flutter_instagram_offline_first_clone/auth/components/login/components/login_form.dart';
-import 'package:flutter_instagram_offline_first_clone/auth/components/login/components/signin_button.dart';
+import 'package:flutter_instagram_offline_first_clone/auth/components/login/components/sign_in_button.dart';
 import 'package:flutter_instagram_offline_first_clone/auth/components/login/cubit/login_cubit.dart';
 
 class LoginView extends StatelessWidget {
@@ -74,7 +74,7 @@ class LoginView extends StatelessWidget {
                         ],
                       ),
                     ),
-                    const SignupNewAccountButton(),
+                    const SignUpNewAccountButton(),
                   ],
                 ),
               ),

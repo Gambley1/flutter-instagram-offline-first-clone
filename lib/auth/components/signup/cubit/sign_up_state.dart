@@ -1,5 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-part of 'signup_cubit.dart';
+part of 'sign_up_cubit.dart';
 
 /// Message that will be shown to user, when he will try to submit signup form,
 /// but there is an error occured. It is used to show user, what exactly went
@@ -9,28 +9,28 @@ typedef SingUpErrorMessage = String;
 /// Defines possible signup submission statuses. It is used to manipulate with
 /// state, using Bloc, according to state. Therefore, when [success] we
 /// can simply navigate user to main page and such.
-enum SignupSubmissionStatus {
-  /// [SignupSubmissionStatus.idle] indicates that user has not yet submitted
+enum SignUpSubmissionStatus {
+  /// [SignUpSubmissionStatus.idle] indicates that user has not yet submitted
   /// signup form.
   idle,
 
-  /// [SignupSubmissionStatus.inProgress] indicates that user has submitted
+  /// [SignUpSubmissionStatus.inProgress] indicates that user has submitted
   /// signup form and is currently waiting for response from backend.
   inProgress,
 
-  /// [SignupSubmissionStatus.success] indicates that user has successfully
+  /// [SignUpSubmissionStatus.success] indicates that user has successfully
   /// submitted signup form and is currently waiting for response from backend.
   success,
 
-  /// [SignupSubmissionStatus.emailAlreadyRegistered] indicates that email,
+  /// [SignUpSubmissionStatus.emailAlreadyRegistered] indicates that email,
   /// provided by user, is occupied by another one in database.
   emailAlreadyRegistered,
 
-  /// [SignupSubmissionStatus.inProgress] indicates that user had no iternet
+  /// [SignUpSubmissionStatus.inProgress] indicates that user had no iternet
   /// connection during network request.
   networkError,
 
-  /// [SignupSubmissionStatus.error] indicates something went wrong when user
+  /// [SignUpSubmissionStatus.error] indicates something went wrong when user
   /// tried to sign up.
   error,
 }
@@ -38,22 +38,22 @@ enum SignupSubmissionStatus {
 /// Checks current submission status of signup state.
 extension SignUpSubmissionStatusX on SignupState {
   /// Checks if current submission status is success.
-  bool get isSuccess => submissionStatus == SignupSubmissionStatus.success;
+  bool get isSuccess => submissionStatus == SignUpSubmissionStatus.success;
 
   /// Checks if current submission status is in progress.
-  bool get isLoading => submissionStatus == SignupSubmissionStatus.inProgress;
+  bool get isLoading => submissionStatus == SignUpSubmissionStatus.inProgress;
 
   /// Checks if current submission status is email registered.
   bool get isEmailRegistered =>
-      submissionStatus == SignupSubmissionStatus.emailAlreadyRegistered;
+      submissionStatus == SignUpSubmissionStatus.emailAlreadyRegistered;
 
   /// Checks if current submission status is network error.
   bool get isNetworkError =>
-      submissionStatus == SignupSubmissionStatus.networkError;
+      submissionStatus == SignUpSubmissionStatus.networkError;
 
   /// Checks if current submission status is error.
   bool get isError =>
-      submissionStatus == SignupSubmissionStatus.error ||
+      submissionStatus == SignUpSubmissionStatus.error ||
       isNetworkError ||
       isEmailRegistered;
 }
@@ -113,7 +113,7 @@ class SignupState extends Equatable {
   });
 
   /// Creates initial signup state. It is used to define initial state in
-  /// [SignupCubit].
+  /// [SignUpCubit].
   const SignupState.initial()
       : this._(
           fullName: const FullName.unvalidated(),
@@ -121,7 +121,7 @@ class SignupState extends Equatable {
           password: const Password.unvalidated(),
           username: const Username.unvalidated(),
           userProfileAvatarUrl: '',
-          submissionStatus: SignupSubmissionStatus.idle,
+          submissionStatus: SignUpSubmissionStatus.idle,
           showPassword: false,
         );
 
@@ -137,8 +137,8 @@ class SignupState extends Equatable {
   /// Stores username valid and value state.
   final Username username;
 
-  /// Signup submission status state.
-  final SignupSubmissionStatus submissionStatus;
+  /// Sign up submission status state.
+  final SignUpSubmissionStatus submissionStatus;
 
   /// Stores profile picture value state.
   final String? userProfileAvatarUrl;
@@ -153,7 +153,7 @@ class SignupState extends Equatable {
     FullName? fullName,
     Username? username,
     String? userProfileAvatarUrl,
-    SignupSubmissionStatus? submissionStatus,
+    SignUpSubmissionStatus? submissionStatus,
     bool? showPassword,
   }) =>
       SignupState._(
@@ -179,12 +179,12 @@ class SignupState extends Equatable {
 }
 
 final signupSubmissionStatusMessage =
-    <SignupSubmissionStatus, SubmissionStatusMessage>{
-  SignupSubmissionStatus.emailAlreadyRegistered: const SubmissionStatusMessage(
+    <SignUpSubmissionStatus, SubmissionStatusMessage>{
+  SignUpSubmissionStatus.emailAlreadyRegistered: const SubmissionStatusMessage(
     title: 'User with this email already exists.',
     description: 'Try another email address.',
   ),
-  SignupSubmissionStatus.error: const SubmissionStatusMessage.genericError(),
-  SignupSubmissionStatus.networkError:
+  SignUpSubmissionStatus.error: const SubmissionStatusMessage.genericError(),
+  SignUpSubmissionStatus.networkError:
       const SubmissionStatusMessage.networkError(),
 };

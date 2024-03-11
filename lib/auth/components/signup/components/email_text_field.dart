@@ -1,7 +1,7 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_instagram_offline_first_clone/auth/components/signup/cubit/signup_cubit.dart';
+import 'package:flutter_instagram_offline_first_clone/auth/components/signup/cubit/sign_up_cubit.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:shared/shared.dart';
 
@@ -19,7 +19,7 @@ class _EmailTextFieldState extends State<EmailTextField> {
   @override
   void initState() {
     super.initState();
-    final cubit = context.read<SignupCubit>();
+    final cubit = context.read<SignUpCubit>();
     _focusNode.addListener(() {
       if (!_focusNode.hasFocus) {
         cubit.onEmailUnfocused();
@@ -36,9 +36,9 @@ class _EmailTextFieldState extends State<EmailTextField> {
   @override
   Widget build(BuildContext context) {
     final isLoading =
-        context.select<SignupCubit, bool>((c) => c.state.isLoading);
+        context.select<SignUpCubit, bool>((c) => c.state.isLoading);
     final emailError =
-        context.select<SignupCubit, String?>((c) => c.state.emailError);
+        context.select<SignUpCubit, String?>((c) => c.state.emailError);
     return AppTextField(
       filled: true,
       focusNode: _focusNode,
@@ -48,7 +48,7 @@ class _EmailTextFieldState extends State<EmailTextField> {
       textInputAction: TextInputAction.next,
       autofillHints: const [AutofillHints.email],
       onChanged: (v) => _debouncer.run(
-        () => context.read<SignupCubit>().onEmailChanged(v),
+        () => context.read<SignUpCubit>().onEmailChanged(v),
       ),
       errorText: emailError,
     );

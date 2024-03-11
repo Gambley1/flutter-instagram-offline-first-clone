@@ -4,12 +4,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/auth/cubit/auth_cubit.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 
-/// {@template signup_widget}
-/// Signup widget that contains signup button.
+/// {@template sign_in_into_account_button}
+/// Sign up widget that contains sign up button.
 /// {@endtemplate}
-class SigninIntoAccountButton extends StatelessWidget {
-  /// {@macro signup_widget}
-  const SigninIntoAccountButton({super.key});
+class SignInIntoAccountButton extends StatelessWidget {
+  /// {@macro sign_in_into_account_button}
+  const SignInIntoAccountButton({super.key});
 
   @override
   Widget build(BuildContext context) {

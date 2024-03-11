@@ -52,19 +52,21 @@ class _SignupViewState extends State<SignupView> {
                             ),
                           ),
                           const SizedBox(height: AppSpacing.md),
-                          const SignupForm(),
+                          const SignUpForm(),
                           Padding(
                             padding: const EdgeInsets.symmetric(
                               vertical: AppSpacing.xlg,
                             ),
-                            child: SignupButton(
-                              avatarFile: _avatarFile,
+                            child: Align(
+                              child: SignUpButton(
+                                avatarFile: _avatarFile,
+                              ),
                             ),
                           ),
                         ],
                       ),
                     ),
-                    const SigninIntoAccountButton(),
+                    const SignInIntoAccountButton(),
                   ],
                 ),
               ),

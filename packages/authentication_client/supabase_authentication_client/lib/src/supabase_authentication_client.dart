@@ -2,7 +2,6 @@ import 'package:authentication_client/authentication_client.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:powersync_repository/powersync_repository.dart';
-import 'package:shared/shared.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 import 'package:token_storage/token_storage.dart';
 
@@ -69,26 +68,18 @@ class SupabaseAuthenticationClient implements AuthenticationClient {
     try {
       final googleUser = await _googleSignIn.signIn();
       if (googleUser == null) {
-        throw LogInWithGoogleCanceled(
-          Exception('Sign in with Google canceled. No user found!'),
+        throw const LogInWithGoogleCanceled(
+          'Sign in with Google canceled. No user found!',
         );
       }
-      logI(
-        (
-          email: googleUser.email,
-          username: googleUser.displayName,
-          id: googleUser.id,
-          photoUrl: googleUser.photoUrl,
-        ),
-      );
       final googleAuth = await googleUser.authentication;
       final accessToken = googleAuth.accessToken;
       final idToken = googleAuth.idToken;
       if (accessToken == null) {
-        throw const LogInWithGoogleCanceled('No Access Token found.');
+        throw const LogInWithGoogleFailure('No Access Token found.');
       }
       if (idToken == null) {
-        throw const LogInWithGoogleCanceled('No ID Token found.');
+        throw const LogInWithGoogleFailure('No ID Token found.');
       }
 
       await _powerSyncRepository.supabase.auth.signInWithIdToken(

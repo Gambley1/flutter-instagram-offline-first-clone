@@ -8,16 +8,16 @@ import 'package:powersync_repository/powersync_repository.dart';
 import 'package:shared/shared.dart';
 import 'package:user_repository/user_repository.dart';
 
-part 'signup_state.dart';
+part 'sign_up_state.dart';
 
-/// {@template signup_cubit}
-/// Cubit for signup state management. It is used to change signup state from
+/// {@template sign_up_cubit}
+/// Cubit for sign up state management. It is used to change signup state from
 /// initial to in progress, success or error. It also validates email, password,
 /// name, surname and phone number fields.
 /// {@endtemplate}
-class SignupCubit extends Cubit<SignupState> {
-  /// {@macro signup_cubit}
-  SignupCubit({
+class SignUpCubit extends Cubit<SignupState> {
+  /// {@macro sign_up_cubit}
+  SignUpCubit({
     required UserRepository userRepository,
     required FirebaseNotificationsClient notificationsClient,
   })  : _userRepository = userRepository,
@@ -204,7 +204,7 @@ class SignupCubit extends Cubit<SignupState> {
       password: password,
       fullName: fullName,
       username: username,
-      submissionStatus: isFormValid ? SignupSubmissionStatus.inProgress : null,
+      submissionStatus: isFormValid ? SignUpSubmissionStatus.inProgress : null,
     );
 
     emit(newState);
@@ -247,7 +247,7 @@ class SignupCubit extends Cubit<SignupState> {
       );
 
       if (isClosed) return;
-      emit(state.copyWith(submissionStatus: SignupSubmissionStatus.success));
+      emit(state.copyWith(submissionStatus: SignUpSubmissionStatus.success));
     } catch (e, stackTrace) {
       _errorFormatter(e, stackTrace);
     }
@@ -259,8 +259,8 @@ class SignupCubit extends Cubit<SignupState> {
     logE(e.toString());
     addError(e, stackTrace);
 
-    SignupSubmissionStatus submissionStatus() {
-      return SignupSubmissionStatus.error;
+    SignUpSubmissionStatus submissionStatus() {
+      return SignUpSubmissionStatus.error;
     }
 
     final newState = state.copyWith(

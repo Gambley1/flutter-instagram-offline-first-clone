@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:form_fields/form_fields.dart';
 import 'package:powersync_repository/powersync_repository.dart';
 import 'package:shared/shared.dart';
+import 'package:supabase_authentication_client/supabase_authentication_client.dart';
 import 'package:user_repository/user_repository.dart';
 
 part 'login_state.dart';
@@ -107,7 +109,7 @@ class LoginCubit extends Cubit<LoginState> {
   }
 
   /// Makes whole login state initial, as [Email] and [Password] becomes unvalid
-  /// and [LoginSubmissionStatus] becomes idle. Solely used if during login
+  /// and [LogInSubmissionStatus] becomes idle. Solely used if during login
   /// user switched on sign up, therefore login state does not persists and
   /// becomes initial again.
   void idle() {
@@ -116,8 +118,10 @@ class LoginCubit extends Cubit<LoginState> {
   }
 
   Future<void> loginWithGoogle() async {
+    emit(state.copyWith(status: LogInSubmissionStatus.googleAuthInProgress));
     try {
       await _userRepository.logInWithGoogle();
+      emit(state.copyWith(status: LogInSubmissionStatus.success));
     } catch (error, stackTrace) {
       _errorFormatter(error, stackTrace);
     }
@@ -136,7 +140,7 @@ class LoginCubit extends Cubit<LoginState> {
     final newState = state.copyWith(
       email: email,
       password: password,
-      status: isFormValid ? LoginSubmissionStatus.inProgress : null,
+      status: isFormValid ? LogInSubmissionStatus.loading : null,
     );
 
     emit(newState);
@@ -148,7 +152,7 @@ class LoginCubit extends Cubit<LoginState> {
         email: email.value,
         password: password.value,
       );
-      final newState = state.copyWith(status: LoginSubmissionStatus.success);
+      final newState = state.copyWith(status: LogInSubmissionStatus.success);
       emit(newState);
     } catch (e, stackTrace) {
       _errorFormatter(e, stackTrace);
@@ -157,21 +161,19 @@ class LoginCubit extends Cubit<LoginState> {
 
   /// Formats error, that occured during login process.
   void _errorFormatter(Object e, StackTrace stackTrace) {
-    logE('Failed to login.', error: e, stackTrace: stackTrace);
     addError(e, stackTrace);
-    LoginSubmissionStatus status() {
-      if (e is AuthException) {
-        if (e.statusCode != null) {
-          if (e.statusCode?.parse == 400) {
-            return LoginSubmissionStatus.invalidCredentials;
-          }
-        }
-      }
-      return LoginSubmissionStatus.error;
-    }
+    final status = switch (e) {
+      LogInWithPasswordFailure(:final AuthException error) => switch (
+            error.statusCode?.parse) {
+          HttpStatus.badRequest => LogInSubmissionStatus.invalidCredentials,
+          _ => LogInSubmissionStatus.error,
+        },
+      LogInWithGoogleFailure => LogInSubmissionStatus.googleLogInFailure,
+      _ => LogInSubmissionStatus.idle,
+    };
 
     final newState = state.copyWith(
-      status: status(),
+      status: status,
       message: e.toString(),
     );
     emit(newState);

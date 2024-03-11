@@ -14,18 +14,10 @@ class AppCircularProgress extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 50,
-      child: Transform.scale(
-        scale: 0.50,
-        child: ClipOval(
-          child: context.isAndroid
-              ? CircularProgressIndicator(
-                  strokeWidth: 6,
-                  color: color,
-                )
-              : CupertinoActivityIndicator(color: color),
-        ),
+    return Transform.scale(
+      scale: .4,
+      child: CircularProgressIndicator(
+        valueColor: AlwaysStoppedAnimation(color),
       ),
     );
   }

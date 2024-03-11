@@ -97,7 +97,7 @@ class UserRepository implements UserBaseRepository {
     }
   }
 
-  /// Signup with the provided [password].
+  /// Sign up with the provided [password].
   Future<void> signUpWithPassword({
     required String password,
     required String fullName,

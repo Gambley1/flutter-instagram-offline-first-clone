@@ -47,7 +47,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     Emitter<AppState> emit,
   ) async {
     final user = event.user;
-    logD('User changed: ${user.toJson()}');
+    // logD('User changed: ${user.toJson()}');
 
     Future<void> authenticate(User user) async {
       user == User.anonymous

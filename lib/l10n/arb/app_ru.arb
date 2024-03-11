@@ -304,7 +304,7 @@
   },
   "forgotPasswordText": "Забыли пароль?",
   "orText": "Или",
-  "signInWithText": "Зарегестрироваться через {provider}",
+  "signInWithText": "Войти через {provider}",
   "@signInWithText": {
     "placeholders": {
       "provider": {

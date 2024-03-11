@@ -1,7 +1,7 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_instagram_offline_first_clone/auth/components/signup/cubit/signup_cubit.dart';
+import 'package:flutter_instagram_offline_first_clone/auth/components/signup/cubit/sign_up_cubit.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:shared/shared.dart';
 
@@ -19,7 +19,7 @@ class _FullNameTextFieldState extends State<FullNameTextField> {
   @override
   void initState() {
     super.initState();
-    final cubit = context.read<SignupCubit>();
+    final cubit = context.read<SignUpCubit>();
     _focusNode.addListener(() {
       if (!_focusNode.hasFocus) {
         cubit.onFullNameUnfocused();
@@ -36,9 +36,9 @@ class _FullNameTextFieldState extends State<FullNameTextField> {
   @override
   Widget build(BuildContext context) {
     final isLoading =
-        context.select<SignupCubit, bool>((c) => c.state.isLoading);
+        context.select<SignUpCubit, bool>((c) => c.state.isLoading);
     final fullNameError =
-        context.select<SignupCubit, String?>((c) => c.state.fullNameError);
+        context.select<SignUpCubit, String?>((c) => c.state.fullNameError);
 
     return AppTextField(
       filled: true,
@@ -49,7 +49,7 @@ class _FullNameTextFieldState extends State<FullNameTextField> {
       autofillHints: const [AutofillHints.givenName],
       enabled: !isLoading,
       onChanged: (v) => _debouncer.run(
-        () => context.read<SignupCubit>().onFullNameChanged(v),
+        () => context.read<SignUpCubit>().onFullNameChanged(v),
       ),
       errorText: fullNameError,
       errorMaxLines: 3,
