@@ -23,16 +23,16 @@ void main() {
     );
   });
 
-  test('exports LogInWithFacebookFailure', () {
+  test('exports LogInWithGithubFailure', () {
     expect(
-      () => const LogInWithFacebookFailure('oops'),
+      () => const LogInWithGithubFailure('oops'),
       returnsNormally,
     );
   });
 
-  test('exports LogInWithFacebookCanceled', () {
+  test('exports LogInWithGithubCanceled', () {
     expect(
-      () => const LogInWithFacebookCanceled('oops'),
+      () => const LogInWithGithubCanceled('oops'),
       returnsNormally,
     );
   });

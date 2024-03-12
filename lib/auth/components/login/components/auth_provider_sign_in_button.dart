@@ -19,18 +19,14 @@ class AuthProviderSignInButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isInProgress = context.select(
-      (LoginCubit cubit) => cubit.state.status.isGoogleAuthInProgress,
+      (LoginCubit cubit) => switch (provider) {
+        AuthProvider.google => cubit.state.status.isGoogleAuthInProgress,
+        AuthProvider.github => cubit.state.status.isGithubAuthInProgress,
+      },
     );
     final effectiveIcon = switch (provider) {
-      AuthProvider.facebook => Assets.icons.facebook.svg(),
+      AuthProvider.github => Assets.icons.github.svg(),
       AuthProvider.google => Assets.icons.google.svg(),
-    };
-    final showLoading =
-        switch ((isInProgress, provider.value == AuthProvider.google.value)) {
-      (true, true) => true,
-      (true, false) => false,
-      (false, false) => false,
-      (false, true) => false,
     };
     final icon = SizedBox.square(
       dimension: 24,
@@ -49,8 +45,8 @@ class AuthProviderSignInButton extends StatelessWidget {
         throttleDuration: 650.ms,
         color: context.theme.focusColor,
         borderRadius: 4,
-        onTap: onPressed,
-        child: showLoading
+        onTap: isInProgress ? null : onPressed,
+        child: isInProgress
             ? Center(child: AppCircularProgress(context.adaptiveColor))
             : Padding(
                 padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
@@ -76,7 +72,7 @@ class AuthProviderSignInButton extends StatelessWidget {
 }
 
 enum AuthProvider {
-  facebook('Facebook'),
+  github('Github'),
   google('Google');
 
   const AuthProvider(this.value);

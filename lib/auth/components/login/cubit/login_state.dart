@@ -20,6 +20,10 @@ enum LogInSubmissionStatus {
   /// submitted login with google.
   googleAuthInProgress,
 
+  /// [LogInSubmissionStatus.githubAuthInProgress] indicates that user has
+  /// submitted login with github.
+  githubAuthInProgress,
+
   /// [LogInSubmissionStatus.success] indicates that user has successfully
   /// submitted login form and is currently waiting for response from backend.
   success,
@@ -55,6 +59,10 @@ extension SubmissionStatusX on LogInSubmissionStatus {
   /// Whether authentication with google provider is in progress.
   bool get isGoogleAuthInProgress =>
       this == LogInSubmissionStatus.googleAuthInProgress;
+
+  /// Whether authentication with github provider is in progress.
+  bool get isGithubAuthInProgress =>
+      this == LogInSubmissionStatus.githubAuthInProgress;
 
   /// Checks if current submission status is invalid credentials.
   bool get isInvalidCredentials =>

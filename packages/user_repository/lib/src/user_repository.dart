@@ -46,19 +46,19 @@ class UserRepository implements UserBaseRepository {
     }
   }
 
-  /// Starts the Sign In with Facebook Flow.
+  /// Starts the Sign In with Github Flow.
   ///
-  /// Throws a [LogInWithFacebookCanceled] if the flow is canceled by the user.
-  /// Throws a [LogInWithFacebookFailure] if an exception occurs.
-  Future<void> logInWithFacebook() async {
+  /// Throws a [LogInWithGithubCanceled] if the flow is canceled by the user.
+  /// Throws a [LogInWithGithubFailure] if an exception occurs.
+  Future<void> logInWithGithub() async {
     try {
-      await _authenticationClient.logInWithFacebook();
-    } on LogInWithFacebookFailure {
+      await _authenticationClient.logInWithGithub();
+    } on LogInWithGithubFailure {
       rethrow;
-    } on LogInWithFacebookCanceled {
+    } on LogInWithGithubCanceled {
       rethrow;
     } catch (error, stackTrace) {
-      Error.throwWithStackTrace(LogInWithFacebookFailure(error), stackTrace);
+      Error.throwWithStackTrace(LogInWithGithubFailure(error), stackTrace);
     }
   }
 

@@ -94,16 +94,22 @@ class SupabaseAuthenticationClient implements AuthenticationClient {
     }
   }
 
-  /// Starts the Sign In with Facebook Flow.
+  /// Starts the Sign In with Github Flow.
   ///
-  /// Throws a [LogInWithFacebookCanceled] if the flow is canceled by the user.
-  /// Throws a [LogInWithFacebookFailure] if an exception occurs.
+  /// Throws a [LogInWithGithubCanceled] if the flow is canceled by the user.
+  /// Throws a [LogInWithGithubFailure] if an exception occurs.
   @override
-  Future<void> logInWithFacebook() async {
-    try {} on LogInWithFacebookCanceled {
+  Future<void> logInWithGithub() async {
+    try {
+      await _powerSyncRepository.supabase.auth.signInWithOAuth(
+        OAuthProvider.github,
+        redirectTo:
+            kIsWeb ? null : 'io.supabase.flutterquickstart://login-callback/',
+      );
+    } on LogInWithGithubCanceled {
       rethrow;
     } catch (error, stackTrace) {
-      Error.throwWithStackTrace(LogInWithFacebookFailure(error), stackTrace);
+      Error.throwWithStackTrace(LogInWithGithubFailure(error), stackTrace);
     }
   }
 

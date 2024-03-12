@@ -36,13 +36,13 @@
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>com.googleusercontent.apps.252024091655-mbgan2drcc8kt01ice9jn8ihng58lkfa</string>
-				<string>io.supabase.flutterquickstart</string>
-			</array>
+		<key>CFBundleTypeRole</key>
+		<string>Editor</string>
+		<key>CFBundleURLSchemes</key>
+		<array>
+			<string>io.supabase.flutterquickstart</string>
+			<string>com.googleusercontent.apps.252024091655-mbgan2drcc8kt01ice9jn8ihng58lkfa</string>
+		</array>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>

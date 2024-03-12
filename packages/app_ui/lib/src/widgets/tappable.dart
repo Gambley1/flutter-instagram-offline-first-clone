@@ -392,7 +392,7 @@ class _ThrottledButtonState extends State<ThrottledButton> {
       valueListenable: _isThrottled,
       builder: (context, isThrottled, _) => widget.buttonBuilder(
         isThrottled,
-        isThrottled
+        isThrottled || widget.onTap == null
             ? null
             : () => _throttler.run(() {
                   _isThrottled.value = true;

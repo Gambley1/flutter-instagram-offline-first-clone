@@ -122,6 +122,20 @@ class LoginCubit extends Cubit<LoginState> {
     try {
       await _userRepository.logInWithGoogle();
       emit(state.copyWith(status: LogInSubmissionStatus.success));
+    } on LogInWithGoogleCanceled {
+      emit(state.copyWith(status: LogInSubmissionStatus.idle));
+    } catch (error, stackTrace) {
+      _errorFormatter(error, stackTrace);
+    }
+  }
+
+  Future<void> loginWithGithub() async {
+    emit(state.copyWith(status: LogInSubmissionStatus.githubAuthInProgress));
+    try {
+      await _userRepository.logInWithGithub();
+      emit(state.copyWith(status: LogInSubmissionStatus.success));
+    } on LogInWithGithubCanceled {
+      emit(state.copyWith(status: LogInSubmissionStatus.idle));
     } catch (error, stackTrace) {
       _errorFormatter(error, stackTrace);
     }

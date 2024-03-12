@@ -185,6 +185,9 @@ class PowerSyncRepository {
     await Supabase.initialize(
       url: isDev ? EnvDev.supabaseUrl : EnvProd.supabaseUrl,
       anonKey: isDev ? EnvDev.supabaseAnonKey : EnvProd.supabaseAnonKey,
+      authOptions: const FlutterAuthClientOptions(
+        authFlowType: AuthFlowType.implicit,
+      ),
     );
   }
 

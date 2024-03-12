@@ -80,20 +80,20 @@ class LogInWithGoogleCanceled extends AuthenticationException {
   const LogInWithGoogleCanceled(super.error);
 }
 
-/// {@template log_in_with_facebook_failure}
-/// Thrown during the sign in with Facebook process if a failure occurs.
+/// {@template log_in_with_github_failure}
+/// Thrown during the sign in with Github process if a failure occurs.
 /// {@endtemplate}
-class LogInWithFacebookFailure extends AuthenticationException {
-  /// {@macro log_in_with_facebook_failure}
-  const LogInWithFacebookFailure(super.error);
+class LogInWithGithubFailure extends AuthenticationException {
+  /// {@macro log_in_with_github_failure}
+  const LogInWithGithubFailure(super.error);
 }
 
-/// {@template log_in_with_facebook_canceled}
-/// Thrown during the sign in with Facebook process if it's canceled.
+/// {@template log_in_with_github_canceled}
+/// Thrown during the sign in with Github process if it's canceled.
 /// {@endtemplate}
-class LogInWithFacebookCanceled extends AuthenticationException {
-  /// {@macro log_in_with_facebook_canceled}
-  const LogInWithFacebookCanceled(super.error);
+class LogInWithGithubCanceled extends AuthenticationException {
+  /// {@macro log_in_with_github_canceled}
+  const LogInWithGithubCanceled(super.error);
 }
 
 /// {@template log_in_with_twitter_failure}
@@ -150,10 +150,10 @@ abstract class AuthenticationClient {
   /// Throws a [LogInWithGoogleFailure] if an exception occurs.
   Future<void> logInWithGoogle();
 
-  /// Starts the Sign In with Facebook Flow.
+  /// Starts the Sign In with Github Flow.
   ///
-  /// Throws a [LogInWithFacebookFailure] if an exception occurs.
-  Future<void> logInWithFacebook();
+  /// Throws a [LogInWithGithubFailure] if an exception occurs.
+  Future<void> logInWithGithub();
 
   /// Signs up with the provided [email] and [password].
   ///

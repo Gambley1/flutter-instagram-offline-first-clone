@@ -1,7 +1,6 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_instagram_offline_first_clone/app/view/view.dart';
 import 'package:flutter_instagram_offline_first_clone/auth/components/login/components/auth_provider_sign_in_button.dart';
 import 'package:flutter_instagram_offline_first_clone/auth/components/login/components/components.dart';
 import 'package:flutter_instagram_offline_first_clone/auth/components/login/components/login_form.dart';
@@ -64,11 +63,11 @@ class LoginView extends StatelessWidget {
                                   context.read<LoginCubit>().loginWithGoogle(),
                             ),
                           ),
-                          const Align(
+                          Align(
                             child: AuthProviderSignInButton(
-                              provider: AuthProvider.facebook,
-                              // TODO(facebooksignin): Implement facebook login
-                              onPressed: showCurrentlyUnavailableFeature,
+                              provider: AuthProvider.github,
+                              onPressed: () =>
+                                  context.read<LoginCubit>().loginWithGithub(),
                             ),
                           ),
                         ],
