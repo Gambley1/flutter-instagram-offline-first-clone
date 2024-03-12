@@ -199,6 +199,25 @@ class UserRepository implements UserBaseRepository {
       );
 
   @override
+  Future<void> resetPasswordForEmail({
+    required String email,
+    String? redirectTo,
+  }) =>
+      _client.resetPasswordForEmail(email: email, redirectTo: redirectTo);
+
+  @override
+  Future<void> resetPassword({
+    required String token,
+    required String email,
+    required String newPassword,
+  }) =>
+      _client.resetPassword(
+        token: token,
+        email: email,
+        newPassword: newPassword,
+      );
+
+  @override
   Future<List<User>> searchUsers({
     required String userId,
     required int limit,

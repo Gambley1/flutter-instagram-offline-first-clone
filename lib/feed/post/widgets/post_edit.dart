@@ -95,42 +95,32 @@ class _PostEditViewState extends State<PostEditView> {
           ),
         ],
       ),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          return SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.sm,
-              vertical: AppSpacing.sm,
-            ),
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                minWidth: constraints.maxWidth,
-                minHeight: constraints.maxHeight,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  PostMedia(
-                    media: widget.post.media,
-                    withLikeOverlay: false,
-                    withInViewNotifier: false,
-                    autoHideCurrentIndex: false,
-                    mediaCarouselSettings: const MediaCarouselSettings.empty(
-                      fit: BoxFit.cover,
-                      viewportFraction: .9,
-                    ),
-                  ),
-                  const Gap.v(AppSpacing.lg),
-                  CaptionInputField(
-                    captionController: _captionController,
-                    caption: widget.post.caption,
-                    onSubmitted: _onEditSubmitted,
-                  ),
-                ],
+      body: AppConstrainedScrollView(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.sm,
+          vertical: AppSpacing.sm,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            PostMedia(
+              media: widget.post.media,
+              withLikeOverlay: false,
+              withInViewNotifier: false,
+              autoHideCurrentIndex: false,
+              mediaCarouselSettings: const MediaCarouselSettings.empty(
+                fit: BoxFit.cover,
+                viewportFraction: .9,
               ),
             ),
-          );
-        },
+            const Gap.v(AppSpacing.lg),
+            CaptionInputField(
+              captionController: _captionController,
+              caption: widget.post.caption,
+              onSubmitted: _onEditSubmitted,
+            ),
+          ],
+        ),
       ),
     );
   }

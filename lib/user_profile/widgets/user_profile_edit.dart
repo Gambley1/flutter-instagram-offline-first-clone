@@ -59,66 +59,58 @@ class _UserProfileEditViewState extends State<UserProfileEditView> {
         title: Text(context.l10n.editProfileText),
         centerTitle: false,
       ),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          return ConstrainedBox(
-            constraints: BoxConstraints(minHeight: constraints.maxHeight),
-            child: Scrollbar(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.md,
-                  vertical: AppSpacing.md,
-                ),
-                child: Column(
-                  children: [
-                    UserProfileAvatar(
-                      avatarUrl: user.avatarUrl,
-                      onTapPickImage: true,
-                      animationEffect: TappableAnimationEffect.scale,
-                      withAdaptiveBorder: false,
-                      scaleStrength: ScaleStrength.xxs,
-                      onImagePick: (imageUrl) {
-                        context.read<UserProfileBloc>().add(
-                              UserProfileUpdateRequested(avatarUrl: imageUrl),
-                            );
-                      },
-                    ),
-                    const SizedBox(height: AppSpacing.md),
-                    Text(
-                      context.l10n.changePhotoText,
-                      style: context.bodyLarge?.apply(color: AppColors.blue),
-                    ),
-                    const SizedBox(height: AppSpacing.md),
-                    Column(
-                      children: <Widget>[
-                        ProfileInfoInput(
-                          value: user.fullName,
-                          label: context.l10n.nameText,
-                          description: context.l10n.fullNameEditDescription,
-                          infoType: ProfileEditInfoType.fullName,
-                        ),
-                        ProfileInfoInput(
-                          value: user.username,
-                          label: context.l10n.usernameText,
-                          description: context.l10n.usernameEditDescription(
-                            user.username ?? '',
-                          ),
-                          infoType: ProfileEditInfoType.username,
-                        ),
-                        ProfileInfoInput(
-                          value: '',
-                          label: context.l10n.bioText,
-                          infoType: ProfileEditInfoType.bio,
-                          onTap: () {},
-                        ),
-                      ].insertBetween(const SizedBox(height: AppSpacing.md)),
-                    ),
-                  ],
-                ),
-              ),
+      body: AppConstrainedScrollView(
+        withScrollBar: true,
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.md,
+        ),
+        child: Column(
+          children: [
+            UserProfileAvatar(
+              avatarUrl: user.avatarUrl,
+              onTapPickImage: true,
+              animationEffect: TappableAnimationEffect.scale,
+              withAdaptiveBorder: false,
+              scaleStrength: ScaleStrength.xxs,
+              onImagePick: (imageUrl) {
+                context.read<UserProfileBloc>().add(
+                      UserProfileUpdateRequested(avatarUrl: imageUrl),
+                    );
+              },
             ),
-          );
-        },
+            const SizedBox(height: AppSpacing.md),
+            Text(
+              context.l10n.changePhotoText,
+              style: context.bodyLarge?.apply(color: AppColors.blue),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            Column(
+              children: <Widget>[
+                ProfileInfoInput(
+                  value: user.fullName,
+                  label: context.l10n.nameText,
+                  description: context.l10n.fullNameEditDescription,
+                  infoType: ProfileEditInfoType.fullName,
+                ),
+                ProfileInfoInput(
+                  value: user.username,
+                  label: context.l10n.usernameText,
+                  description: context.l10n.usernameEditDescription(
+                    user.username ?? '',
+                  ),
+                  infoType: ProfileEditInfoType.username,
+                ),
+                ProfileInfoInput(
+                  value: '',
+                  label: context.l10n.bioText,
+                  infoType: ProfileEditInfoType.bio,
+                  onTap: () {},
+                ),
+              ].insertBetween(const SizedBox(height: AppSpacing.md)),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -355,35 +347,28 @@ class _ProfileInfoEditViewState extends State<ProfileInfoEditView> {
           ),
         ],
       ),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          return ConstrainedBox(
-            constraints: BoxConstraints(minHeight: constraints.maxHeight),
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.md,
-                vertical: AppSpacing.md,
-              ),
-              child: Column(
-                children: <Widget>[
-                  ProfileInfoInput(
-                    autofocus: true,
-                    readOnly: false,
-                    value: widget.infoValue,
-                    label: widget.infoLabel,
-                    infoType: widget.infoType,
-                    textController: _valueController,
-                  ),
-                  if (widget.description != null)
-                    Text(
-                      widget.description!,
-                      style: context.bodySmall?.apply(color: AppColors.grey),
-                    ),
-                ].insertBetween(const SizedBox(height: AppSpacing.md)),
-              ),
+      body: AppConstrainedScrollView(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.md,
+        ),
+        child: Column(
+          children: <Widget>[
+            ProfileInfoInput(
+              autofocus: true,
+              readOnly: false,
+              value: widget.infoValue,
+              label: widget.infoLabel,
+              infoType: widget.infoType,
+              textController: _valueController,
             ),
-          );
-        },
+            if (widget.description != null)
+              Text(
+                widget.description!,
+                style: context.bodySmall?.apply(color: AppColors.grey),
+              ),
+          ].insertBetween(const SizedBox(height: AppSpacing.md)),
+        ),
       ),
     );
   }

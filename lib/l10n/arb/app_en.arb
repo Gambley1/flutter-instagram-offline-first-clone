@@ -319,6 +319,9 @@
       }
     }
   },
+  "goBackConfirmationText": "Are you sure you want to go back?",
+  "goBackText": "Go back",
+  "furtherText": "Furhter",
   "somethingWentWrongText": "Something went wrong!",
   "failedToCreateStoryText": "Failed to create story",
   "successfullyCreatedStoryText": "Successfully created story!",
@@ -350,8 +353,21 @@
   "alreadyHaveAccountText": "Already have an account?",
   "nameText": "Name",
   "usernameText": "Username",
+  "forgotPasswordEmailConfirmationText": "Email verification",
+  "verificationTokenSentText": "Verification token sent to {email}",
+  "@verificationTokenSentText": {
+    "placeholders": {
+      "email": {
+        "type": "String",
+        "example": "johndale@gmail.com"
+      }
+    }
+  },
   "emailText": "Email",
+  "otpText": "Reset token",
+  "resetPasswordText": "Reset password",
   "passwordText": "Password",
+  "newPasswordText": "New password",
   "loginText": "Login",
   "signUpText": "Sign up",
   "bioText": "Bio",

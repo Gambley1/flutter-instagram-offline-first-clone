@@ -35,6 +35,21 @@ abstract class UserBaseRepository {
     String? pushToken,
   });
 
+  /// Sends a reset password email to the provided [email].
+  Future<void> resetPasswordForEmail({
+    required String email,
+    String? redirectTo,
+  });
+
+  /// Resets user password and updates user's metadata.
+  /// If user successfully verifies OTP [token] he automatically authenticates
+  /// into account by provided [email].
+  Future<void> resetPassword({
+    required String token,
+    required String email,
+    required String newPassword,
+  });
+
   /// Follows to the user by provided [followToId]. [followerId] is the id
   /// of currently authenticated user.
   Future<void> follow({
@@ -305,7 +320,7 @@ class DatabaseClient extends Client {
 
   @override
   String? get currentUserId =>
-      Supabase.instance.client.auth.currentSession?.user.id;
+      _powerSyncRepository.supabase.auth.currentSession?.user.id;
 
   @override
   Stream<User> profile({required String id}) => _powerSyncRepository.db().watch(
@@ -1041,6 +1056,7 @@ ORDER BY created_at ASC
     String? username,
     String? avatarUrl,
     String? pushToken,
+    String? password,
   }) =>
       _powerSyncRepository.updateUser({
         if (fullName != null) 'full_name': fullName,
@@ -1048,7 +1064,30 @@ ORDER BY created_at ASC
         if (username != null) 'username': username,
         if (avatarUrl != null) 'avatar_url': avatarUrl,
         if (pushToken != null) 'push_token': pushToken,
+        if (password != null) 'password': password,
       });
+
+  @override
+  Future<void> resetPasswordForEmail({
+    required String email,
+    String? redirectTo,
+  }) =>
+      _powerSyncRepository.resetPassword(email: email, redirectTo: redirectTo);
+
+  @override
+  Future<void> resetPassword({
+    required String token,
+    required String email,
+    required String newPassword,
+  }) async {
+    try {
+      await _powerSyncRepository.verifyOTP(token: token, email: email);
+      await updateUser(password: newPassword);
+    } catch (error, stackTrace) {
+      logE('Failed to verify OTP.', error: error, stackTrace: stackTrace);
+      throw Exception('Failed to verify OTP.');
+    }
+  }
 
   @override
   Stream<List<ChatInbox>> chatsOf({required String userId}) =>
@@ -1618,7 +1657,7 @@ SELECT * FROM stories WHERE id = ?
     required File imageFile,
     required Uint8List imageBytes,
   }) async {
-    final stories = Supabase.instance.client.storage.from('stories');
+    final stories = _powerSyncRepository.supabase.storage.from('stories');
     final imageExtension = imageFile.path.split('.').last.toLowerCase();
     final imagePath = '$storyId/image';
 
@@ -1662,7 +1701,7 @@ LIMIT ? OFFSET ?
   }) async {
     final result = await _powerSyncRepository.db().getAll(
       '''
-SELECT id, avatar_url, username
+SELECT id, avatar_url, username, full_name
 FROM profiles
 WHERE id IN (
     SELECT l.user_id

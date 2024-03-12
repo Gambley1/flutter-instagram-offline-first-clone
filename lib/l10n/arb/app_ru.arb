@@ -313,6 +313,9 @@
       }
     }
   },
+  "goBackConfirmationText": "Вы уверены что хотите вернуться назад?",
+  "goBackText": "Вернуться назад",
+  "furtherText": "Далее",
   "noLastMessagesText": "Нет последних сообщений",
   "onlineText": "онлайн",
   "moreText": "Ещё",
@@ -320,8 +323,21 @@
   "alreadyHaveAccountText": "Уже есть аккаунт?",
   "nameText": "Имя",
   "usernameText": "Имя пользователя",
+  "forgotPasswordEmailConfirmationText": "Подтверждение учётной записи",
+  "verificationTokenSentText": "Код подтверждения отправлени на почту {email}",
+  "@verificationTokenSentText": {
+    "placeholders": {
+      "email": {
+        "type": "String",
+        "example": "johndale@gmail.com"
+      }
+    }
+  },
   "emailText": "Почта",
+  "otpText": "Код",
+  "resetPasswordText": "Сбросить пароль",
   "passwordText": "Пароль",
+  "newPasswordText": "Новый пароль",
   "loginText": "Войти",
   "signUpText": "Зарегестрироваться",
   "bioText": "Биография",

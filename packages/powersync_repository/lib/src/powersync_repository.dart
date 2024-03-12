@@ -172,7 +172,7 @@ class PowerSyncRepository {
 
   /// Whether user is logger in.
   bool isLoggedIn() {
-    return Supabase.instance.client.auth.currentSession?.accessToken != null;
+    return supabase.auth.currentSession?.accessToken != null;
   }
 
   /// Local database relative directory.
@@ -207,7 +207,7 @@ class PowerSyncRepository {
       await _db.connect(connector: currentConnector);
     }
 
-    Supabase.instance.client.auth.onAuthStateChange.listen((data) async {
+    supabase.auth.onAuthStateChange.listen((data) async {
       final event = data.event;
       if (event == AuthChangeEvent.signedIn) {
         // Connect to PowerSync when the user is signed in
@@ -227,9 +227,29 @@ class PowerSyncRepository {
   /// Broadcasts the [Supabase] auth state changes, whenever user signs/logs in,
   /// logs out, or when refresh token refreshes.
   Stream<AuthState> authStateChanges() =>
-      Supabase.instance.client.auth.onAuthStateChange.asBroadcastStream();
+      supabase.auth.onAuthStateChange.asBroadcastStream();
 
   /// Updates the user app metadata.
   Future<void> updateUser(Object? data) =>
-      Supabase.instance.client.auth.updateUser(UserAttributes(data: data));
+      supabase.auth.updateUser(UserAttributes(data: data));
+
+  /// Sends a request to the [Supabase] that ensured that the email exists.
+  /// If it doesn't, it throws an error.
+  ///
+  /// If the email exists, the reset password email in sent to the user.
+  /// He can provide the token he got from the email he recieved along with
+  /// a new password.
+  ///
+  /// Supabase changes the password to a provided one. After all user can
+  /// sign in with the new password.
+  Future<void> resetPassword({required String email, String? redirectTo}) =>
+      supabase.auth.resetPasswordForEmail(email, redirectTo: redirectTo);
+
+  /// Verifies OTP token.
+  Future<void> verifyOTP({required String token, required String email}) =>
+      supabase.auth.verifyOTP(
+        email: email,
+        token: token,
+        type: OtpType.recovery,
+      );
 }

@@ -15,7 +15,7 @@ class AppCircularProgress extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Transform.scale(
-      scale: .4,
+      scale: .5,
       child: CircularProgressIndicator(
         valueColor: AlwaysStoppedAnimation(color),
       ),
