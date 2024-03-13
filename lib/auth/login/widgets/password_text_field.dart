@@ -37,14 +37,14 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
 
   @override
   Widget build(BuildContext context) {
-    final passwordError = context.select<LoginCubit, String?>(
-      (b) => b.state.passwordError,
+    final passwordError = context.select(
+      (LoginCubit cubit) => cubit.state.password.errorMessage,
     );
-    final showPassword = context.select<LoginCubit, bool>(
-      (b) => b.state.showPassword,
+    final showPassword = context.select(
+      (LoginCubit cubit) => cubit.state.showPassword,
     );
-    final isLoading = context.select<LoginCubit, bool>(
-      (b) => b.state.status.isLoading,
+    final isLoading = context.select(
+      (LoginCubit cubit) => cubit.state.status.isLoading,
     );
     return AppTextField(
       key: const ValueKey('loginPasswordTextField'),

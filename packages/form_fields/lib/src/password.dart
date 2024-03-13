@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart' show immutable;
+import 'package:form_fields/src/formz_input_field.dart';
 import 'package:formz/formz.dart' show FormzInput;
 
 /// {@template password}
@@ -8,13 +9,11 @@ import 'package:formz/formz.dart' show FormzInput;
 /// {@endtemplate}
 @immutable
 class Password extends FormzInput<String, PasswordValidationError>
-    with EquatableMixin {
-  /// {@macro password}
-  const Password.unvalidated([
-    super.value = '',
-  ]) : super.pure();
+    with EquatableMixin, FormzValidationMixin {
+  /// {@macro password.unvalidated}
+  const Password.unvalidated([super.value = '']) : super.pure();
 
-  /// {@macro password}
+  /// {@macro password.validated}
   const Password.validated([
     super.value = '',
   ]) : super.dirty();
@@ -31,10 +30,15 @@ class Password extends FormzInput<String, PasswordValidationError>
   }
 
   @override
-  List<Object?> get props => [
-        value,
-        pure,
-      ];
+  Map<PasswordValidationError?, String?> get validationErrorMessage => {
+        PasswordValidationError.empty: 'This field is required',
+        PasswordValidationError.invalid:
+            'Password should contain at least 6 characters',
+        null: null,
+      };
+
+  @override
+  List<Object?> get props => [value, pure];
 }
 
 /// Validation errors for [Password]. It can be empty or invalid.
@@ -45,11 +49,3 @@ enum PasswordValidationError {
   /// Invalid password.
   invalid,
 }
-
-/// Password validation errors message
-Map<PasswordValidationError?, String?> get passwordValidationErrorMessage => {
-      PasswordValidationError.empty: 'This field is required',
-      PasswordValidationError.invalid:
-          'Password should contain at least 6 characters',
-      null: null,
-    };

@@ -19,24 +19,6 @@ extension SubmissionStatusX on ResetPasswordStatus {
   bool get invalidOtp => this == ResetPasswordStatus.invalidOtp;
 }
 
-extension FormFieldsValidationErrorExtension on ResetPasswordState {
-  /// Returns associated [PasswordValidationError] or null.
-  PasswordValidationError? get _passwordValidationError =>
-      password.invalid ? password.error : null;
-
-  /// Returns associated [OtpValidationError] or null.
-  OtpValidationError? get _otpValidationError => otp.invalid ? otp.error : null;
-}
-
-extension FormFieldsTextErrorExtension on ResetPasswordState {
-  /// Returns password error text based on [PasswordValidationError].
-  String? get passwordError =>
-      passwordValidationErrorMessage[_passwordValidationError];
-
-  /// Returns OTP error text based on [OtpValidationError].
-  String? get otpError => otpValidationErrorMessage[_otpValidationError];
-}
-
 class ResetPasswordState extends Equatable {
   const ResetPasswordState._({
     required this.status,

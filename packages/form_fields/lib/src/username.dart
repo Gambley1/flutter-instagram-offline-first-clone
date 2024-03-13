@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart' show EquatableMixin;
 import 'package:flutter/foundation.dart' show immutable;
+import 'package:form_fields/src/formz_input_field.dart';
 import 'package:formz/formz.dart' show FormzInput;
 
 /// {@template name}
@@ -8,13 +9,11 @@ import 'package:formz/formz.dart' show FormzInput;
 /// {@endtemplate}
 @immutable
 class Username extends FormzInput<String, UsernameValidationError>
-    with EquatableMixin {
-  /// {@macro name}
-  const Username.unvalidated([
-    super.value = '',
-  ]) : super.pure();
+    with EquatableMixin, FormzValidationMixin {
+  /// {@macro name.unvalidated}
+  const Username.unvalidated([super.value = '']) : super.pure();
 
-  /// {@macro name}
+  /// {@macro name.validated}
   const Username.validated(super.value) : super.dirty();
 
   static final _nameRegex = RegExp(r'^[a-zA-Z0-9_.]{3,16}$');
@@ -27,10 +26,16 @@ class Username extends FormzInput<String, UsernameValidationError>
   }
 
   @override
-  List<Object?> get props => [
-        value,
-        pure,
-      ];
+  Map<UsernameValidationError?, String?> get validationErrorMessage => {
+        UsernameValidationError.empty: 'This field is required',
+        UsernameValidationError.invalid:
+            'Username must be between 3 and 16 characters. Also, it can only '
+                'contain letters, numbers, periods, and underscores.',
+        null: null,
+      };
+
+  @override
+  List<Object?> get props => [value, pure];
 }
 
 /// Validation errors for [Username]. It can be empty or invalid.
@@ -41,12 +46,3 @@ enum UsernameValidationError {
   /// Invalid name.
   invalid,
 }
-
-/// Password validation errors message
-Map<UsernameValidationError?, String?> get usernameValidationErrorMessage => {
-      UsernameValidationError.empty: 'This field is required',
-      UsernameValidationError.invalid: 'Pasword should contain only letters, '
-          'numbers, and underscores, and be between '
-          '3 and 16 characters in length.',
-      null: null,
-    };

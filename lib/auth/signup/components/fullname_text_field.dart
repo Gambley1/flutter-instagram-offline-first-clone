@@ -36,9 +36,9 @@ class _FullNameTextFieldState extends State<FullNameTextField> {
   @override
   Widget build(BuildContext context) {
     final isLoading =
-        context.select<SignUpCubit, bool>((c) => c.state.isLoading);
-    final fullNameError =
-        context.select<SignUpCubit, String?>((c) => c.state.fullNameError);
+        context.select((SignUpCubit cubit) => cubit.state.isLoading);
+    final fullNameError = context
+        .select((SignUpCubit cubit) => cubit.state.fullName.errorMessage);
 
     return AppTextField(
       filled: true,

@@ -82,31 +82,6 @@ extension SubmissionStatusX on LogInSubmissionStatus {
       isInvalidCredentials;
 }
 
-/// Extension on [LogInSubmissionStatus] that returns associated error message.
-/// If there is no error message associated with current submission status,
-/// returns empty string.
-extension FormFieldsValidationErrorExtension on LoginState {
-  /// Returns associated [EmailValidationError] or null.
-  EmailValidationError? get _emailValidationError =>
-      email.invalid ? email.error : null;
-
-  /// Returns associated [PasswordValidationError] or null.
-  PasswordValidationError? get _passwordValidationError =>
-      password.invalid ? password.error : null;
-}
-
-/// For each form field in [LoginState] returns associated `error` text based on
-/// form field validation error. If validation error is `null` returns `null`,
-/// meaning that there is no error in form field.
-extension FormFieldsTextErrorExtension on LoginState {
-  /// Returns email error text based on [EmailValidationError].
-  String? get emailError => emailValidationErrorMessage[_emailValidationError];
-
-  /// Returns password error text based on [PasswordValidationError].
-  String? get passwordError =>
-      passwordValidationErrorMessage[_passwordValidationError];
-}
-
 /// {@template login_state}
 /// [LoginState] holds all the information related to user login process.
 /// It is used to determine current state of user login process, and to

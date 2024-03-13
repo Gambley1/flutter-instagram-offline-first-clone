@@ -58,44 +58,6 @@ extension SignUpSubmissionStatusX on SignupState {
       isEmailRegistered;
 }
 
-/// Checks if signup form fields has validation error. If form field invalid
-/// returns associated validation `error`, else returns `null`.
-extension SignUpFormFieldsValidationError on SignupState {
-  /// Defines value of email validation error or null.
-  EmailValidationError? get _emailValidationError =>
-      email.invalid ? email.error : null;
-
-  /// Defines value of password validation error or null.
-  PasswordValidationError? get _passwordValidationError =>
-      password.invalid ? password.error : null;
-
-  /// Defines value of fullName validation error or null.
-  FullNameValidationError? get _fullNameValidationError =>
-      fullName.invalid ? fullName.error : null;
-
-  /// Defines value of username validation error or null.
-  UsernameValidationError? get _usernameValidationError =>
-      username.invalid ? username.error : null;
-}
-
-/// Returns associated with form field `validation error` error m.
-extension SignUpFormFieldsTextError on SignupState {
-  /// Defines email error text value based on [EmailValidationError].
-  String? get emailError => emailValidationErrorMessage[_emailValidationError];
-
-  /// Defines password error text value based on [PasswordValidationError].
-  String? get passwordError =>
-      passwordValidationErrorMessage[_passwordValidationError];
-
-  /// Defines full name error text value based on [FullNameValidationError].
-  String? get fullNameError =>
-      fullNameValidationErrorMessage[_fullNameValidationError];
-
-  /// Defines username error text value based on [UsernameValidationError].
-  String? get usernameError =>
-      usernameValidationErrorMessage[_usernameValidationError];
-}
-
 /// {@template signup_state}
 /// Defines signup state. It is used to store all the data, that is needed
 /// for signup form to work properly. It also stores signup submission status,

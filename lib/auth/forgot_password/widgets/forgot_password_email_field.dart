@@ -37,7 +37,7 @@ class _ResetPasswordFieldState extends State<ForgotPasswordEmailField> {
   @override
   Widget build(BuildContext context) {
     final emailError = context.select(
-      (ForgotPasswordCubit cubit) => cubit.state.emailError,
+      (ForgotPasswordCubit cubit) => cubit.state.email.errorMessage,
     );
     final isLoading = context.select(
       (ForgotPasswordCubit cubit) => cubit.state.status.isLoading,

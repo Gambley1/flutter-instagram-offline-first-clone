@@ -25,17 +25,6 @@ extension SubmissionStatusX on ForgotPasswordStatus {
   bool get isTooManyRequests => this == ForgotPasswordStatus.tooManyRequests;
 }
 
-extension FormFieldsValidationErrorExtension on ForgotPasswordState {
-  /// Returns associated [EmailValidationError] or null.
-  EmailValidationError? get _emailValidationError =>
-      email.invalid ? email.error : null;
-}
-
-extension FormFieldsTextErrorExtension on ForgotPasswordState {
-  /// Returns email error text based on [EmailValidationError].
-  String? get emailError => emailValidationErrorMessage[_emailValidationError];
-}
-
 class ForgotPasswordState extends Equatable {
   const ForgotPasswordState._({required this.status, required this.email});
 

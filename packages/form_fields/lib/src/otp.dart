@@ -1,12 +1,14 @@
 import 'package:equatable/equatable.dart' show EquatableMixin;
 import 'package:flutter/foundation.dart' show immutable;
+import 'package:form_fields/src/formz_input_field.dart';
 import 'package:formz/formz.dart';
 
 /// {@template otp}
 /// Formz input for OTP. It can be empty or invalid.
 /// {@endtemplate}
 @immutable
-class Otp extends FormzInput<String, OtpValidationError> with EquatableMixin {
+class Otp extends FormzInput<String, OtpValidationError>
+    with EquatableMixin, FormzValidationMixin {
   /// {@macro otp.unvalidated}
   const Otp.unvalidated([super.value = '']) : super.pure();
 
@@ -23,6 +25,15 @@ class Otp extends FormzInput<String, OtpValidationError> with EquatableMixin {
   }
 
   @override
+  Map<OtpValidationError?, String?> get validationErrorMessage => {
+        OtpValidationError.empty:
+            'OTP cannot be empty. Please enter your code.',
+        OtpValidationError.invalid:
+            'Invalid OTP. Please check and re-enter the code.',
+        null: null,
+      };
+
+  @override
   List<Object> get props => [pure, value];
 }
 
@@ -34,11 +45,3 @@ enum OtpValidationError {
   /// Invalid OTP.
   invalid,
 }
-
-/// OTP validation errors message.
-Map<OtpValidationError?, String?> get otpValidationErrorMessage => {
-      OtpValidationError.empty: 'OTP cannot be empty. Please enter your code.',
-      OtpValidationError.invalid:
-          'Invalid OTP. Please check and re-enter the code.',
-      null: null,
-    };

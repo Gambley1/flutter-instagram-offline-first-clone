@@ -37,7 +37,7 @@ class _ResetPasswordFieldState extends State<ResetPasswordOtpField> {
   @override
   Widget build(BuildContext context) {
     final otpError = context.select(
-      (ResetPasswordCubit cubit) => cubit.state.otpError,
+      (ResetPasswordCubit cubit) => cubit.state.otp.errorMessage,
     );
     final isLoading = context.select(
       (ResetPasswordCubit cubit) => cubit.state.status.isLoading,
