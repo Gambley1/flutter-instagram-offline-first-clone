@@ -21,7 +21,7 @@ class ResetPasswordButton extends StatelessWidget {
     final child = switch (isLoading) {
       true => AppButton.inProgress(style: style, scale: 0.5),
       _ => AppButton.auth(
-          context.l10n.resetPasswordText,
+          context.l10n.changePasswordText,
           () => context.read<ResetPasswordCubit>().onSubmit(
                 email: context.read<ForgotPasswordCubit>().state.email.value,
               ),

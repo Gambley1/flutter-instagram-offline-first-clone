@@ -309,6 +309,7 @@
     }
   },
   "forgotPasswordText": "Forgot password?",
+  "recoveryPasswordText": "Password recovery",
   "orText": "Or",
   "signInWithText": "Sign in with {provider}",
   "@signInWithText": {
@@ -365,7 +366,7 @@
   },
   "emailText": "Email",
   "otpText": "Reset token",
-  "resetPasswordText": "Reset password",
+  "changePasswordText": "Change password",
   "passwordText": "Password",
   "newPasswordText": "New password",
   "loginText": "Login",

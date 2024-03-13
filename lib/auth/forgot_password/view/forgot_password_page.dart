@@ -79,7 +79,7 @@ class ForgotPasswordView extends StatelessWidget {
       releaseFocus: true,
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
-        title: Text(context.l10n.forgotPasswordText.replaceAll('?', '')),
+        title: Text(context.l10n.recoveryPasswordText),
         centerTitle: false,
       ),
       body: const AppConstrainedScrollView(

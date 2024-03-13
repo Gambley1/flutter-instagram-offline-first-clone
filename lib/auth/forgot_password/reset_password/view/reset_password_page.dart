@@ -24,11 +24,11 @@ class ResetPasswordView extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppScaffold(
       onPopInvoked: (didPop) {
-        if (!didPop) return;
+        if (didPop) return;
         _confirmGoBack(context);
       },
       appBar: AppBar(
-        title: Text(context.l10n.resetPasswordText),
+        title: Text(context.l10n.changePasswordText),
         centerTitle: false,
         leading: IconButton(
           icon: Icon(Icons.adaptive.arrow_back),

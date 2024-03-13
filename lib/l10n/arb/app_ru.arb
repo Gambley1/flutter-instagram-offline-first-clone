@@ -303,6 +303,7 @@
     }
   },
   "forgotPasswordText": "Забыли пароль?",
+  "recoveryPasswordText": "Восстановление пароля",
   "orText": "Или",
   "signInWithText": "Войти через {provider}",
   "@signInWithText": {
@@ -335,7 +336,7 @@
   },
   "emailText": "Почта",
   "otpText": "Код",
-  "resetPasswordText": "Сбросить пароль",
+  "changePasswordText": "Поменять пароль",
   "passwordText": "Пароль",
   "newPasswordText": "Новый пароль",
   "loginText": "Войти",

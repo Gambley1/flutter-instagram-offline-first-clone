@@ -209,7 +209,9 @@ class PowerSyncRepository {
 
     supabase.auth.onAuthStateChange.listen((data) async {
       final event = data.event;
-      if (event == AuthChangeEvent.signedIn) {
+      if (event == AuthChangeEvent.signedIn ||
+          event == AuthChangeEvent.passwordRecovery) {
+        shared.logD('Connect to powersync');
         // Connect to PowerSync when the user is signed in
         currentConnector = SupabaseConnector(_db, isDev: isDev);
         await _db.connect(connector: currentConnector!);
