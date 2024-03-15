@@ -23,7 +23,7 @@ dependencies:
   env:
     path: packages/env
   equatable: ^2.0.5
-  fast_immutable_collections: ^10.1.1
+  fast_immutable_collections: ^10.1.2
   firebase_config:
     path: packages/remote_config/firebase_config
   firebase_core: ^2.27.1
