@@ -1,11 +1,10 @@
-// ignore_for_file: lines_longer_than_80_chars
-
 import 'package:chats_repository/chats_repository.dart';
 import 'package:database_client/database_client.dart';
 import 'package:env/env.dart';
 import 'package:firebase_notifications_client/firebase_notifications_client.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/bootstrap.dart';
+import 'package:flutter_instagram_offline_first_clone/firebase_options_stg.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:persistent_storage/persistent_storage.dart';
 import 'package:posts_repository/posts_repository.dart';
@@ -71,6 +70,7 @@ void main() {
         user: await userRepository.user.first,
       );
     },
+    options: DefaultFirebaseOptions.currentPlatform,
     isDev: false,
   );
 }

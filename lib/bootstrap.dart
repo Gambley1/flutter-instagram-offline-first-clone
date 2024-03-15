@@ -7,7 +7,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_instagram_offline_first_clone/firebase_options_prod.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/slang/translations.g.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:path_provider/path_provider.dart';
@@ -33,14 +32,18 @@ class AppBlocObserver extends BlocObserver {
 }
 
 @pragma('vm:entry-point')
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+Future<void> _firebaseMessagingBackgroundHandler(
+  RemoteMessage message, {
+  required FirebaseOptions options,
+}) async {
+  await Firebase.initializeApp(options: options);
 
   logD('Handling a background message: ${message.toMap()}');
 }
 
 Future<void> bootstrap(
   AppBuilder builder, {
+  required FirebaseOptions options,
   required bool isDev,
 }) async {
   FlutterError.onError = (details) {
@@ -53,9 +56,7 @@ Future<void> bootstrap(
     () async {
       WidgetsFlutterBinding.ensureInitialized();
 
-      await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform,
-      );
+      await Firebase.initializeApp(options: options);
 
       HydratedBloc.storage = await HydratedStorage.build(
         storageDirectory: kIsWeb
@@ -68,7 +69,8 @@ Future<void> bootstrap(
 
       final firebaseMessaging = FirebaseMessaging.instance;
       FirebaseMessaging.onBackgroundMessage(
-        _firebaseMessagingBackgroundHandler,
+        (message) =>
+            _firebaseMessagingBackgroundHandler(message, options: options),
       );
 
       final sharedPreferences = await SharedPreferences.getInstance();
