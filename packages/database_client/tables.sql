@@ -76,7 +76,7 @@ create table
     id uuid not null,
     full_name text not null,
     email text not null,
-    username text not null,
+    username text null,
     avatar_url text null,
     push_token text null,
     constraint profiles_pkey primary key (id),
