@@ -26,12 +26,12 @@ class SearchRepository {
   }) async {
     final hash = generateHash([query, limit, offset]);
     if (_usersHashedQueryResults.containsKey(hash)) {
-      logI('Return hashed results');
+      logD('Return hashed results');
       if (query.trim().isEmpty) return <User>[];
       return _usersHashedQueryResults[hash]!;
     }
 
-    logI("Didn't found hashed results, querying for users...");
+    logD("Didn't found hashed results, querying for users...");
 
     final users = _client.searchUsers(
       userId: _client.currentUserId!,

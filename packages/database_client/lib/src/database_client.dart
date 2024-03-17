@@ -1452,7 +1452,7 @@ values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       data: jsonEncode(data),
       options: Options(headers: headers),
     );
-    logI('Response: $res, \n status code: ${res.statusCode}');
+    logD('Response: $res, \n status code: ${res.statusCode}');
   }
 
   @override

@@ -4,6 +4,5 @@ import 'package:shared/shared.dart';
 final getIt = GetIt.instance;
 
 void setupDi({required AppFlavor appFlavor}) {
-  logI('Register di');
   getIt.registerSingleton<AppFlavor>(appFlavor);
 }

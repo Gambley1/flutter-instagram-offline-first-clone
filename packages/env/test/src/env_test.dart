@@ -7,53 +7,53 @@ void main() {
     group('Dev', () {
       test('supabase url not null', () {
         expect(EnvDev.supabaseUrl, isNotNull);
-        logI(EnvDev.supabaseUrl);
+        logD(EnvDev.supabaseUrl);
       });
       test('supabase anon url not null', () {
         expect(EnvDev.supabaseAnonKey, isNotNull);
-        logI(EnvDev.supabaseAnonKey);
+        logD(EnvDev.supabaseAnonKey);
       });
       test('powersync url not null', () {
         expect(EnvDev.powersyncUrl, isNotNull);
-        logI(EnvDev.powersyncUrl);
+        logD(EnvDev.powersyncUrl);
       });
       test('fcm server key not null', () {
         expect(EnvDev.fcmServerKey, isNotNull);
-        logI(EnvDev.fcmServerKey);
+        logD(EnvDev.fcmServerKey);
       });
       test('ios client id not null', () {
         expect(EnvDev.iOSClientId, isNotNull);
-        logI(EnvDev.iOSClientId);
+        logD(EnvDev.iOSClientId);
       });
       test('web client id not null', () {
         expect(EnvDev.webClientId, isNotNull);
-        logI(EnvDev.webClientId);
+        logD(EnvDev.webClientId);
       });
     });
     group('Prod', () {
       test('supabase url not null', () {
         expect(EnvProd.supabaseUrl, isNotNull);
-        logI(EnvProd.supabaseUrl);
+        logD(EnvProd.supabaseUrl);
       });
       test('supabase anon url not null', () {
         expect(EnvProd.supabaseAnonKey, isNotNull);
-        logI(EnvProd.supabaseAnonKey);
+        logD(EnvProd.supabaseAnonKey);
       });
       test('powersync url not null', () {
         expect(EnvProd.powersyncUrl, isNotNull);
-        logI(EnvProd.powersyncUrl);
+        logD(EnvProd.powersyncUrl);
       });
       test('fcm server key not null', () {
         expect(EnvProd.fcmServerKey, isNotNull);
-        logI(EnvProd.fcmServerKey);
+        logD(EnvProd.fcmServerKey);
       });
       test('ios client id not null', () {
         expect(EnvProd.iOSClientId, isNotNull);
-        logI(EnvProd.iOSClientId);
+        logD(EnvProd.iOSClientId);
       });
       test('web client id not null', () {
         expect(EnvProd.webClientId, isNotNull);
-        logI(EnvProd.webClientId);
+        logD(EnvProd.webClientId);
       });
     });
   });

@@ -141,12 +141,12 @@ void main() {
     final media = Media.fromJson(
       (mockPostJsonString['media'] as List<Map<String, String>>)[0],
     );
-    logI(media.toJson());
+    logD(media.toJson());
   });
 
   test('de-serialize sponsored blocks', () {
     final sposnoredBlocks =
         List<InstaBlock>.from(posts.map(PostSponsoredBlock.fromJson));
-    logI(sposnoredBlocks.map((e) => e.toJson()).toList());
+    logD(sposnoredBlocks.map((e) => e.toJson()).toList());
   });
 }

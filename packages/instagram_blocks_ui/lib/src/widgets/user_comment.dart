@@ -228,7 +228,7 @@ RichText buildHighlightedText(Comment comment, BuildContext context) {
           ),
           recognizer: TapGestureRecognizer()
             ..onTap = () {
-              logI('$value id: ${userIds[value]}');
+              logD('$value id: ${userIds[value]}');
             },
         ),
       );
