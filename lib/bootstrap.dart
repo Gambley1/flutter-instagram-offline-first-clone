@@ -7,6 +7,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/slang/translations.g.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:path_provider/path_provider.dart';
@@ -43,8 +44,8 @@ Future<void> _firebaseMessagingBackgroundHandler(
 
 Future<void> bootstrap(
   AppBuilder builder, {
+  required AppFlavor appFlavor,
   required FirebaseOptions options,
-  required bool isDev,
 }) async {
   FlutterError.onError = (details) {
     logE(details.exceptionAsString(), stackTrace: details.stack);
@@ -56,6 +57,8 @@ Future<void> bootstrap(
     () async {
       WidgetsFlutterBinding.ensureInitialized();
 
+      setupDi(appFlavor: appFlavor);
+
       await Firebase.initializeApp(options: options);
 
       HydratedBloc.storage = await HydratedStorage.build(
@@ -64,7 +67,7 @@ Future<void> bootstrap(
             : await getTemporaryDirectory(),
       );
 
-      final powerSyncRepository = PowerSyncRepository(isDev: isDev);
+      final powerSyncRepository = PowerSyncRepository(env: appFlavor.getEnv);
       await powerSyncRepository.initialize();
 
       final firebaseMessaging = FirebaseMessaging.instance;

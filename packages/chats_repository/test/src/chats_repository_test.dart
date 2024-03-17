@@ -12,7 +12,7 @@ void main() {
       chatsRepository = MockChatsRepository();
     });
     test('can be instantiated', () {
-      expect(chatsRepository, isNotNull);
+      expect(chatsRepository, returnsNormally);
     });
   });
 }

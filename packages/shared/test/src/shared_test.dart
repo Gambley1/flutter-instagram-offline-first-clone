@@ -6,7 +6,7 @@ import 'package:shared/shared.dart';
 void main() {
   group('Shared', () {
     group('Models', () {
-      test('Schema not null', () {
+      test('schema not null', () {
         expect(schema, isNotNull);
       });
     });

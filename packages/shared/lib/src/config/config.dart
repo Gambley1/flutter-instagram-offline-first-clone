@@ -1,6 +1,7 @@
 export 'package:bloc_concurrency/bloc_concurrency.dart';
 export 'package:stream_transform/stream_transform.dart';
 
+export 'app_flavor.dart';
 export 'blur_hash.dart';
 export 'debouncer.dart';
 export 'image_compress.dart';

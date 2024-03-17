@@ -9,6 +9,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:persistent_storage/persistent_storage.dart';
 import 'package:posts_repository/posts_repository.dart';
 import 'package:search_repository/search_repository.dart';
+import 'package:shared/shared.dart';
 import 'package:stories_repository/stories_repository.dart';
 import 'package:supabase_authentication_client/supabase_authentication_client.dart';
 import 'package:token_storage/token_storage.dart';
@@ -27,8 +28,8 @@ void main() {
 
       final tokenStorage = InMemoryTokenStorage();
 
-      final iosClientId = EnvDev.iOSClientId;
-      final webClientId = EnvDev.webClientId;
+      final iosClientId = getIt<AppFlavor>().getEnv(Env.iOSClientId);
+      final webClientId = getIt<AppFlavor>().getEnv(Env.webClientId);
       final googleSignIn =
           GoogleSignIn(clientId: iosClientId, serverClientId: webClientId);
 
@@ -70,7 +71,7 @@ void main() {
         user: await userRepository.user.first,
       );
     },
+    appFlavor: AppFlavor.development(),
     options: DefaultFirebaseOptions.currentPlatform,
-    isDev: true,
   );
 }

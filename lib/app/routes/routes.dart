@@ -8,7 +8,6 @@ import 'package:firebase_config/firebase_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
-import 'package:flutter_instagram_offline_first_clone/app/view/app_init_utilities.dart';
 import 'package:flutter_instagram_offline_first_clone/auth/auth.dart';
 import 'package:flutter_instagram_offline_first_clone/chats/chat/chat.dart';
 import 'package:flutter_instagram_offline_first_clone/chats/widgets/search_users.dart';
@@ -513,9 +512,11 @@ GoRouter router(AppBloc appBloc) => GoRouter(
       redirect: (context, state) {
         final authenticated = appBloc.state.status == AppStatus.authenticated;
         final authenticating = state.matchedLocation == '/auth';
+        final isInFeed = state.matchedLocation == '/feed';
 
+        if (isInFeed && !authenticated) return '/auth';
         if (!authenticated) return '/auth';
-        if (authenticating) return '/feed';
+        if (authenticating && authenticated) return '/feed';
 
         return null;
       },

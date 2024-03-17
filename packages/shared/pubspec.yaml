@@ -13,6 +13,8 @@ dependencies:
   bloc_concurrency: ^0.2.4
   blurhash: ^1.1.1
   dio: ^5.4.0
+  env:
+    path: ../env
   equatable: ^2.0.5
   flutter:
     sdk: flutter

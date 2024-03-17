@@ -2,20 +2,34 @@
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:powersync_repository/powersync_repository.dart';
+import 'package:shared/shared.dart';
+
+class MockPowerSyncRepository extends Mock implements PowerSyncRepository {
+  MockPowerSyncRepository({required this.envValue});
+
+  final EnvValue envValue;
+
+  @override
+  EnvValue get env => envValue;
+}
+
+class MockAppFlavor extends Mock implements AppFlavor {}
 
 void main() {
   group('PowerSyncRepository', () {
+    late AppFlavor appFlavor;
     late PowerSyncRepository powerSyncRepository;
-    const isDev = true;
 
     setUpAll(() {
       WidgetsFlutterBinding.ensureInitialized();
 
-      powerSyncRepository = PowerSyncRepository(isDev: isDev);
+      appFlavor = MockAppFlavor();
+      powerSyncRepository = MockPowerSyncRepository(envValue: appFlavor.getEnv);
     });
-    test('Is dev false', () {
-      expect(powerSyncRepository.isDev, equals(isDev));
+    test('can be instantiated', () {
+      expect(powerSyncRepository, returnsNormally);
     });
   });
 }

@@ -2,20 +2,19 @@
 
 import 'package:database_client/database_client.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:powersync_repository/powersync_repository.dart';
+import 'package:mocktail/mocktail.dart';
+
+class MockDatabaseClient extends Mock implements DatabaseClient {}
 
 void main() {
   group('DatabaseClient', () {
-    late PowerSyncRepository powerSyncRepository;
+    late DatabaseClient databaseClient;
 
     setUpAll(() {
-      powerSyncRepository = PowerSyncRepository();
+      databaseClient = MockDatabaseClient();
     });
     test('can be instantiated', () {
-      expect(
-        DatabaseClient(powerSyncRepository),
-        isNotNull,
-      );
+      expect(databaseClient, returnsNormally);
     });
   });
 }

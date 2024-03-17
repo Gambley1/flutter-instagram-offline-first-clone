@@ -5,6 +5,10 @@ import 'package:powersync/powersync.dart';
 import 'package:shared/shared.dart' as shared;
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+/// Env value signature that can be used to get an environment value, base
+/// on provided [Env].
+typedef EnvValue = String Function(Env env);
+
 /// Postgres Response codes that we cannot recover from by retrying.
 final List<RegExp> fatalResponseCodes = [
   // Class 22 — Data Exception
@@ -20,13 +24,13 @@ final List<RegExp> fatalResponseCodes = [
 /// Use Supabase for authentication and data upload.
 class SupabaseConnector extends PowerSyncBackendConnector {
   /// {@macro supabase_connector}
-  SupabaseConnector(this.db, {required this.isDev});
+  SupabaseConnector(this.db, {required this.env});
 
   /// PowerSync main database.
   final PowerSyncDatabase db;
 
-  /// Represents whether should use dev environment or prod.
-  final bool isDev;
+  /// Environment values.
+  final EnvValue env;
 
   Future<void>? _refreshFuture;
 
@@ -53,7 +57,7 @@ class SupabaseConnector extends PowerSyncBackendConnector {
         ? null
         : DateTime.fromMillisecondsSinceEpoch(session.expiresAt! * 1000);
     return PowerSyncCredentials(
-      endpoint: isDev ? EnvDev.powersyncUrl : EnvProd.powersyncUrl,
+      endpoint: env(Env.powerSyncUrl),
       token: token,
       userId: userId,
       expiresAt: expiresAt,
@@ -140,10 +144,10 @@ class SupabaseConnector extends PowerSyncBackendConnector {
 /// {@endtemplate}
 class PowerSyncRepository {
   /// {@macro power_sync_repository}
-  PowerSyncRepository({this.isDev = false});
+  PowerSyncRepository({required this.env});
 
-  /// Wether environemnt should be dev.
-  final bool isDev;
+  /// Environment values.
+  final EnvValue env;
 
   bool _isInitialized = false;
 
@@ -183,8 +187,8 @@ class PowerSyncRepository {
 
   Future<void> _loadSupabase() async {
     await Supabase.initialize(
-      url: isDev ? EnvDev.supabaseUrl : EnvProd.supabaseUrl,
-      anonKey: isDev ? EnvDev.supabaseAnonKey : EnvProd.supabaseAnonKey,
+      url: env(Env.supabaseUrl),
+      anonKey: env(Env.supabaseAnonKey),
       authOptions: const FlutterAuthClientOptions(
         authFlowType: AuthFlowType.implicit,
       ),
@@ -198,12 +202,12 @@ class PowerSyncRepository {
 
     await _loadSupabase();
 
-    SupabaseConnector? currentConnector = SupabaseConnector(_db, isDev: isDev);
+    SupabaseConnector? currentConnector = SupabaseConnector(_db, env: env);
 
     if (isLoggedIn()) {
       // If the user is already logged in, connect immediately.
       // Otherwise, connect once logged in.
-      currentConnector = SupabaseConnector(_db, isDev: isDev);
+      currentConnector = SupabaseConnector(_db, env: env);
       await _db.connect(connector: currentConnector);
     }
 
@@ -213,7 +217,7 @@ class PowerSyncRepository {
           event == AuthChangeEvent.passwordRecovery) {
         shared.logD('Connect to powersync');
         // Connect to PowerSync when the user is signed in
-        currentConnector = SupabaseConnector(_db, isDev: isDev);
+        currentConnector = SupabaseConnector(_db, env: env);
         await _db.connect(connector: currentConnector!);
       } else if (event == AuthChangeEvent.signedOut) {
         // Implicit sign out - disconnect, but don't delete data

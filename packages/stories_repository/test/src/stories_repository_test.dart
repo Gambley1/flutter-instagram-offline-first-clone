@@ -11,7 +11,7 @@ void main() {
 
     setUp(() => storiesRepository = StoriesMockRepository());
     test('can be instantiated', () {
-      expect(storiesRepository, isNotNull);
+      expect(storiesRepository, returnsNormally);
     });
   });
 }
