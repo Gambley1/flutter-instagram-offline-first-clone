@@ -27,20 +27,25 @@ class SnackbarMessage {
 
   /// {@macro snackbar_message_success}
   const SnackbarMessage.success({
-    String title = '',
+    String title = 'Successfully!',
     String? description,
+    Duration timeout = const Duration(milliseconds: 3500),
   }) : this(
           title: title,
           description: description,
           icon: Icons.done,
           backgroundColor: const Color.fromARGB(255, 41, 166, 64),
+          timeout: timeout,
         );
 
   /// {@macro snackbar_message_error}
-  const SnackbarMessage.loading({String title = 'Loading...'})
-      : this(
+  const SnackbarMessage.loading({
+    String title = 'Loading...',
+    Duration timeout = const Duration(milliseconds: 3500),
+  }) : this(
           title: title,
           isLoading: true,
+          timeout: timeout,
         );
 
   /// {@macro snackbar_message_error}
@@ -48,12 +53,14 @@ class SnackbarMessage {
     String title = '',
     String? description,
     IconData? icon,
+    Duration timeout = const Duration(milliseconds: 3500),
   }) : this(
           title: title,
           description: description,
           icon: icon ?? Icons.cancel_rounded,
           backgroundColor: const Color.fromARGB(255, 228, 71, 71),
           isError: true,
+          timeout: timeout,
         );
 
   /// Snackbar title.
