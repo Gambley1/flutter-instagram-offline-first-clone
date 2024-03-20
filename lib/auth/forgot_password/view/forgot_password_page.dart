@@ -3,8 +3,8 @@ import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/auth/cubit/forgot_password_cubit.dart';
+import 'package:flutter_instagram_offline_first_clone/auth/forgot_password/change_password/change_password.dart';
 import 'package:flutter_instagram_offline_first_clone/auth/forgot_password/forgot_password.dart';
-import 'package:flutter_instagram_offline_first_clone/auth/forgot_password/reset_password/reset_password.dart';
 import 'package:flutter_instagram_offline_first_clone/auth/forgot_password/widgets/widgets.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:user_repository/user_repository.dart';
@@ -31,7 +31,7 @@ class ManageForgotPasswordPage extends StatelessWidget {
           ),
         ),
         BlocProvider(
-          create: (context) => ResetPasswordCubit(
+          create: (context) => ChangePasswordCubit(
             userRepository: context.read<UserRepository>(),
           ),
         ),

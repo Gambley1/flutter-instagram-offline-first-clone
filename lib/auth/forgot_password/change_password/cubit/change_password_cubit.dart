@@ -4,13 +4,13 @@ import 'package:form_fields/form_fields.dart';
 import 'package:shared/shared.dart';
 import 'package:user_repository/user_repository.dart';
 
-part 'reset_password_state.dart';
+part 'change_password_state.dart';
 
-class ResetPasswordCubit extends Cubit<ResetPasswordState> {
-  ResetPasswordCubit({
+class ChangePasswordCubit extends Cubit<ChangePasswordState> {
+  ChangePasswordCubit({
     required UserRepository userRepository,
   })  : _userRepository = userRepository,
-        super(const ResetPasswordState.initial());
+        super(const ChangePasswordState.initial());
 
   final UserRepository _userRepository;
 
@@ -20,7 +20,7 @@ class ResetPasswordCubit extends Cubit<ResetPasswordState> {
       );
 
   /// Emits initial state of login screen.
-  void resetState() => emit(const ResetPasswordState.initial());
+  void resetState() => emit(const ChangePasswordState.initial());
 
   /// OTP field was unfocused, here is checking if previous state with OTP
   /// was valid, in order to indicate it in state after unfocus.

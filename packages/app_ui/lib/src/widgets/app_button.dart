@@ -32,7 +32,7 @@ class AppButton extends StatelessWidget {
   /// {@macro app_button}
   const AppButton.auth(
     String text,
-    void Function()? onPressed, {
+    VoidCallback? onPressed, {
     bool outlined = false,
     Key? key,
     ButtonStyle? style,

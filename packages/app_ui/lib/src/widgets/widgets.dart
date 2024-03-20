@@ -8,5 +8,5 @@ export 'app_logo.dart';
 export 'app_scaffold.dart';
 export 'app_snackbar.dart';
 export 'app_text_field.dart';
-export 'gaps.dart';
+export 'gap.dart';
 export 'tappable.dart';

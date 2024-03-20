@@ -1,35 +1,31 @@
-import 'dart:io';
-
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_instagram_offline_first_clone/auth/signup/cubit/sign_up_cubit.dart';
+import 'package:flutter_instagram_offline_first_clone/auth/forgot_password/change_password/change_password.dart';
+import 'package:flutter_instagram_offline_first_clone/auth/forgot_password/forgot_password.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 
-class SignUpButton extends StatelessWidget {
-  const SignUpButton({
-    super.key,
-    this.avatarFile,
-  });
-
-  final File? avatarFile;
+class ResetPasswordButton extends StatelessWidget {
+  const ResetPasswordButton({super.key});
 
   @override
   Widget build(BuildContext context) {
     final style = ButtonStyle(
+      backgroundColor: const MaterialStatePropertyAll(AppColors.blue),
       shape: MaterialStatePropertyAll(
         RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
       ),
     );
-    final isLoading =
-        context.select((SignUpCubit bloc) => bloc.state.isLoading);
+    final isLoading = context
+        .select((ChangePasswordCubit cubit) => cubit.state.status.isLoading);
     final child = switch (isLoading) {
       true => AppButton.inProgress(style: style, scale: 0.5),
       _ => AppButton.auth(
-          context.l10n.signUpText,
-          () => context.read<SignUpCubit>().onSubmit(avatarFile: avatarFile),
+          context.l10n.changePasswordText,
+          () => context.read<ChangePasswordCubit>().onSubmit(
+                email: context.read<ForgotPasswordCubit>().state.email.value,
+              ),
           style: style,
-          outlined: true,
         ),
     };
     return ConstrainedBox(

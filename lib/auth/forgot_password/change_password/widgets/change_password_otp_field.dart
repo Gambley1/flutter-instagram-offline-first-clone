@@ -1,7 +1,7 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_instagram_offline_first_clone/auth/forgot_password/reset_password/reset_password.dart';
+import 'package:flutter_instagram_offline_first_clone/auth/forgot_password/change_password/change_password.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:shared/shared.dart';
 
@@ -20,7 +20,7 @@ class _ResetPasswordFieldState extends State<ResetPasswordOtpField> {
   void initState() {
     super.initState();
     _debouncer = Debouncer();
-    final cubit = context.read<ResetPasswordCubit>()..resetState();
+    final cubit = context.read<ChangePasswordCubit>()..resetState();
     _focusNode.addListener(() {
       if (!_focusNode.hasFocus) {
         cubit.onOtpUnfocused();
@@ -37,10 +37,10 @@ class _ResetPasswordFieldState extends State<ResetPasswordOtpField> {
   @override
   Widget build(BuildContext context) {
     final otpError = context.select(
-      (ResetPasswordCubit cubit) => cubit.state.otp.errorMessage,
+      (ChangePasswordCubit cubit) => cubit.state.otp.errorMessage,
     );
     final isLoading = context.select(
-      (ResetPasswordCubit cubit) => cubit.state.status.isLoading,
+      (ChangePasswordCubit cubit) => cubit.state.status.isLoading,
     );
 
     return AppTextField(
@@ -52,7 +52,7 @@ class _ResetPasswordFieldState extends State<ResetPasswordOtpField> {
       textInputType: TextInputType.number,
       autofillHints: const [AutofillHints.oneTimeCode],
       onChanged: (v) => _debouncer.run(
-        () => context.read<ResetPasswordCubit>().onOtpChanged(v),
+        () => context.read<ChangePasswordCubit>().onOtpChanged(v),
       ),
       errorText: otpError,
     );

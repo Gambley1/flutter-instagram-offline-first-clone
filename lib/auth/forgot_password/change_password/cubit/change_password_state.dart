@@ -1,4 +1,4 @@
-part of 'reset_password_cubit.dart';
+part of 'change_password_cubit.dart';
 
 enum ResetPasswordStatus { initial, loading, success, failure, invalidOtp }
 
@@ -19,15 +19,15 @@ extension SubmissionStatusX on ResetPasswordStatus {
   bool get invalidOtp => this == ResetPasswordStatus.invalidOtp;
 }
 
-class ResetPasswordState extends Equatable {
-  const ResetPasswordState._({
+class ChangePasswordState extends Equatable {
+  const ChangePasswordState._({
     required this.status,
     required this.password,
     required this.otp,
     required this.showPassword,
   });
 
-  const ResetPasswordState.initial()
+  const ChangePasswordState.initial()
       : this._(
           status: ResetPasswordStatus.initial,
           password: const Password.unvalidated(),
@@ -43,13 +43,13 @@ class ResetPasswordState extends Equatable {
   @override
   List<Object?> get props => [status, password, otp, showPassword];
 
-  ResetPasswordState copyWith({
+  ChangePasswordState copyWith({
     ResetPasswordStatus? status,
     Password? password,
     Otp? otp,
     bool? showPassword,
   }) {
-    return ResetPasswordState._(
+    return ChangePasswordState._(
       status: status ?? this.status,
       password: password ?? this.password,
       otp: otp ?? this.otp,
