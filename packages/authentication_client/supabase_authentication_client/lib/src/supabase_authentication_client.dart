@@ -5,11 +5,11 @@ import 'package:powersync_repository/powersync_repository.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 import 'package:token_storage/token_storage.dart';
 
-/// {@template firebase_authentication_client}
+/// {@template supabase_authentication_client}
 /// A Supabase implementation of the [AuthenticationClient] interface.
 /// {@endtemplate}
 class SupabaseAuthenticationClient implements AuthenticationClient {
-  /// {@macro firebase_authentication_client}
+  /// {@macro supabase_authentication_client}
   SupabaseAuthenticationClient({
     required PowerSyncRepository powerSyncRepository,
     required TokenStorage tokenStorage,
