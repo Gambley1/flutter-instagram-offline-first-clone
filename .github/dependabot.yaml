@@ -46,7 +46,7 @@ updates:
     schedule:
       interval: "daily"
   - package-ecosystem: "pub"
-    directory: "/packages/remote_config/firebase_remote_config"
+    directory: "/packages/firebase_remote_config_repository"
     schedule:
       interval: "daily"
   - package-ecosystem: "pub"
@@ -82,7 +82,15 @@ updates:
     schedule:
       interval: "daily"
   - package-ecosystem: "pub"
+    directory: "/packages/notifications_client/notifications_client"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "pub"
     directory: "/packages/notifications_client/firebase_notifications_client"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "pub"
+    directory: "/packages/notifications_repository"
     schedule:
       interval: "daily"
   - package-ecosystem: "pub"
