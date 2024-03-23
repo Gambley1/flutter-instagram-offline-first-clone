@@ -9,20 +9,16 @@ on:
     - cron: "0 0 * * *"
   pull_request:
     paths:
-      - "./lib/**"
-      - "./test/**"
-      - "./packages/**"
-      - "./pubspec.yaml"
+      - "lib/**"
+      - "test/**"
+      - "packages/**"
+      - "pubspec.yaml"
       - ".github/workflows/flutter_instagram_offline_first_clone.yaml"
     branches:
       - main
 
 jobs:
   build:
-    defaults:
-      run:
-        working-directory: /
-
     runs-on: ubuntu-latest
 
     strategy:
