@@ -9,15 +9,9 @@ import 'package:powersync_repository/powersync_repository.dart';
 import 'package:shared/shared.dart';
 import 'package:user_repository/user_repository.dart';
 
-sealed class _Repository {
-  const _Repository(this._powerSyncRepository);
-
-  final PowerSyncRepository _powerSyncRepository;
-}
-
 /// User base repository.
 abstract class UserBaseRepository {
-  /// The currently authenticated user id.
+  /// The id of the currently authenticated user.
   String? get currentUserId;
 
   /// Broadcasts the user profile identified by [id].
@@ -35,21 +29,6 @@ abstract class UserBaseRepository {
     String? pushToken,
   });
 
-  /// Sends a reset password email to the provided [email].
-  Future<void> resetPasswordForEmail({
-    required String email,
-    String? redirectTo,
-  });
-
-  /// Resets user password and updates user's metadata.
-  /// If user successfully verifies OTP [token] he automatically authenticates
-  /// into account by provided [email].
-  Future<void> resetPassword({
-    required String token,
-    required String email,
-    required String newPassword,
-  });
-
   /// Follows to the user by provided [followToId]. [followerId] is the id
   /// of currently authenticated user.
   Future<void> follow({
@@ -57,7 +36,7 @@ abstract class UserBaseRepository {
     String? followerId,
   });
 
-  /// Unfollows from user profile, identified by [unfollowId].
+  /// Unfollow from user profile, identified by [unfollowId].
   Future<void> unfollow({required String unfollowId, String? unfollowerId});
 
   /// Removes follower from followers of current users.
@@ -98,10 +77,10 @@ abstract class UserBaseRepository {
   /// Looks up into a database a returns users associated with the provided
   /// [query].
   Future<List<User>> searchUsers({
-    required String userId,
     required int limit,
     required int offset,
     required String? query,
+    String? userId,
     String? excludeUserIds,
   });
 }
@@ -111,7 +90,7 @@ abstract class PostsBaseRepository {
   /// Reads the associated post from the database by the [id].
   Future<Post?> getPostBy({required String id});
 
-  /// Fetches the profiles of users who liked post, idenitifed by [postId].
+  /// Fetches the profiles of users who liked post, found by [postId].
   Future<List<User>> getPostLikers({
     required String postId,
     int limit = 30,
@@ -298,25 +277,44 @@ abstract class StoriesBaseRepository {
   });
 }
 
-/// Abstract base class for database client that extends `Repository` and
-/// implements [UserBaseRepository] and [PostsBaseRepository].
-/// Contains a constructor to initialize the `powerSyncRepository`.
-abstract class Client extends _Repository
+/// {@template client}
+/// Represents a client that interacts with various repositories.
+///
+/// ### Example usage:
+/// ```dart
+/// final powerSyncRepository = PowerSyncRepository();
+/// final client = PowerSyncDatabaseClient(powerSyncRepository);
+///
+/// client.createPost(
+///   id: 'post123',
+///   userId: 'user123',
+///   caption: 'Hello, world!',
+///   media: 'https://example.com/image.jpg',
+/// );
+/// ```
+/// {@endtemplate}
+abstract class DatabaseClient
     implements
         UserBaseRepository,
         PostsBaseRepository,
         ChatsBaseRepository,
         StoriesBaseRepository {
-  /// {@macro client}
-  const Client(super.powerSyncRepository);
+  /// {@macro database_client}
+  const DatabaseClient();
 }
 
-/// {@template database_client}
-/// A package that manages application database workflow.
+/// {@template power_sync_database_client}
+/// A class representing a PowerSyncDatabaseClient.
+///
+/// It allows users to perform various operations such as creating posts,
+/// retrieving posts, liking posts, following users, and more.
 /// {@endtemplate}
-class DatabaseClient extends Client {
-  /// {@macro database_client}
-  DatabaseClient(super.powerSyncRepository);
+class PowerSyncDatabaseClient extends DatabaseClient {
+  /// {@macro power_sync_database_client}
+  PowerSyncDatabaseClient({required PowerSyncRepository powerSyncRepository})
+      : _powerSyncRepository = powerSyncRepository;
+
+  final PowerSyncRepository _powerSyncRepository;
 
   @override
   String? get currentUserId =>
@@ -1068,28 +1066,6 @@ ORDER BY created_at ASC
       });
 
   @override
-  Future<void> resetPasswordForEmail({
-    required String email,
-    String? redirectTo,
-  }) =>
-      _powerSyncRepository.resetPassword(email: email, redirectTo: redirectTo);
-
-  @override
-  Future<void> resetPassword({
-    required String token,
-    required String email,
-    required String newPassword,
-  }) async {
-    try {
-      await _powerSyncRepository.verifyOTP(token: token, email: email);
-      await updateUser(password: newPassword);
-    } catch (error, stackTrace) {
-      logE('Failed to verify OTP.', error: error, stackTrace: stackTrace);
-      throw Exception('Failed to verify OTP.');
-    }
-  }
-
-  @override
   Stream<List<ChatInbox>> chatsOf({required String userId}) =>
       _powerSyncRepository.db().watch(
         '''
@@ -1396,8 +1372,12 @@ values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             postAuthor,
             chatId,
           ]);
-        } catch (error) {
-          logE('Error send notification: $error');
+        } catch (error, stackTrace) {
+          logE(
+            'Error send notification.',
+            error: error,
+            stackTrace: stackTrace,
+          );
         }
       });
 
@@ -1565,10 +1545,10 @@ values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 
   @override
   Future<List<User>> searchUsers({
-    required String userId,
     required int limit,
     required int offset,
     required String? query,
+    String? userId,
     String? excludeUserIds,
   }) async {
     if (query == null || query.trim().isEmpty) return <User>[];
@@ -1584,7 +1564,7 @@ WHERE (LOWER(username) LIKE LOWER('%$query%') OR LOWER(full_name) LIKE LOWER('%$
   AND id <> ?1 $excludeUserIdsStatement 
 LIMIT ?2 OFFSET ?3
 ''',
-      [userId, limit, offset],
+      [currentUserId, limit, offset],
     );
 
     return result.safeMap(User.fromJson).toList(growable: false);

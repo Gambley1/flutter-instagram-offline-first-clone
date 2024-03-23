@@ -3,7 +3,7 @@ part of 'attachment_widget_builder.dart';
 /// {@template url_attachment_builder}
 /// A widget builder for url attachment type.
 ///
-/// This is used to show url attachments with a preview. e.g. youtube, twitter,
+/// This is used to show url attachments with a preview.
 /// etc.
 /// {@endtemplate}
 class UrlAttachmentBuilder extends AttachmentWidgetBuilder {

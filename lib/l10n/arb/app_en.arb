@@ -248,7 +248,7 @@
   "writeCaptionText": "Write caption...",
   "logOutText": "Log out",
   "logOutConfirmationText": "Are you sure you want to log out?",
-  "dontShowAgainText": "Dont''t show again",
+  "notShowAgainText": "Dont''t show again",
   "blockPostAuthorText": "Block post author",
   "blockAuthorText": "Block author",
   "blockAuthorConfirmationText": "Are you sure you want to block this author?",
@@ -473,7 +473,7 @@
       }
     }
   },
-  "networkError": "A network error has occured.\nCheck your connection and try again.",
+  "networkError": "A network error has occurred.\nCheck your connection and try again.",
   "@networkError": {
     "description": "Text displayed when a network error occurs."
   },

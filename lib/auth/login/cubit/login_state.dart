@@ -2,11 +2,12 @@ part of 'login_cubit.dart';
 
 /// [LoginErrorMessage] is a type alias for [String] that is used to indicate
 /// error message, that will be shown to user, when he will try to submit login
-/// form, but there is an error occured. It is used to show user, what exactly
+/// form, but there is an error occurred. It is used to show user, what exactly
 /// went wrong.
 typedef LoginErrorMessage = String;
 
-/// [LoginState] submission status, indicating current state of user loginng in.
+/// [LoginState] submission status, indicating current state of user login
+/// process.
 enum LogInSubmissionStatus {
   /// [LogInSubmissionStatus.idle] indicates that user has not yet submitted
   /// login form.
@@ -36,7 +37,7 @@ enum LogInSubmissionStatus {
   /// credentials was not found in database.
   userNotFound,
 
-  /// [LogInSubmissionStatus.loading] indicates that user has no iternet
+  /// [LogInSubmissionStatus.loading] indicates that user has no internet
   /// connection,during network request.
   networkError,
 
@@ -45,36 +46,18 @@ enum LogInSubmissionStatus {
 
   /// [LogInSubmissionStatus.googleLogInFailure] indicates that some went
   /// wrong during google login process.
-  googleLogInFailure,
-}
+  googleLogInFailure;
 
-/// Extension on [LogInSubmissionStatus] that checks current status.
-extension SubmissionStatusX on LogInSubmissionStatus {
-  /// Checks if current submission status is success.
   bool get isSuccess => this == LogInSubmissionStatus.success;
-
-  /// Checks if current submission status is in progress.
   bool get isLoading => this == LogInSubmissionStatus.loading;
-
-  /// Whether authentication with google provider is in progress.
   bool get isGoogleAuthInProgress =>
       this == LogInSubmissionStatus.googleAuthInProgress;
-
-  /// Whether authentication with github provider is in progress.
   bool get isGithubAuthInProgress =>
       this == LogInSubmissionStatus.githubAuthInProgress;
-
-  /// Checks if current submission status is invalid credentials.
   bool get isInvalidCredentials =>
       this == LogInSubmissionStatus.invalidCredentials;
-
-  /// Checks if current submission status is network error.
   bool get isNetworkError => this == LogInSubmissionStatus.networkError;
-
-  /// Checks if current submission status is user not found.
   bool get isUserNotFound => this == LogInSubmissionStatus.userNotFound;
-
-  /// Checks if current submission status is error.
   bool get isError =>
       this == LogInSubmissionStatus.error ||
       isUserNotFound ||
@@ -84,8 +67,7 @@ extension SubmissionStatusX on LogInSubmissionStatus {
 
 /// {@template login_state}
 /// [LoginState] holds all the information related to user login process.
-/// It is used to determine current state of user login process, and to
-/// validate user inputed data.
+/// It is used to determine current state of user login process.
 /// {@endtemplate}
 class LoginState {
   /// {@macro login_state}
@@ -103,27 +85,16 @@ class LoginState {
           status: LogInSubmissionStatus.idle,
           message: '',
           showPassword: false,
-          email: const Email.unvalidated(),
-          password: const Password.unvalidated(),
+          email: const Email.pure(),
+          password: const Password.pure(),
         );
 
-  /// Submission status, used to indicate current login state.
   final LogInSubmissionStatus status;
-
-  /// Error message, thrown during network request or user wrong enteractions.
+  final Email email;
+  final Password password;
+  final bool showPassword;
   final LoginErrorMessage message;
 
-  /// Solely used to show or hide password.
-  final bool showPassword;
-
-  /// [Email] that makes it easy to validate inputed by user value of it.
-  final Email email;
-
-  /// [Password] makes it easy to validate inputed by user value of password.
-  final Password password;
-
-  /// Copywith method to make it possible to clone or duplicate current login
-  /// state to make mutations and persist other parameters.
   LoginState copyWith({
     LogInSubmissionStatus? status,
     LoginErrorMessage? message,

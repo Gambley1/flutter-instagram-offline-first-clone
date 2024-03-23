@@ -16,7 +16,7 @@ class User extends AuthenticationUser {
     super.isNewUser,
   });
 
-  /// Converts an [AuthenticationUser] isntace to [User].
+  /// Converts an [AuthenticationUser] instance to [User].
   factory User.fromAuthenticationUser({
     required AuthenticationUser authenticationUser,
   }) =>

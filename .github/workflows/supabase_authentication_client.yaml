@@ -7,7 +7,7 @@ concurrency:
 on:
   pull_request:
     paths:
-      - "./packages/authentication_client/supabase_authentication_client/**"
+      - "packages/authentication_client/supabase_authentication_client/**"
       - ".github/workflows/supabase_authentication_client.yaml"
     branches:
       - main

@@ -21,7 +21,7 @@ class _SignUpFormState extends State<SignUpForm> {
   Widget build(BuildContext context) {
     return BlocListener<SignUpCubit, SignupState>(
       listener: (context, state) {
-        if (state.isError) {
+        if (state.submissionStatus.isError) {
           openSnackbar(
             SnackbarMessage.error(
               title:

@@ -7,21 +7,11 @@ enum ForgotPasswordStatus {
   loading,
   success,
   failure,
-  tooManyRequests
-}
+  tooManyRequests;
 
-/// Extension on [ForgotPasswordStatus] that checks current status.
-extension SubmissionStatusX on ForgotPasswordStatus {
-  /// Checks if current submission status is success.
   bool get isSuccess => this == ForgotPasswordStatus.success;
-
-  /// Checks if current submission status is in progress.
   bool get isLoading => this == ForgotPasswordStatus.loading;
-
-  /// Checks if current submission status is failure.
   bool get isError => this == ForgotPasswordStatus.failure || isTooManyRequests;
-
-  /// Checks if current submission status is too many requested.
   bool get isTooManyRequests => this == ForgotPasswordStatus.tooManyRequests;
 }
 
@@ -31,7 +21,7 @@ class ForgotPasswordState extends Equatable {
   const ForgotPasswordState.initial()
       : this._(
           status: ForgotPasswordStatus.initial,
-          email: const Email.unvalidated(),
+          email: const Email.pure(),
         );
 
   final ForgotPasswordStatus status;

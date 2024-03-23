@@ -7,7 +7,7 @@ concurrency:
 on:
   pull_request:
     paths:
-      - "./packages/search_repository/**"
+      - "packages/search_repository/**"
       - ".github/workflows/search_repository.yaml"
     branches:
       - main
@@ -16,5 +16,5 @@ jobs:
   build:
     uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/dart_package.yml@v1
     with:
-      dart_sdk: 3.2.6
+      dart_sdk: 3.3.0
       working_directory: packages/search_repository

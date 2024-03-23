@@ -65,7 +65,7 @@ class AppScaffold extends StatelessWidget {
   /// The floating action button of the scaffold.
   final Widget? floatingActionButton;
 
-  /// The location of the floaing action button of the scaffold.
+  /// The location of the floating action button of the scaffold.
   final FloatingActionButtonLocation? floatingActionButtonLocation;
 
   /// The bottom navigation bar of the scaffold.

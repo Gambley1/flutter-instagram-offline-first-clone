@@ -9,9 +9,10 @@ import 'package:user_repository/user_repository.dart';
 /// {@endtemplate}
 class SearchRepository {
   /// {@macro search_repository}
-  SearchRepository({required DatabaseClient client}) : _client = client;
+  SearchRepository({required DatabaseClient databaseClient})
+      : _databaseClient = databaseClient;
 
-  final DatabaseClient _client;
+  final DatabaseClient _databaseClient;
 
   final _usersHashedQueryResults = <String, Future<List<User>>>{};
 
@@ -33,8 +34,7 @@ class SearchRepository {
 
     logD("Didn't found hashed results, querying for users...");
 
-    final users = _client.searchUsers(
-      userId: _client.currentUserId!,
+    final users = _databaseClient.searchUsers(
       limit: limit,
       offset: offset,
       query: query,

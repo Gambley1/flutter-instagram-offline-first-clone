@@ -2,7 +2,7 @@ import 'package:app_ui/app_ui.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-/// {@template app_circular_prorgress}
+/// {@template app_circular_progress}
 /// A circular progress indicator that can be used in the app.
 /// {@endtemplate}
 class AppCircularProgress extends StatelessWidget {

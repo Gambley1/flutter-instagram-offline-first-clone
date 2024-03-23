@@ -169,7 +169,7 @@ class MessageInputController extends ValueNotifier<Message> {
     attachments = [];
   }
 
-  /// Local leplying message instance. String represents user name that
+  /// Local replying message instance. String represents user name that
   /// we are trying to reply, followed by his message.
   Message? _replyingMessage;
 
@@ -178,12 +178,12 @@ class MessageInputController extends ValueNotifier<Message> {
   void setReplyingMessage(Message replyingMessage) {
     logD((replyingMessageSender: replyingMessage.sender?.toJson()));
     clearEditingMessage();
-    final alredyReplied = replyingMessage.replyMessageId != null &&
+    final alreadyReplied = replyingMessage.replyMessageId != null &&
         replyingMessage.attachments.isEmpty;
     message = message.copyWith(
       replyMessageId: replyingMessage.id,
       replyMessageUsername: replyingMessage.sender?.username,
-      replyMessageAttachmentUrl: alredyReplied
+      replyMessageAttachmentUrl: alreadyReplied
           ? null
           : replyingMessage.sharedPost != null
               ? replyingMessage.sharedPost?.firstMediaUrl

@@ -7,7 +7,7 @@ concurrency:
 on:
   pull_request:
     paths:
-      - "./packages/authentication_client/authentication_client/**"
+      - "packages/authentication_client/authentication_client/**"
       - ".github/workflows/authentication_client.yaml"
     branches:
       - main

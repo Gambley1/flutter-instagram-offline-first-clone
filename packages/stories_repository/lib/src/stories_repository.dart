@@ -19,12 +19,12 @@ part 'stories_storage.dart';
 class StoriesRepository extends StoriesBaseRepository {
   /// {@macro stories_repository}
   const StoriesRepository({
-    required Client client,
+    required DatabaseClient databaseClient,
     required StoriesStorage storage,
-  })  : _client = client,
+  })  : _databaseClient = databaseClient,
         _storage = storage;
 
-  final Client _client;
+  final DatabaseClient _databaseClient;
   final StoriesStorage _storage;
 
   @override
@@ -35,7 +35,7 @@ class StoriesRepository extends StoriesBaseRepository {
     String? id,
     int? duration,
   }) =>
-      _client.createStory(
+      _databaseClient.createStory(
         id: id,
         author: author,
         contentType: contentType,
@@ -49,24 +49,26 @@ class StoriesRepository extends StoriesBaseRepository {
     required File imageFile,
     required Uint8List imageBytes,
   }) =>
-      _client.uploadStoryMedia(
+      _databaseClient.uploadStoryMedia(
         storyId: storyId,
         imageFile: imageFile,
         imageBytes: imageBytes,
       );
 
   @override
-  Future<void> deleteStory({required String id}) => _client.deleteStory(id: id);
+  Future<void> deleteStory({required String id}) =>
+      _databaseClient.deleteStory(id: id);
 
   @override
   Stream<List<Story>> getStories({
     required String userId,
     bool includeAuthor = true,
   }) =>
-      _client.getStories(userId: userId, includeAuthor: includeAuthor);
+      _databaseClient.getStories(userId: userId, includeAuthor: includeAuthor);
 
   @override
-  Future<Story> getStory({required String id}) => _client.getStory(id: id);
+  Future<Story> getStory({required String id}) =>
+      _databaseClient.getStory(id: id);
 
   /// Broadcasts stories from database and local storage. Combines and merges
   /// into a single stories data flow.
@@ -86,7 +88,7 @@ class StoriesRepository extends StoriesBaseRepository {
         ),
       ).asBroadcastStream();
 
-  /// Upldates localy single user [story] as seen.
+  /// Updates in-memory [story] as seen.
   Future<void> setUserStorySeen({
     required Story story,
     required String userId,

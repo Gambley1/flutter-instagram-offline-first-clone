@@ -9,7 +9,7 @@ import 'package:shared/shared.dart';
 typedef BuildContextCallback = void Function(BuildContext context);
 
 /// {@template show_dialog_extension}
-/// Dialog extension that shows dialog with optionaly provided `title`,
+/// Dialog extension that shows dialog with optional `title`,
 /// `content` and `actions`.
 /// {@endtemplate}
 extension DialogExtension on BuildContext {
@@ -127,7 +127,7 @@ extension DialogExtension on BuildContext {
     bool rounded = true,
     bool isDismissible = true,
     bool isScrollControlled = false,
-    bool enalbeDrag = true,
+    bool enableDrag = true,
     bool useSafeArea = true,
     bool showDragHandle = true,
   }) =>
@@ -147,7 +147,7 @@ extension DialogExtension on BuildContext {
         barrierColor: barrierColor,
         clipBehavior: Clip.antiAliasWithSaveLayer,
         isDismissible: isDismissible,
-        enableDrag: enalbeDrag,
+        enableDrag: enableDrag,
         useSafeArea: useSafeArea,
         isScrollControlled: isScrollControlled,
         useRootNavigator: true,
@@ -288,7 +288,7 @@ extension DialogExtension on BuildContext {
     TextStyle? noTextStyle,
     BuildContextCallback? noAction,
   }) async {
-    final isConfimred = await showConfirmationDialog(
+    final isConfirmed = await showConfirmationDialog(
       title: title,
       content: content,
       noText: noText,
@@ -297,7 +297,7 @@ extension DialogExtension on BuildContext {
       noTextStyle: noTextStyle,
       noAction: noAction,
     );
-    if (isConfimred == null || !isConfimred) return;
+    if (isConfirmed == null || !isConfirmed) return;
     fn.call();
   }
 

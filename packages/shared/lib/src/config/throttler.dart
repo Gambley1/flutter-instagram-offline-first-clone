@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/widgets.dart' show VoidCallback;
 import 'package:shared/shared.dart';
 
-/// Default duartion of throttler.
+/// Default duration of throttler.
 const kDefaultThrottlerDuration = 300;
 
 /// {@template throttler}

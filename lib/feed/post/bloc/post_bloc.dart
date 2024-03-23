@@ -19,7 +19,7 @@ class PostBloc extends HydratedBloc<PostEvent, PostState> {
   })  : _postId = postId,
         _postsRepository = postsRepository,
         _userRepository = userRepository,
-        super(const PostState.intital()) {
+        super(const PostState.initial()) {
     on<PostLikesCountSubscriptionRequested>(
       _onPostLikesCountSubscriptionRequested,
       transformer: throttleDroppable(),
@@ -119,11 +119,6 @@ class PostBloc extends HydratedBloc<PostEvent, PostState> {
       );
       emit(state.copyWith(status: PostStatus.success, likers: users));
     } catch (error, stackTrace) {
-      logE(
-        'Post likers profiles page failed.',
-        error: error,
-        stackTrace: stackTrace,
-      );
       addError(error, stackTrace);
       emit(state.copyWith(status: PostStatus.failure));
     }
@@ -137,11 +132,10 @@ class PostBloc extends HydratedBloc<PostEvent, PostState> {
       final post =
           await _postsRepository.updatePost(id: id, caption: event.caption);
 
-      if(post != null){
+      if (post != null) {
         event.onPostUpdated?.call(post.toPostLargeBlock());
       }
     } catch (error, stackTrace) {
-      logE('Failed to update post.', error: error, stackTrace: stackTrace);
       addError(error, stackTrace);
     }
   }
@@ -154,7 +148,6 @@ class PostBloc extends HydratedBloc<PostEvent, PostState> {
       await _postsRepository.like(id: id, userId: event.userId);
       emit(state.copyWith(status: PostStatus.success));
     } catch (error, stackTrace) {
-      logE('Post like failed.', error: error, stackTrace: stackTrace);
       addError(error, stackTrace);
       emit(state.copyWith(status: PostStatus.failure));
     }
@@ -172,11 +165,6 @@ class PostBloc extends HydratedBloc<PostEvent, PostState> {
       );
       emit(state.copyWith(status: PostStatus.success));
     } catch (error, stackTrace) {
-      logE(
-        'Subscribe to Post author failed.',
-        error: error,
-        stackTrace: stackTrace,
-      );
       addError(error, stackTrace);
       emit(state.copyWith(status: PostStatus.failure));
     }

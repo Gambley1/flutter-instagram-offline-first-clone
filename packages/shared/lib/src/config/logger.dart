@@ -19,7 +19,7 @@ void logE(
 
 /// Log warning that used for printing warning/important messages
 /// to pay developer attention on it, rather than
-/// using logI method, because it can be more noticable.
+/// using logI method.
 void logW(
   dynamic message, {
   DateTime? time,

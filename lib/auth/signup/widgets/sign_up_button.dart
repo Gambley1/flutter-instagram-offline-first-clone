@@ -21,8 +21,8 @@ class SignUpButton extends StatelessWidget {
         RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
       ),
     );
-    final isLoading =
-        context.select((SignUpCubit bloc) => bloc.state.isLoading);
+    final isLoading = context
+        .select((SignUpCubit bloc) => bloc.state.submissionStatus.isLoading);
     final child = switch (isLoading) {
       true => AppButton.inProgress(style: style, scale: 0.5),
       _ => AppButton.auth(

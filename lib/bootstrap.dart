@@ -2,9 +2,9 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:app_ui/app_ui.dart';
-import 'package:firebase_config/firebase_config.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_remote_config_repository/firebase_remote_config_repository.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
@@ -19,7 +19,7 @@ typedef AppBuilder = FutureOr<Widget> Function(
   PowerSyncRepository,
   FirebaseMessaging,
   SharedPreferences,
-  FirebaseConfig,
+  FirebaseRemoteConfigRepository,
 );
 
 class AppBlocObserver extends BlocObserver {
@@ -79,10 +79,9 @@ Future<void> bootstrap(
       final sharedPreferences = await SharedPreferences.getInstance();
 
       final firebaseRemoteConfig = FirebaseRemoteConfig.instance;
-      final remoteConfig =
-          FirebaseConfig(firebaseRemoteConfig: firebaseRemoteConfig);
-
-      await remoteConfig.init();
+      final firebaseRemoteConfigRepository = FirebaseRemoteConfigRepository(
+        firebaseRemoteConfig: firebaseRemoteConfig,
+      );
 
       SystemUiOverlayTheme.setPortraitOrientation();
 
@@ -92,7 +91,7 @@ Future<void> bootstrap(
             powerSyncRepository,
             firebaseMessaging,
             sharedPreferences,
-            remoteConfig,
+            firebaseRemoteConfigRepository,
           ),
         ),
       );

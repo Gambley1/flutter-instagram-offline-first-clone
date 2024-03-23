@@ -6,7 +6,7 @@ import 'package:app_ui/app_ui.dart';
 import 'package:bloc/bloc.dart';
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
-import 'package:firebase_config/firebase_config.dart';
+import 'package:firebase_remote_config_repository/firebase_remote_config_repository.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:posts_repository/posts_repository.dart';
@@ -19,9 +19,9 @@ part 'feed_state.dart';
 class FeedBloc extends Bloc<FeedEvent, FeedState> {
   FeedBloc({
     required PostsRepository postsRepository,
-    required FirebaseConfig remoteConfig,
+    required FirebaseRemoteConfigRepository firebaseRemoteConfigRepository,
   })  : _postsRepository = postsRepository,
-        _remoteConfig = remoteConfig,
+        _firebaseRemoteConfigRepository = firebaseRemoteConfigRepository,
         super(const FeedState.initial()) {
     on<FeedPageRequested>(_onPageRequested, transformer: throttleDroppable());
     on<FeedReelsPageRequested>(_onFeedReelsPageRequested);
@@ -29,15 +29,15 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       _onRefreshRequested,
       transformer: throttleDroppable(duration: 550.ms),
     );
-    on<FeedRecommenedPostsPageRequested>(
-      _onFeedRecommenedPostsPageRequested,
+    on<FeedRecommendedPostsPageRequested>(
+      _onFeedRecommendedPostsPageRequested,
       transformer: throttleDroppable(),
     );
     on<FeedPostCreateRequested>(_onFeedPostCreateRequested);
     on<FeedUpdateRequested>(_onFeedUpdateRequested);
   }
 
-  final _recommenedPosts = <PostLargeBlock>[
+  final _recommendedPosts = <PostLargeBlock>[
     PostLargeBlock(
       id: uuid.v4(),
       author: PostAuthor.randomConfirmed(),
@@ -236,7 +236,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
   static const _reelsPageLimit = 10;
 
   final PostsRepository _postsRepository;
-  final FirebaseConfig _remoteConfig;
+  final FirebaseRemoteConfigRepository _firebaseRemoteConfigRepository;
 
   List<InstaBlock> insertSponsoredBlocks({
     required bool hasMore,
@@ -250,20 +250,22 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     var tempDataLength = tempBlocks.length;
 
     final skipRange = [1, 2, 3];
-    var previosSkipRangeIs1 = false;
+    var previousSkipRangeIs1 = false;
 
     late final sponsored = sponsoredBlocks ??
         List<Map<String, dynamic>>.from(
-          jsonDecode(_remoteConfig.getRemoteData('sponsored_blocks')) as List,
+          jsonDecode(
+            _firebaseRemoteConfigRepository.fetchRemoteData('sponsored_blocks'),
+          ) as List,
         ).map(InstaBlock.fromJson).take(20).toList();
 
     while (tempDataLength > 1) {
       List<int> allowedSkipRange() {
-        if (previosSkipRangeIs1 && tempDataLength > 3) {
+        if (previousSkipRangeIs1 && tempDataLength > 3) {
           return skipRange.sublist(1);
         }
-        if (tempDataLength == 2) return [1];
-        if (tempDataLength == 3) return [1, 2];
+        if (tempDataLength case 2) return [1];
+        if (tempDataLength case 3) return [1, 2];
         return skipRange;
       }
 
@@ -272,7 +274,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       final randomSkipRange =
           allowedSkipRange()[random.nextInt(allowedSkipRange().length)];
 
-      previosSkipRangeIs1 = randomSkipRange == 1;
+      previousSkipRangeIs1 = randomSkipRange == 1;
 
       tempBlocks = tempBlocks.sublist(randomSkipRange);
       blocks.insert(blocks.length - tempBlocks.length, randomSponsoredPost);
@@ -332,13 +334,8 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
       emit(state.populated(feed: feed));
 
-      if (!hasMore) add(const FeedRecommenedPostsPageRequested());
+      if (!hasMore) add(const FeedRecommendedPostsPageRequested());
     } catch (error, stackTrace) {
-      logE(
-        'Failed to request feed page.',
-        error: error,
-        stackTrace: stackTrace,
-      );
       addError(error, stackTrace);
       emit(state.failure());
     }
@@ -376,11 +373,6 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       );
       emit(state.populated(feed: feed));
     } catch (error, stackTrace) {
-      logE(
-        '[FeedBloc] Feed Reels page fetching failed.',
-        error: error,
-        stackTrace: stackTrace,
-      );
       addError(error, stackTrace);
       emit(state.failure());
     }
@@ -426,13 +418,8 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
       emit(state.populated(feed: feed));
 
-      if (!hasMore) add(const FeedRecommenedPostsPageRequested());
+      if (!hasMore) add(const FeedRecommendedPostsPageRequested());
     } catch (error, stackTrace) {
-      logE(
-        'Failed to refresh feed page.',
-        error: error,
-        stackTrace: stackTrace,
-      );
       addError(error, stackTrace);
       emit(state.failure());
     }
@@ -443,16 +430,16 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     return post?.toPostLargeBlock();
   }
 
-  Future<void> _onFeedRecommenedPostsPageRequested(
-    FeedRecommenedPostsPageRequested event,
+  Future<void> _onFeedRecommendedPostsPageRequested(
+    FeedRecommendedPostsPageRequested event,
     Emitter<FeedState> emit,
   ) async {
     emit(state.loading());
     try {
-      final recommenedBlocks = <InstaBlock>[..._recommenedPosts..shuffle()];
+      final recommendedBlocks = <InstaBlock>[..._recommendedPosts..shuffle()];
       final blocks = insertSponsoredBlocks(
         hasMore: true,
-        blocks: recommenedBlocks,
+        blocks: recommendedBlocks,
         page: 0,
       );
 
@@ -500,7 +487,6 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         ),
       );
     } catch (error, stackTrace) {
-      logE('Failed to create post.', error: error, stackTrace: stackTrace);
       addError(error, stackTrace);
       emit(state.failure());
     }
@@ -561,7 +547,6 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
       emit(state.populated(feed: feed));
     } catch (error, stackTrace) {
-      logE('Failed to update feed post.', error: error, stackTrace: stackTrace);
       addError(error, stackTrace);
       emit(state.failure());
     }

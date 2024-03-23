@@ -1,22 +1,16 @@
 part of 'change_password_cubit.dart';
 
-enum ResetPasswordStatus { initial, loading, success, failure, invalidOtp }
+enum ResetPasswordStatus {
+  initial,
+  loading,
+  success,
+  failure,
+  invalidOtp;
 
-/// Extension on [ResetPasswordStatus] that checks current status.
-extension SubmissionStatusX on ResetPasswordStatus {
-  /// Checks if current submission status is success.
   bool get isSuccess => this == ResetPasswordStatus.success;
-
-  /// Checks if current submission status is in progress.
   bool get isLoading => this == ResetPasswordStatus.loading;
-
-  /// Checks if current submission status is failure.
-  bool get isError =>
-      this == ResetPasswordStatus.failure ||
-      this == ResetPasswordStatus.invalidOtp;
-
-  /// Checks if current submission status is invalid OTP.
-  bool get invalidOtp => this == ResetPasswordStatus.invalidOtp;
+  bool get isError => this == ResetPasswordStatus.failure || isInvalidOtp;
+  bool get isInvalidOtp => this == ResetPasswordStatus.invalidOtp;
 }
 
 class ChangePasswordState extends Equatable {
@@ -30,8 +24,8 @@ class ChangePasswordState extends Equatable {
   const ChangePasswordState.initial()
       : this._(
           status: ResetPasswordStatus.initial,
-          password: const Password.unvalidated(),
-          otp: const Otp.unvalidated(),
+          password: const Password.pure(),
+          otp: const Otp.pure(),
           showPassword: false,
         );
 

@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:firebase_config/firebase_config.dart';
+import 'package:firebase_remote_config_repository/firebase_remote_config_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:shared/shared.dart';
 import 'package:stories_repository/stories_repository.dart';
@@ -14,35 +14,35 @@ part 'create_stories_state.dart';
 class CreateStoriesBloc extends Bloc<CreateStoriesEvent, CreateStoriesState> {
   CreateStoriesBloc({
     required StoriesRepository storiesRepository,
-    required FirebaseConfig remoteConfig,
+    required FirebaseRemoteConfigRepository firebaseRemoteConfigRepository,
   })  : _storiesRepository = storiesRepository,
-        _remoteConfig = remoteConfig,
-        super(const CreateStoriesState.intital()) {
+        _firebaseRemoteConfigRepository = firebaseRemoteConfigRepository,
+        super(const CreateStoriesState.initial()) {
     on<CreateStoriesStoryCreateRequested>(_onStoryCreateRequested);
-    on<CreateStoriesIsFeatureAvaiableSubscriptionRequested>(
-      _onCreateStoriesFeatureAvaiableSubscriptionRequested,
+    on<CreateStoriesIsFeatureAvailableSubscriptionRequested>(
+      _onCreateStoriesFeatureAvailableSubscriptionRequested,
       transformer: throttleDroppable(),
     );
   }
 
   final StoriesRepository _storiesRepository;
-  final FirebaseConfig _remoteConfig;
+  final FirebaseRemoteConfigRepository _firebaseRemoteConfigRepository;
 
-  Future<void> _onCreateStoriesFeatureAvaiableSubscriptionRequested(
-    CreateStoriesIsFeatureAvaiableSubscriptionRequested event,
+  Future<void> _onCreateStoriesFeatureAvailableSubscriptionRequested(
+    CreateStoriesIsFeatureAvailableSubscriptionRequested event,
     Emitter<CreateStoriesState> emit,
   ) async {
-    final storiesEnabled =
-        _remoteConfig.isFeatureAvailabe('enable_create_stories');
+    final storiesEnabled = _firebaseRemoteConfigRepository
+        .isFeatureAvailable('enable_create_stories');
     emit(state.copyWith(isAvailable: storiesEnabled));
 
     await emit.onEach(
-      _remoteConfig.onConfigUpdated(),
+      _firebaseRemoteConfigRepository.onConfigUpdated(),
       onData: (data) {
-        _remoteConfig.activate();
+        _firebaseRemoteConfigRepository.activate();
 
-        final storiesEnabled =
-            _remoteConfig.isFeatureAvailabe('enable_create_stories');
+        final storiesEnabled = _firebaseRemoteConfigRepository
+            .isFeatureAvailable('enable_create_stories');
 
         emit(state.copyWith(isAvailable: !storiesEnabled));
       },

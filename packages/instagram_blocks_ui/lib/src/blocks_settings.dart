@@ -2,20 +2,20 @@ import 'package:flutter/widgets.dart';
 
 final class BlockSettings {
   factory BlockSettings() => _internal;
-  
+
   BlockSettings._();
 
   static final _internal = BlockSettings._();
 
   late PostTextDelegate postTextDelegate;
   late FollowTextDelegate followTextDelegate;
-  late DateTimeTextDeleagte dateTimeTextDelegate;
+  late DateTimeTextDelegate dateTimeTextDelegate;
   late CommentTextDelegate commentTextDelegate;
 
   void init({
     required PostTextDelegate postDelegate,
     required FollowTextDelegate followDelegate,
-    required DateTimeTextDeleagte dateTimeDelegate,
+    required DateTimeTextDelegate dateTimeDelegate,
     required CommentTextDelegate commentDelegate,
   }) {
     postTextDelegate = postDelegate;
@@ -38,7 +38,7 @@ final class PostTextDelegate {
     required this.likesCountShortText,
     required this.deletePostText,
     required this.deletePostConfirmationText,
-    required this.dontShowAgainText,
+    required this.notShowAgainText,
     required this.blockPostAuthorText,
     required this.blockAuthorText,
     required this.blockAuthorConfirmationText,
@@ -50,7 +50,7 @@ final class PostTextDelegate {
   final String deleteText;
   final String deletePostText;
   final String deletePostConfirmationText;
-  final String dontShowAgainText;
+  final String notShowAgainText;
   final String blockPostAuthorText;
   final String blockAuthorText;
   final String blockAuthorConfirmationText;
@@ -84,8 +84,8 @@ final class FollowTextDelegate {
   final String followingText;
 }
 
-final class DateTimeTextDeleagte {
-  const DateTimeTextDeleagte({
+final class DateTimeTextDelegate {
+  const DateTimeTextDelegate({
     required this.timeAgo,
     required this.timeAgoShort,
   });

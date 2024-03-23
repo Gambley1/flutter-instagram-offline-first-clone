@@ -86,12 +86,12 @@ class PostMedia extends StatelessWidget {
                       showImagesCountText.value = false;
                     }
 
-                    showImagesCount.deboune(milliseconds: 5000);
+                    showImagesCount.debounce(milliseconds: 5000);
                   }
                 }
 
                 return RepaintBoundary(
-                  child: _CurrentPostImageInexOfTotal(
+                  child: _CurrentPostImageIndexOfTotal(
                     currentIndex: currentIndex.value + 1,
                     total: media.length,
                     showText: showImagesCountText.value,
@@ -105,8 +105,8 @@ class PostMedia extends StatelessWidget {
   }
 }
 
-class _CurrentPostImageInexOfTotal extends StatelessWidget {
-  const _CurrentPostImageInexOfTotal({
+class _CurrentPostImageIndexOfTotal extends StatelessWidget {
+  const _CurrentPostImageIndexOfTotal({
     required this.total,
     required this.currentIndex,
     required this.showText,

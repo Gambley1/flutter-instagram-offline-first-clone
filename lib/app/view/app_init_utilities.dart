@@ -36,7 +36,7 @@ void initUtilities(BuildContext context, Locale locale) {
       deleteText: l10n.deleteText,
       deletePostText: l10n.deletePostText,
       deletePostConfirmationText: l10n.deletePostConfirmationText,
-      dontShowAgainText: l10n.dontShowAgainText,
+      notShowAgainText: l10n.notShowAgainText,
       blockAuthorConfirmationText: l10n.blockAuthorConfirmationText,
       blockAuthorText: l10n.blockAuthorText,
       blockPostAuthorText: l10n.blockPostAuthorText,
@@ -63,7 +63,7 @@ void initUtilities(BuildContext context, Locale locale) {
       seeAllCommentsText: l10n.seeAllComments,
       replyText: l10n.replyText,
     ),
-    dateTimeDelegate: DateTimeTextDeleagte(
+    dateTimeDelegate: DateTimeTextDelegate(
       timeAgo: (createdAt) => createdAt.timeAgo(context),
       timeAgoShort: (createdAt) => createdAt.timeAgoShort(context),
     ),

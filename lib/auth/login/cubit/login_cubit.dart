@@ -20,9 +20,7 @@ class LoginCubit extends Cubit<LoginState> {
   LoginCubit({
     required UserRepository userRepository,
   })  : _userRepository = userRepository,
-        super(
-          const LoginState.initial(),
-        );
+        super(const LoginState.initial());
 
   final UserRepository _userRepository;
 
@@ -40,10 +38,10 @@ class LoginCubit extends Cubit<LoginState> {
     final previousEmailState = previousScreenState.email;
     final shouldValidate = previousEmailState.invalid;
     final newEmailState = shouldValidate
-        ? Email.validated(
+        ? Email.dirty(
             newValue,
           )
-        : Email.unvalidated(
+        : Email.pure(
             newValue,
           );
 
@@ -61,7 +59,7 @@ class LoginCubit extends Cubit<LoginState> {
     final previousEmailState = previousScreenState.email;
     final previousEmailValue = previousEmailState.value;
 
-    final newEmailState = Email.validated(
+    final newEmailState = Email.dirty(
       previousEmailValue,
     );
     final newScreenState = previousScreenState.copyWith(
@@ -78,10 +76,10 @@ class LoginCubit extends Cubit<LoginState> {
     final previousPasswordState = previousScreenState.password;
     final shouldValidate = previousPasswordState.invalid;
     final newPasswordState = shouldValidate
-        ? Password.validated(
+        ? Password.dirty(
             newValue,
           )
-        : Password.unvalidated(
+        : Password.pure(
             newValue,
           );
 
@@ -92,14 +90,12 @@ class LoginCubit extends Cubit<LoginState> {
     emit(newScreenState);
   }
 
-  /// Password field was unfocues. Checking of [Password] validation after unfo-
-  /// cusing and emmit new value of [Password] in state.
   void onPasswordUnfocused() {
     final previousScreenState = state;
     final previousPasswordState = previousScreenState.password;
     final previousPasswordValue = previousPasswordState.value;
 
-    final newPasswordState = Password.validated(
+    final newPasswordState = Password.dirty(
       previousPasswordValue,
     );
     final newScreenState = previousScreenState.copyWith(
@@ -108,13 +104,13 @@ class LoginCubit extends Cubit<LoginState> {
     emit(newScreenState);
   }
 
-  /// Makes whole login state initial, as [Email] and [Password] becomes unvalid
+  /// Makes whole login state initial, as [Email] and [Password] becomes invalid
   /// and [LogInSubmissionStatus] becomes idle. Solely used if during login
   /// user switched on sign up, therefore login state does not persists and
   /// becomes initial again.
   void idle() {
-    const initalState = LoginState.initial();
-    emit(initalState);
+    const initialState = LoginState.initial();
+    emit(initialState);
   }
 
   Future<void> loginWithGoogle() async {
@@ -141,14 +137,9 @@ class LoginCubit extends Cubit<LoginState> {
     }
   }
 
-  /// Taking into account current [Email] and [Password] state, checking its
-  /// value and validates it, in order to check if form itself valid
-  /// to proccess to login, in order to prevent invalid user authorizing
-  /// with unvalid email and password, not making unnecessary network request.
-  /// After checking, procced to login network request.
   Future<void> onSubmit() async {
-    final email = Email.validated(state.email.value);
-    final password = Password.validated(state.password.value);
+    final email = Email.dirty(state.email.value);
+    final password = Password.dirty(state.password.value);
     final isFormValid = FormzValid([email, password]).isFormValid;
 
     final newState = state.copyWith(
@@ -173,7 +164,7 @@ class LoginCubit extends Cubit<LoginState> {
     }
   }
 
-  /// Formats error, that occured during login process.
+  /// Formats error, that occurred during login process.
   void _errorFormatter(Object e, StackTrace stackTrace) {
     addError(e, stackTrace);
     final status = switch (e) {

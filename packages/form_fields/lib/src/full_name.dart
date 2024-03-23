@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart' show EquatableMixin;
 import 'package:flutter/foundation.dart' show immutable;
-import 'package:form_fields/src/formz_input_field.dart';
+import 'package:form_fields/src/formz_validation_mixin.dart';
 import 'package:formz/formz.dart' show FormzInput;
 
 /// {@template full_name}
@@ -10,13 +10,11 @@ import 'package:formz/formz.dart' show FormzInput;
 @immutable
 class FullName extends FormzInput<String, FullNameValidationError>
     with EquatableMixin, FormzValidationMixin {
-  /// {@macro full_name.unvalidated}
-  const FullName.unvalidated([
-    super.value = '',
-  ]) : super.pure();
+  /// {@macro full_name.pure}
+  const FullName.pure([super.value = '']) : super.pure();
 
-  /// {@macro full_name.validated}
-  const FullName.validated(super.value) : super.dirty();
+  /// {@macro full_name.dirty}
+  const FullName.dirty(super.value) : super.dirty();
 
   // static final _nameRegex = RegExp(r'^[A-Z][a-zA-Z]*(?: [A-Z][a-zA-Z]*)?$');
 

@@ -29,7 +29,7 @@ class UserProfileAvatar extends StatelessWidget {
     this.scaleStrength = ScaleStrength.xs,
     this.withAddButton = false,
     this.enableBorder = true,
-    this.enableUnactiveBorder = false,
+    this.enableInactiveBorder = false,
     this.withShimmerPlaceholder = false,
     this.placeholderBuilder,
     this.showStories = false,
@@ -53,7 +53,7 @@ class UserProfileAvatar extends StatelessWidget {
   final ScaleStrength scaleStrength;
   final bool withAddButton;
   final bool enableBorder;
-  final bool enableUnactiveBorder;
+  final bool enableInactiveBorder;
   final UserProfilePlaceholderBuilder? placeholderBuilder;
   final bool showStories;
   final bool withAdaptiveBorder;
@@ -156,9 +156,9 @@ class UserProfileAvatar extends StatelessWidget {
 
     BoxDecoration? border() {
       if (!hasStories) return null;
-      if (!enableUnactiveBorder && !showStories) return null;
+      if (!enableInactiveBorder && !showStories) return null;
       if (showStories && hasStories) return _gradientBorderDecoration;
-      if (enableUnactiveBorder && !showStories && hasStories) {
+      if (enableInactiveBorder && !showStories && hasStories) {
         return _greyBorderDecoration(context);
       }
       return null;
@@ -166,9 +166,9 @@ class UserProfileAvatar extends StatelessWidget {
 
     Gradient? gradient() {
       if (!hasStories) return null;
-      if (!enableUnactiveBorder && !showStories) return null;
+      if (!enableInactiveBorder && !showStories) return null;
       if (showStories && hasStories) return _defaultGradient;
-      if (enableUnactiveBorder && !showStories && hasStories) {
+      if (enableInactiveBorder && !showStories && hasStories) {
         return LinearGradient(
           colors: [Colors.grey.shade600, Colors.grey.shade600],
         );

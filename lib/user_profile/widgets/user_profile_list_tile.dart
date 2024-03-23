@@ -77,7 +77,7 @@ class _UserProfileListTileState extends State<UserProfileListTile> {
             UserStoriesAvatar(
               author: widget.user,
               withAdaptiveBorder: false,
-              enableUnactiveBorder: false,
+              enableInactiveBorder: false,
               radius: 26,
             ),
             Expanded(

@@ -1,8 +1,8 @@
 // ignore_for_file: avoid_positional_boolean_parameters
 
 import 'package:app_ui/app_ui.dart';
-import 'package:firebase_config/firebase_config.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_remote_config_repository/firebase_remote_config_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/bloc/app_bloc.dart';
@@ -144,8 +144,9 @@ class _HomeViewState extends State<HomeView> {
     return BlocProvider(
       create: (context) => CreateStoriesBloc(
         storiesRepository: context.read<StoriesRepository>(),
-        remoteConfig: context.read<FirebaseConfig>(),
-      )..add(const CreateStoriesIsFeatureAvaiableSubscriptionRequested()),
+        firebaseRemoteConfigRepository:
+            context.read<FirebaseRemoteConfigRepository>(),
+      )..add(const CreateStoriesIsFeatureAvailableSubscriptionRequested()),
       child: VideoPlayerProvider(
         videoPlayerState: _videoPlayerState,
         child: ListenableBuilder(
@@ -294,17 +295,17 @@ class _VideoPlayerNotifierState extends State<VideoPlayerNotifierWidget> {
     return ValueListenableBuilder<bool>(
       valueListenable: _shouldPlayType,
       child: widget.child,
-      builder: (context, shoudPlay, child) {
+      builder: (context, shouldPlay, child) {
         if (widget.checkIsInView ?? false) {
           return InViewNotifierWidget(
             id: widget.id!,
             builder: (context, isInView, _) {
-              final play = isInView && shoudPlay;
+              final play = isInView && shouldPlay;
               return widget.builder(context, play, child);
             },
           );
         }
-        return widget.builder(context, shoudPlay, child);
+        return widget.builder(context, shouldPlay, child);
       },
     );
   }

@@ -7,9 +7,9 @@ sealed class CreateStoriesEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-final class CreateStoriesIsFeatureAvaiableSubscriptionRequested
+final class CreateStoriesIsFeatureAvailableSubscriptionRequested
     extends CreateStoriesEvent {
-  const CreateStoriesIsFeatureAvaiableSubscriptionRequested();
+  const CreateStoriesIsFeatureAvailableSubscriptionRequested();
 }
 
 final class CreateStoriesStoryCreateRequested extends CreateStoriesEvent {

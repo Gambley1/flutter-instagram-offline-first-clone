@@ -247,7 +247,7 @@ class _FeedBodyState extends State<FeedBody> {
                 ? context.read<FeedBloc>().add(const FeedPageRequested())
                 : context
                     .read<FeedBloc>()
-                    .add(const FeedRecommenedPostsPageRequested()),
+                    .add(const FeedRecommendedPostsPageRequested()),
           ),
         );
       }

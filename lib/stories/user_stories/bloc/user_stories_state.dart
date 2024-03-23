@@ -11,7 +11,7 @@ class UserStoriesState extends Equatable {
     required this.showStories,
   });
 
-  const UserStoriesState.intital()
+  const UserStoriesState.initial()
       : this(
           author: User.anonymous,
           stories: const [],

@@ -7,13 +7,13 @@ import 'package:user_repository/user_repository.dart';
 
 class MockAuthenticationClient extends Mock implements AuthenticationClient {}
 
-class MockDatabaseClient extends Mock implements Client {}
+class MockDatabaseClient extends Mock implements DatabaseClient {}
 
 class MockPowerSyncRepository extends Mock implements PowerSyncRepository {}
 
 void main() {
   group('UserRepository', () {
-    late Client databaseClient;
+    late DatabaseClient databaseClient;
     late AuthenticationClient authenticationClient;
 
     setUp(() {
@@ -23,7 +23,7 @@ void main() {
     test('can be instantiated', () {
       expect(
         UserRepository(
-          client: databaseClient,
+          databaseClient: databaseClient,
           authenticationClient: authenticationClient,
         ),
         returnsNormally,

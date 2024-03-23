@@ -1,4 +1,4 @@
-/// Define base spacing values for horizonal padding.
+/// Define base spacing values for horizontal padding.
 const double defaultHorizontalPadding = 12;
 
 /// Define base spacing values for vertical padding.

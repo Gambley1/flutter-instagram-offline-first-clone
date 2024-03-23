@@ -52,7 +52,7 @@ class MessageSettings extends Equatable {
     required bool hasSharedPost,
   }) async {
     if (_onMessageTap != null) {
-      return await _onMessageTap?.call(
+      return _onMessageTap.call(
         details,
         messageId,
         isMine: isMine,
@@ -363,18 +363,18 @@ class _ChatMessagesListViewState extends State<ChatMessagesListView> {
                     final isFirst =
                         messages.length - 1 - index == messages.length - 1;
                     final isLast = messages.length - 1 - index <= 0;
-                    final isPreviosLast =
+                    final isPreviousLast =
                         messages.length - index > messages.length - 1;
                     final message = messages[messages.length - 1 - index];
                     final nextMessage =
                         isLast ? null : messages[messages.length - 2 - index];
-                    final previosMessage = isPreviosLast
+                    final previousMessage = isPreviousLast
                         ? null
                         : messages[messages.length - index];
                     final isNextUserSame = nextMessage != null &&
                         message.sender!.id == nextMessage.sender!.id;
-                    final isPreviusUserSame = previosMessage != null &&
-                        message.sender!.id == previosMessage.sender!.id;
+                    final isPreviousUserSame = previousMessage != null &&
+                        message.sender!.id == previousMessage.sender!.id;
 
                     bool checkTimeDifference(
                       DateTime date1,
@@ -394,10 +394,10 @@ class _ChatMessagesListViewState extends State<ChatMessagesListView> {
                     }
 
                     var hasTimeDifferenceWithPrevious = false;
-                    if (previosMessage != null) {
+                    if (previousMessage != null) {
                       hasTimeDifferenceWithPrevious = checkTimeDifference(
                         message.createdAt,
-                        previosMessage.createdAt,
+                        previousMessage.createdAt,
                       );
                     }
 
@@ -436,13 +436,13 @@ class _ChatMessagesListViewState extends State<ChatMessagesListView> {
                                 : const Radius.circular(22),
                         bottomLeft: isMine
                             ? const Radius.circular(22)
-                            : (isPreviusUserSame &&
+                            : (isPreviousUserSame &&
                                     !hasTimeDifferenceWithPrevious)
                                 ? const Radius.circular(4)
                                 : Radius.zero,
                         bottomRight: !isMine
                             ? const Radius.circular(22)
-                            : (isPreviusUserSame &&
+                            : (isPreviousUserSame &&
                                     !hasTimeDifferenceWithPrevious)
                                 ? const Radius.circular(4)
                                 : Radius.zero,
@@ -584,7 +584,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
         subtitle: Text(context.l10n.onlineText),
         leading: UserStoriesAvatar(
           author: participant,
-          enableUnactiveBorder: false,
+          enableInactiveBorder: false,
           withAdaptiveBorder: false,
           radius: 26,
         ),

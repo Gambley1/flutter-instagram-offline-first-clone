@@ -1,12 +1,12 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:chats_repository/chats_repository.dart';
-import 'package:firebase_config/firebase_config.dart';
-import 'package:firebase_notifications_client/firebase_notifications_client.dart';
+import 'package:firebase_remote_config_repository/firebase_remote_config_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/feed.dart';
 import 'package:flutter_instagram_offline_first_clone/selector/selector.dart';
+import 'package:notifications_repository/notifications_repository.dart';
 import 'package:posts_repository/posts_repository.dart';
 import 'package:search_repository/search_repository.dart';
 import 'package:stories_repository/stories_repository.dart';
@@ -27,8 +27,8 @@ class App extends StatelessWidget {
     required this.chatsRepository,
     required this.storiesRepository,
     required this.searchRepository,
-    required this.notificationsClient,
-    required this.remoteConfig,
+    required this.notificationsRepository,
+    required this.firebaseRemoteConfigRepository,
     super.key,
   });
 
@@ -38,8 +38,8 @@ class App extends StatelessWidget {
   final ChatsRepository chatsRepository;
   final StoriesRepository storiesRepository;
   final SearchRepository searchRepository;
-  final FirebaseNotificationsClient notificationsClient;
-  final FirebaseConfig remoteConfig;
+  final NotificationsRepository notificationsRepository;
+  final FirebaseRemoteConfigRepository firebaseRemoteConfigRepository;
 
   @override
   Widget build(BuildContext context) {
@@ -50,8 +50,8 @@ class App extends StatelessWidget {
         RepositoryProvider.value(value: chatsRepository),
         RepositoryProvider.value(value: storiesRepository),
         RepositoryProvider.value(value: searchRepository),
-        RepositoryProvider.value(value: notificationsClient),
-        RepositoryProvider.value(value: remoteConfig),
+        RepositoryProvider.value(value: notificationsRepository),
+        RepositoryProvider.value(value: firebaseRemoteConfigRepository),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -59,15 +59,16 @@ class App extends StatelessWidget {
             create: (context) => AppBloc(
               user: user,
               userRepository: userRepository,
-              notificationsClient: notificationsClient,
-            )..add(const AppOpened()),
+              notificationsRepository: notificationsRepository,
+            ),
           ),
           BlocProvider(create: (_) => LocaleBloc()),
           BlocProvider(create: (_) => ThemeModeBloc()),
           BlocProvider(
             create: (context) => FeedBloc(
               postsRepository: context.read<PostsRepository>(),
-              remoteConfig: context.read<FirebaseConfig>(),
+              firebaseRemoteConfigRepository:
+                  context.read<FirebaseRemoteConfigRepository>(),
             ),
           ),
         ],
@@ -97,7 +98,7 @@ void closeSnackbars() => snackbarKey.currentState?.closeAll();
 void showCurrentlyUnavailableFeature({bool clearIfQueue = true}) =>
     openSnackbar(
       const SnackbarMessage.error(
-        title: 'Feature is not avaliable!',
+        title: 'Feature is not available!',
         description:
             'We are trying our best to implement it as fast as possible.',
         icon: Icons.error_outline,

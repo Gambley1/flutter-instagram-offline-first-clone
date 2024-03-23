@@ -7,7 +7,7 @@ concurrency:
 on:
   pull_request:
     paths:
-      - "./packages/app_ui/**"
+      - "packages/app_ui/**"
       - ".github/workflows/app_ui.yaml"
     branches:
       - main

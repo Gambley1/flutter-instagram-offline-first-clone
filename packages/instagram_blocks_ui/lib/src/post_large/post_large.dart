@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:instagram_blocks_ui/src/block_actiond_callback.dart';
+import 'package:instagram_blocks_ui/src/block_actions_callback.dart';
 import 'package:instagram_blocks_ui/src/carousel_indicator_controller.dart';
 import 'package:instagram_blocks_ui/src/like_button.dart';
 import 'package:instagram_blocks_ui/src/media_carousel_settings.dart';

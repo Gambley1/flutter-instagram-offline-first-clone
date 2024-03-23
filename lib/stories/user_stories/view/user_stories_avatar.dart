@@ -25,7 +25,7 @@ class UserStoriesAvatar extends StatelessWidget {
     this.showWhenSeen,
     this.isLarge = false,
     this.isImagePicker = false,
-    this.enableUnactiveBorder = true,
+    this.enableInactiveBorder = true,
     this.withShimmerPlaceholder = false,
     this.radius,
     this.scaleStrength = ScaleStrength.xxs,
@@ -45,7 +45,7 @@ class UserStoriesAvatar extends StatelessWidget {
   final bool? showWhenSeen;
   final bool isLarge;
   final bool isImagePicker;
-  final bool enableUnactiveBorder;
+  final bool enableInactiveBorder;
   final bool withShimmerPlaceholder;
   final ScaleStrength scaleStrength;
   final double? radius;
@@ -67,7 +67,7 @@ class UserStoriesAvatar extends StatelessWidget {
       showWhenSeen: showWhenSeen,
       isLarge: isLarge,
       onImagePick: onImagePick,
-      enableUnactiveBorder: enableUnactiveBorder,
+      enableInactiveBorder: enableInactiveBorder,
       withShimmerPlaceholder: withShimmerPlaceholder,
       onLongPress: onLongPress,
       onAddButtonTap: onAddButtonTap,
@@ -96,7 +96,7 @@ class ProfileAvatar extends StatelessWidget {
     required this.withAddButton,
     required this.animationEffect,
     required this.isLarge,
-    required this.enableUnactiveBorder,
+    required this.enableInactiveBorder,
     required this.withShimmerPlaceholder,
     required this.scaleStrength,
     required this.showStories,
@@ -118,7 +118,7 @@ class ProfileAvatar extends StatelessWidget {
   final bool? showStories;
   final bool? showWhenSeen;
   final bool isLarge;
-  final bool enableUnactiveBorder;
+  final bool enableInactiveBorder;
   final bool withShimmerPlaceholder;
   final bool withAdaptiveBorder;
   final double? radius;
@@ -150,7 +150,7 @@ class ProfileAvatar extends StatelessWidget {
       radius: radius,
       animationEffect: animationEffect,
       scaleStrength: scaleStrength,
-      enableUnactiveBorder: enableUnactiveBorder,
+      enableInactiveBorder: enableInactiveBorder,
       withShimmerPlaceholder: withShimmerPlaceholder,
       onAddButtonTap: onAddButtonTap,
       withAdaptiveBorder: withAdaptiveBorder,

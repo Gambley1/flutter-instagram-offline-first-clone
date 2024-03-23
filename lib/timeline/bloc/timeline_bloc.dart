@@ -12,7 +12,7 @@ class TimelineBloc extends Bloc<TimelineEvent, TimelineState> {
   TimelineBloc({
     required PostsRepository postsRepository,
   })  : _postsRepository = postsRepository,
-        super(const TimelineState.intital()) {
+        super(const TimelineState.initial()) {
     on<TimelinePageRequested>(
       _onTimelinePageRequested,
       transformer: throttleDroppable(),
@@ -63,11 +63,6 @@ class TimelineBloc extends Bloc<TimelineEvent, TimelineState> {
     } catch (error, stackTrace) {
       emit(state.copyWith(status: TimelineStatus.failure));
       addError(error, stackTrace);
-      logE(
-        'Failed to request timeline page: ${event.page}',
-        error: error,
-        stackTrace: stackTrace,
-      );
     }
   }
 
@@ -107,11 +102,6 @@ class TimelineBloc extends Bloc<TimelineEvent, TimelineState> {
     } catch (error, stackTrace) {
       emit(state.copyWith(status: TimelineStatus.failure));
       addError(error, stackTrace);
-      logE(
-        'Failed to refresh timeline.',
-        error: error,
-        stackTrace: stackTrace,
-      );
     }
   }
 }

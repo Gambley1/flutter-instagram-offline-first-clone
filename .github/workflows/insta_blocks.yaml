@@ -7,7 +7,7 @@ concurrency:
 on:
   pull_request:
     paths:
-      - "./packages/insta_blocks/**"
+      - "packages/insta_blocks/**"
       - ".github/workflows/insta_blocks.yaml"
     branches:
       - main

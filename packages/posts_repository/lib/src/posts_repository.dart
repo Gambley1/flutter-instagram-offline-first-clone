@@ -7,9 +7,10 @@ import 'package:user_repository/user_repository.dart';
 /// {@endtemplate}
 class PostsRepository implements PostsBaseRepository {
   /// {@macro posts_repository}
-  const PostsRepository({required Client client}) : _client = client;
+  const PostsRepository({required DatabaseClient databaseClient})
+      : _databaseClient = databaseClient;
 
-  final Client _client;
+  final DatabaseClient _databaseClient;
 
   @override
   Future<List<Post>> getPage({
@@ -17,7 +18,11 @@ class PostsRepository implements PostsBaseRepository {
     required int limit,
     bool onlyReels = false,
   }) =>
-      _client.getPage(offset: offset, limit: limit, onlyReels: onlyReels);
+      _databaseClient.getPage(
+        offset: offset,
+        limit: limit,
+        onlyReels: onlyReels,
+      );
 
   @override
   Future<void> like({
@@ -25,7 +30,7 @@ class PostsRepository implements PostsBaseRepository {
     required String userId,
     bool post = true,
   }) =>
-      _client.like(userId: userId, id: id, post: post);
+      _databaseClient.like(userId: userId, id: id, post: post);
 
   @override
   Future<Post?> createPost({
@@ -34,7 +39,7 @@ class PostsRepository implements PostsBaseRepository {
     required String caption,
     required String media,
   }) =>
-      _client.createPost(
+      _databaseClient.createPost(
         id: id,
         userId: userId,
         caption: caption,
@@ -43,7 +48,7 @@ class PostsRepository implements PostsBaseRepository {
 
   @override
   Future<String?> deletePost({required String id}) =>
-      _client.deletePost(id: id);
+      _databaseClient.deletePost(id: id);
 
   @override
   Stream<bool> isLiked({
@@ -51,34 +56,34 @@ class PostsRepository implements PostsBaseRepository {
     required String userId,
     bool post = true,
   }) =>
-      _client.isLiked(id: id, userId: userId, post: post);
+      _databaseClient.isLiked(id: id, userId: userId, post: post);
 
   @override
   Stream<int> likesOf({required String id, bool post = true}) =>
-      _client.likesOf(id: id, post: post);
+      _databaseClient.likesOf(id: id, post: post);
 
   @override
   Stream<int> postsAmountOf({required String userId}) =>
-      _client.postsAmountOf(userId: userId);
+      _databaseClient.postsAmountOf(userId: userId);
 
   @override
   Stream<List<Post>> postsOf({String? userId}) =>
-      _client.postsOf(userId: userId);
+      _databaseClient.postsOf(userId: userId);
 
   @override
   Future<Post?> updatePost({
     required String id,
     String? caption,
   }) =>
-      _client.updatePost(id: id, caption: caption);
+      _databaseClient.updatePost(id: id, caption: caption);
 
   @override
   Stream<int> commentsAmountOf({required String postId}) =>
-      _client.commentsAmountOf(postId: postId);
+      _databaseClient.commentsAmountOf(postId: postId);
 
   @override
   Stream<List<Comment>> commentsOf({required String postId}) =>
-      _client.commentsOf(postId: postId);
+      _databaseClient.commentsOf(postId: postId);
 
   @override
   Future<void> createComment({
@@ -87,7 +92,7 @@ class PostsRepository implements PostsBaseRepository {
     required String userId,
     String? repliedToCommentId,
   }) =>
-      _client.createComment(
+      _databaseClient.createComment(
         content: content,
         postId: postId,
         userId: userId,
@@ -96,11 +101,11 @@ class PostsRepository implements PostsBaseRepository {
 
   @override
   Future<void> deleteComment({required String id}) =>
-      _client.deleteComment(id: id);
+      _databaseClient.deleteComment(id: id);
 
   @override
   Stream<List<Comment>> repliedCommentsOf({required String commentId}) =>
-      _client.repliedCommentsOf(commentId: commentId);
+      _databaseClient.repliedCommentsOf(commentId: commentId);
 
   @override
   Future<void> sharePost({
@@ -111,7 +116,7 @@ class PostsRepository implements PostsBaseRepository {
     Message? message,
     PostAuthor? postAuthor,
   }) =>
-      _client.sharePost(
+      _databaseClient.sharePost(
         id: id,
         sender: sender,
         sharedPostMessage: sharedPostMessage,
@@ -121,7 +126,8 @@ class PostsRepository implements PostsBaseRepository {
       );
 
   @override
-  Future<Post?> getPostBy({required String id}) => _client.getPostBy(id: id);
+  Future<Post?> getPostBy({required String id}) =>
+      _databaseClient.getPostBy(id: id);
 
   @override
   Future<void> uploadMedia({
@@ -132,7 +138,7 @@ class PostsRepository implements PostsBaseRepository {
     required String blurHash,
     required String? firstFrame,
   }) =>
-      _client.uploadMedia(
+      _databaseClient.uploadMedia(
         id: id,
         ownerId: ownerId,
         url: url,
@@ -147,7 +153,11 @@ class PostsRepository implements PostsBaseRepository {
     int limit = 30,
     int offset = 0,
   }) =>
-      _client.getPostLikers(postId: postId, limit: limit, offset: offset);
+      _databaseClient.getPostLikers(
+        postId: postId,
+        limit: limit,
+        offset: offset,
+      );
 
   @override
   Future<List<User>> getPostLikersInFollowings({
@@ -155,7 +165,7 @@ class PostsRepository implements PostsBaseRepository {
     int limit = 3,
     int offset = 0,
   }) =>
-      _client.getPostLikersInFollowings(
+      _databaseClient.getPostLikersInFollowings(
         postId: postId,
         limit: limit,
         offset: offset,

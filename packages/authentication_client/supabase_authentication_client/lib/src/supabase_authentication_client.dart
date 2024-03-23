@@ -144,6 +144,43 @@ class SupabaseAuthenticationClient implements AuthenticationClient {
     }
   }
 
+  @override
+  Future<void> sendPasswordResetEmail({
+    required String email,
+    String? redirectTo,
+  }) async {
+    try {
+      await _powerSyncRepository.resetPassword(
+        email: email,
+        redirectTo: redirectTo,
+      );
+    } catch (error, stackTrace) {
+      Error.throwWithStackTrace(
+        SendPasswordResetEmailFailure(error),
+        stackTrace,
+      );
+    }
+  }
+
+  @override
+  Future<void> resetPassword({
+    required String token,
+    required String email,
+    required String newPassword,
+  }) async {
+    try {
+      await Future.wait([
+        _powerSyncRepository.verifyOTP(
+          token: token,
+          email: email,
+        ),
+        _powerSyncRepository.updateUser({'password': newPassword}),
+      ]);
+    } catch (error, stackTrace) {
+      Error.throwWithStackTrace(ResetPasswordFailure(error), stackTrace);
+    }
+  }
+
   /// Signs out the current user which will emit
   /// [AuthenticationUser.anonymous] from the [user] Stream.
   ///

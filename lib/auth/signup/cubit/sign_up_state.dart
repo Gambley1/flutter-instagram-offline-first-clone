@@ -2,7 +2,7 @@
 part of 'sign_up_cubit.dart';
 
 /// Message that will be shown to user, when he will try to submit signup form,
-/// but there is an error occured. It is used to show user, what exactly went
+/// but there is an error occurred. It is used to show user, what exactly went
 /// wrong.
 typedef SingUpErrorMessage = String;
 
@@ -26,34 +26,21 @@ enum SignUpSubmissionStatus {
   /// provided by user, is occupied by another one in database.
   emailAlreadyRegistered,
 
-  /// [SignUpSubmissionStatus.inProgress] indicates that user had no iternet
+  /// [SignUpSubmissionStatus.inProgress] indicates that user had no internet
   /// connection during network request.
   networkError,
 
   /// [SignUpSubmissionStatus.error] indicates something went wrong when user
   /// tried to sign up.
-  error,
-}
+  error;
 
-/// Checks current submission status of signup state.
-extension SignUpSubmissionStatusX on SignupState {
-  /// Checks if current submission status is success.
-  bool get isSuccess => submissionStatus == SignUpSubmissionStatus.success;
-
-  /// Checks if current submission status is in progress.
-  bool get isLoading => submissionStatus == SignUpSubmissionStatus.inProgress;
-
-  /// Checks if current submission status is email registered.
+  bool get isSuccess => this == SignUpSubmissionStatus.success;
+  bool get isLoading => this == SignUpSubmissionStatus.inProgress;
   bool get isEmailRegistered =>
-      submissionStatus == SignUpSubmissionStatus.emailAlreadyRegistered;
-
-  /// Checks if current submission status is network error.
-  bool get isNetworkError =>
-      submissionStatus == SignUpSubmissionStatus.networkError;
-
-  /// Checks if current submission status is error.
+      this == SignUpSubmissionStatus.emailAlreadyRegistered;
+  bool get isNetworkError => this == SignUpSubmissionStatus.networkError;
   bool get isError =>
-      submissionStatus == SignUpSubmissionStatus.error ||
+      this == SignUpSubmissionStatus.error ||
       isNetworkError ||
       isEmailRegistered;
 }
@@ -78,10 +65,10 @@ class SignupState extends Equatable {
   /// [SignUpCubit].
   const SignupState.initial()
       : this._(
-          fullName: const FullName.unvalidated(),
-          email: const Email.unvalidated(),
-          password: const Password.unvalidated(),
-          username: const Username.unvalidated(),
+          fullName: const FullName.pure(),
+          email: const Email.pure(),
+          password: const Password.pure(),
+          username: const Username.pure(),
           userProfileAvatarUrl: '',
           submissionStatus: SignUpSubmissionStatus.idle,
           showPassword: false,

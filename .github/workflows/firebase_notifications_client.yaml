@@ -7,7 +7,7 @@ concurrency:
 on:
   pull_request:
     paths:
-      - "./packages/notifications_client/firebase_notifications_client/**"
+      - "packages/notifications_client/firebase_notifications_client/**"
       - ".github/workflows/firebase_notifications_client.yaml"
     branches:
       - main

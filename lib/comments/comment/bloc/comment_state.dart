@@ -17,7 +17,7 @@ class CommentState extends Equatable {
   factory CommentState.fromJson(Map<String, dynamic> json) =>
       _$CommentStateFromJson(json);
 
-  const CommentState.intital()
+  const CommentState.initial()
       : this(
           status: CommentStatus.initial,
           likes: 0,

@@ -18,7 +18,7 @@ class UserStoriesBloc extends HydratedBloc<UserStoriesEvent, UserStoriesState> {
     required StoriesRepository storiesRepository,
   })  : _author = author,
         _storiesRepository = storiesRepository,
-        super(const UserStoriesState.intital()) {
+        super(const UserStoriesState.initial()) {
     on<UserStoriesSubscriptionRequested>(_onUserStoriesSubscriptionRequested);
     on<UserStoriesStorySeenRequested>(_onUserStoriesStorySeenRequested);
     on<UserStoriesStoryDeleteRequested>(_onUserStoriesStoryDeleteRequested);

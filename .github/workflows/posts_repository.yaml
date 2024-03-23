@@ -7,7 +7,7 @@ concurrency:
 on:
   pull_request:
     paths:
-      - "./packages/posts_repository/**"
+      - "packages/posts_repository/**"
       - ".github/workflows/posts_repository.yaml"
     branches:
       - main
