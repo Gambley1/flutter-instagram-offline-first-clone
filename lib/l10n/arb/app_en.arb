@@ -248,7 +248,7 @@
   "writeCaptionText": "Write caption...",
   "logOutText": "Log out",
   "logOutConfirmationText": "Are you sure you want to log out?",
-  "dontShowAgainText": "Dont''t show again",
+  "notShowAgainText": "Dont''t show again",
   "blockPostAuthorText": "Block post author",
   "blockAuthorText": "Block author",
   "blockAuthorConfirmationText": "Are you sure you want to block this author?",

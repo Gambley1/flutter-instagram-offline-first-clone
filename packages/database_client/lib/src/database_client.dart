@@ -36,7 +36,7 @@ abstract class UserBaseRepository {
     String? followerId,
   });
 
-  /// Unfollows from user profile, identified by [unfollowId].
+  /// Unfollow from user profile, identified by [unfollowId].
   Future<void> unfollow({required String unfollowId, String? unfollowerId});
 
   /// Removes follower from followers of current users.
@@ -90,7 +90,7 @@ abstract class PostsBaseRepository {
   /// Reads the associated post from the database by the [id].
   Future<Post?> getPostBy({required String id});
 
-  /// Fetches the profiles of users who liked post, idenitifed by [postId].
+  /// Fetches the profiles of users who liked post, found by [postId].
   Future<List<User>> getPostLikers({
     required String postId,
     int limit = 30,

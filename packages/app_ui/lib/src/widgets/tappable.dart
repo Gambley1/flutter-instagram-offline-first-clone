@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_positional_boolean_parameters
+// ignore_for_file: avoid_positional_boolean_parameters, lines_longer_than_80_chars
 
 import 'dart:ui';
 
@@ -27,7 +27,7 @@ enum TappableAnimationEffect {
 /// a tap. The desired effect you can choose from [TappableAnimationEffect].
 /// {@endtemplate}
 class Tappable extends StatelessWidget {
-  /// {@macro tappabled}
+  /// {@macro tappable}
   const Tappable({
     required this.child,
     super.key,
@@ -111,8 +111,7 @@ class Tappable extends StatelessWidget {
     // if (context.theme.platform == TargetPlatform.iOS) {
     //   return FadedButton(
     //     onTap: onTap,
-    //     borderRadius: customBorderRadius ?? BorderRadius.circular(borderRadiu
-    // s),
+    //     borderRadius: customBorderRadius ?? BorderRadius.circular(borderRadius),
     //     color: color ?? Theme.of(context).canvasColor,
     //     onLongPress: onLongPress != null
     //         ? () {
@@ -135,8 +134,7 @@ class Tappable extends StatelessWidget {
     //     splashFactory: kIsWeb
     //         ? InkRipple.splashFactory
     //         : InkSparkle.constantTurbulenceSeedSplashFactory,
-    //     borderRadius: customBorderRadius ?? BorderRadius.circular(borderRadiu
-    // s),
+    //     borderRadius: customBorderRadius ?? BorderRadius.circular(borderRadius),
     //     onTap: onTap,
     //     onHighlightChanged: onHighlightChanged,
     //     onLongPress: onLongPress,

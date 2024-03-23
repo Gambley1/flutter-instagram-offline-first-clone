@@ -125,7 +125,7 @@ class PostLargeView extends StatelessWidget {
           return UserStoriesAvatar(
             author: author.toUser,
             onAvatarTap: onAvatarTap,
-            enableUnactiveBorder: false,
+            enableInactiveBorder: false,
             withAdaptiveBorder: false,
           );
         },
@@ -211,7 +211,7 @@ class PostLargeView extends StatelessWidget {
         return UserStoriesAvatar(
           author: author.toUser,
           onAvatarTap: onAvatarTap,
-          enableUnactiveBorder: false,
+          enableInactiveBorder: false,
           withAdaptiveBorder: false,
         );
       },

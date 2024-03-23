@@ -16,7 +16,7 @@ class StoriesBloc extends Bloc<StoriesEvent, StoriesState> {
     required UserRepository userRepository,
   })  : _storiesRepository = storiesRepository,
         _userRepository = userRepository,
-        super(const StoriesState.intital()) {
+        super(const StoriesState.initial()) {
     on<StoriesFetchUserFollowingsStories>(_onStoriesFetchUserFollowingsStories);
     on<StoriesStorySeen>(_onStoriesStorySeen);
     on<StoriesStoryDeleteRequested>(_onStoriesStoryDeleteRequested);

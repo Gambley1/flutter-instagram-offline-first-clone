@@ -169,7 +169,7 @@ class MessageInputController extends ValueNotifier<Message> {
     attachments = [];
   }
 
-  /// Local leplying message instance. String represents user name that
+  /// Local replying message instance. String represents user name that
   /// we are trying to reply, followed by his message.
   Message? _replyingMessage;
 

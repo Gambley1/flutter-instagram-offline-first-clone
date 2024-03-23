@@ -1,2 +1,2 @@
 export 'builder/builder.dart';
-export 'thumnail/thumbnail.dart';
+export 'thumbnail/thumbnail.dart';

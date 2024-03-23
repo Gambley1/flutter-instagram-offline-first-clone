@@ -56,8 +56,8 @@ final class FeedPostCreateRequested extends FeedEvent {
   final List<Map<String, dynamic>> media;
 }
 
-final class FeedRecommenedPostsPageRequested extends FeedPageBasedEvent {
-  const FeedRecommenedPostsPageRequested({
+final class FeedRecommendedPostsPageRequested extends FeedPageBasedEvent {
+  const FeedRecommendedPostsPageRequested({
     super.page,
   });
 

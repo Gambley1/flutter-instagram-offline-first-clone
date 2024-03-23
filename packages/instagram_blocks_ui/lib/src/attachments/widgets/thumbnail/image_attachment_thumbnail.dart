@@ -41,10 +41,10 @@ class ImageAttachmentThumbnail extends StatelessWidget {
   /// Height of the attachment image thumbnail.
   final double? height;
 
-  /// Memmory width of the attachment image thumbnail.
+  /// Memory width of the attachment image thumbnail.
   final int? memCacheWidth;
 
-  /// Memmory height of the attachment image thumbnail.
+  /// Memory height of the attachment image thumbnail.
   final int? memCacheHeight;
 
   /// The border radius of the image.

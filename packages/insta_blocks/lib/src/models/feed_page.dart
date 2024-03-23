@@ -19,7 +19,7 @@ class FeedPage extends Equatable {
   });
 
   /// {@macro feed_page.empty}
-  const FeedPage.emtpy()
+  const FeedPage.empty()
       : this(blocks: const [], totalBlocks: 0, page: 0, hasMore: true);
 
   /// Converts a `Map<String, dynamic>` into a [FeedPage] instance.

@@ -29,15 +29,15 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       _onRefreshRequested,
       transformer: throttleDroppable(duration: 550.ms),
     );
-    on<FeedRecommenedPostsPageRequested>(
-      _onFeedRecommenedPostsPageRequested,
+    on<FeedRecommendedPostsPageRequested>(
+      _onFeedRecommendedPostsPageRequested,
       transformer: throttleDroppable(),
     );
     on<FeedPostCreateRequested>(_onFeedPostCreateRequested);
     on<FeedUpdateRequested>(_onFeedUpdateRequested);
   }
 
-  final _recommenedPosts = <PostLargeBlock>[
+  final _recommendedPosts = <PostLargeBlock>[
     PostLargeBlock(
       id: uuid.v4(),
       author: PostAuthor.randomConfirmed(),
@@ -334,7 +334,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
       emit(state.populated(feed: feed));
 
-      if (!hasMore) add(const FeedRecommenedPostsPageRequested());
+      if (!hasMore) add(const FeedRecommendedPostsPageRequested());
     } catch (error, stackTrace) {
       addError(error, stackTrace);
       emit(state.failure());
@@ -418,7 +418,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
       emit(state.populated(feed: feed));
 
-      if (!hasMore) add(const FeedRecommenedPostsPageRequested());
+      if (!hasMore) add(const FeedRecommendedPostsPageRequested());
     } catch (error, stackTrace) {
       addError(error, stackTrace);
       emit(state.failure());
@@ -430,16 +430,16 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     return post?.toPostLargeBlock();
   }
 
-  Future<void> _onFeedRecommenedPostsPageRequested(
-    FeedRecommenedPostsPageRequested event,
+  Future<void> _onFeedRecommendedPostsPageRequested(
+    FeedRecommendedPostsPageRequested event,
     Emitter<FeedState> emit,
   ) async {
     emit(state.loading());
     try {
-      final recommenedBlocks = <InstaBlock>[..._recommenedPosts..shuffle()];
+      final recommendedBlocks = <InstaBlock>[..._recommendedPosts..shuffle()];
       final blocks = insertSponsoredBlocks(
         hasMore: true,
-        blocks: recommenedBlocks,
+        blocks: recommendedBlocks,
         page: 0,
       );
 

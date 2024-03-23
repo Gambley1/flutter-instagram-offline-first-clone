@@ -20,12 +20,12 @@ extension BuildContextX on BuildContext {
   /// brightness.
   Color get reversedAdaptiveColor => isDark ? AppColors.black : AppColors.white;
 
-  /// Defines a customisable adaptive [Color]. If [light] or [dark] is not
+  /// Defines a customizable adaptive [Color]. If [light] or [dark] is not
   /// provided default colors are used.
   Color customAdaptiveColor({Color? light, Color? dark}) =>
       isDark ? (light ?? AppColors.white) : (dark ?? AppColors.black);
 
-  /// Defines a customisable reversed adaptive [Color]. If [light] or [dark]
+  /// Defines a customizable reversed adaptive [Color]. If [light] or [dark]
   /// is not provided default reversed colors are used.
   Color customReversedAdaptiveColor({Color? light, Color? dark}) =>
       isDark ? (dark ?? AppColors.black) : (light ?? AppColors.white);

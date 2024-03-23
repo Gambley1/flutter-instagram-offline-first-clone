@@ -103,7 +103,7 @@ class AvatarView extends StatelessWidget {
                   stories: state.stories,
                   onTap: onTap,
                   onLongPress: (_) => onLongPress?.call(),
-                  enableUnactiveBorder: !isMine,
+                  enableInactiveBorder: !isMine,
                   avatarUrl: author.avatarUrl,
                   scaleStrength: ScaleStrength.xxs,
                 ),

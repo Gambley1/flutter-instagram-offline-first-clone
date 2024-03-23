@@ -7,10 +7,10 @@ enum TimelineStatus { initial, loading, populated, failure }
 class TimelineState extends Equatable {
   const TimelineState._({required this.status, required this.timeline});
 
-  const TimelineState.intital()
+  const TimelineState.initial()
       : this._(
           status: TimelineStatus.initial,
-          timeline: const FeedPage.emtpy(),
+          timeline: const FeedPage.empty(),
         );
 
   final TimelineStatus status;

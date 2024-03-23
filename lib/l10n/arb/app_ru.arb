@@ -218,7 +218,7 @@
   "writeCaptionText": "Добавить подпись...",
   "logOutText": "Выйти",
   "logOutConfirmationText": "Вы уверены что хотите выйти из аккаунта?",
-  "dontShowAgainText": "Не показывать снова",
+  "notShowAgainText": "Не показывать снова",
   "blockPostAuthorText": "Заблокировать автора публикации",
   "blockAuthorText": "Заблокировать автора",
   "blockAuthorConfirmationText": "Вы уверены что хотите заблокировать этого автора?",

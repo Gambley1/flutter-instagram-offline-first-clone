@@ -189,7 +189,7 @@ class _VideoPlayState extends State<VideoPlay>
                     ),
                   );
                 }
-                late final withProgessIndicator = Stack(
+                late final withProgressIndicator = Stack(
                   alignment: Alignment.bottomCenter,
                   children: [
                     AspectRatio(
@@ -201,7 +201,7 @@ class _VideoPlayState extends State<VideoPlay>
                 );
                 if (!widget.withVisibilityDetector) {
                   if (widget.withProgressIndicator) {
-                    return withProgessIndicator;
+                    return withProgressIndicator;
                   }
                   return videoPlayer;
                 }
@@ -217,7 +217,7 @@ class _VideoPlayState extends State<VideoPlay>
                     }
                   },
                   child: widget.withProgressIndicator
-                      ? withProgessIndicator
+                      ? withProgressIndicator
                       : videoPlayer,
                 );
               },

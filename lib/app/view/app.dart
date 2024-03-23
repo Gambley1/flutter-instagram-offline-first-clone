@@ -98,7 +98,7 @@ void closeSnackbars() => snackbarKey.currentState?.closeAll();
 void showCurrentlyUnavailableFeature({bool clearIfQueue = true}) =>
     openSnackbar(
       const SnackbarMessage.error(
-        title: 'Feature is not avaliable!',
+        title: 'Feature is not available!',
         description:
             'We are trying our best to implement it as fast as possible.',
         icon: Icons.error_outline,

@@ -88,7 +88,7 @@ class StoriesRepository extends StoriesBaseRepository {
         ),
       ).asBroadcastStream();
 
-  /// Upldates localy single user [story] as seen.
+  /// Updates in-memory [story] as seen.
   Future<void> setUserStorySeen({
     required Story story,
     required String userId,

@@ -17,7 +17,7 @@ class PostState extends Equatable {
   factory PostState.fromJson(Map<String, dynamic> json) =>
       _$PostStateFromJson(json);
 
-  const PostState.intital()
+  const PostState.initial()
       : this(
           status: PostStatus.initial,
           likes: 0,

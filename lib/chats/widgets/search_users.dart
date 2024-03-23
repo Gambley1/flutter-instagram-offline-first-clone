@@ -73,7 +73,7 @@ class _SearchUsersState extends State<SearchUsers> with SafeSetStateMixin {
                     context.pop(widget.returnUser ? user.toJson() : user.id),
                 leading: UserStoriesAvatar(
                   author: user,
-                  enableUnactiveBorder: false,
+                  enableInactiveBorder: false,
                   withAdaptiveBorder: false,
                 ),
                 title: Text(user.displayFullName),

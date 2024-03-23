@@ -12,7 +12,7 @@ class TimelineBloc extends Bloc<TimelineEvent, TimelineState> {
   TimelineBloc({
     required PostsRepository postsRepository,
   })  : _postsRepository = postsRepository,
-        super(const TimelineState.intital()) {
+        super(const TimelineState.initial()) {
     on<TimelinePageRequested>(
       _onTimelinePageRequested,
       transformer: throttleDroppable(),

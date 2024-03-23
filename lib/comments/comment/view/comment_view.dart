@@ -79,7 +79,7 @@ class CommentGroup extends StatelessWidget {
             author: author,
             onAvatarTap: onAvatarTap,
             radius: radius,
-            enableUnactiveBorder: false,
+            enableInactiveBorder: false,
             withAdaptiveBorder: false,
           ),
           onReplyButtonTap: (username) => context

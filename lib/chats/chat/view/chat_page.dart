@@ -373,7 +373,7 @@ class _ChatMessagesListViewState extends State<ChatMessagesListView> {
                         : messages[messages.length - index];
                     final isNextUserSame = nextMessage != null &&
                         message.sender!.id == nextMessage.sender!.id;
-                    final isPreviusUserSame = previousMessage != null &&
+                    final isPreviousUserSame = previousMessage != null &&
                         message.sender!.id == previousMessage.sender!.id;
 
                     bool checkTimeDifference(
@@ -436,13 +436,13 @@ class _ChatMessagesListViewState extends State<ChatMessagesListView> {
                                 : const Radius.circular(22),
                         bottomLeft: isMine
                             ? const Radius.circular(22)
-                            : (isPreviusUserSame &&
+                            : (isPreviousUserSame &&
                                     !hasTimeDifferenceWithPrevious)
                                 ? const Radius.circular(4)
                                 : Radius.zero,
                         bottomRight: !isMine
                             ? const Radius.circular(22)
-                            : (isPreviusUserSame &&
+                            : (isPreviousUserSame &&
                                     !hasTimeDifferenceWithPrevious)
                                 ? const Radius.circular(4)
                                 : Radius.zero,
@@ -584,7 +584,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
         subtitle: Text(context.l10n.onlineText),
         leading: UserStoriesAvatar(
           author: participant,
-          enableUnactiveBorder: false,
+          enableInactiveBorder: false,
           withAdaptiveBorder: false,
           radius: 26,
         ),

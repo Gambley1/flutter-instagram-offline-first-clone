@@ -73,7 +73,7 @@ class UserListTile extends StatelessWidget {
       leading: UserStoriesAvatar(
         author: user,
         withAdaptiveBorder: false,
-        enableUnactiveBorder: false,
+        enableInactiveBorder: false,
         radius: 26,
       ),
       title: Text(user.displayUsername),
@@ -168,7 +168,7 @@ class SearchInputField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final activeColor = context.adaptiveColor;
-    const unactiveColor = AppColors.grey;
+    const inactiveColor = AppColors.grey;
 
     final search = AppTextField(
       filled: true,
@@ -185,12 +185,12 @@ class SearchInputField extends StatelessWidget {
       onTap: !readOnly ? null : () => context.pushNamed('search'),
       hintText: context.l10n.searchText,
       prefixIcon:
-          Icon(Icons.search, color: active ? activeColor : unactiveColor),
+          Icon(Icons.search, color: active ? activeColor : inactiveColor),
       suffixIcon: textController?.text.trim().isEmpty ?? true
           ? null
           : Icon(
               Icons.clear,
-              color: active ? activeColor : unactiveColor,
+              color: active ? activeColor : inactiveColor,
             ),
       border: outlinedBorder(borderRadius: 14),
     );

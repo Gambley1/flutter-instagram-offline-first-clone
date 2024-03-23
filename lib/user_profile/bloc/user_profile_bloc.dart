@@ -8,7 +8,7 @@ import 'package:shared/shared.dart';
 import 'package:user_repository/user_repository.dart';
 
 part 'user_profile_event.dart';
-part 'user_profle_state.dart';
+part 'user_profile_state.dart';
 
 class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
   UserProfileBloc({

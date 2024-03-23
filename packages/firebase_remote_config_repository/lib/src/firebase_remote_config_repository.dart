@@ -24,12 +24,12 @@ class InitializeFirebaseRemoteConfigFailure
   const InitializeFirebaseRemoteConfigFailure(super.error);
 }
 
-/// {@template check_feature_avaliable_failure}
+/// {@template check_feature_available_failure}
 /// Thrown during the check whether the feature is available
 /// if a failure occurs.
 /// {@endtemplate}
 class CheckFeatureAvailableFailure extends FirebaseRemoteConfigException {
-  /// {@macro check_feature_avaliable_failure}
+  /// {@macro check_feature_available_failure}
   const CheckFeatureAvailableFailure(super.error);
 }
 
@@ -103,7 +103,7 @@ class FirebaseRemoteConfigRepository {
 
   /// Checks from the [FirebaseRemoteConfig] whether the feature by [key] is
   /// available to use in the application.
-  bool isFeatureAvailabe(String key) {
+  bool isFeatureAvailable(String key) {
     try {
       return _firebaseRemoteConfig.getBool(key);
     } catch (error, stackTrace) {

@@ -7,7 +7,7 @@ enum StoriesStatus { initial, loading, success, failure }
 class StoriesState extends Equatable {
   const StoriesState._({required this.status, required this.users});
 
-  const StoriesState.intital()
+  const StoriesState.initial()
       : this._(status: StoriesStatus.initial, users: const []);
 
   final StoriesStatus status;

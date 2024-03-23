@@ -277,12 +277,12 @@ class _PostPopupState extends State<PopupModal>
     }
 
     _messageVisibility.value = false;
-    _animtedDialogBack();
+    _animateDialogBack();
   }
 
   void _animateLike() => _likeAnimationController.loop(count: 1);
 
-  void _animtedDialogBack() => _popupDialogAnimationController.reverse();
+  void _animateDialogBack() => _popupDialogAnimationController.reverse();
 
   Future<void> showCommentsOrViewProfile() async {
     if (widget.showComments) {

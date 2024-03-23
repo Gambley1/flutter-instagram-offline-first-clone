@@ -217,14 +217,14 @@ class PostOptionsButton extends StatelessWidget {
         ];
 
     List<ModalOption> viewerOptions({
-      required VoidCallback onPostDontShowAgainTap,
+      required VoidCallback onPostNotShowAgainTap,
       required VoidCallback onPostBlockAuthorTap,
     }) =>
         <ModalOption>[
           ModalOption(
-            name: BlockSettings().postTextDelegate.dontShowAgainText,
+            name: BlockSettings().postTextDelegate.notShowAgainText,
             iconData: Icons.remove_circle_outline_sharp,
-            onTap: onPostDontShowAgainTap,
+            onTap: onPostNotShowAgainTap,
           ),
           ModalOption(
             name: BlockSettings().postTextDelegate.blockPostAuthorText,
@@ -243,7 +243,7 @@ class PostOptionsButton extends StatelessWidget {
       viewer: () => Tappable(
         onTap: () => showOptionsSheet(
           viewerOptions(
-            onPostDontShowAgainTap: () {},
+            onPostNotShowAgainTap: () {},
             onPostBlockAuthorTap: () {},
           ),
         ),

@@ -7,7 +7,7 @@ import 'package:shared/shared.dart';
 const kDefaultDebounceTime = 150;
 
 /// {@template debouncer}
-/// A simple class for debouncing functions execution.
+/// A simple class to debounce functions execution.
 /// {@endtemplate}
 class Debouncer {
   /// {@macro debouncer}
@@ -32,7 +32,7 @@ class Debouncer {
 
 /// Applies debouncer on the function.
 extension DebounceFunction on void Function() {
-  /// Debounces function with certain delay.
-  void deboune({int milliseconds = kDefaultDebounceTime}) =>
+  /// Function debounce with certain delay.
+  void debounce({int milliseconds = kDefaultDebounceTime}) =>
       Debouncer(milliseconds: milliseconds).run(call);
 }

@@ -410,10 +410,10 @@ class UserSearchField extends StatefulWidget {
 class _UserSearchFieldState extends State<UserSearchField> {
   late Debouncer _debouncer;
 
-  final _unactiveIconColor = AppColors.grey;
+  final _inactiveIconColor = AppColors.grey;
   final _activeIconColor = AppColors.white;
 
-  late final _iconColor = ValueNotifier(_unactiveIconColor);
+  late final _iconColor = ValueNotifier(_inactiveIconColor);
 
   @override
   void initState() {
@@ -427,7 +427,7 @@ class _UserSearchFieldState extends State<UserSearchField> {
     if (widget.focusNode.hasFocus) {
       _iconColor.value = _activeIconColor;
     } else {
-      _iconColor.value = _unactiveIconColor;
+      _iconColor.value = _inactiveIconColor;
     }
   }
 

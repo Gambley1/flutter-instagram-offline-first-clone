@@ -37,7 +37,7 @@ class ChatInboxTile extends StatelessWidget {
       ),
       leading: UserStoriesAvatar(
         author: participant,
-        enableUnactiveBorder: false,
+        enableInactiveBorder: false,
         withAdaptiveBorder: false,
         radius: 26,
       ),

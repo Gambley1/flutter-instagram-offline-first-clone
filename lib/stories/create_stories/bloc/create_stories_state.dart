@@ -8,7 +8,7 @@ class CreateStoriesState extends Equatable {
     required this.isAvailable,
   });
 
-  const CreateStoriesState.intital()
+  const CreateStoriesState.initial()
       : this._(status: CreateStoriesStatus.initial, isAvailable: true);
 
   final CreateStoriesStatus status;

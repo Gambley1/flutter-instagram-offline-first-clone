@@ -14,7 +14,7 @@ class Feed extends Equatable {
   /// {@macro feed.empty}
   const Feed.empty()
       : this(
-          feedPage: const FeedPage.emtpy(),
+          feedPage: const FeedPage.empty(),
           reelsPage: const ReelsPage.empty(),
         );
 
