@@ -27,10 +27,10 @@ class ForgotPasswordCubit extends Cubit<ForgotPasswordState> {
     final previousEmailState = previousScreenState.email;
     final shouldValidate = previousEmailState.invalid;
     final newEmailState = shouldValidate
-        ? Email.validated(
+        ? Email.dirty(
             newValue,
           )
-        : Email.unvalidated(
+        : Email.pure(
             newValue,
           );
 
@@ -48,7 +48,7 @@ class ForgotPasswordCubit extends Cubit<ForgotPasswordState> {
     final previousEmailState = previousScreenState.email;
     final previousEmailValue = previousEmailState.value;
 
-    final newEmailState = Email.validated(
+    final newEmailState = Email.dirty(
       previousEmailValue,
     );
     final newScreenState = previousScreenState.copyWith(
@@ -60,7 +60,7 @@ class ForgotPasswordCubit extends Cubit<ForgotPasswordState> {
   Future<void> onSubmit({
     VoidCallback? onSuccess,
   }) async {
-    final email = Email.validated(state.email.value);
+    final email = Email.dirty(state.email.value);
     final isFormValid = FormzValid([email]).isFormValid;
 
     final newState = state.copyWith(
@@ -75,7 +75,7 @@ class ForgotPasswordCubit extends Cubit<ForgotPasswordState> {
     try {
       await _userRepository.sendPasswordResetEmail(email: state.email.value);
       final newState = state.copyWith(status: ForgotPasswordStatus.success);
-      if(isClosed) return;
+      if (isClosed) return;
       emit(newState);
       onSuccess?.call();
     } catch (error, stackTrace) {

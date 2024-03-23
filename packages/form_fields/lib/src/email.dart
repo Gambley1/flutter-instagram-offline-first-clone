@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart' show EquatableMixin;
 import 'package:flutter/foundation.dart' show immutable;
-import 'package:form_fields/src/formz_input_field.dart';
+import 'package:form_fields/src/formz_validation_mixin.dart';
 import 'package:formz/formz.dart';
 
 /// {@template email}
@@ -9,11 +9,11 @@ import 'package:formz/formz.dart';
 @immutable
 class Email extends FormzInput<String, EmailValidationError>
     with EquatableMixin, FormzValidationMixin {
-  /// {@macro email.unvalidated}
-  const Email.unvalidated([super.value = '']) : super.pure();
+  /// {@macro email.pure}
+  const Email.pure([super.value = '']) : super.pure();
 
-  /// {@macro email.validated}
-  const Email.validated(super.value) : super.dirty();
+  /// {@macro email.dirty}
+  const Email.dirty(super.value) : super.dirty();
 
   static final _emailRegex = RegExp(
     r'^(([\w-]+\.)+[\w-]+|([a-zA-Z]|[\w-]{2,}))@((([0-1]?'

@@ -43,10 +43,10 @@ class SignUpCubit extends Cubit<SignupState> {
     final previousEmailState = previousScreenState.email;
     final shouldValidate = previousEmailState.invalid;
     final newEmailState = shouldValidate
-        ? Email.validated(
+        ? Email.dirty(
             newValue,
           )
-        : Email.unvalidated(
+        : Email.pure(
             newValue,
           );
 
@@ -64,7 +64,7 @@ class SignUpCubit extends Cubit<SignupState> {
     final previousEmailState = previousScreenState.email;
     final previousEmailValue = previousEmailState.value;
 
-    final newEmailState = Email.validated(
+    final newEmailState = Email.dirty(
       previousEmailValue,
     );
     final newScreenState = previousScreenState.copyWith(
@@ -81,10 +81,10 @@ class SignUpCubit extends Cubit<SignupState> {
     final previousPasswordState = previousScreenState.password;
     final shouldValidate = previousPasswordState.invalid;
     final newPasswordState = shouldValidate
-        ? Password.validated(
+        ? Password.dirty(
             newValue,
           )
-        : Password.unvalidated(
+        : Password.pure(
             newValue,
           );
 
@@ -102,7 +102,7 @@ class SignUpCubit extends Cubit<SignupState> {
     final previousPasswordState = previousScreenState.password;
     final previousPasswordValue = previousPasswordState.value;
 
-    final newPasswordState = Password.validated(
+    final newPasswordState = Password.dirty(
       previousPasswordValue,
     );
     final newScreenState = previousScreenState.copyWith(
@@ -119,10 +119,10 @@ class SignUpCubit extends Cubit<SignupState> {
     final previousFullNameState = previousScreenState.fullName;
     final shouldValidate = previousFullNameState.invalid;
     final newFullNameState = shouldValidate
-        ? FullName.validated(
+        ? FullName.dirty(
             newValue,
           )
-        : FullName.unvalidated(
+        : FullName.pure(
             newValue,
           );
 
@@ -140,7 +140,7 @@ class SignUpCubit extends Cubit<SignupState> {
     final previousFullNameState = previousScreenState.fullName;
     final previousFullNameValue = previousFullNameState.value;
 
-    final newFullNameState = FullName.validated(
+    final newFullNameState = FullName.dirty(
       previousFullNameValue,
     );
     final newScreenState = previousScreenState.copyWith(
@@ -157,10 +157,10 @@ class SignUpCubit extends Cubit<SignupState> {
     final previousUsernameState = previousScreenState.username;
     final shouldValidate = previousUsernameState.invalid;
     final newSurnameState = shouldValidate
-        ? Username.validated(
+        ? Username.dirty(
             newValue,
           )
-        : Username.unvalidated(
+        : Username.pure(
             newValue,
           );
 
@@ -178,7 +178,7 @@ class SignUpCubit extends Cubit<SignupState> {
     final previousUsernameState = previousScreenState.username;
     final previousUsernameValue = previousUsernameState.value;
 
-    final newUsernameState = Username.validated(
+    final newUsernameState = Username.dirty(
       previousUsernameValue,
     );
     final newScreenState = previousScreenState.copyWith(
@@ -192,10 +192,10 @@ class SignUpCubit extends Cubit<SignupState> {
   Future<void> onSubmit({
     File? avatarFile,
   }) async {
-    final email = Email.validated(state.email.value);
-    final password = Password.validated(state.password.value);
-    final fullName = FullName.validated(state.fullName.value);
-    final username = Username.validated(state.username.value);
+    final email = Email.dirty(state.email.value);
+    final password = Password.dirty(state.password.value);
+    final fullName = FullName.dirty(state.fullName.value);
+    final username = Username.dirty(state.username.value);
     final isFormValid =
         FormzValid([email, password, fullName, username]).isFormValid;
 

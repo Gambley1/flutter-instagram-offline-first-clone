@@ -29,7 +29,7 @@ class ChangePasswordCubit extends Cubit<ChangePasswordState> {
     final previousOtpState = previousScreenState.otp;
     final previousOtpValue = previousOtpState.value;
 
-    final newOtpState = Otp.validated(
+    final newOtpState = Otp.dirty(
       previousOtpValue,
     );
     final newScreenState = previousScreenState.copyWith(
@@ -44,10 +44,10 @@ class ChangePasswordCubit extends Cubit<ChangePasswordState> {
     final previousOtpState = previousScreenState.otp;
     final shouldValidate = previousOtpState.invalid;
     final newOtpState = shouldValidate
-        ? Otp.validated(
+        ? Otp.dirty(
             newValue,
           )
-        : Otp.unvalidated(
+        : Otp.pure(
             newValue,
           );
 
@@ -65,7 +65,7 @@ class ChangePasswordCubit extends Cubit<ChangePasswordState> {
     final previousPasswordState = previousScreenState.password;
     final previousPasswordValue = previousPasswordState.value;
 
-    final newPasswordState = Password.validated(
+    final newPasswordState = Password.dirty(
       previousPasswordValue,
     );
     final newScreenState = previousScreenState.copyWith(
@@ -80,10 +80,10 @@ class ChangePasswordCubit extends Cubit<ChangePasswordState> {
     final previousPasswordState = previousScreenState.password;
     final shouldValidate = previousPasswordState.invalid;
     final newPasswordState = shouldValidate
-        ? Password.validated(
+        ? Password.dirty(
             newValue,
           )
-        : Password.unvalidated(
+        : Password.pure(
             newValue,
           );
 
@@ -95,8 +95,8 @@ class ChangePasswordCubit extends Cubit<ChangePasswordState> {
   }
 
   Future<void> onSubmit({required String email}) async {
-    final password = Password.validated(state.password.value);
-    final otp = Otp.validated(state.otp.value);
+    final password = Password.dirty(state.password.value);
+    final otp = Otp.dirty(state.otp.value);
     final isFormValid = FormzValid([password, otp]).isFormValid;
 
     final newState = state.copyWith(

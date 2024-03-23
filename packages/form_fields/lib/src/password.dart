@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart' show immutable;
-import 'package:form_fields/src/formz_input_field.dart';
+import 'package:form_fields/src/formz_validation_mixin.dart';
 import 'package:formz/formz.dart' show FormzInput;
 
 /// {@template password}
@@ -10,11 +10,11 @@ import 'package:formz/formz.dart' show FormzInput;
 @immutable
 class Password extends FormzInput<String, PasswordValidationError>
     with EquatableMixin, FormzValidationMixin {
-  /// {@macro password.unvalidated}
-  const Password.unvalidated([super.value = '']) : super.pure();
+  /// {@macro password.pure}
+  const Password.pure([super.value = '']) : super.pure();
 
-  /// {@macro password.validated}
-  const Password.validated([
+  /// {@macro password.dirty}
+  const Password.dirty([
     super.value = '',
   ]) : super.dirty();
 

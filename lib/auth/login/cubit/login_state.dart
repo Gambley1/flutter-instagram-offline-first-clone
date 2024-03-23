@@ -45,36 +45,18 @@ enum LogInSubmissionStatus {
 
   /// [LogInSubmissionStatus.googleLogInFailure] indicates that some went
   /// wrong during google login process.
-  googleLogInFailure,
-}
+  googleLogInFailure;
 
-/// Extension on [LogInSubmissionStatus] that checks current status.
-extension SubmissionStatusX on LogInSubmissionStatus {
-  /// Checks if current submission status is success.
   bool get isSuccess => this == LogInSubmissionStatus.success;
-
-  /// Checks if current submission status is in progress.
   bool get isLoading => this == LogInSubmissionStatus.loading;
-
-  /// Whether authentication with google provider is in progress.
   bool get isGoogleAuthInProgress =>
       this == LogInSubmissionStatus.googleAuthInProgress;
-
-  /// Whether authentication with github provider is in progress.
   bool get isGithubAuthInProgress =>
       this == LogInSubmissionStatus.githubAuthInProgress;
-
-  /// Checks if current submission status is invalid credentials.
   bool get isInvalidCredentials =>
       this == LogInSubmissionStatus.invalidCredentials;
-
-  /// Checks if current submission status is network error.
   bool get isNetworkError => this == LogInSubmissionStatus.networkError;
-
-  /// Checks if current submission status is user not found.
   bool get isUserNotFound => this == LogInSubmissionStatus.userNotFound;
-
-  /// Checks if current submission status is error.
   bool get isError =>
       this == LogInSubmissionStatus.error ||
       isUserNotFound ||
@@ -103,8 +85,8 @@ class LoginState {
           status: LogInSubmissionStatus.idle,
           message: '',
           showPassword: false,
-          email: const Email.unvalidated(),
-          password: const Password.unvalidated(),
+          email: const Email.pure(),
+          password: const Password.pure(),
         );
 
   /// Submission status, used to indicate current login state.

@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart' show EquatableMixin;
 import 'package:flutter/foundation.dart' show immutable;
-import 'package:form_fields/src/formz_input_field.dart';
+import 'package:form_fields/src/formz_validation_mixin.dart';
 import 'package:formz/formz.dart';
 
 /// {@template otp}
@@ -9,11 +9,11 @@ import 'package:formz/formz.dart';
 @immutable
 class Otp extends FormzInput<String, OtpValidationError>
     with EquatableMixin, FormzValidationMixin {
-  /// {@macro otp.unvalidated}
-  const Otp.unvalidated([super.value = '']) : super.pure();
+  /// {@macro otp.pure}
+  const Otp.pure([super.value = '']) : super.pure();
 
-  /// {@macro otp.validated}
-  const Otp.validated(super.value) : super.dirty();
+  /// {@macro otp.dirty}
+  const Otp.dirty(super.value) : super.dirty();
 
   static final _otpRegex = RegExp(r'^[0-9]+$');
 

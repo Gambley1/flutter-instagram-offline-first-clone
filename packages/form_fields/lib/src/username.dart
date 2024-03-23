@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart' show EquatableMixin;
 import 'package:flutter/foundation.dart' show immutable;
-import 'package:form_fields/src/formz_input_field.dart';
+import 'package:form_fields/src/formz_validation_mixin.dart';
 import 'package:formz/formz.dart' show FormzInput;
 
 /// {@template name}
@@ -10,11 +10,11 @@ import 'package:formz/formz.dart' show FormzInput;
 @immutable
 class Username extends FormzInput<String, UsernameValidationError>
     with EquatableMixin, FormzValidationMixin {
-  /// {@macro name.unvalidated}
-  const Username.unvalidated([super.value = '']) : super.pure();
+  /// {@macro name.pure}
+  const Username.pure([super.value = '']) : super.pure();
 
-  /// {@macro name.validated}
-  const Username.validated(super.value) : super.dirty();
+  /// {@macro name.dirty}
+  const Username.dirty(super.value) : super.dirty();
 
   static final _nameRegex = RegExp(r'^[a-zA-Z0-9_.]{3,16}$');
 

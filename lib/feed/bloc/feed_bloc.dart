@@ -264,8 +264,8 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         if (previosSkipRangeIs1 && tempDataLength > 3) {
           return skipRange.sublist(1);
         }
-        if (tempDataLength == 2) return [1];
-        if (tempDataLength == 3) return [1, 2];
+        if (tempDataLength case 2) return [1];
+        if (tempDataLength case 3) return [1, 2];
         return skipRange;
       }
 

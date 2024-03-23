@@ -40,10 +40,10 @@ class LoginCubit extends Cubit<LoginState> {
     final previousEmailState = previousScreenState.email;
     final shouldValidate = previousEmailState.invalid;
     final newEmailState = shouldValidate
-        ? Email.validated(
+        ? Email.dirty(
             newValue,
           )
-        : Email.unvalidated(
+        : Email.pure(
             newValue,
           );
 
@@ -61,7 +61,7 @@ class LoginCubit extends Cubit<LoginState> {
     final previousEmailState = previousScreenState.email;
     final previousEmailValue = previousEmailState.value;
 
-    final newEmailState = Email.validated(
+    final newEmailState = Email.dirty(
       previousEmailValue,
     );
     final newScreenState = previousScreenState.copyWith(
@@ -78,10 +78,10 @@ class LoginCubit extends Cubit<LoginState> {
     final previousPasswordState = previousScreenState.password;
     final shouldValidate = previousPasswordState.invalid;
     final newPasswordState = shouldValidate
-        ? Password.validated(
+        ? Password.dirty(
             newValue,
           )
-        : Password.unvalidated(
+        : Password.pure(
             newValue,
           );
 
@@ -99,7 +99,7 @@ class LoginCubit extends Cubit<LoginState> {
     final previousPasswordState = previousScreenState.password;
     final previousPasswordValue = previousPasswordState.value;
 
-    final newPasswordState = Password.validated(
+    final newPasswordState = Password.dirty(
       previousPasswordValue,
     );
     final newScreenState = previousScreenState.copyWith(
@@ -147,8 +147,8 @@ class LoginCubit extends Cubit<LoginState> {
   /// with unvalid email and password, not making unnecessary network request.
   /// After checking, procced to login network request.
   Future<void> onSubmit() async {
-    final email = Email.validated(state.email.value);
-    final password = Password.validated(state.password.value);
+    final email = Email.dirty(state.email.value);
+    final password = Password.dirty(state.password.value);
     final isFormValid = FormzValid([email, password]).isFormValid;
 
     final newState = state.copyWith(
