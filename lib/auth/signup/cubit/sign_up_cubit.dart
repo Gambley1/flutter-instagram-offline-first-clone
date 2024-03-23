@@ -256,7 +256,6 @@ class SignUpCubit extends Cubit<SignupState> {
   /// Defines method to format error. It is used to format error in order to
   /// show it to user.
   void _errorFormatter(Object e, StackTrace stackTrace) {
-    logE(e.toString());
     addError(e, stackTrace);
 
     SignUpSubmissionStatus submissionStatus() {

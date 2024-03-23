@@ -20,9 +20,7 @@ class LoginCubit extends Cubit<LoginState> {
   LoginCubit({
     required UserRepository userRepository,
   })  : _userRepository = userRepository,
-        super(
-          const LoginState.initial(),
-        );
+        super(const LoginState.initial());
 
   final UserRepository _userRepository;
 

@@ -56,7 +56,7 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
     UserProfileSubscriptionRequested event,
     Emitter<UserProfileState> emit,
   ) async {
-    if (_userId == state.user.id) {
+    if (_userId == _currentUserId) {
       await emit.forEach(
         _userRepository.user,
         onData: (user) =>
@@ -76,7 +76,7 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
     Emitter<UserProfileState> emit,
   ) async {
     await emit.forEach(
-      _postsRepository.postsAmountOf(userId: _userId ?? state.user.id),
+      _postsRepository.postsAmountOf(userId: _userId ?? _currentUserId),
       onData: (postsCount) => state.copyWith(postsCount: postsCount),
     );
   }
@@ -86,7 +86,7 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
     Emitter<UserProfileState> emit,
   ) async {
     await emit.forEach(
-      _userRepository.followingsCountOf(userId: _userId ?? state.user.id),
+      _userRepository.followingsCountOf(userId: _userId ?? _currentUserId),
       onData: (followingsCount) =>
           state.copyWith(followingsCount: followingsCount),
     );
@@ -97,7 +97,7 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
     Emitter<UserProfileState> emit,
   ) async {
     await emit.forEach(
-      _userRepository.followersCountOf(userId: _userId ?? state.user.id),
+      _userRepository.followersCountOf(userId: _userId ?? _currentUserId),
       onData: (followersCount) =>
           state.copyWith(followersCount: followersCount),
     );
@@ -107,8 +107,10 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
   final UserRepository _userRepository;
   final PostsRepository _postsRepository;
 
+  late final _currentUserId = _userRepository.currentUserId ?? '';
+
   bool get isOwner {
-    if (_userId == state.user.id) return true;
+    if (_userId == _currentUserId) return true;
     return false;
   }
 
@@ -145,7 +147,7 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
   }) =>
       _userRepository
           .followingStatus(
-            followerId: followerId ?? state.user.id,
+            followerId: followerId ?? _currentUserId,
             userId: userId,
           )
           .asBroadcastStream();
@@ -164,7 +166,6 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
       );
       emit(state.copyWith(status: UserProfileStatus.userUpdated));
     } catch (error, stackTrace) {
-      logE('Failed to update user.', error: error, stackTrace: stackTrace);
       addError(error, stackTrace);
       emit(state.copyWith(status: UserProfileStatus.userUpdateFailed));
     }
@@ -175,7 +176,7 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
     Emitter<UserProfileState> emit,
   ) async {
     final followers = await _userRepository.getFollowers(
-      userId: _userId ?? state.user.id,
+      userId: _userId ?? _currentUserId,
     );
     emit(state.copyWith(followers: followers));
   }
@@ -185,7 +186,7 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
     Emitter<UserProfileState> emit,
   ) async {
     final followings = await _userRepository.getFollowings(
-      userId: _userId ?? state.user.id,
+      userId: _userId ?? _currentUserId,
     );
     emit(state.copyWith(followings: followings));
   }
@@ -195,7 +196,7 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
     Emitter<UserProfileState> emit,
   ) async {
     await emit.forEach(
-      _userRepository.streamFollowers(userId: _userId ?? state.user.id),
+      _userRepository.streamFollowers(userId: _userId ?? _currentUserId),
       onData: (followers) => state.copyWith(followers: followers),
     );
   }
@@ -205,7 +206,7 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
     Emitter<UserProfileState> emit,
   ) async {
     await emit.forEach(
-      _userRepository.streamFollowings(userId: _userId ?? state.user.id),
+      _userRepository.streamFollowings(userId: _userId ?? _currentUserId),
       onData: (followings) => state.copyWith(followings: followings),
     );
   }
@@ -223,7 +224,6 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
     try {
       await _userRepository.removeFollower(id: event.userId);
     } catch (error, stackTrace) {
-      logE('Failed to remove follower.', error: error, stackTrace: stackTrace);
       addError(error, stackTrace);
     }
   }

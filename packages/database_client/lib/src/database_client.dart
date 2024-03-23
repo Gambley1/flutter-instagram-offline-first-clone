@@ -11,6 +11,9 @@ import 'package:user_repository/user_repository.dart';
 
 /// User base repository.
 abstract class UserBaseRepository {
+  /// The id of the currently authenticated user.
+  String? get currentUserId;
+
   /// Broadcasts the user profile identified by [id].
   Stream<User> profile({required String id});
 
@@ -313,7 +316,8 @@ class PowerSyncDatabaseClient extends DatabaseClient {
 
   final PowerSyncRepository _powerSyncRepository;
 
-  String? get _currentUserId =>
+  @override
+  String? get currentUserId =>
       _powerSyncRepository.supabase.auth.currentSession?.user.id;
 
   @override
@@ -343,7 +347,7 @@ SELECT id FROM profiles WHERE id = ?
     required String caption,
     required String media,
   }) async {
-    if (_currentUserId == null) return null;
+    if (currentUserId == null) return null;
     final result = await Future.wait([
       _powerSyncRepository.db().execute(
         '''
@@ -357,7 +361,7 @@ SELECT id FROM profiles WHERE id = ?
         '''
 SELECT * FROM profiles WHERE id = ?
 ''',
-        [_currentUserId],
+        [currentUserId],
       ),
     ]);
     if (result.isEmpty) return null;
@@ -380,7 +384,7 @@ SELECT * FROM profiles WHERE id = ?
 
   @override
   Stream<List<Post>> postsOf({String? userId}) {
-    if (_currentUserId == null) return const Stream.empty();
+    if (currentUserId == null) return const Stream.empty();
     if (userId == null) {
       return _powerSyncRepository.db().watch(
         '''
@@ -396,7 +400,7 @@ FROM
 WHERE user_id = ?1
 ORDER BY created_at DESC
       ''',
-        parameters: [_currentUserId],
+        parameters: [currentUserId],
       ).map(
         (event) => event
             .safeMap((row) => Post.fromJson(Map<String, dynamic>.from(row)))
@@ -673,10 +677,10 @@ WHERE posts.id = ?
     required String followToId,
     String? followerId,
   }) async {
-    if (_currentUserId == null) return;
-    if (followToId == _currentUserId) return;
+    if (currentUserId == null) return;
+    if (followToId == currentUserId) return;
     final exists = await isFollowed(
-      followerId: followerId ?? _currentUserId!,
+      followerId: followerId ?? currentUserId!,
       userId: followToId,
     );
     if (!exists) {
@@ -685,13 +689,13 @@ WHERE posts.id = ?
           INSERT INTO subscriptions(id, subscriber_id, subscribed_to_id)
             VALUES(uuid(), ?, ?)
       ''',
-        [followerId ?? _currentUserId!, followToId],
+        [followerId ?? currentUserId!, followToId],
       );
       return;
     }
     await unfollow(
       unfollowId: followToId,
-      unfollowerId: followerId ?? _currentUserId!,
+      unfollowerId: followerId ?? currentUserId!,
     );
   }
 
@@ -700,23 +704,23 @@ WHERE posts.id = ?
     required String unfollowId,
     String? unfollowerId,
   }) async {
-    if (_currentUserId == null) return;
+    if (currentUserId == null) return;
     await _powerSyncRepository.db().execute(
       '''
           DELETE FROM subscriptions WHERE subscriber_id = ? AND subscribed_to_id = ?
       ''',
-      [unfollowerId ?? _currentUserId, unfollowId],
+      [unfollowerId ?? currentUserId, unfollowId],
     );
   }
 
   @override
   Future<void> removeFollower({required String id}) async {
-    if (_currentUserId == null) return;
+    if (currentUserId == null) return;
     await _powerSyncRepository.db().execute(
       '''
           DELETE FROM subscriptions WHERE subscriber_id = ? AND subscribed_to_id = ?
       ''',
-      [id, _currentUserId],
+      [id, currentUserId],
     );
   }
 
@@ -843,12 +847,12 @@ WHERE posts.id = ?
     required String userId,
     String? followerId,
   }) async* {
-    if (followerId == null && _currentUserId == null) return;
+    if (followerId == null && currentUserId == null) return;
     yield* _powerSyncRepository.db().watch(
       '''
     SELECT 1 FROM subscriptions WHERE subscriber_id = ? AND subscribed_to_id = ?
     ''',
-      parameters: [followerId ?? _currentUserId, userId],
+      parameters: [followerId ?? currentUserId, userId],
     ).map((event) => event.isNotEmpty);
   }
 
@@ -1368,8 +1372,12 @@ values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             postAuthor,
             chatId,
           ]);
-        } catch (error) {
-          logE('Error send notification: $error');
+        } catch (error, stackTrace) {
+          logE(
+            'Error send notification.',
+            error: error,
+            stackTrace: stackTrace,
+          );
         }
       });
 
@@ -1556,7 +1564,7 @@ WHERE (LOWER(username) LIKE LOWER('%$query%') OR LOWER(full_name) LIKE LOWER('%$
   AND id <> ?1 $excludeUserIdsStatement 
 LIMIT ?2 OFFSET ?3
 ''',
-      [_currentUserId, limit, offset],
+      [currentUserId, limit, offset],
     );
 
     return result.safeMap(User.fromJson).toList(growable: false);
@@ -1688,7 +1696,7 @@ WHERE id IN (
 )
 LIMIT ?3 OFFSET ?4
 ''',
-      [postId, _currentUserId, limit, offset],
+      [postId, currentUserId, limit, offset],
     );
     if (result.isEmpty) return [];
     return result.safeMap(User.fromJson).toList(growable: false);

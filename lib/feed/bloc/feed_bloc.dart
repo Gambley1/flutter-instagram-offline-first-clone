@@ -336,11 +336,6 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
       if (!hasMore) add(const FeedRecommenedPostsPageRequested());
     } catch (error, stackTrace) {
-      logE(
-        'Failed to request feed page.',
-        error: error,
-        stackTrace: stackTrace,
-      );
       addError(error, stackTrace);
       emit(state.failure());
     }
@@ -378,11 +373,6 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       );
       emit(state.populated(feed: feed));
     } catch (error, stackTrace) {
-      logE(
-        '[FeedBloc] Feed Reels page fetching failed.',
-        error: error,
-        stackTrace: stackTrace,
-      );
       addError(error, stackTrace);
       emit(state.failure());
     }
@@ -430,11 +420,6 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
       if (!hasMore) add(const FeedRecommenedPostsPageRequested());
     } catch (error, stackTrace) {
-      logE(
-        'Failed to refresh feed page.',
-        error: error,
-        stackTrace: stackTrace,
-      );
       addError(error, stackTrace);
       emit(state.failure());
     }
@@ -502,7 +487,6 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         ),
       );
     } catch (error, stackTrace) {
-      logE('Failed to create post.', error: error, stackTrace: stackTrace);
       addError(error, stackTrace);
       emit(state.failure());
     }
@@ -563,7 +547,6 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
       emit(state.populated(feed: feed));
     } catch (error, stackTrace) {
-      logE('Failed to update feed post.', error: error, stackTrace: stackTrace);
       addError(error, stackTrace);
       emit(state.failure());
     }
