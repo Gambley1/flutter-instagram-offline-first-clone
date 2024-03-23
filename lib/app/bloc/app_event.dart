@@ -19,15 +19,3 @@ final class AppUserChanged extends AppEvent {
   @override
   List<Object> get props => [user];
 }
-
-final class AppOpened extends AppEvent {
-  const AppOpened();
-}
-
-final class _AppAuthenticate extends AppEvent {
-  const _AppAuthenticate();
-}
-
-final class _AppUnauthenticate extends AppEvent {
-  const _AppUnauthenticate();
-}

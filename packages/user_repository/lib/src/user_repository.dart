@@ -1,7 +1,5 @@
 import 'package:authentication_client/authentication_client.dart';
 import 'package:database_client/database_client.dart';
-import 'package:powersync_repository/powersync_repository.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:user_repository/user_repository.dart';
 
 /// {@template user_repository}
@@ -22,13 +20,7 @@ class UserRepository implements UserBaseRepository {
   /// the authentication state changes.
   Stream<User> get user => _authenticationClient.user
       .map((user) => User.fromAuthenticationUser(authenticationUser: user))
-      .startWith(User.anonymous)
       .asBroadcastStream();
-
-  /// Streams an [AuthState] and emits new [AuthState] whenever auth state
-  /// changed.
-  Stream<AuthState> authStateChanges() =>
-      Supabase.instance.client.auth.onAuthStateChange.asBroadcastStream();
 
   /// Starts the Sign In with Google Flow.
   ///
