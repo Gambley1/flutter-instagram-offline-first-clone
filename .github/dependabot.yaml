@@ -66,10 +66,6 @@ updates:
     schedule:
       interval: "daily"
   - package-ecosystem: "pub"
-    directory: "/packages/user_repository"
-    schedule:
-      interval: "daily"
-  - package-ecosystem: "pub"
     directory: "/packages/search_repository"
     schedule:
       interval: "daily"
