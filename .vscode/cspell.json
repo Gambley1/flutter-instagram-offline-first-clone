@@ -199,8 +199,7 @@
     "prefetch",
     "giffy",
     "giphy",
-    "ccon",
-    "ALEGREYA"
+    "ccon"
   ],
   "ignorePaths": [
     ".github/workflows/**",

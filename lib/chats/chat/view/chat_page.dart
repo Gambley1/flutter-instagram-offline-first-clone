@@ -52,7 +52,7 @@ class MessageSettings extends Equatable {
     required bool hasSharedPost,
   }) async {
     if (_onMessageTap != null) {
-      return await _onMessageTap?.call(
+      return _onMessageTap.call(
         details,
         messageId,
         isMine: isMine,
