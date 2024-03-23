@@ -6,7 +6,8 @@ part of 'login_cubit.dart';
 /// went wrong.
 typedef LoginErrorMessage = String;
 
-/// [LoginState] submission status, indicating current state of user loging in.
+/// [LoginState] submission status, indicating current state of user login
+/// process.
 enum LogInSubmissionStatus {
   /// [LogInSubmissionStatus.idle] indicates that user has not yet submitted
   /// login form.

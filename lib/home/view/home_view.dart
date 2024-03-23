@@ -146,7 +146,7 @@ class _HomeViewState extends State<HomeView> {
         storiesRepository: context.read<StoriesRepository>(),
         firebaseRemoteConfigRepository:
             context.read<FirebaseRemoteConfigRepository>(),
-      )..add(const CreateStoriesIsFeatureAvaiableSubscriptionRequested()),
+      )..add(const CreateStoriesIsFeatureAvailableSubscriptionRequested()),
       child: VideoPlayerProvider(
         videoPlayerState: _videoPlayerState,
         child: ListenableBuilder(
@@ -295,17 +295,17 @@ class _VideoPlayerNotifierState extends State<VideoPlayerNotifierWidget> {
     return ValueListenableBuilder<bool>(
       valueListenable: _shouldPlayType,
       child: widget.child,
-      builder: (context, shoudPlay, child) {
+      builder: (context, shouldPlay, child) {
         if (widget.checkIsInView ?? false) {
           return InViewNotifierWidget(
             id: widget.id!,
             builder: (context, isInView, _) {
-              final play = isInView && shoudPlay;
+              final play = isInView && shouldPlay;
               return widget.builder(context, play, child);
             },
           );
         }
-        return widget.builder(context, shoudPlay, child);
+        return widget.builder(context, shouldPlay, child);
       },
     );
   }

@@ -19,8 +19,8 @@ class CreateStoriesBloc extends Bloc<CreateStoriesEvent, CreateStoriesState> {
         _firebaseRemoteConfigRepository = firebaseRemoteConfigRepository,
         super(const CreateStoriesState.initial()) {
     on<CreateStoriesStoryCreateRequested>(_onStoryCreateRequested);
-    on<CreateStoriesIsFeatureAvaiableSubscriptionRequested>(
-      _onCreateStoriesFeatureAvaiableSubscriptionRequested,
+    on<CreateStoriesIsFeatureAvailableSubscriptionRequested>(
+      _onCreateStoriesFeatureAvailableSubscriptionRequested,
       transformer: throttleDroppable(),
     );
   }
@@ -28,8 +28,8 @@ class CreateStoriesBloc extends Bloc<CreateStoriesEvent, CreateStoriesState> {
   final StoriesRepository _storiesRepository;
   final FirebaseRemoteConfigRepository _firebaseRemoteConfigRepository;
 
-  Future<void> _onCreateStoriesFeatureAvaiableSubscriptionRequested(
-    CreateStoriesIsFeatureAvaiableSubscriptionRequested event,
+  Future<void> _onCreateStoriesFeatureAvailableSubscriptionRequested(
+    CreateStoriesIsFeatureAvailableSubscriptionRequested event,
     Emitter<CreateStoriesState> emit,
   ) async {
     final storiesEnabled = _firebaseRemoteConfigRepository

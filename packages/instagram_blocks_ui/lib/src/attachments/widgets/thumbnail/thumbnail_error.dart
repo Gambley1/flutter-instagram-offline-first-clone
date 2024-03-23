@@ -31,7 +31,7 @@ class ThumbnailError extends StatelessWidget {
   /// The height of the thumbnail.
   final double? height;
 
-  /// The border radius of the thumnail.
+  /// The border radius of the thumbnail.
   final double? borderRadius;
 
   /// How to inscribe the thumbnail into the space allocated during layout.

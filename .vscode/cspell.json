@@ -192,12 +192,21 @@
     "Typer",
     "screenutil",
     "Fluttertoast",
-    "bluefireteam"
+    "bluefireteam",
+    "timeago",
+    "cameraswitch",
+    "appbar",
+    "prefetch",
+    "giffy",
+    "giphy",
+    "ccon",
+    "ALEGREYA"
   ],
   "ignorePaths": [
     ".github/workflows/**",
     "packages/shared/lib/src/config/tld.dart",
     "packages/shared/lib/src/config/utilities/extensions/string_extension.dart",
-    "packages/shared/lib/src/config/utilities/utilities.dart"
+    "packages/shared/lib/src/config/utilities/utilities.dart",
+    "packages/stories_editor/**"
   ]
 }

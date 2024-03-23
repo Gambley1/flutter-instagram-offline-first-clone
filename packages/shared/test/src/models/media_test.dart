@@ -145,8 +145,8 @@ void main() {
   });
 
   test('de-serialize sponsored blocks', () {
-    final sposnoredBlocks =
+    final sponsoredBlocks =
         List<InstaBlock>.from(posts.map(PostSponsoredBlock.fromJson));
-    logD(sposnoredBlocks.map((e) => e.toJson()).toList());
+    logD(sponsoredBlocks.map((e) => e.toJson()).toList());
   });
 }

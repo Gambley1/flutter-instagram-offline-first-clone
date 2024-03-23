@@ -692,7 +692,7 @@ enum ScaleStrength {
   final double strength;
 }
 
-/// The tappable button that makes a scalled tap animation effect.
+/// The tappable button that makes a scaled tap animation effect.
 class ScaledButton extends StatefulWidget {
   /// {@macro scaled_button}
   const ScaledButton({

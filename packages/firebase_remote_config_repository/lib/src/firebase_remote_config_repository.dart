@@ -134,7 +134,7 @@ class FirebaseRemoteConfigRepository {
   }
 
   /// Broadcasts the stream of [RemoteConfigUpdate] whenever there is a change
-  /// in [FirebaseRemoteConfig], e.g when some features become avaiable to use.
+  /// in [FirebaseRemoteConfig], e.g when some features become available to use.
   Stream<RemoteConfigUpdate> onConfigUpdated() =>
       _firebaseRemoteConfig.onConfigUpdated.asBroadcastStream();
 
