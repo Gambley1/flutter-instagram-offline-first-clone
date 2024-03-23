@@ -4,7 +4,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:animations/animations.dart';
-import 'package:firebase_config/firebase_config.dart';
+import 'package:firebase_remote_config_repository/firebase_remote_config_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
@@ -56,7 +56,7 @@ GoRouter router(AppBloc appBloc) => GoRouter(
               child: BlocProvider(
                 create: (context) => CreateStoriesBloc(
                   storiesRepository: context.read<StoriesRepository>(),
-                  remoteConfig: context.read<FirebaseConfig>(),
+                  firebaseRemoteConfigRepository: context.read<FirebaseRemoteConfigRepository>(),
                 ),
                 child: UserProfilePage(
                   userId: userId,

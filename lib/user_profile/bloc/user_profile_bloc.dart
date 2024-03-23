@@ -56,7 +56,7 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
     UserProfileSubscriptionRequested event,
     Emitter<UserProfileState> emit,
   ) async {
-    if (_userId == _currentUserId) {
+    if (_userId == state.user.id) {
       await emit.forEach(
         _userRepository.user,
         onData: (user) =>
@@ -76,7 +76,7 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
     Emitter<UserProfileState> emit,
   ) async {
     await emit.forEach(
-      _postsRepository.postsAmountOf(userId: _userId ?? _currentUserId!),
+      _postsRepository.postsAmountOf(userId: _userId ?? state.user.id),
       onData: (postsCount) => state.copyWith(postsCount: postsCount),
     );
   }
@@ -86,7 +86,7 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
     Emitter<UserProfileState> emit,
   ) async {
     await emit.forEach(
-      _userRepository.followingsCountOf(userId: _userId ?? _currentUserId!),
+      _userRepository.followingsCountOf(userId: _userId ?? state.user.id),
       onData: (followingsCount) =>
           state.copyWith(followingsCount: followingsCount),
     );
@@ -97,7 +97,7 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
     Emitter<UserProfileState> emit,
   ) async {
     await emit.forEach(
-      _userRepository.followersCountOf(userId: _userId ?? _currentUserId!),
+      _userRepository.followersCountOf(userId: _userId ?? state.user.id),
       onData: (followersCount) =>
           state.copyWith(followersCount: followersCount),
     );
@@ -107,10 +107,8 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
   final UserRepository _userRepository;
   final PostsRepository _postsRepository;
 
-  late final _currentUserId = _userRepository.currentUserId;
-
   bool get isOwner {
-    if (_userId == _currentUserId) return true;
+    if (_userId == state.user.id) return true;
     return false;
   }
 
@@ -147,7 +145,7 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
   }) =>
       _userRepository
           .followingStatus(
-            followerId: followerId ?? _currentUserId!,
+            followerId: followerId ?? state.user.id,
             userId: userId,
           )
           .asBroadcastStream();
@@ -176,9 +174,8 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
     UserProfileFetchFollowersRequested event,
     Emitter<UserProfileState> emit,
   ) async {
-    if (_currentUserId == null) return;
     final followers = await _userRepository.getFollowers(
-      userId: _userId ?? _currentUserId!,
+      userId: _userId ?? state.user.id,
     );
     emit(state.copyWith(followers: followers));
   }
@@ -187,9 +184,8 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
     UserProfileFetchFollowingsRequested event,
     Emitter<UserProfileState> emit,
   ) async {
-    if (_currentUserId == null) return;
     final followings = await _userRepository.getFollowings(
-      userId: _userId ?? _currentUserId!,
+      userId: _userId ?? state.user.id,
     );
     emit(state.copyWith(followings: followings));
   }
@@ -198,9 +194,8 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
     UserProfileFollowersSubscriptionRequested event,
     Emitter<UserProfileState> emit,
   ) async {
-    if (_currentUserId == null) return;
     await emit.forEach(
-      _userRepository.streamFollowers(userId: _userId ?? _currentUserId!),
+      _userRepository.streamFollowers(userId: _userId ?? state.user.id),
       onData: (followers) => state.copyWith(followers: followers),
     );
   }
@@ -209,9 +204,8 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
     UserProfileFollowingsSubscriptionRequested event,
     Emitter<UserProfileState> emit,
   ) async {
-    if (_currentUserId == null) return;
     await emit.forEach(
-      _userRepository.streamFollowings(userId: _userId ?? _currentUserId!),
+      _userRepository.streamFollowings(userId: _userId ?? state.user.id),
       onData: (followings) => state.copyWith(followings: followings),
     );
   }

@@ -24,12 +24,12 @@ dependencies:
     path: packages/env
   equatable: ^2.0.5
   fast_immutable_collections: ^10.1.2
-  firebase_config:
-    path: packages/remote_config/firebase_config
   firebase_core: ^2.27.1
   firebase_messaging: ^14.7.20
   firebase_notifications_client:
     path: packages/notifications_client/firebase_notifications_client
+  firebase_remote_config_repository:
+    path: packages/firebase_remote_config_repository
   flex_color_scheme: ^7.3.1
   flutter:
     sdk: flutter
@@ -55,6 +55,8 @@ dependencies:
     git: https://github.com/Gambley1/inview_notifier_list
   json_annotation: ^4.8.1
   lottie: ^3.1.0
+  notifications_repository:
+    path: packages/notifications_repository
   ogp_data_extract: ^0.1.4
   path_provider: ^2.1.2
   persistent_storage:

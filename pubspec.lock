@@ -556,13 +556,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.9.3+1"
-  firebase_config:
-    dependency: "direct main"
-    description:
-      path: "packages/remote_config/firebase_config"
-      relative: true
-    source: path
-    version: "0.1.0+1"
   firebase_core:
     dependency: "direct main"
     description:
@@ -622,26 +615,33 @@ packages:
     dependency: transitive
     description:
       name: firebase_remote_config
-      sha256: "60fc92273d1db338a6fad1839c42dedc4ad64f812043acad0cbb200702f5c9ce"
+      sha256: ec95cc5b024cc7014a37bf2e269c677284807caa7ef8081a4d08ae2b4b717123
       url: "https://pub.dev"
     source: hosted
-    version: "4.3.8"
+    version: "4.3.18"
   firebase_remote_config_platform_interface:
     dependency: transitive
     description:
       name: firebase_remote_config_platform_interface
-      sha256: "41813ef8dfbc40ef7a59a73f9e5acef2608dbcb2933241b6c03d52e90677040f"
+      sha256: be4829ea3f36b31752905e0fec189b98f1e070ce552d193b9a212434f97c1892
       url: "https://pub.dev"
     source: hosted
-    version: "1.4.16"
+    version: "1.4.26"
+  firebase_remote_config_repository:
+    dependency: "direct main"
+    description:
+      path: "packages/firebase_remote_config_repository"
+      relative: true
+    source: path
+    version: "0.1.0+1"
   firebase_remote_config_web:
     dependency: transitive
     description:
       name: firebase_remote_config_web
-      sha256: "089e92f333c2fb2c05c640c80fecea9d1e06dada0ba85efe34a580987ef94a0a"
+      sha256: d9cb08f8cf86f098e20574fb54a6d90596d945fb2c425eadfbb2a3aec51e3c8d
       url: "https://pub.dev"
     source: hosted
-    version: "1.4.16"
+    version: "1.4.26"
   fixnum:
     dependency: transitive
     description:
@@ -1394,6 +1394,20 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.2"
+  notifications_client:
+    dependency: transitive
+    description:
+      path: "packages/notifications_client/notifications_client"
+      relative: true
+    source: path
+    version: "0.1.0+1"
+  notifications_repository:
+    dependency: "direct main"
+    description:
+      path: "packages/notifications_repository"
+      relative: true
+    source: path
+    version: "0.1.0+1"
   octo_image:
     dependency: transitive
     description:

@@ -35,7 +35,6 @@ class SearchRepository {
     logD("Didn't found hashed results, querying for users...");
 
     final users = _databaseClient.searchUsers(
-      userId: _databaseClient.currentUserId!,
       limit: limit,
       offset: offset,
       query: query,

@@ -6,6 +6,7 @@ import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/bootstrap.dart';
 import 'package:flutter_instagram_offline_first_clone/firebase_options_stg.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:notifications_repository/notifications_repository.dart';
 import 'package:persistent_storage/persistent_storage.dart';
 import 'package:posts_repository/posts_repository.dart';
 import 'package:search_repository/search_repository.dart';
@@ -21,10 +22,14 @@ void main() {
       powerSyncRepository,
       firebaseMessaging,
       sharedPreferences,
-      remoteConfig,
+      firebaseRemoteConfigRepository,
     ) async {
-      final notificationsClient =
+      final firebaseNotificationsClient =
           FirebaseNotificationsClient(firebaseMessaging: firebaseMessaging);
+
+      final notificationsRepository = NotificationsRepository(
+        notificationsClient: firebaseNotificationsClient,
+      );
 
       final tokenStorage = InMemoryTokenStorage();
 
@@ -69,8 +74,8 @@ void main() {
         chatsRepository: chatsRepository,
         storiesRepository: storiesRepository,
         searchRepository: searchRepository,
-        notificationsClient: notificationsClient,
-        remoteConfig: remoteConfig,
+        notificationsRepository: notificationsRepository,
+        firebaseRemoteConfigRepository: firebaseRemoteConfigRepository,
         user: await userRepository.user.first,
       );
     },

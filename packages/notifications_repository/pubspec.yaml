@@ -1,0 +1,16 @@
+name: notifications_repository
+description: A repository that manages notification permissions and token fetching.
+version: 0.1.0+1
+publish_to: none
+
+environment:
+  sdk: "^3.3.0"
+
+dependencies:
+  notifications_client:
+    path: ../notifications_client/notifications_client
+
+dev_dependencies:
+  mocktail: ^1.0.3
+  test: ^1.25.2
+  very_good_analysis: ^5.1.0

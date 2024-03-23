@@ -1,8 +1,8 @@
 // ignore_for_file: avoid_positional_boolean_parameters
 
 import 'package:app_ui/app_ui.dart';
-import 'package:firebase_config/firebase_config.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_remote_config_repository/firebase_remote_config_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/bloc/app_bloc.dart';
@@ -144,7 +144,8 @@ class _HomeViewState extends State<HomeView> {
     return BlocProvider(
       create: (context) => CreateStoriesBloc(
         storiesRepository: context.read<StoriesRepository>(),
-        remoteConfig: context.read<FirebaseConfig>(),
+        firebaseRemoteConfigRepository:
+            context.read<FirebaseRemoteConfigRepository>(),
       )..add(const CreateStoriesIsFeatureAvaiableSubscriptionRequested()),
       child: VideoPlayerProvider(
         videoPlayerState: _videoPlayerState,

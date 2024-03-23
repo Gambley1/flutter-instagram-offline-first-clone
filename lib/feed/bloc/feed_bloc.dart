@@ -6,7 +6,7 @@ import 'package:app_ui/app_ui.dart';
 import 'package:bloc/bloc.dart';
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
-import 'package:firebase_config/firebase_config.dart';
+import 'package:firebase_remote_config_repository/firebase_remote_config_repository.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:posts_repository/posts_repository.dart';
@@ -19,9 +19,9 @@ part 'feed_state.dart';
 class FeedBloc extends Bloc<FeedEvent, FeedState> {
   FeedBloc({
     required PostsRepository postsRepository,
-    required FirebaseConfig remoteConfig,
+    required FirebaseRemoteConfigRepository firebaseRemoteConfigRepository,
   })  : _postsRepository = postsRepository,
-        _remoteConfig = remoteConfig,
+        _firebaseRemoteConfigRepository = firebaseRemoteConfigRepository,
         super(const FeedState.initial()) {
     on<FeedPageRequested>(_onPageRequested, transformer: throttleDroppable());
     on<FeedReelsPageRequested>(_onFeedReelsPageRequested);
@@ -236,7 +236,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
   static const _reelsPageLimit = 10;
 
   final PostsRepository _postsRepository;
-  final FirebaseConfig _remoteConfig;
+  final FirebaseRemoteConfigRepository _firebaseRemoteConfigRepository;
 
   List<InstaBlock> insertSponsoredBlocks({
     required bool hasMore,
@@ -254,7 +254,9 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
     late final sponsored = sponsoredBlocks ??
         List<Map<String, dynamic>>.from(
-          jsonDecode(_remoteConfig.getRemoteData('sponsored_blocks')) as List,
+          jsonDecode(
+            _firebaseRemoteConfigRepository.fetchRemoteData('sponsored_blocks'),
+          ) as List,
         ).map(InstaBlock.fromJson).take(20).toList();
 
     while (tempDataLength > 1) {

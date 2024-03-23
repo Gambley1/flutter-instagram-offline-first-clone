@@ -235,7 +235,7 @@ class SignUpCubit extends Cubit<SignupState> {
         );
       }
 
-      final pushToken = await _notificationsClient.getToken();
+      final pushToken = await _notificationsClient.fetchToken();
 
       await _userRepository.signUpWithPassword(
         email: email.value,

@@ -11,9 +11,6 @@ import 'package:user_repository/user_repository.dart';
 
 /// User base repository.
 abstract class UserBaseRepository {
-  /// The currently authenticated user id.
-  String? get currentUserId;
-
   /// Broadcasts the user profile identified by [id].
   Stream<User> profile({required String id});
 
@@ -77,10 +74,10 @@ abstract class UserBaseRepository {
   /// Looks up into a database a returns users associated with the provided
   /// [query].
   Future<List<User>> searchUsers({
-    required String userId,
     required int limit,
     required int offset,
     required String? query,
+    String? userId,
     String? excludeUserIds,
   });
 }
@@ -306,7 +303,7 @@ abstract class DatabaseClient
 /// {@template power_sync_database_client}
 /// A class representing a PowerSyncDatabaseClient.
 ///
-/// It allows users to perform various operations such as creating posts, 
+/// It allows users to perform various operations such as creating posts,
 /// retrieving posts, liking posts, following users, and more.
 /// {@endtemplate}
 class PowerSyncDatabaseClient extends DatabaseClient {
@@ -316,8 +313,7 @@ class PowerSyncDatabaseClient extends DatabaseClient {
 
   final PowerSyncRepository _powerSyncRepository;
 
-  @override
-  String? get currentUserId =>
+  String? get _currentUserId =>
       _powerSyncRepository.supabase.auth.currentSession?.user.id;
 
   @override
@@ -347,7 +343,7 @@ SELECT id FROM profiles WHERE id = ?
     required String caption,
     required String media,
   }) async {
-    if (currentUserId == null) return null;
+    if (_currentUserId == null) return null;
     final result = await Future.wait([
       _powerSyncRepository.db().execute(
         '''
@@ -361,7 +357,7 @@ SELECT id FROM profiles WHERE id = ?
         '''
 SELECT * FROM profiles WHERE id = ?
 ''',
-        [currentUserId],
+        [_currentUserId],
       ),
     ]);
     if (result.isEmpty) return null;
@@ -384,7 +380,7 @@ SELECT * FROM profiles WHERE id = ?
 
   @override
   Stream<List<Post>> postsOf({String? userId}) {
-    if (currentUserId == null) return const Stream.empty();
+    if (_currentUserId == null) return const Stream.empty();
     if (userId == null) {
       return _powerSyncRepository.db().watch(
         '''
@@ -400,7 +396,7 @@ FROM
 WHERE user_id = ?1
 ORDER BY created_at DESC
       ''',
-        parameters: [currentUserId],
+        parameters: [_currentUserId],
       ).map(
         (event) => event
             .safeMap((row) => Post.fromJson(Map<String, dynamic>.from(row)))
@@ -677,10 +673,10 @@ WHERE posts.id = ?
     required String followToId,
     String? followerId,
   }) async {
-    if (currentUserId == null) return;
-    if (followToId == currentUserId) return;
+    if (_currentUserId == null) return;
+    if (followToId == _currentUserId) return;
     final exists = await isFollowed(
-      followerId: followerId ?? currentUserId!,
+      followerId: followerId ?? _currentUserId!,
       userId: followToId,
     );
     if (!exists) {
@@ -689,13 +685,13 @@ WHERE posts.id = ?
           INSERT INTO subscriptions(id, subscriber_id, subscribed_to_id)
             VALUES(uuid(), ?, ?)
       ''',
-        [followerId ?? currentUserId!, followToId],
+        [followerId ?? _currentUserId!, followToId],
       );
       return;
     }
     await unfollow(
       unfollowId: followToId,
-      unfollowerId: followerId ?? currentUserId!,
+      unfollowerId: followerId ?? _currentUserId!,
     );
   }
 
@@ -704,23 +700,23 @@ WHERE posts.id = ?
     required String unfollowId,
     String? unfollowerId,
   }) async {
-    if (currentUserId == null) return;
+    if (_currentUserId == null) return;
     await _powerSyncRepository.db().execute(
       '''
           DELETE FROM subscriptions WHERE subscriber_id = ? AND subscribed_to_id = ?
       ''',
-      [unfollowerId ?? currentUserId, unfollowId],
+      [unfollowerId ?? _currentUserId, unfollowId],
     );
   }
 
   @override
   Future<void> removeFollower({required String id}) async {
-    if (currentUserId == null) return;
+    if (_currentUserId == null) return;
     await _powerSyncRepository.db().execute(
       '''
           DELETE FROM subscriptions WHERE subscriber_id = ? AND subscribed_to_id = ?
       ''',
-      [id, currentUserId],
+      [id, _currentUserId],
     );
   }
 
@@ -847,12 +843,12 @@ WHERE posts.id = ?
     required String userId,
     String? followerId,
   }) async* {
-    if (followerId == null && currentUserId == null) return;
+    if (followerId == null && _currentUserId == null) return;
     yield* _powerSyncRepository.db().watch(
       '''
     SELECT 1 FROM subscriptions WHERE subscriber_id = ? AND subscribed_to_id = ?
     ''',
-      parameters: [followerId ?? currentUserId, userId],
+      parameters: [followerId ?? _currentUserId, userId],
     ).map((event) => event.isNotEmpty);
   }
 
@@ -1541,10 +1537,10 @@ values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 
   @override
   Future<List<User>> searchUsers({
-    required String userId,
     required int limit,
     required int offset,
     required String? query,
+    String? userId,
     String? excludeUserIds,
   }) async {
     if (query == null || query.trim().isEmpty) return <User>[];
@@ -1560,7 +1556,7 @@ WHERE (LOWER(username) LIKE LOWER('%$query%') OR LOWER(full_name) LIKE LOWER('%$
   AND id <> ?1 $excludeUserIdsStatement 
 LIMIT ?2 OFFSET ?3
 ''',
-      [userId, limit, offset],
+      [_currentUserId, limit, offset],
     );
 
     return result.safeMap(User.fromJson).toList(growable: false);
@@ -1692,7 +1688,7 @@ WHERE id IN (
 )
 LIMIT ?3 OFFSET ?4
 ''',
-      [postId, currentUserId, limit, offset],
+      [postId, _currentUserId, limit, offset],
     );
     if (result.isEmpty) return [];
     return result.safeMap(User.fromJson).toList(growable: false);

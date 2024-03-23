@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:firebase_notifications_client/firebase_notifications_client.dart';
+import 'package:notifications_repository/notifications_repository.dart';
 import 'package:user_repository/user_repository.dart';
 
 part 'app_event.dart';
@@ -10,11 +10,11 @@ part 'app_state.dart';
 
 class AppBloc extends Bloc<AppEvent, AppState> {
   AppBloc({
-    required UserRepository userRepository,
-    required FirebaseNotificationsClient notificationsClient,
     required User user,
+    required UserRepository userRepository,
+    required NotificationsRepository notificationsRepository,
   })  : _userRepository = userRepository,
-        _notificationsClient = notificationsClient,
+        _notificationsRepositoru = notificationsRepository,
         super(
           user.isAnonymous
               ? const AppState.unauthenticated()
@@ -28,7 +28,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   }
 
   final UserRepository _userRepository;
-  final FirebaseNotificationsClient _notificationsClient;
+  final NotificationsRepository _notificationsRepositoru;
 
   StreamSubscription<User>? _userSubscription;
   StreamSubscription<String>? _pushTokenSubscription;
@@ -42,11 +42,11 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       emit(AppState.authenticated(user));
 
       _pushTokenSubscription ??=
-          _notificationsClient.onTokenRefresh().listen((pushToken) async {
+          _notificationsRepositoru.onTokenRefresh().listen((pushToken) async {
         await _userRepository.updateUser(pushToken: pushToken);
       });
 
-      await _notificationsClient.requestPermission();
+      await _notificationsRepositoru.requestPermission();
     }
 
     switch (state.status) {

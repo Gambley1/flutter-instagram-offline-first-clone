@@ -160,9 +160,6 @@ class UserRepository implements UserBaseRepository {
   }
 
   @override
-  String? get currentUserId => _databaseClient.currentUserId;
-
-  @override
   Stream<User> profile({required String id}) => _databaseClient.profile(id: id);
 
   @override
@@ -238,10 +235,10 @@ class UserRepository implements UserBaseRepository {
 
   @override
   Future<List<User>> searchUsers({
-    required String userId,
     required int limit,
     required int offset,
     required String? query,
+    String? userId,
     String? excludeUserIds,
   }) =>
       _databaseClient.searchUsers(

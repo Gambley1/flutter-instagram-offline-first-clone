@@ -11,6 +11,8 @@ dependencies:
   firebase_messaging: ^14.7.10
   flutter:
     sdk: flutter
+  notifications_client:
+    path: ../notifications_client
   shared:
     path: ../../shared
 
