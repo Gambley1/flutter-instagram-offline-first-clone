@@ -220,7 +220,7 @@ class _ChatMessageTextFieldInputState extends State<ChatMessageTextFieldInput>
         return Column(
           children: [
             MessagePreview(controller: _effectiveController),
-            const SizedBox(height: AppSpacing.xs + AppSpacing.xxs),
+            const Gap.v(AppSpacing.xs + AppSpacing.xxs),
             AppTextField(
               filled: true,
               contentPadding: const EdgeInsets.symmetric(

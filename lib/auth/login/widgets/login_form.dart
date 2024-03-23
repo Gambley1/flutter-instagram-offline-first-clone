@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/auth/login/cubit/login_cubit.dart';
 import 'package:flutter_instagram_offline_first_clone/auth/login/widgets/widgets.dart';
+import 'package:shared/shared.dart';
 
 /// {@template login_form}
 /// Login form that contains email and password fields.
@@ -46,13 +47,12 @@ class _LoginFormState extends State<LoginForm> {
         }
       },
       listenWhen: (p, c) => p.status != c.status,
-      child: const Column(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          EmailTextField(),
-          SizedBox(height: AppSpacing.md),
-          PasswordTextField(),
-        ],
+          const EmailTextField(),
+          const PasswordTextField(),
+        ].spacerBetween(height: AppSpacing.md),
       ),
     );
   }

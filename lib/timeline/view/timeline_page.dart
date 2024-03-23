@@ -292,14 +292,14 @@ class TimelineError extends StatelessWidget {
                           context.l10n.refreshText,
                           style: context.labelLarge,
                         ),
-                      ].insertBetween(const SizedBox(width: AppSpacing.md)),
+                      ].spacerBetween(width: AppSpacing.md),
                     ),
                   ),
                 ),
               ),
             ),
           ),
-        ].insertBetween(const SizedBox(height: AppSpacing.sm)),
+        ].spacerBetween(height: AppSpacing.sm),
       ),
     );
   }

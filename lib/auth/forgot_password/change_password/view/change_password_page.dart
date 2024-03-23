@@ -41,14 +41,14 @@ class ResetPasswordView extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xlg),
         child: Column(
           children: [
-            const SizedBox(height: AppSpacing.xxxlg * 3),
+            const Gap.v(AppSpacing.xxxlg * 3),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   const ResetPasswordForm(),
                   const Align(child: ResetPasswordButton()),
-                ].insertBetween(const SizedBox(height: AppSpacing.md)),
+                ].spacerBetween(height: AppSpacing.md),
               ),
             ),
           ],

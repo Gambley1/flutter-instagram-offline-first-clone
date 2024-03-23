@@ -121,7 +121,7 @@ class _UserProfileListTileState extends State<UserProfileListTile> {
                       ],
                     ),
                   ),
-                  const SizedBox(width: AppSpacing.md),
+                  const Gap.h(AppSpacing.md),
                   Expanded(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -139,7 +139,7 @@ class _UserProfileListTileState extends State<UserProfileListTile> {
                                 : _follow(context),
                           ),
                         if (isMine) ...[
-                          const SizedBox(width: AppSpacing.md),
+                          const Gap.h(AppSpacing.md),
                           Flexible(
                             child: Tappable(
                               onTap: !widget.follower
@@ -155,7 +155,7 @@ class _UserProfileListTileState extends State<UserProfileListTile> {
                 ],
               ),
             ),
-          ].insertBetween(const SizedBox(width: AppSpacing.md)),
+          ].spacerBetween(width: AppSpacing.md),
         ),
       ),
     );

@@ -238,8 +238,22 @@ class PowerSyncRepository {
       supabase.auth.onAuthStateChange.asBroadcastStream();
 
   /// Updates the user app metadata.
-  Future<void> updateUser(Object? data) =>
-      supabase.auth.updateUser(UserAttributes(data: data));
+  Future<void> updateUser({
+    String? email,
+    String? phone,
+    String? password,
+    String? nonce,
+    Object? data,
+  }) =>
+      supabase.auth.updateUser(
+        UserAttributes(
+          email: email,
+          phone: phone,
+          password: password,
+          nonce: nonce,
+          data: data,
+        ),
+      );
 
   /// Sends a password reset email to the specified email address.
   Future<void> resetPassword({

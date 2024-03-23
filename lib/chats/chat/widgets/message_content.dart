@@ -299,7 +299,7 @@ class MessageSharedPost extends StatelessWidget {
                           ),
                         ),
                         const WidgetSpan(
-                          child: SizedBox(width: AppSpacing.xs),
+                          child: Gap.h(AppSpacing.xs),
                         ),
                         TextSpan(
                           text: sharedPost.caption,
@@ -535,7 +535,7 @@ class MessageStatuses extends StatelessWidget {
               color: effectiveSecondaryTextColor,
             ),
         ],
-      ].insertBetween(const SizedBox(width: AppSpacing.xs)),
+      ].spacerBetween(width: AppSpacing.xs),
     );
   }
 }

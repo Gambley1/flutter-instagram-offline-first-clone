@@ -80,7 +80,7 @@ class _CommentTextFieldState extends State<CommentTextField> {
               );
             },
           ),
-          const SizedBox(height: AppSpacing.md),
+          const Gap.v(AppSpacing.md),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
             child: Column(

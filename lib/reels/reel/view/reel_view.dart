@@ -161,10 +161,10 @@ class _ReelState extends State<Reel> {
                             children: [
                               ReelAuthorListTile(block: block),
                               if (block.caption.isNotEmpty) ...[
-                                const SizedBox(height: AppSpacing.md),
+                                const Gap.v(AppSpacing.md),
                                 ReelCaption(caption: block.caption),
                               ],
-                              const SizedBox(height: AppSpacing.sm),
+                              const Gap.v(AppSpacing.sm),
                               SizedBox(
                                 height: 32,
                                 child: ReelParticipants(
@@ -253,19 +253,17 @@ class ReelShimmerLoading extends StatelessWidget {
                   radius: 20,
                   backgroundColor: AppColors.dark,
                 ),
-                const SizedBox(height: AppSpacing.xs),
                 Container(
                   height: 15,
                   width: 150,
                   color: AppColors.dark,
                 ),
-                const SizedBox(height: AppSpacing.xs),
                 Container(
                   height: 15,
                   width: 200,
                   color: AppColors.dark,
                 ),
-              ],
+              ].spacerBetween(height: AppSpacing.xs),
             ),
           ),
         ),
@@ -392,7 +390,7 @@ class VerticalButtons extends StatelessWidget {
                 filterQuality: FilterQuality.high,
               ),
             ),
-          ].insertBetween(const SizedBox(height: AppSpacing.lg)),
+          ].spacerBetween(height: AppSpacing.lg),
         ),
       ),
     );
@@ -476,7 +474,7 @@ class ReelAuthorListTile extends StatelessWidget {
               ),
             ),
           ),
-      ].insertBetween(const SizedBox(width: AppSpacing.sm)),
+      ].spacerBetween(width: AppSpacing.sm),
     );
   }
 }
@@ -529,7 +527,7 @@ class ReelParticipants extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(width: AppSpacing.sm),
+                  const Gap.h(AppSpacing.sm),
                   Flexible(
                     flex: 6,
                     child: RunningText(
@@ -577,15 +575,13 @@ class ReelParticipants extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                  ].insertBetween(
-                    const SizedBox(width: AppSpacing.xs),
-                  ),
+                  ].spacerBetween(width: AppSpacing.xs),
                 ),
               ),
             ),
           ),
         ),
-      ].insertBetween(const SizedBox(width: AppSpacing.sm)),
+      ].spacerBetween(width: AppSpacing.sm),
     );
   }
 }

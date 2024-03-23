@@ -102,7 +102,7 @@ class PostHeader extends StatelessWidget {
                       onTap: onAvatarTap,
                       scaleStrength: ScaleStrength.xxs,
                     ),
-                const SizedBox(width: AppSpacing.md),
+                const Gap.h(AppSpacing.md),
                 if (isSponsored)
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -142,7 +142,7 @@ class PostHeader extends StatelessWidget {
                       wasFollowed: wasFollowed,
                       isOutlined: this.color != null,
                     ),
-                    const SizedBox(width: AppSpacing.md),
+                    const Gap.h(AppSpacing.md),
                   ],
                   PostOptionsButton(
                     block: block,

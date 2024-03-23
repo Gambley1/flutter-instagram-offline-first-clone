@@ -192,9 +192,7 @@ class NoReelsFound extends StatelessWidget {
                           context.l10n.refreshText,
                           style: context.labelLarge,
                         ),
-                      ].insertBetween(
-                        const SizedBox(width: AppSpacing.md),
-                      ),
+                      ].spacerBetween(width: AppSpacing.md),
                     ),
                   ),
                 ),

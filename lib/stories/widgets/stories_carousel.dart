@@ -43,7 +43,8 @@ class StoriesListView extends StatelessWidget {
               return ListView.separated(
                 scrollDirection: Axis.horizontal,
                 itemCount: followings.length + 1,
-                separatorBuilder: (context, index) => const SizedBox(width: 16),
+                separatorBuilder: (context, index) =>
+                    const Gap.h(AppSpacing.lg),
                 itemBuilder: (context, index) {
                   final following = index == 0 ? null : followings[index - 1];
                   final isMine = index == 0;

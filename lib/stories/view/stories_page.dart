@@ -274,7 +274,7 @@ class StoryOptions extends StatelessWidget {
           child: Column(
             children: [
               const Icon(Icons.more_vert_outlined),
-              const SizedBox(height: AppSpacing.sm),
+              const Gap.v(AppSpacing.sm),
               Text(
                 context.l10n.moreText,
                 style: context.bodyMedium?.copyWith(
@@ -339,7 +339,7 @@ class StoriesAuthorListTile extends StatelessWidget {
                     ),
             ),
           ),
-          const SizedBox(width: AppSpacing.sm),
+          const Gap.h(AppSpacing.sm),
           if (createdAt != null)
             Text(
               createdAt!.timeAgo(context),

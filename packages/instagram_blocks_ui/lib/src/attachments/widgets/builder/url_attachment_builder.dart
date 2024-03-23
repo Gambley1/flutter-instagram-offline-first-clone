@@ -84,9 +84,9 @@ class UrlAttachmentBuilder extends AttachmentWidgetBuilder {
       child = Column(
         children: <Widget>[
           for (final urlPreview in urlPreviews) buildUrlPreview(urlPreview),
-        ].insertBetween(
+        ].spacerBetween(
           // Add a small vertical padding between each attachment.
-          SizedBox(height: padding.vertical / 2),
+          height: padding.vertical / 2,
         ),
       );
     }

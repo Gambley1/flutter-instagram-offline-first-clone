@@ -91,7 +91,7 @@ class _DividerBlockState extends State<DividerBlock>
                     overflow: TextOverflow.visible,
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: AppSpacing.sm),
+                  const Gap.v(AppSpacing.sm),
                   Text(
                     context.l10n.haveSeenAllRecentPostsInPast3Days,
                     style: context.bodyLarge?.copyWith(color: AppColors.grey),

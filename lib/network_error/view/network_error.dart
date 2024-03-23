@@ -30,19 +30,19 @@ class NetworkError extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const SizedBox(height: AppSpacing.xlg),
+        const Gap.v(AppSpacing.xlg),
         Icon(
           Icons.error_outline,
           size: 80,
           color: context.adaptiveColor,
         ),
-        const SizedBox(height: AppSpacing.lg),
+        const Gap.v(AppSpacing.lg),
         Text(
           l10n.networkError,
           style: theme.textTheme.bodyLarge,
           textAlign: TextAlign.center,
         ),
-        const SizedBox(height: AppSpacing.lg),
+        const Gap.v(AppSpacing.lg),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xxxlg),
           child: AppButton(
@@ -54,7 +54,7 @@ class NetworkError extends StatelessWidget {
                   flex: 0,
                   child: Icon(Icons.refresh, size: AppSize.iconSize),
                 ),
-                const SizedBox(width: AppSpacing.xs),
+                const Gap.h(AppSpacing.xs),
                 Flexible(
                   child: Text(
                     l10n.networkErrorButton,
@@ -64,7 +64,7 @@ class NetworkError extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: AppSpacing.xlg),
+        const Gap.v(AppSpacing.xlg),
       ],
     );
   }

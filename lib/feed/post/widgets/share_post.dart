@@ -382,7 +382,7 @@ class _SharePostButtonState extends State<SharePostButton> {
                 ),
               ),
             ),
-          ].insertBetween(const SizedBox(height: AppSpacing.md)),
+          ].spacerBetween(height: AppSpacing.md),
         ),
       ),
     );

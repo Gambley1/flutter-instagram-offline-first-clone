@@ -82,7 +82,7 @@ class VerticalGroup extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
             ),
           ),
-      ].insertBetween(const SizedBox(height: AppSpacing.xs)),
+      ].spacerBetween(height: AppSpacing.xs),
     );
   }
 }

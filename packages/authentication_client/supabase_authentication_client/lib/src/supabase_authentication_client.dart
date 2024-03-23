@@ -169,13 +169,11 @@ class SupabaseAuthenticationClient implements AuthenticationClient {
     required String newPassword,
   }) async {
     try {
-      await Future.wait([
-        _powerSyncRepository.verifyOTP(
-          token: token,
-          email: email,
-        ),
-        _powerSyncRepository.updateUser({'password': newPassword}),
-      ]);
+      await _powerSyncRepository.verifyOTP(
+        token: token,
+        email: email,
+      );
+      await _powerSyncRepository.updateUser(password: newPassword);
     } catch (error, stackTrace) {
       Error.throwWithStackTrace(ResetPasswordFailure(error), stackTrace);
     }

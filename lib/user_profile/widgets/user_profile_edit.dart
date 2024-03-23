@@ -79,12 +79,12 @@ class _UserProfileEditViewState extends State<UserProfileEditView> {
                     );
               },
             ),
-            const SizedBox(height: AppSpacing.md),
+            const Gap.v(AppSpacing.md),
             Text(
               context.l10n.changePhotoText,
               style: context.bodyLarge?.apply(color: AppColors.blue),
             ),
-            const SizedBox(height: AppSpacing.md),
+            const Gap.v(AppSpacing.md),
             Column(
               children: <Widget>[
                 ProfileInfoInput(
@@ -107,7 +107,7 @@ class _UserProfileEditViewState extends State<UserProfileEditView> {
                   infoType: ProfileEditInfoType.bio,
                   onTap: () {},
                 ),
-              ].insertBetween(const SizedBox(height: AppSpacing.md)),
+              ].spacerBetween(height: AppSpacing.md),
             ),
           ],
         ),
@@ -367,7 +367,7 @@ class _ProfileInfoEditViewState extends State<ProfileInfoEditView> {
                 widget.description!,
                 style: context.bodySmall?.apply(color: AppColors.grey),
               ),
-          ].insertBetween(const SizedBox(height: AppSpacing.md)),
+          ].spacerBetween(height: AppSpacing.md),
         ),
       ),
     );

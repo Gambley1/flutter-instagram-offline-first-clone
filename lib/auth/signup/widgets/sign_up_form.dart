@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/auth/signup/cubit/sign_up_cubit.dart';
 import 'package:flutter_instagram_offline_first_clone/auth/signup/widgets/widgets.dart';
+import 'package:shared/shared.dart';
 
 /// {@template sign_up_form}
 /// Sign up form that contains email and password fields.
@@ -34,17 +35,14 @@ class _SignUpFormState extends State<SignUpForm> {
         }
       },
       listenWhen: (p, c) => p.submissionStatus != c.submissionStatus,
-      child: const Column(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          EmailTextField(),
-          SizedBox(height: AppSpacing.md),
-          FullNameTextField(),
-          SizedBox(height: AppSpacing.md),
-          UsernameTextField(),
-          SizedBox(height: AppSpacing.md),
-          PasswordTextField(),
-        ],
+          const EmailTextField(),
+          const FullNameTextField(),
+          const UsernameTextField(),
+          const PasswordTextField(),
+        ].spacerBetween(height: AppSpacing.md),
       ),
     );
   }

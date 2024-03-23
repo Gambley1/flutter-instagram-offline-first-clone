@@ -7,6 +7,7 @@ import 'package:flutter_instagram_offline_first_clone/auth/forgot_password/chang
 import 'package:flutter_instagram_offline_first_clone/auth/forgot_password/forgot_password.dart';
 import 'package:flutter_instagram_offline_first_clone/auth/forgot_password/widgets/widgets.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
+import 'package:shared/shared.dart';
 import 'package:user_repository/user_repository.dart';
 
 class ManageForgotPasswordPage extends StatelessWidget {
@@ -82,21 +83,19 @@ class ForgotPasswordView extends StatelessWidget {
         title: Text(context.l10n.recoveryPasswordText),
         centerTitle: false,
       ),
-      body: const AppConstrainedScrollView(
-        padding: EdgeInsets.symmetric(horizontal: AppSpacing.xlg),
+      body: AppConstrainedScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xlg),
         child: Column(
           children: [
-            SizedBox(height: AppSpacing.xxxlg * 3),
+            const Gap.v(AppSpacing.xxxlg * 3),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ForgotPasswordEmailConfirmationLabel(),
-                  SizedBox(height: AppSpacing.md),
-                  ForgotPasswordForm(),
-                  SizedBox(height: AppSpacing.md),
-                  Align(child: ForgotButtonSendEmailButton()),
-                ],
+                  const ForgotPasswordEmailConfirmationLabel(),
+                  const ForgotPasswordForm(),
+                  const Align(child: ForgotButtonSendEmailButton()),
+                ].spacerBetween(height: AppSpacing.md),
               ),
             ),
           ],

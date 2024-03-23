@@ -46,7 +46,7 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
         children: <Widget>[
           const ResetPasswordOtpField(),
           const ResetPasswordField(),
-        ].insertBetween(const SizedBox(height: AppSpacing.md)),
+        ].spacerBetween(height: AppSpacing.md),
       ),
     );
   }

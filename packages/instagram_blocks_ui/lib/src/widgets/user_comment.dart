@@ -147,7 +147,7 @@ class CommentOwnerLikedAvatar extends StatelessWidget {
           color: AppColors.red,
           size: AppSize.iconSizeSmall,
         ),
-        const SizedBox(width: 4),
+        const Gap.h(AppSpacing.xs),
         Container(
           height: AppSize.iconSizeSmall,
           width: AppSize.iconSizeSmall,

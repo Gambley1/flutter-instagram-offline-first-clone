@@ -107,7 +107,7 @@ class AvatarView extends StatelessWidget {
                   avatarUrl: author.avatarUrl,
                   scaleStrength: ScaleStrength.xxs,
                 ),
-            const SizedBox(height: AppSpacing.sm - AppSpacing.xxs),
+            const Gap.v(AppSpacing.sm - AppSpacing.xxs),
             DefaultTextStyle(
               style: style,
               child: Text(

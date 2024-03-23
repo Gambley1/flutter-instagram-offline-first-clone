@@ -153,7 +153,7 @@ class ChatsEmpty extends StatelessWidget {
                   );
                 },
               ),
-            ].insertBetween(const SizedBox(height: AppSpacing.sm)),
+            ].spacerBetween(height: AppSpacing.sm),
           ),
         ),
       ),

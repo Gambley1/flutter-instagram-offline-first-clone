@@ -20,7 +20,7 @@ class LoginView extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const SizedBox(height: AppSpacing.xxxlg + AppSpacing.xxxlg),
+            const Gap.v(AppSpacing.xxxlg + AppSpacing.xxxlg),
             const AppLogo(
               height: AppSpacing.xxxlg,
               fit: BoxFit.fitHeight,

@@ -102,7 +102,7 @@ class UserProfileHeader extends StatelessWidget {
                   animationEffect: TappableAnimationEffect.scale,
                   showWhenSeen: true,
                 ),
-                const SizedBox(width: AppSpacing.md),
+                const Gap.h(AppSpacing.md),
                 Expanded(
                   child: UserProfileStatisticsCounts(
                     onSubscribersTap: () => _navigateToSubscribersPage(context),
@@ -112,7 +112,7 @@ class UserProfileHeader extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: AppSpacing.md),
+            const Gap.v(AppSpacing.md),
             Align(
               alignment: Alignment.centerLeft,
               child: Text(
@@ -123,7 +123,7 @@ class UserProfileHeader extends StatelessWidget {
                     ?.copyWith(fontWeight: AppFontWeight.semiBold),
               ),
             ),
-            const SizedBox(height: AppSpacing.md),
+            const Gap.v(AppSpacing.md),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -132,7 +132,7 @@ class UserProfileHeader extends StatelessWidget {
                     const Flexible(flex: 3, child: EditProfileButton()),
                     const Flexible(flex: 3, child: ShareProfileButton()),
                     const Flexible(child: ShowSuggestedPeopleButton()),
-                  ].separatedBy(const SizedBox(width: AppSpacing.sm))
+                  ].spacerBetween(width: AppSpacing.sm)
                 else ...[
                   Expanded(
                     flex: 3,
@@ -192,7 +192,7 @@ class UserProfileStatisticsCounts extends StatelessWidget {
             onTap: onSubscribesTap,
           ),
         ),
-      ].insertBetween(const SizedBox(width: AppSpacing.sm)),
+      ].spacerBetween(width: AppSpacing.sm),
     );
   }
 }

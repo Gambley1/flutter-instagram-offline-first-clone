@@ -63,7 +63,7 @@ class RepliedMessageBubble extends StatelessWidget {
                 height: imageHeight,
                 withAdaptiveColors: false,
               ),
-              const SizedBox(width: AppSpacing.xs),
+              const Gap.h(AppSpacing.xs),
             ],
             Flexible(
               child: Column(
@@ -93,7 +93,7 @@ class RepliedMessageBubble extends StatelessWidget {
                 ],
               ),
             ),
-          ].insertBetween(const SizedBox(width: AppSpacing.xs)),
+          ].spacerBetween(width: AppSpacing.xs),
         ),
       ),
     );

@@ -26,7 +26,7 @@ class _SignupViewState extends State<SignupView> {
         padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xlg),
         child: Column(
           children: [
-            const SizedBox(height: AppSpacing.xxxlg + AppSpacing.xlg),
+            const Gap.v(AppSpacing.xxxlg + AppSpacing.xlg),
             const AppLogo(fit: BoxFit.fitHeight),
             Expanded(
               child: Column(
@@ -43,7 +43,7 @@ class _SignupViewState extends State<SignupView> {
                       },
                     ),
                   ),
-                  const SizedBox(height: AppSpacing.md),
+                  const Gap.v(AppSpacing.md),
                   const SignUpForm(),
                   Padding(
                     padding: const EdgeInsets.symmetric(

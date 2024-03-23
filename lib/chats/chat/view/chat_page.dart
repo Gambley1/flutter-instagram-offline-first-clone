@@ -486,10 +486,10 @@ class _ChatMessagesListViewState extends State<ChatMessagesListView> {
                     }
 
                     if (isNextUserSame && !hasTimeDifference) {
-                      return const SizedBox(height: AppSpacing.xxs);
+                      return const Gap.v(AppSpacing.xxs);
                     }
 
-                    return const SizedBox(height: AppSpacing.sm);
+                    return const Gap.v(AppSpacing.sm);
                   },
                 ),
               ),

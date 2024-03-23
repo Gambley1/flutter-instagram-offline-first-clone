@@ -33,21 +33,21 @@ extension DialogExtension on BuildContext {
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const SizedBox(height: 26),
+            const Gap.v(AppSpacing.xlg),
             if (icon != null) icon,
-            const SizedBox(height: 26),
+            const Gap.v(AppSpacing.xlg),
             Text(
               title,
               style: context.headlineLarge
                   ?.copyWith(fontWeight: AppFontWeight.bold),
             ),
-            const SizedBox(height: 7),
+            const Gap.v(AppSpacing.sm),
             if (question != null)
               Text(
                 question,
                 textAlign: TextAlign.center,
               ),
-            const SizedBox(height: 36),
+            const Gap.v(AppSpacing.xxlg),
             const AppDivider(),
             Row(
               children: [

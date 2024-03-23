@@ -63,7 +63,7 @@ class PostFooter extends StatelessWidget {
             onTap: () => onAvatarTap.call(author.avatarUrl),
           ),
         const AppDivider(padding: AppSpacing.md),
-        const SizedBox(height: AppSpacing.sm),
+        const Gap.v(AppSpacing.sm),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
           child: Row(
@@ -101,7 +101,7 @@ class PostFooter extends StatelessWidget {
                           size: AppSize.iconSize,
                         ),
                       ),
-                    ].insertBetween(const SizedBox(width: AppSpacing.lg)),
+                    ].spacerBetween(width: AppSpacing.lg),
                   ),
                 ),
               ),
@@ -131,7 +131,7 @@ class PostFooter extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(height: AppSpacing.sm),
+        const Gap.v(AppSpacing.sm),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
           child: Column(
@@ -143,7 +143,7 @@ class PostFooter extends StatelessWidget {
                     LikersInFollowings(
                       likersInFollowings: likersInFollowings,
                     ),
-                    const SizedBox(width: AppSpacing.xs),
+                    const Gap.h(AppSpacing.xs),
                   ],
                   Flexible(
                     child: RepaintBoundary(
@@ -190,7 +190,7 @@ class PostFooter extends StatelessWidget {
                 ),
               ),
               if (!isSponsored) TimeAgo(createdAt: block.createdAt),
-              const SizedBox(height: AppSpacing.sm),
+              const Gap.v(AppSpacing.sm),
             ],
           ),
         ),
@@ -256,7 +256,7 @@ class LikersInFollowings extends StatelessWidget {
                 },
               ),
         ],
-        buildInfoWidget: (_) => const SizedBox(),
+        buildInfoWidget: (_) => const SizedBox.shrink(),
       ),
     );
   }

@@ -1056,14 +1056,16 @@ ORDER BY created_at ASC
     String? pushToken,
     String? password,
   }) =>
-      _powerSyncRepository.updateUser({
-        if (fullName != null) 'full_name': fullName,
-        if (email != null) 'email': email,
-        if (username != null) 'username': username,
-        if (avatarUrl != null) 'avatar_url': avatarUrl,
-        if (pushToken != null) 'push_token': pushToken,
-        if (password != null) 'password': password,
-      });
+      _powerSyncRepository.updateUser(
+        email: email,
+        password: password,
+        data: {
+          if (fullName != null) 'full_name': fullName,
+          if (username != null) 'username': username,
+          if (avatarUrl != null) 'avatar_url': avatarUrl,
+          if (pushToken != null) 'push_token': pushToken,
+        },
+      );
 
   @override
   Stream<List<ChatInbox>> chatsOf({required String userId}) =>

@@ -149,7 +149,7 @@ class EmptyPosts extends StatelessWidget {
             style: context.headlineSmall,
           ),
           if (child != null) child!,
-        ].insertBetween(const SizedBox(height: AppSpacing.sm)),
+        ].spacerBetween(height: AppSpacing.sm),
       );
 
   @override

@@ -314,7 +314,7 @@ class UserProfileAppBar extends StatelessWidget {
             : [
                 const UserProfileAddMediaButton(),
                 if (ModalRoute.of(context)!.isFirst) ...const [
-                  SizedBox(width: AppSpacing.md),
+                  Gap.h(AppSpacing.md),
                   UserProfileSettingsButton(),
                 ],
               ],
