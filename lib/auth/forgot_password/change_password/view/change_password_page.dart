@@ -1,7 +1,7 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_instagram_offline_first_clone/auth/cubit/forgot_password_cubit.dart';
+import 'package:flutter_instagram_offline_first_clone/auth/cubit/manage_password_cubit.dart';
 import 'package:flutter_instagram_offline_first_clone/auth/forgot_password/change_password/change_password.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:shared/shared.dart';
