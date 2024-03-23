@@ -7,7 +7,7 @@ concurrency:
 on:
   pull_request:
     paths:
-      - "./packages/storage/persistent_storage/**"
+      - "packages/storage/persistent_storage/**"
       - ".github/workflows/persistent_storage.yaml"
     branches:
       - main

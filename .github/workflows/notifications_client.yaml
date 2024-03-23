@@ -7,7 +7,7 @@ concurrency:
 on:
   pull_request:
     paths:
-      - "./packages/notifications_client/notifications_client/**"
+      - "packages/notifications_client/notifications_client/**"
       - ".github/workflows/notifications_client.yaml"
     branches:
       - main

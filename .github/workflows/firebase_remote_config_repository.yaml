@@ -7,7 +7,7 @@ concurrency:
 on:
   pull_request:
     paths:
-      - "./packages/firebase_remote_config_repository/**"
+      - "packages/firebase_remote_config_repository/**"
       - ".github/workflows/firebase_remote_config_repository.yaml"
     branches:
       - main

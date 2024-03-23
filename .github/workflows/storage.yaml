@@ -7,7 +7,7 @@ concurrency:
 on:
   pull_request:
     paths:
-      - "./packages/storage/storage/**"
+      - "packages/storage/storage/**"
       - ".github/workflows/storage.yaml"
     branches:
       - main
