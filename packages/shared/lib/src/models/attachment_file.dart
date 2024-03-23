@@ -10,7 +10,7 @@ import 'package:shared/shared.dart';
 part 'attachment_file.freezed.dart';
 part 'attachment_file.g.dart';
 
-/// The class that contains the information about an attachment file
+/// The class that contains the information about an attachment file.
 class AttachmentFile {
   /// Creates a new [AttachmentFile] instance.
   AttachmentFile({
