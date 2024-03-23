@@ -37,7 +37,7 @@ jobs:
       - name: Install Dependencies
         run: |
           flutter pub global activate very_good_cli
-          very_good packages get
+          very_good packages get --recursive
 
       - name: Format
         run: dart format --set-exit-if-changed lib test
@@ -54,9 +54,9 @@ jobs:
       - name: Check for existing and non-empty coverage file
         id: test_coverage_file
         run: if [ -s "/coverage/lcov.info" ]; then echo "result=true" >> $GITHUB_OUTPUT ; else echo "result=false" >> $GITHUB_OUTPUT; fi
-        
+
       - name: Very Good Coverage
         if: steps.test_coverage_file.outputs.result == 'true'
         uses: VeryGoodOpenSource/very_good_coverage@v3
         with:
-          path: '/coverage/lcov.info'
+          path: "/coverage/lcov.info"
