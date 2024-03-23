@@ -95,7 +95,7 @@ class _ChatMessageTextFieldInputState extends State<ChatMessageTextFieldInput>
       ..addListener(_onChangedDebounced);
   }
 
-  void _initialiseEffectiveController() {
+  void _initializeEffectiveController() {
     _effectiveController
       ..removeListener(_onChangedDebounced)
       ..addListener(_onChangedDebounced);
@@ -108,7 +108,7 @@ class _ChatMessageTextFieldInputState extends State<ChatMessageTextFieldInput>
     if (widget.messageInputController == null) {
       _createLocalController();
     } else {
-      _initialiseEffectiveController();
+      _initializeEffectiveController();
     }
     widget.focusNode.addListener(_focusNodeListener);
   }
@@ -124,7 +124,7 @@ class _ChatMessageTextFieldInputState extends State<ChatMessageTextFieldInput>
       unregisterFromRestoration(_controller!);
       _controller!.dispose();
       _controller = null;
-      _initialiseEffectiveController();
+      _initializeEffectiveController();
     }
 
     // Update _focusNode

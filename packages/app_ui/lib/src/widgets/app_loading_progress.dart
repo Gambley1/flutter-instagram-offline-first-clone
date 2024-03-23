@@ -4,17 +4,17 @@ import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:shared/shared.dart';
 
-class ApplLoadingIndeterminate extends StatefulWidget {
-  const ApplLoadingIndeterminate({
+class AppLoadingIndeterminate extends StatefulWidget {
+  const AppLoadingIndeterminate({
     super.key,
   });
 
   @override
-  State<ApplLoadingIndeterminate> createState() =>
+  State<AppLoadingIndeterminate> createState() =>
       AppLoadingIndeterminateState();
 }
 
-class AppLoadingIndeterminateState extends State<ApplLoadingIndeterminate> {
+class AppLoadingIndeterminateState extends State<AppLoadingIndeterminate> {
   final _visible = ValueNotifier<bool>(false);
   final _opacity = ValueNotifier<double>(0);
   final _debouncer = Debouncer(milliseconds: 5000);

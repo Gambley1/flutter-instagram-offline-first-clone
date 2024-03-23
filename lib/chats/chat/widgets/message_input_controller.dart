@@ -178,12 +178,12 @@ class MessageInputController extends ValueNotifier<Message> {
   void setReplyingMessage(Message replyingMessage) {
     logD((replyingMessageSender: replyingMessage.sender?.toJson()));
     clearEditingMessage();
-    final alredyReplied = replyingMessage.replyMessageId != null &&
+    final alreadyReplied = replyingMessage.replyMessageId != null &&
         replyingMessage.attachments.isEmpty;
     message = message.copyWith(
       replyMessageId: replyingMessage.id,
       replyMessageUsername: replyingMessage.sender?.username,
-      replyMessageAttachmentUrl: alredyReplied
+      replyMessageAttachmentUrl: alreadyReplied
           ? null
           : replyingMessage.sharedPost != null
               ? replyingMessage.sharedPost?.firstMediaUrl

@@ -14,7 +14,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     required UserRepository userRepository,
     required NotificationsRepository notificationsRepository,
   })  : _userRepository = userRepository,
-        _notificationsRepositoru = notificationsRepository,
+        _notificationsRepository = notificationsRepository,
         super(
           user.isAnonymous
               ? const AppState.unauthenticated()
@@ -28,7 +28,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   }
 
   final UserRepository _userRepository;
-  final NotificationsRepository _notificationsRepositoru;
+  final NotificationsRepository _notificationsRepository;
 
   StreamSubscription<User>? _userSubscription;
   StreamSubscription<String>? _pushTokenSubscription;
@@ -42,11 +42,11 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       emit(AppState.authenticated(user));
 
       _pushTokenSubscription ??=
-          _notificationsRepositoru.onTokenRefresh().listen((pushToken) async {
+          _notificationsRepository.onTokenRefresh().listen((pushToken) async {
         await _userRepository.updateUser(pushToken: pushToken);
       });
 
-      await _notificationsRepositoru.requestPermission();
+      await _notificationsRepository.requestPermission();
     }
 
     switch (state.status) {

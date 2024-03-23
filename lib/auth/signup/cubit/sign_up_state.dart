@@ -2,7 +2,7 @@
 part of 'sign_up_cubit.dart';
 
 /// Message that will be shown to user, when he will try to submit signup form,
-/// but there is an error occured. It is used to show user, what exactly went
+/// but there is an error occurred. It is used to show user, what exactly went
 /// wrong.
 typedef SingUpErrorMessage = String;
 
@@ -26,7 +26,7 @@ enum SignUpSubmissionStatus {
   /// provided by user, is occupied by another one in database.
   emailAlreadyRegistered,
 
-  /// [SignUpSubmissionStatus.inProgress] indicates that user had no iternet
+  /// [SignUpSubmissionStatus.inProgress] indicates that user had no internet
   /// connection during network request.
   networkError,
 

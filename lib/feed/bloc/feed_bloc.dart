@@ -250,7 +250,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     var tempDataLength = tempBlocks.length;
 
     final skipRange = [1, 2, 3];
-    var previosSkipRangeIs1 = false;
+    var previousSkipRangeIs1 = false;
 
     late final sponsored = sponsoredBlocks ??
         List<Map<String, dynamic>>.from(
@@ -261,7 +261,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
     while (tempDataLength > 1) {
       List<int> allowedSkipRange() {
-        if (previosSkipRangeIs1 && tempDataLength > 3) {
+        if (previousSkipRangeIs1 && tempDataLength > 3) {
           return skipRange.sublist(1);
         }
         if (tempDataLength case 2) return [1];
@@ -274,7 +274,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       final randomSkipRange =
           allowedSkipRange()[random.nextInt(allowedSkipRange().length)];
 
-      previosSkipRangeIs1 = randomSkipRange == 1;
+      previousSkipRangeIs1 = randomSkipRange == 1;
 
       tempBlocks = tempBlocks.sublist(randomSkipRange);
       blocks.insert(blocks.length - tempBlocks.length, randomSponsoredPost);

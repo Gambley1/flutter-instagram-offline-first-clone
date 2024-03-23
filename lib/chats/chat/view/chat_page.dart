@@ -363,18 +363,18 @@ class _ChatMessagesListViewState extends State<ChatMessagesListView> {
                     final isFirst =
                         messages.length - 1 - index == messages.length - 1;
                     final isLast = messages.length - 1 - index <= 0;
-                    final isPreviosLast =
+                    final isPreviousLast =
                         messages.length - index > messages.length - 1;
                     final message = messages[messages.length - 1 - index];
                     final nextMessage =
                         isLast ? null : messages[messages.length - 2 - index];
-                    final previosMessage = isPreviosLast
+                    final previousMessage = isPreviousLast
                         ? null
                         : messages[messages.length - index];
                     final isNextUserSame = nextMessage != null &&
                         message.sender!.id == nextMessage.sender!.id;
-                    final isPreviusUserSame = previosMessage != null &&
-                        message.sender!.id == previosMessage.sender!.id;
+                    final isPreviusUserSame = previousMessage != null &&
+                        message.sender!.id == previousMessage.sender!.id;
 
                     bool checkTimeDifference(
                       DateTime date1,
@@ -394,10 +394,10 @@ class _ChatMessagesListViewState extends State<ChatMessagesListView> {
                     }
 
                     var hasTimeDifferenceWithPrevious = false;
-                    if (previosMessage != null) {
+                    if (previousMessage != null) {
                       hasTimeDifferenceWithPrevious = checkTimeDifference(
                         message.createdAt,
-                        previosMessage.createdAt,
+                        previousMessage.createdAt,
                       );
                     }
 

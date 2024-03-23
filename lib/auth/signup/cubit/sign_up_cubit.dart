@@ -95,8 +95,6 @@ class SignUpCubit extends Cubit<SignupState> {
     emit(newScreenState);
   }
 
-  /// [Password] field was unfocues. Checking of [Password] validation after
-  /// unfocusing and emmit new value of [Password] in state.
   void onPasswordUnfocused() {
     final previousScreenState = state;
     final previousPasswordState = previousScreenState.password;
@@ -171,8 +169,6 @@ class SignUpCubit extends Cubit<SignupState> {
     emit(newScreenState);
   }
 
-  /// [Username] field was unfocues. Checking of [Username] validation after
-  /// unfocusing and emmit new value of [Username] in state.
   void onUsernameUnfocused() {
     final previousScreenState = state;
     final previousUsernameState = previousScreenState.username;
