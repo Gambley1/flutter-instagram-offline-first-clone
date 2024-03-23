@@ -73,8 +73,9 @@ class ForgotPasswordCubit extends Cubit<ForgotPasswordState> {
     if (!isFormValid) return;
 
     try {
-      await _userRepository.resetPasswordForEmail(email: state.email.value);
+      await _userRepository.sendPasswordResetEmail(email: state.email.value);
       final newState = state.copyWith(status: ForgotPasswordStatus.success);
+      if(isClosed) return;
       emit(newState);
       onSuccess?.call();
     } catch (error, stackTrace) {

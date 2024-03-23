@@ -39,7 +39,8 @@ void main() {
         googleSignIn: googleSignIn,
       );
 
-      final client = DatabaseClient(powerSyncRepository);
+      final databaseClient =
+          PowerSyncDatabaseClient(powerSyncRepository: powerSyncRepository);
 
       final persistentStorage =
           PersistentStorage(sharedPreferences: sharedPreferences);
@@ -47,18 +48,20 @@ void main() {
       final storiesStorage = StoriesStorage(storage: persistentStorage);
 
       final userRepository = UserRepository(
-        client: client,
+        databaseClient: databaseClient,
         authenticationClient: authenticationClient,
       );
 
-      final searchRepository = SearchRepository(client: client);
+      final searchRepository = SearchRepository(databaseClient: databaseClient);
 
-      final postsRepository = PostsRepository(client: client);
+      final postsRepository = PostsRepository(databaseClient: databaseClient);
 
-      final chatsRepository = ChatsRepository(client: client);
+      final chatsRepository = ChatsRepository(databaseClient: databaseClient);
 
-      final storiesRepository =
-          StoriesRepository(client: client, storage: storiesStorage);
+      final storiesRepository = StoriesRepository(
+        databaseClient: databaseClient,
+        storage: storiesStorage,
+      );
 
       return App(
         userRepository: userRepository,

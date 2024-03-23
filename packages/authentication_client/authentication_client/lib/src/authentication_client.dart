@@ -120,6 +120,24 @@ class SignUpWithPasswordFailure extends AuthenticationException {
   const SignUpWithPasswordFailure(super.error);
 }
 
+/// {@template send_password_reset_email_failure}
+/// Thrown during the sending password reset email process if a failure occurs.
+/// {@endtemplate}
+class SendPasswordResetEmailFailure extends AuthenticationException {
+  /// {@macro send_password_reset_email_failure}
+  const SendPasswordResetEmailFailure(super.error);
+}
+
+/// {@template reset_password_failure}
+/// This exception is thrown when there is a failure during the reset password
+/// process.
+/// It indicates that the reset password operation was unsuccessful.
+/// {@endtemplate}
+class ResetPasswordFailure extends AuthenticationException {
+  /// {@macro reset_password_failure}
+  const ResetPasswordFailure(super.error);
+}
+
 /// {@template log_out_failure}
 /// Thrown during the logout process if a failure occurs.
 /// {@endtemplate}
@@ -166,6 +184,26 @@ abstract class AuthenticationClient {
     String? email,
     String? phone,
     String? pushToken,
+  });
+
+  /// Sends a password reset email to the provided [email] address.
+  ///
+  /// Optionally, a [redirectTo] URL can be specified.
+  ///
+  /// Throws a [SendPasswordResetEmailFailure] if an exception occurs.
+  Future<void> sendPasswordResetEmail({
+    required String email,
+    String? redirectTo,
+  });
+
+  /// Resets the password for a user using the provided [token], [email],
+  /// and [newPassword].
+  ///
+  /// Throws a [ResetPasswordFailure] if an exception occurs.
+  Future<void> resetPassword({
+    required String token,
+    required String email,
+    required String newPassword,
   });
 
   /// Signs out the current user which will emit

@@ -9,12 +9,6 @@ import 'package:powersync_repository/powersync_repository.dart';
 import 'package:shared/shared.dart';
 import 'package:user_repository/user_repository.dart';
 
-sealed class _Repository {
-  const _Repository(this._powerSyncRepository);
-
-  final PowerSyncRepository _powerSyncRepository;
-}
-
 /// User base repository.
 abstract class UserBaseRepository {
   /// The currently authenticated user id.
@@ -33,21 +27,6 @@ abstract class UserBaseRepository {
     String? username,
     String? avatarUrl,
     String? pushToken,
-  });
-
-  /// Sends a reset password email to the provided [email].
-  Future<void> resetPasswordForEmail({
-    required String email,
-    String? redirectTo,
-  });
-
-  /// Resets user password and updates user's metadata.
-  /// If user successfully verifies OTP [token] he automatically authenticates
-  /// into account by provided [email].
-  Future<void> resetPassword({
-    required String token,
-    required String email,
-    required String newPassword,
   });
 
   /// Follows to the user by provided [followToId]. [followerId] is the id
@@ -298,25 +277,44 @@ abstract class StoriesBaseRepository {
   });
 }
 
-/// Abstract base class for database client that extends `Repository` and
-/// implements [UserBaseRepository] and [PostsBaseRepository].
-/// Contains a constructor to initialize the `powerSyncRepository`.
-abstract class Client extends _Repository
+/// {@template client}
+/// Represents a client that interacts with various repositories.
+///
+/// ### Example usage:
+/// ```dart
+/// final powerSyncRepository = PowerSyncRepository();
+/// final client = PowerSyncDatabaseClient(powerSyncRepository);
+///
+/// client.createPost(
+///   id: 'post123',
+///   userId: 'user123',
+///   caption: 'Hello, world!',
+///   media: 'https://example.com/image.jpg',
+/// );
+/// ```
+/// {@endtemplate}
+abstract class DatabaseClient
     implements
         UserBaseRepository,
         PostsBaseRepository,
         ChatsBaseRepository,
         StoriesBaseRepository {
-  /// {@macro client}
-  const Client(super.powerSyncRepository);
+  /// {@macro database_client}
+  const DatabaseClient();
 }
 
-/// {@template database_client}
-/// A package that manages application database workflow.
+/// {@template power_sync_database_client}
+/// A class representing a PowerSyncDatabaseClient.
+///
+/// It allows users to perform various operations such as creating posts, 
+/// retrieving posts, liking posts, following users, and more.
 /// {@endtemplate}
-class DatabaseClient extends Client {
-  /// {@macro database_client}
-  DatabaseClient(super.powerSyncRepository);
+class PowerSyncDatabaseClient extends DatabaseClient {
+  /// {@macro power_sync_database_client}
+  PowerSyncDatabaseClient({required PowerSyncRepository powerSyncRepository})
+      : _powerSyncRepository = powerSyncRepository;
+
+  final PowerSyncRepository _powerSyncRepository;
 
   @override
   String? get currentUserId =>
@@ -1066,28 +1064,6 @@ ORDER BY created_at ASC
         if (pushToken != null) 'push_token': pushToken,
         if (password != null) 'password': password,
       });
-
-  @override
-  Future<void> resetPasswordForEmail({
-    required String email,
-    String? redirectTo,
-  }) =>
-      _powerSyncRepository.resetPassword(email: email, redirectTo: redirectTo);
-
-  @override
-  Future<void> resetPassword({
-    required String token,
-    required String email,
-    required String newPassword,
-  }) async {
-    try {
-      await _powerSyncRepository.verifyOTP(token: token, email: email);
-      await updateUser(password: newPassword);
-    } catch (error, stackTrace) {
-      logE('Failed to verify OTP.', error: error, stackTrace: stackTrace);
-      throw Exception('Failed to verify OTP.');
-    }
-  }
 
   @override
   Stream<List<ChatInbox>> chatsOf({required String userId}) =>

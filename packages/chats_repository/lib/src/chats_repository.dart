@@ -7,42 +7,43 @@ import 'package:user_repository/user_repository.dart';
 /// {@endtemplate}
 class ChatsRepository implements ChatsBaseRepository {
   /// {@macro chats_repository}
-  const ChatsRepository({required Client client}) : _client = client;
+  const ChatsRepository({required DatabaseClient databaseClient})
+      : _databaseClient = databaseClient;
 
-  final Client _client;
+  final DatabaseClient _databaseClient;
 
   @override
   Stream<List<ChatInbox>> chatsOf({required String userId}) =>
-      _client.chatsOf(userId: userId);
+      _databaseClient.chatsOf(userId: userId);
 
   @override
   Future<ChatInbox> getChat({required String chatId, required String userId}) =>
-      _client.getChat(chatId: chatId, userId: userId);
+      _databaseClient.getChat(chatId: chatId, userId: userId);
 
   @override
   Stream<List<Message>> messagesOf({required String chatId}) =>
-      _client.messagesOf(chatId: chatId);
+      _databaseClient.messagesOf(chatId: chatId);
 
   @override
   Future<void> createChat({
     required String userId,
     required String participantId,
   }) =>
-      _client.createChat(userId: userId, participantId: participantId);
+      _databaseClient.createChat(userId: userId, participantId: participantId);
 
   @override
   Future<void> deleteChat({required String chatId, required String userId}) =>
-      _client.deleteChat(chatId: chatId, userId: userId);
+      _databaseClient.deleteChat(chatId: chatId, userId: userId);
 
   @override
   Future<void> deleteMessage({required String messageId}) =>
-      _client.deleteMessage(messageId: messageId);
+      _databaseClient.deleteMessage(messageId: messageId);
 
   @override
   Future<void> readMessage({
     required String messageId,
   }) =>
-      _client.readMessage(messageId: messageId);
+      _databaseClient.readMessage(messageId: messageId);
 
   @override
   Future<void> sendMessage({
@@ -52,7 +53,7 @@ class ChatsRepository implements ChatsBaseRepository {
     required Message message,
     PostAuthor? postAuthor,
   }) =>
-      _client.sendMessage(
+      _databaseClient.sendMessage(
         chatId: chatId,
         sender: sender,
         receiver: receiver,
@@ -65,5 +66,8 @@ class ChatsRepository implements ChatsBaseRepository {
     required Message oldMessage,
     required Message newMessage,
   }) =>
-      _client.editMessage(oldMessage: oldMessage, newMessage: newMessage);
+      _databaseClient.editMessage(
+        oldMessage: oldMessage,
+        newMessage: newMessage,
+      );
 }
