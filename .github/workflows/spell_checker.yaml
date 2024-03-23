@@ -16,4 +16,4 @@ jobs:
         with:
           paths: "**/*.{md,dart}"
           config: .vscode/cspell.json
-        exclude: ".gitignore"
+          exclude: ".gitignore"
