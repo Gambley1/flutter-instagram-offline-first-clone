@@ -215,6 +215,7 @@
     }
   },
   "newPostText": "Новая публикация",
+  "newAvatarImageText": "Новое фото аватара",
   "writeCaptionText": "Добавить подпись...",
   "logOutText": "Выйти",
   "logOutConfirmationText": "Вы уверены что хотите выйти из аккаунта?",

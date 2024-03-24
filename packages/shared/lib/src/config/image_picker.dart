@@ -90,6 +90,7 @@ class PickImage {
     bool cropImage = true,
     bool multiImages = false,
     bool showPreview = true,
+    bool pickAvatar = false,
   }) =>
       context.pickImage(
         source: source,
@@ -100,6 +101,7 @@ class PickImage {
           maximumSelection: maxSelection,
           showImagePreview: showPreview,
           tabsTexts: _tabsTexts,
+          pickAvatar: pickAvatar,
           appTheme: _appTheme(context),
           gridDelegate: _sliverGridDelegate(),
         ),

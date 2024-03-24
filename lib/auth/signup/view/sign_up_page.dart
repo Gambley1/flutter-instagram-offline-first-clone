@@ -1,8 +1,8 @@
-import 'package:firebase_notifications_client/firebase_notifications_client.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/auth/signup/cubit/sign_up_cubit.dart';
 import 'package:flutter_instagram_offline_first_clone/auth/signup/view/view.dart';
+import 'package:notifications_repository/notifications_repository.dart';
 import 'package:user_repository/user_repository.dart';
 
 class SignupPage extends StatelessWidget {
@@ -13,7 +13,7 @@ class SignupPage extends StatelessWidget {
     return BlocProvider(
       create: (context) => SignUpCubit(
         userRepository: context.read<UserRepository>(),
-        notificationsClient: context.read<FirebaseNotificationsClient>(),
+        notificationsRepository: context.read<NotificationsRepository>(),
       ),
       child: const SignupView(),
     );

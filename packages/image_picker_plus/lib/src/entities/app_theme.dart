@@ -6,7 +6,7 @@ class AppTheme {
   final Color shimmerBaseColor;
   final Color shimmerHighlightColor;
 
-  AppTheme({
+  const AppTheme({
     this.primaryColor = Colors.white,
     this.focusColor = Colors.black,
     this.shimmerBaseColor = const Color.fromARGB(255, 185, 185, 185),

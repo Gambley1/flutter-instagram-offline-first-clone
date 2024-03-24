@@ -186,11 +186,9 @@ class SupabaseAuthenticationClient implements AuthenticationClient {
   @override
   Future<void> logOut() async {
     try {
-      await Future.wait([
-        _powerSyncRepository.supabase.auth.signOut(),
-        _powerSyncRepository.db().disconnectAndClear(),
-        _googleSignIn.signOut(),
-      ]);
+      await _powerSyncRepository.db().disconnectAndClear();
+      await _powerSyncRepository.supabase.auth.signOut();
+      await _googleSignIn.signOut();
     } catch (error, stackTrace) {
       Error.throwWithStackTrace(LogOutFailure(error), stackTrace);
     }

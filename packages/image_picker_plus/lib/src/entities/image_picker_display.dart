@@ -4,18 +4,16 @@ import 'package:flutter/material.dart';
 
 /// [GalleryDisplaySettings] When you make ImageSource from the camera these settings will be disabled because they belong to the gallery.
 class GalleryDisplaySettings {
-  AppTheme? appTheme;
-  TabsTexts? tabsTexts;
-  SliverGridDelegateWithFixedCrossAxisCount gridDelegate;
-  bool showImagePreview;
-  int maximumSelection;
+  final AppTheme? appTheme;
+  final TabsTexts? tabsTexts;
+  final SliverGridDelegateWithFixedCrossAxisCount gridDelegate;
+  final bool showImagePreview;
+  final int maximumSelection;
   final AsyncValueSetter<SelectedImagesDetails>? callbackFunction;
+  final bool cropImage;
+  final bool pickAvatar;
 
-  /// If [cropImage] true [showImagePreview] will be true
-  /// Right now this package not support crop video
-  bool cropImage;
-
-  GalleryDisplaySettings({
+   const GalleryDisplaySettings({
     this.appTheme,
     this.tabsTexts,
     this.callbackFunction,
@@ -24,5 +22,6 @@ class GalleryDisplaySettings {
     this.showImagePreview = false,
     this.cropImage = false,
     this.maximumSelection = 10,
+    this.pickAvatar = false,
   });
 }

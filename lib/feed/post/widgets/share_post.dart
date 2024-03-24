@@ -204,7 +204,7 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
               ? <User>[]
               : followersAndFollowings
                   .where(
-                    (user) => user.username!
+                    (user) => user.displayUsername
                         .toLowerCase()
                         .trim()
                         .contains(query.toLowerCase().trim()),

@@ -27,6 +27,7 @@ void initUtilities(BuildContext context, Locale locale) {
       notFoundingCameraText: l10n.notFoundingCameraText,
       noCameraFoundText: l10n.noCameraFoundText,
       newPostText: l10n.newPostText,
+      newAvatarImageText: l10n.newAvatarImageText,
     ),
   );
   BlockSettings().init(

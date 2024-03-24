@@ -6,6 +6,10 @@ updates:
     schedule:
       interval: "daily"
   - package-ecosystem: "pub"
+    directory: "/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "pub"
     directory: "/packages/app_ui"
     schedule:
       interval: "daily"

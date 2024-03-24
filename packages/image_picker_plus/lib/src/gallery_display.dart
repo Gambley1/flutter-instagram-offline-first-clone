@@ -76,9 +76,9 @@ class CustomImagePickerState extends State<CustomImagePicker>
 
   _initializeVariables() {
     imagePickerDisplay =
-        widget.galleryDisplaySettings ?? GalleryDisplaySettings();
-    appTheme = imagePickerDisplay.appTheme ?? AppTheme();
-    tabsNames = imagePickerDisplay.tabsTexts ?? TabsTexts();
+        widget.galleryDisplaySettings ?? const GalleryDisplaySettings();
+    appTheme = imagePickerDisplay.appTheme ?? const AppTheme();
+    tabsNames = imagePickerDisplay.tabsTexts ?? const TabsTexts();
     callbackFunction = imagePickerDisplay.callbackFunction;
     cropImage = imagePickerDisplay.cropImage;
     maximumSelection = imagePickerDisplay.maximumSelection;
@@ -92,7 +92,7 @@ class CustomImagePickerState extends State<CustomImagePicker>
     showInternalVideos = widget.pickerSource != PickerSource.image;
 
     noGallery = widget.source != ImageSource.camera;
-    bool notGallery = widget.source != ImageSource.gallery;
+    final notGallery = widget.source != ImageSource.gallery;
 
     enableCamera = showInternalImages && notGallery;
     enableVideo = showInternalVideos && notGallery;
@@ -308,6 +308,7 @@ class CustomImagePickerState extends State<CustomImagePicker>
       maximumSelection: maximumSelection,
       filterOption: widget.filterOption,
       onBackButtonTap: widget.onBackButtonTap,
+      pickAvatar: imagePickerDisplay.pickAvatar,
     );
   }
 

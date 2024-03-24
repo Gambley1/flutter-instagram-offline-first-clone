@@ -37,6 +37,7 @@ class AvatarImagePicker extends StatelessWidget {
   Future<void> _pickImage(BuildContext context) async {
     final file = await PickImage().pickImage(
       context,
+      pickAvatar: true,
       source: ImageSource.both,
     );
     if (file == null) return;

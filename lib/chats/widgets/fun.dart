@@ -24,7 +24,7 @@ class FunView extends StatelessWidget {
               ],
             ),
           ),
-          const SliverToBoxAdapter(child: Gap.v(AppSpacing.md)),
+          const SliverGap.v(AppSpacing.md),
           SeparatedContainer(
             onlyTop: true,
             child: Row(
@@ -90,7 +90,7 @@ class FunView extends StatelessWidget {
               ],
             ),
           ),
-          const SliverToBoxAdapter(child: Gap.v(AppSpacing.md)),
+          const SliverGap.v(AppSpacing.md),
           SeparatedContainer(
             onlyTop: true,
             child: Column(

@@ -3,9 +3,7 @@ class TabsTexts {
   final String photoText;
   final String galleryText;
   final String deletingText;
-
-  /// [limitingText] if the maximumSelection = 10 it will be "The limit is 10 photos or videos."
-  String? limitingText;
+  final String? limitingText;
   final String holdButtonText;
   final String clearImagesText;
   final String notFoundingCameraText;
@@ -13,8 +11,9 @@ class TabsTexts {
   final String acceptAllPermissions;
   final String noCameraFoundText;
   final String newPostText;
+  final String newAvatarImageText;
 
-  TabsTexts({
+  const TabsTexts({
     this.videoText = "VIDEO",
     this.photoText = "PHOTO",
     this.clearImagesText = "Clear selected images",
@@ -27,5 +26,6 @@ class TabsTexts {
     this.acceptAllPermissions = "Failed! Accept all access permissions.",
     this.noCameraFoundText = 'No camera found!',
     this.newPostText = 'New post',
+    this.newAvatarImageText = 'New avatar image',
   });
 }

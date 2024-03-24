@@ -34,7 +34,8 @@ class Comment extends Equatable {
         author: PostAuthor(
           id: row['user_id'] as String,
           avatarUrl: row['avatar_url'] as String? ?? '',
-          username: row['username'] as String,
+          username:
+              row['username'] as String? ?? row['full_name'] as String? ?? '',
         ),
         content: row['content'] as String,
         repliedToCommentId: row['replied_to_comment_id'] as String?,

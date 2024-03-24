@@ -876,6 +876,7 @@ SELECT
   c1.*,
   p.avatar_url as avatar_url,
   p.username as username,
+  p.full_name as full_name,
   COUNT(c2.id) AS replies
 FROM 
   comments c1
@@ -886,7 +887,7 @@ FROM
 WHERE
   c1.post_id = ? AND c1.replied_to_comment_id IS NULL
 GROUP BY
-    c1.id, p.avatar_url, p.username
+    c1.id, p.avatar_url, p.username, p.full_name
 ORDER BY created_at ASC
 ''',
         parameters: [postId],
@@ -1031,7 +1032,8 @@ insert into
 SELECT 
   c1.*,
   p.avatar_url as avatar_url,
-  p.username as username
+  p.username as username,
+  p.full_name as full_name
 FROM 
   comments c1
   INNER JOIN
@@ -1039,7 +1041,7 @@ FROM
 WHERE
   c1.replied_to_comment_id = ? 
 GROUP BY
-    c1.id, p.avatar_url, p.username
+    c1.id, p.avatar_url, p.username, p.full_name
 ORDER BY created_at ASC
 ''',
         parameters: [commentId],
@@ -1662,7 +1664,7 @@ SELECT * FROM stories WHERE id = ?
   }) async {
     final result = await _powerSyncRepository.db().getAll(
       '''
-SELECT up.id, up.username, up.avatar_url
+SELECT up.id, up.username, up.full_name, up.avatar_url
 FROM profiles up
 INNER JOIN likes l ON up.id = l.user_id
 INNER JOIN posts p ON l.post_id = p.id

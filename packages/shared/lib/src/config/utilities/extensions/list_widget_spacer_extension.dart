@@ -14,10 +14,6 @@ extension ListWidgetSpacer on List<Widget> {
     double? height,
     double? width,
   }) {
-    assert(
-      height != null && width != null,
-      'Both height and width can not be specified',
-    );
     return insertBetween(
       height != null
           ? Gap.v(height)

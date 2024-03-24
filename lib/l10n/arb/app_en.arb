@@ -245,6 +245,7 @@
     }
   },
   "newPostText": "New post",
+  "newAvatarImageText": "New avatar image",
   "writeCaptionText": "Write caption...",
   "logOutText": "Log out",
   "logOutConfirmationText": "Are you sure you want to log out?",

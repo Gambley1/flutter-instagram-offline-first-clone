@@ -20,6 +20,7 @@ class ImagesViewPage extends StatefulWidget {
   final bool showInternalImages;
   final int maximumSelection;
   final AsyncValueSetter<SelectedImagesDetails>? callbackFunction;
+  final bool pickAvatar;
 
   /// To avoid lag when you interacting with image when it expanded
   final AppTheme appTheme;
@@ -51,6 +52,7 @@ class ImagesViewPage extends StatefulWidget {
     required this.filterOption,
     this.callbackFunction,
     this.onBackButtonTap,
+    this.pickAvatar = false,
   }) : super(key: key);
 
   @override
@@ -371,7 +373,9 @@ class _ImagesViewPageState extends State<ImagesViewPage>
       elevation: 0,
       leading: exitButton(),
       centerTitle: false,
-      title: Text(widget.tabsTexts.newPostText),
+      title: Text(widget.pickAvatar
+          ? widget.tabsTexts.newAvatarImageText
+          : widget.tabsTexts.newPostText),
     );
   }
 
@@ -389,7 +393,9 @@ class _ImagesViewPageState extends State<ImagesViewPage>
             exitButton(),
             const SizedBox(width: 24),
             Text(
-              widget.tabsTexts.newPostText,
+              widget.pickAvatar
+                  ? widget.tabsTexts.newAvatarImageText
+                  : widget.tabsTexts.newPostText,
               style: Theme.of(context).textTheme.titleLarge,
             )
           ]),
