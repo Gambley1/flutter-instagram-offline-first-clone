@@ -9,10 +9,11 @@ class ForgotPasswordEmailField extends StatefulWidget {
   const ForgotPasswordEmailField({super.key});
 
   @override
-  State<ForgotPasswordEmailField> createState() => _ResetPasswordFieldState();
+  State<ForgotPasswordEmailField> createState() =>
+      _ForgotPasswordEmailFieldState();
 }
 
-class _ResetPasswordFieldState extends State<ForgotPasswordEmailField> {
+class _ForgotPasswordEmailFieldState extends State<ForgotPasswordEmailField> {
   late Debouncer _debouncer;
   final _focusNode = FocusNode();
 

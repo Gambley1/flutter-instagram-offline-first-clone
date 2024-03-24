@@ -5,8 +5,8 @@ import 'package:flutter_instagram_offline_first_clone/auth/forgot_password/chang
 import 'package:flutter_instagram_offline_first_clone/auth/forgot_password/forgot_password.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 
-class ResetPasswordButton extends StatelessWidget {
-  const ResetPasswordButton({super.key});
+class ChangePasswordButton extends StatelessWidget {
+  const ChangePasswordButton({super.key});
 
   @override
   Widget build(BuildContext context) {

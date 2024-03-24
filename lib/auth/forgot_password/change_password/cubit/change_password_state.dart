@@ -1,16 +1,16 @@
 part of 'change_password_cubit.dart';
 
-enum ResetPasswordStatus {
+enum ChangePasswordStatus {
   initial,
   loading,
   success,
   failure,
   invalidOtp;
 
-  bool get isSuccess => this == ResetPasswordStatus.success;
-  bool get isLoading => this == ResetPasswordStatus.loading;
-  bool get isError => this == ResetPasswordStatus.failure || isInvalidOtp;
-  bool get isInvalidOtp => this == ResetPasswordStatus.invalidOtp;
+  bool get isSuccess => this == ChangePasswordStatus.success;
+  bool get isLoading => this == ChangePasswordStatus.loading;
+  bool get isError => this == ChangePasswordStatus.failure || isInvalidOtp;
+  bool get isInvalidOtp => this == ChangePasswordStatus.invalidOtp;
 }
 
 class ChangePasswordState extends Equatable {
@@ -23,13 +23,13 @@ class ChangePasswordState extends Equatable {
 
   const ChangePasswordState.initial()
       : this._(
-          status: ResetPasswordStatus.initial,
+          status: ChangePasswordStatus.initial,
           password: const Password.pure(),
           otp: const Otp.pure(),
           showPassword: false,
         );
 
-  final ResetPasswordStatus status;
+  final ChangePasswordStatus status;
   final Password password;
   final Otp otp;
   final bool showPassword;
@@ -38,7 +38,7 @@ class ChangePasswordState extends Equatable {
   List<Object?> get props => [status, password, otp, showPassword];
 
   ChangePasswordState copyWith({
-    ResetPasswordStatus? status,
+    ChangePasswordStatus? status,
     Password? password,
     Otp? otp,
     bool? showPassword,
@@ -52,10 +52,10 @@ class ChangePasswordState extends Equatable {
   }
 }
 
-final resetPasswordStatusMessage =
-    <ResetPasswordStatus, SubmissionStatusMessage>{
-  ResetPasswordStatus.failure: const SubmissionStatusMessage.genericError(),
-  ResetPasswordStatus.invalidOtp: const SubmissionStatusMessage(
+final changePasswordStatusMessage =
+    <ChangePasswordStatus, SubmissionStatusMessage>{
+  ChangePasswordStatus.failure: const SubmissionStatusMessage.genericError(),
+  ChangePasswordStatus.invalidOtp: const SubmissionStatusMessage(
     title: 'Invalid OTP. Please check and re-enter the code.',
   ),
 };

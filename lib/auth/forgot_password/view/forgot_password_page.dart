@@ -66,7 +66,7 @@ class ForgotPasswordPage extends StatelessWidget {
       },
       child: showForgotPassword
           ? const ForgotPasswordView()
-          : const ResetPasswordView(),
+          : const ChangePasswordView(),
     );
   }
 }

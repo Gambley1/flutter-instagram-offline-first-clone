@@ -5,14 +5,14 @@ import 'package:flutter_instagram_offline_first_clone/auth/forgot_password/chang
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:shared/shared.dart';
 
-class ResetPasswordOtpField extends StatefulWidget {
-  const ResetPasswordOtpField({super.key});
+class ChangePasswordOtpField extends StatefulWidget {
+  const ChangePasswordOtpField({super.key});
 
   @override
-  State<ResetPasswordOtpField> createState() => _ResetPasswordFieldState();
+  State<ChangePasswordOtpField> createState() => _ChangePasswordFieldState();
 }
 
-class _ResetPasswordFieldState extends State<ResetPasswordOtpField> {
+class _ChangePasswordFieldState extends State<ChangePasswordOtpField> {
   late Debouncer _debouncer;
   final _focusNode = FocusNode();
 

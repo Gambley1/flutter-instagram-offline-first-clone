@@ -5,14 +5,14 @@ import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/auth/forgot_password/change_password/change_password.dart';
 import 'package:shared/shared.dart';
 
-class ResetPasswordForm extends StatefulWidget {
-  const ResetPasswordForm({super.key});
+class ChangePasswordForm extends StatefulWidget {
+  const ChangePasswordForm({super.key});
 
   @override
-  State<ResetPasswordForm> createState() => _ResetPasswordFormState();
+  State<ChangePasswordForm> createState() => _ChangePasswordFormState();
 }
 
-class _ResetPasswordFormState extends State<ResetPasswordForm> {
+class _ChangePasswordFormState extends State<ChangePasswordForm> {
   @override
   void initState() {
     super.initState();
@@ -32,9 +32,9 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
         if (state.status.isError) {
           openSnackbar(
             SnackbarMessage.error(
-              title: resetPasswordStatusMessage[state.status]!.title,
+              title: changePasswordStatusMessage[state.status]!.title,
               description:
-                  resetPasswordStatusMessage[state.status]?.description,
+                  changePasswordStatusMessage[state.status]?.description,
             ),
             clearIfQueue: true,
           );
@@ -44,8 +44,8 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          const ResetPasswordOtpField(),
-          const ResetPasswordField(),
+          const ChangePasswordOtpField(),
+          const ChangePasswordField(),
         ].spacerBetween(height: AppSpacing.md),
       ),
     );

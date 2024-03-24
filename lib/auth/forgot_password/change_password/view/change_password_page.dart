@@ -6,8 +6,8 @@ import 'package:flutter_instagram_offline_first_clone/auth/forgot_password/chang
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:shared/shared.dart';
 
-class ResetPasswordView extends StatelessWidget {
-  const ResetPasswordView({super.key});
+class ChangePasswordView extends StatelessWidget {
+  const ChangePasswordView({super.key});
 
   void _confirmGoBack(BuildContext context) => context.confirmAction(
         fn: () => context
@@ -46,8 +46,8 @@ class ResetPasswordView extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  const ResetPasswordForm(),
-                  const Align(child: ResetPasswordButton()),
+                  const ChangePasswordForm(),
+                  const Align(child: ChangePasswordButton()),
                 ].spacerBetween(height: AppSpacing.md),
               ),
             ),

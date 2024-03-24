@@ -102,7 +102,7 @@ class ChangePasswordCubit extends Cubit<ChangePasswordState> {
     final newState = state.copyWith(
       password: password,
       otp: otp,
-      status: isFormValid ? ResetPasswordStatus.loading : null,
+      status: isFormValid ? ChangePasswordStatus.loading : null,
     );
 
     emit(newState);
@@ -117,7 +117,7 @@ class ChangePasswordCubit extends Cubit<ChangePasswordState> {
       );
     } catch (error, stackTrace) {
       addError(error, stackTrace);
-      emit(state.copyWith(status: ResetPasswordStatus.invalidOtp));
+      emit(state.copyWith(status: ChangePasswordStatus.invalidOtp));
     }
   }
 }
