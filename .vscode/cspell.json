@@ -199,7 +199,8 @@
     "prefetch",
     "giffy",
     "giphy",
-    "ccon"
+    "ccon",
+    "nodoc"
   ],
   "ignorePaths": [
     ".github/workflows/**",
