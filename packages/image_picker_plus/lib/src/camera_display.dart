@@ -133,6 +133,7 @@ class CustomCameraDisplayState extends State<CustomCameraDisplay> {
         Align(
           child: Text(
             widget.tabsNames.acceptAllPermissions,
+            textAlign: TextAlign.center,
             style: Theme.of(context)
                 .textTheme
                 .headlineSmall
