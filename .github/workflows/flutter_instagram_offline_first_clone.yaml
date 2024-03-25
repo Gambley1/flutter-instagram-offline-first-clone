@@ -51,12 +51,8 @@ jobs:
       - name: Run tests
         run: very_good test -x presubmit-only --coverage --test-randomize-ordering-seed random
 
-      - name: Check for existing and non-empty coverage file
-        id: test_coverage_file
-        run: if [ -s "/coverage/lcov.info" ]; then echo "result=true" >> $GITHUB_OUTPUT ; else echo "result=false" >> $GITHUB_OUTPUT; fi
-
-      - name: Very Good Coverage
-        if: steps.test_coverage_file.outputs.result == 'true'
+      - name: Check Code Coverage
         uses: VeryGoodOpenSource/very_good_coverage@v3
         with:
-          path: "/coverage/lcov.info"
+          exclude: "**/*.g.dart **/*.gen.dart **/l10n/*.dart **/l10n/**/*.dart **/bootstrap.dart"
+          path: coverage/lcov.info
