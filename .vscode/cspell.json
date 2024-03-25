@@ -207,6 +207,6 @@
     "packages/shared/lib/src/config/utilities/extensions/string_extension.dart",
     "packages/shared/lib/src/config/utilities/utilities.dart",
     "packages/stories_editor/**",
-    "lib/l10n"
+    "lib/l10n/**"
   ]
 }
