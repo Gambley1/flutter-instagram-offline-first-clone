@@ -9,14 +9,17 @@ import 'package:flutter_instagram_offline_first_clone/user_profile/user_profile.
 import 'package:go_router/go_router.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:shared/shared.dart' hide Switch;
+import 'package:user_repository/user_repository.dart';
 
 class UserProfileHeader extends StatelessWidget {
   const UserProfileHeader({
     this.userId,
+    this.sponsoredPost,
     super.key,
   });
 
   final String? userId;
+  final PostSponsoredBlock? sponsoredPost;
 
   void _navigateToSubscribersPage(BuildContext context) => context.pushNamed(
         'user_statistics',
@@ -37,7 +40,12 @@ class UserProfileHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isOwner = context.select((UserProfileBloc b) => b.isOwner);
-    final user = context.select((UserProfileBloc b) => b.state.user);
+    final user$ = context.select((UserProfileBloc b) => b.state.user);
+    final user = sponsoredPost == null
+        ? user$
+        : user$.isAnonymous
+            ? sponsoredPost!.author.toUser
+            : user$;
     final canCreateStories =
         context.select((CreateStoriesBloc bloc) => bloc.state.isAvailable);
 

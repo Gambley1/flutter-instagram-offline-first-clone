@@ -1,3 +1,5 @@
+// ignore_for_file: lines_longer_than_80_chars
+
 import 'package:app_ui/app_ui.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -21,11 +23,13 @@ class UserProfilePage extends StatelessWidget {
     super.key,
     this.userId,
     this.isSponsored = false,
+    this.sponsoredPost,
     this.promoBlockAction,
   });
 
   final String? userId;
   final bool isSponsored;
+  final PostSponsoredBlock? sponsoredPost;
   final BlockAction? promoBlockAction;
 
   @override
@@ -47,6 +51,7 @@ class UserProfilePage extends StatelessWidget {
       child: UserProfileView(
         userId: userId,
         isSponsored: isSponsored,
+        sponsoredPost: sponsoredPost,
         promoBlockAction: promoBlockAction,
       ),
     );
@@ -58,11 +63,13 @@ class UserProfileView extends StatefulWidget {
     super.key,
     this.userId,
     this.isSponsored = false,
+    this.sponsoredPost,
     this.promoBlockAction,
   });
 
   final String? userId;
   final bool isSponsored;
+  final PostSponsoredBlock? sponsoredPost;
   final BlockAction? promoBlockAction;
 
   @override
@@ -107,9 +114,15 @@ class _UserProfileViewState extends State<UserProfileView>
                     NestedScrollView.sliverOverlapAbsorberHandleFor(context),
                 sliver: MultiSliver(
                   children: [
-                    UserProfileAppBar(userId: widget.userId),
-                    if (!user.isAnonymous) ...[
-                      UserProfileHeader(userId: widget.userId),
+                    UserProfileAppBar(
+                      userId: widget.userId,
+                      sponsoredPost: widget.sponsoredPost,
+                    ),
+                    if (!user.isAnonymous || widget.sponsoredPost != null) ...[
+                      UserProfileHeader(
+                        userId: widget.userId,
+                        sponsoredPost: widget.sponsoredPost,
+                      ),
                       SliverPersistentHeader(
                         pinned: !ModalRoute.of(context)!.isFirst,
                         delegate: _SliverAppBarDelegate(
@@ -137,10 +150,12 @@ class _UserProfileViewState extends State<UserProfileView>
               ),
             ];
           },
-          body: const TabBarView(
+          body: TabBarView(
             children: [
-              PostsPage(),
-              UserProfileMentionedPostsPage(),
+              PostsPage(
+                sponsoredPost: widget.sponsoredPost,
+              ),
+              const UserProfileMentionedPostsPage(),
             ],
           ),
         ),
@@ -179,7 +194,9 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
 }
 
 class PostsPage extends StatefulWidget {
-  const PostsPage({super.key});
+  const PostsPage({this.sponsoredPost, super.key});
+
+  final PostSponsoredBlock? sponsoredPost;
 
   @override
   State<PostsPage> createState() => _PostsPageState();
@@ -206,7 +223,7 @@ class _PostsPageState extends State<PostsPage>
           stream: bloc.userPosts(),
           comparator: const ListEquality<PostBlock>().equals,
           builder: (context, blocks) {
-            if (blocks.isEmpty) {
+            if (blocks.isEmpty && widget.sponsoredPost == null) {
               return const EmptyPosts();
             }
             return SliverGrid.builder(
@@ -216,9 +233,9 @@ class _PostsPageState extends State<PostsPage>
                 mainAxisSpacing: 2,
                 crossAxisSpacing: 2,
               ),
-              itemCount: blocks.length,
+              itemCount: widget.sponsoredPost != null ? 1 : blocks.length,
               itemBuilder: (context, index) {
-                final block = blocks[index];
+                final block = widget.sponsoredPost ?? blocks[index];
                 final multiMedia = block.media.length > 1;
 
                 return BlocBuilder<AppBloc, AppState>(
@@ -271,14 +288,24 @@ class UserProfileMentionedPostsPage extends StatelessWidget {
 }
 
 class UserProfileAppBar extends StatelessWidget {
-  const UserProfileAppBar({required this.userId, super.key});
+  const UserProfileAppBar({
+    required this.userId,
+    this.sponsoredPost,
+    super.key,
+  });
 
   final String? userId;
+  final PostSponsoredBlock? sponsoredPost;
 
   @override
   Widget build(BuildContext context) {
     final currentUser = context.select((AppBloc bloc) => bloc.state.user);
-    final user = context.select((UserProfileBloc b) => b.state.user);
+    final user$ = context.select((UserProfileBloc b) => b.state.user);
+    final user = sponsoredPost == null
+        ? user$
+        : user$.isAnonymous
+            ? sponsoredPost!.author.toUser
+            : user$;
 
     return SliverPadding(
       padding: const EdgeInsets.only(right: AppSpacing.md),

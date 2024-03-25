@@ -19,19 +19,19 @@ enum BlockActionType {
 extension BlocActionX on BlockAction {
   /// Executes the action.
   FutureOr<void> when({
-    required FutureOr<void> Function(NavigateToPostAuthorProfileAction)
+    FutureOr<void> Function(NavigateToPostAuthorProfileAction)?
         navigateToPostAuthor,
-    required FutureOr<void> Function(NavigateToSponsoredPostAuthorProfileAction)
+    FutureOr<void> Function(NavigateToSponsoredPostAuthorProfileAction)?
         navigateToSponsoredPostAuthor,
     FutureOr<void> Function()? unknown,
   }) =>
       switch (type) {
         NavigateToPostAuthorProfileAction.identifier =>
-          navigateToPostAuthor.call(this as NavigateToPostAuthorProfileAction),
+          navigateToPostAuthor?.call(this as NavigateToPostAuthorProfileAction),
         NavigateToSponsoredPostAuthorProfileAction.identifier =>
           navigateToSponsoredPostAuthor
-              .call(this as NavigateToSponsoredPostAuthorProfileAction),
-        _ => unknown?.call() ?? Future(() {}),
+              ?.call(this as NavigateToSponsoredPostAuthorProfileAction),
+        _ => unknown?.call(),
       };
 }
 
