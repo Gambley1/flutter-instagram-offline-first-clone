@@ -17,7 +17,7 @@ class SelectedImagesDetails {
 class SelectedByte {
   final File selectedFile;
   final Uint8List selectedByte;
- 
+
   final bool isThatImage;
 
   SelectedByte({

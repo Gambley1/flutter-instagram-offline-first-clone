@@ -99,7 +99,8 @@ class StoriesEditor extends StatelessWidget {
             onBackPress: onBackPress,
             editorBackgroundColor: editorBackgroundColor,
             galleryThumbnailQuality: galleryThumbnailQuality,
-            storiesEditorLocalizationDelegate: storiesEditorLocalizationDelegate,
+            storiesEditorLocalizationDelegate:
+                storiesEditorLocalizationDelegate,
           ),
         ),
       ),

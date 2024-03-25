@@ -56,7 +56,8 @@ GoRouter router(AppBloc appBloc) => GoRouter(
               child: BlocProvider(
                 create: (context) => CreateStoriesBloc(
                   storiesRepository: context.read<StoriesRepository>(),
-                  firebaseRemoteConfigRepository: context.read<FirebaseRemoteConfigRepository>(),
+                  firebaseRemoteConfigRepository:
+                      context.read<FirebaseRemoteConfigRepository>(),
                 ),
                 child: UserProfilePage(
                   userId: userId,

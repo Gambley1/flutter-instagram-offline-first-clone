@@ -214,17 +214,15 @@ class _PostPopupState extends State<PopupModal>
         details.globalPosition.dx < dimension.positionRight;
 
     if (isInside(likePosition)) {
-      _messageText.value =
-          isLiked ? l10n.unlikeText : l10n.likeText;
+      _messageText.value = isLiked ? l10n.unlikeText : l10n.likeText;
       _messagePositionLeft.value = likePosition.positionLeft -
           likePosition.positionCenter -
           (isLiked ? 15 : 7);
       _likeVisibility.value = true;
       _messageVisibility.value = true;
     } else if (isInside(commentPosition)) {
-      _messageText.value = widget.showComments
-          ? l10n.commentText
-          : l10n.viewProfileText;
+      _messageText.value =
+          widget.showComments ? l10n.commentText : l10n.viewProfileText;
       _messagePositionLeft.value =
           commentPosition.positionLeft - commentPosition.positionCenter - 30;
       _commentOrViewProfileVisibility.value = true;

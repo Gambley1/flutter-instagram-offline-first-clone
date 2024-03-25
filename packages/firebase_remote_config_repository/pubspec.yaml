@@ -5,10 +5,10 @@ publish_to: none
 
 environment:
   sdk: ">=3.2.6 <4.0.0"
-  flutter: "^3.19.0"
+  flutter: ">=3.10.0"
 
 dependencies:
-  firebase_remote_config: ^4.3.18
+  firebase_remote_config: ">=4.3.5 <=4.5.0"
   flutter:
     sdk: flutter
   shared:

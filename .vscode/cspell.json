@@ -199,13 +199,15 @@
     "prefetch",
     "giffy",
     "giphy",
-    "ccon"
+    "ccon",
+    "nodoc"
   ],
   "ignorePaths": [
     ".github/workflows/**",
     "packages/shared/lib/src/config/tld.dart",
     "packages/shared/lib/src/config/utilities/extensions/string_extension.dart",
     "packages/shared/lib/src/config/utilities/utilities.dart",
-    "packages/stories_editor/**"
+    "packages/stories_editor/**",
+    "lib/l10n/**"
   ]
 }

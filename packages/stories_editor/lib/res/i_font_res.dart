@@ -5,7 +5,8 @@ class FontRes {
   static const String B612_REGULAR = 'B612-Regular';
   static const String BUNGEESHADE_REGULAR = 'BungeeShade-Regular';
   static const String CONCERTONE_REGULAR = 'ConcertOne-Regular';
-  static const String DANCINGSCRIPT_VARIABLEFONT_WGHT = 'DancingScript-VariableFont_wght';
+  static const String DANCINGSCRIPT_VARIABLEFONT_WGHT =
+      'DancingScript-VariableFont_wght';
   static const String FREDERICKATHEGREAT_REGULAR = 'FrederickatheGreat-Regular';
   static const String INDIEFLOWER_REGULAR = 'IndieFlower-Regular';
   static const String NEONDERTHAW_REGULAR = 'Neonderthaw-Regular';

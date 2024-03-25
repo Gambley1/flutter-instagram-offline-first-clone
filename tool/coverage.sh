@@ -19,14 +19,14 @@ cd ${PROJECT_PATH}
 
 rm -rf coverage
 fvm flutter --version
-very_good test --coverage --exclude-coverage "**/*.g.dart **/*.freezed.dart **/*.gen.dart **/l10n/*.dart **/l10n/**/*.dart **/main/bootstrap.dart" --exclude-tags 'presubmit-only' --test-randomize-ordering-seed random
+very_good test --coverage --exclude-coverage "**/*.g.dart **/*.freezed.dart **/*.gen.dart **/l10n/*.dart **/l10n/**/*.dart **/bootstrap.dart" --exclude-tags 'presubmit-only' --test-randomize-ordering-seed random
 
 lcov --remove ${PROJECT_COVERAGE} -o ${PROJECT_COVERAGE} \
     '**/*.g.dart' \
     '**/*.freezed.dart' \
     '**/l10n/*.dart' \
     '**/l10n/**/*.dart' \
-    '**/main/bootstrap.dart' \
+    '**/bootstrap.dart' \
     '**/*.gen.dart'
 
 genhtml ${PROJECT_COVERAGE} -o coverage | tee ./coverage/output.txt
