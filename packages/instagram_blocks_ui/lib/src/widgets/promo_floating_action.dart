@@ -46,6 +46,7 @@ class PromoFloatingAction extends StatelessWidget {
             ),
             width: 42,
             borderRadius: 2,
+            withPlaceholder: false,
           ),
           horizontalTitleGap: AppSpacing.sm,
           title: Text(
