@@ -4,7 +4,6 @@ import 'package:env/env.dart';
 import 'package:firebase_notifications_client/firebase_notifications_client.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/bootstrap.dart';
-import 'package:flutter_instagram_offline_first_clone/firebase_options_prod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:notifications_repository/notifications_repository.dart';
 import 'package:persistent_storage/persistent_storage.dart';
@@ -80,6 +79,5 @@ void main() {
       );
     },
     appFlavor: AppFlavor.production(),
-    options: DefaultFirebaseOptions.currentPlatform,
   );
 }

@@ -41,8 +41,7 @@ class ExpandableTextState extends State<ExpandableText> {
         // Layout and measure link
         final textPainter = TextPainter(
           text: link,
-          textDirection: TextDirection
-              .rtl, 
+          textDirection: TextDirection.rtl,
           maxLines: widget.trimLines,
           ellipsis: '...',
         );

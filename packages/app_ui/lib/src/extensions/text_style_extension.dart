@@ -21,7 +21,7 @@ extension TextStyleExtension on BuildContext {
 
   /// Material display large text style.
   TextStyle? get displayLarge => textTheme.displayLarge;
-  
+
   /// Material display medium text style.
   TextStyle? get displayMedium => textTheme.displayMedium;
 

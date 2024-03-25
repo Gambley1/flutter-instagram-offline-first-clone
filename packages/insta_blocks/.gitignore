@@ -16,9 +16,6 @@ migrate_working_dir/
 *.iws
 .idea/
 
-# Generated
-**/*.g.dart
-
 # VSCode related
 .vscode/*
 
