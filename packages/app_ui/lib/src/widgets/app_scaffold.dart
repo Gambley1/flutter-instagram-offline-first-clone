@@ -35,7 +35,7 @@ class AppScaffold extends StatelessWidget {
   /// Will pop callback. If null, will pop the navigator.
   final void Function(bool)? onPopInvoked;
 
-  /// Whether the page can be poped.
+  /// Whether the router can pop this scaffold.
   final bool canPop;
 
   /// If true, will wrap the [body] with [SafeArea].
