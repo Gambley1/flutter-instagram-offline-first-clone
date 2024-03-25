@@ -15,9 +15,6 @@ migrate_working_dir/
 # Generated files
 lib/l10n/generated/*
 ./generated
-**/*.gen.dart
-**/*.g.dart
-**/*.freezed.dart
 
 # IntelliJ related
 *.iml
