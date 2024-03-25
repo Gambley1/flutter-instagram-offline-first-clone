@@ -144,6 +144,7 @@ class PostLargeView extends StatelessWidget {
             pathParameters: {'user_id': action.authorId},
             queryParameters: {
               'promo_action': json.encode(action.toJson()),
+              'sponsored_post': json.encode(block.toJson()),
             },
             extra: true,
           ),
@@ -247,14 +248,6 @@ class PostLargeView extends StatelessWidget {
         navigateToPostAuthor: (action) => context.pushNamed(
           'user_profile',
           pathParameters: {'user_id': action.authorId},
-        ),
-        navigateToSponsoredPostAuthor: (action) => context.pushNamed(
-          'user_profile',
-          pathParameters: {'user_id': action.authorId},
-          queryParameters: {
-            'promo_action': json.encode(action.toJson()),
-          },
-          extra: true,
         ),
       ),
       onPostShareTap: (postId, author) => context.showScrollableModal(

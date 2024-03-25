@@ -50,6 +50,14 @@ GoRouter router(AppBloc appBloc) => GoRouter(
                         jsonDecode(state.uri.queryParameters['promo_action']!)
                             as Map<String, dynamic>,
                       );
+            final sponsoredPost =
+                state.uri.queryParameters['sponsored_post'] == null
+                    ? null
+                    : PostSponsoredBlock.fromJson(
+                        jsonDecode(
+                          state.uri.queryParameters['sponsored_post']!,
+                        ) as Map<String, dynamic>,
+                      );
 
             return CustomTransitionPage(
               key: state.pageKey,
@@ -63,6 +71,7 @@ GoRouter router(AppBloc appBloc) => GoRouter(
                   userId: userId,
                   isSponsored: isSponsored,
                   promoBlockAction: promoBlockAction,
+                  sponsoredPost: sponsoredPost,
                 ),
               ),
               transitionsBuilder:
