@@ -33,11 +33,8 @@ class AppBlocObserver extends BlocObserver {
 }
 
 @pragma('vm:entry-point')
-Future<void> _firebaseMessagingBackgroundHandler(
-  RemoteMessage message, {
-  required FirebaseOptions options,
-}) async {
-  await Firebase.initializeApp(options: options);
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
 
   logD('Handling a background message: ${message.toMap()}');
 }
@@ -45,7 +42,6 @@ Future<void> _firebaseMessagingBackgroundHandler(
 Future<void> bootstrap(
   AppBuilder builder, {
   required AppFlavor appFlavor,
-  required FirebaseOptions options,
 }) async {
   FlutterError.onError = (details) {
     logE(details.exceptionAsString(), stackTrace: details.stack);
@@ -59,7 +55,7 @@ Future<void> bootstrap(
 
       setupDi(appFlavor: appFlavor);
 
-      await Firebase.initializeApp(options: options);
+      await Firebase.initializeApp();
 
       HydratedBloc.storage = await HydratedStorage.build(
         storageDirectory: kIsWeb
@@ -72,8 +68,7 @@ Future<void> bootstrap(
 
       final firebaseMessaging = FirebaseMessaging.instance;
       FirebaseMessaging.onBackgroundMessage(
-        (message) =>
-            _firebaseMessagingBackgroundHandler(message, options: options),
+        _firebaseMessagingBackgroundHandler,
       );
 
       final sharedPreferences = await SharedPreferences.getInstance();

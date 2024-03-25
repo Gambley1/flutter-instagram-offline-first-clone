@@ -35,9 +35,6 @@ pubspec.lock
 
 # Firebase related
 .firebase/
-lib/firebase_options_dev.dart
-lib/firebase_options_prod.dart
-lib/firebase_options_stg.dart
 
 # Localization
 l10n_error.json
