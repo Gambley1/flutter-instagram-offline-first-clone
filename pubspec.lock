@@ -666,14 +666,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.4.0"
-  float_column:
-    dependency: transitive
-    description:
-      name: float_column
-      sha256: "62f0bba2de502ea5fabab6adf6ce704e27bcc7931de1202477ca852f8855def9"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.1.5"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -1692,14 +1684,6 @@ packages:
       relative: true
     source: path
     version: "0.1.0+1"
-  selectable:
-    dependency: "direct main"
-    description:
-      name: selectable
-      sha256: "942b2b8fb68f093a8c9f5fefbecaeced88a16763f3298dfa4fcd48fba0e6be53"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.3.1"
   shared:
     dependency: "direct main"
     description:
