@@ -26,17 +26,23 @@ class UserProfileCreatePost extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PickImage().customMediaPicker(
-      key: imagePickerKey,
-      context: context,
-      source: ImageSource.both,
-      pickerSource: PickerSource.both,
-      onMediaPicked: (details) => context.pushNamed(
-        'publish_post',
-        extra: CreatePostProps(details: details),
+    return BackButtonListener(
+      onBackButtonPressed: () {
+        HomeProvider().animateToPage(1);
+        return Future.value(true);
+      },
+      child: PickImage().customMediaPicker(
+        key: imagePickerKey,
+        context: context,
+        source: ImageSource.both,
+        pickerSource: PickerSource.both,
+        onMediaPicked: (details) => context.pushNamed(
+          'publish_post',
+          extra: CreatePostProps(details: details),
+        ),
+        onBackButtonTap:
+            onBackButtonTap != null ? () => onBackButtonTap?.call() : null,
       ),
-      onBackButtonTap:
-          onBackButtonTap != null ? () => onBackButtonTap?.call() : null,
     );
   }
 }
