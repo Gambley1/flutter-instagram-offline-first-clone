@@ -41,8 +41,6 @@ jobs:
 
       - name: Format
         run: dart format --set-exit-if-changed lib test
-        with:
-          exclude: "**/l10n/**"
 
       - name: Analyze
         run: flutter analyze lib test
