@@ -80,7 +80,7 @@ class AppButton extends StatelessWidget {
   /// The text to be displayed on the button.
   final String? text;
 
-  /// The widget to be displayed inside button.
+  /// The widget to be displayed inside the button.
   final Widget? child;
 
   /// The width of the button.
