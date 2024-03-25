@@ -57,8 +57,7 @@ class _BetterStreamBuilderState<T extends Object>
     }
     final event = _lastEvent;
     return switch (event) {
-      null =>
-         widget.noDataBuilder?.call(context) ?? const SizedBox.shrink(),
+      null => widget.noDataBuilder?.call(context) ?? const SizedBox.shrink(),
       _ => widget.builder(context, event),
     };
   }

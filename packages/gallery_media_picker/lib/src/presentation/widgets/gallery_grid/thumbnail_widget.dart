@@ -14,7 +14,7 @@ class ThumbnailWidget extends StatelessWidget {
 
   /// image provider
   final GalleryMediaPickerController provider;
-  
+
   const ThumbnailWidget({
     super.key,
     required this.index,

@@ -34,7 +34,7 @@ class ImageCompress {
     }
     final split = filePath.substring(0, lastIndex);
     final outPath = '${split}_out${filePath.substring(lastIndex)}';
-    return  FlutterImageCompress.compressAndGetFile(
+    return FlutterImageCompress.compressAndGetFile(
       file.absolute.path,
       outPath,
       quality: quality,

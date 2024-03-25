@@ -13,7 +13,7 @@ class GalleryDisplaySettings {
   final bool cropImage;
   final bool pickAvatar;
 
-   const GalleryDisplaySettings({
+  const GalleryDisplaySettings({
     this.appTheme,
     this.tabsTexts,
     this.callbackFunction,

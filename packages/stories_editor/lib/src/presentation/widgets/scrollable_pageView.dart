@@ -18,7 +18,7 @@ class ScrollablePageView extends StatefulWidget {
     required this.pageController,
     required this.gridController,
   });
-  
+
   @override
   State<ScrollablePageView> createState() => _ScrollablePageViewState();
 }
