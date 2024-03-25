@@ -222,11 +222,11 @@
   "@cancelFollowingText": {
     "description": "Text shown in modal bottom sheet to cancel current following to user"
   },
-  "haveSeenAllRecentPosts": "You''re all caught up",
+  "haveSeenAllRecentPosts": "You're all caught up",
   "@haveSeenAllRecentPosts": {
     "description": "Header text shown in divider block when user have seen all recent posts"
   },
-  "haveSeenAllRecentPostsInPast3Days": "You''ve seen all new posts from the past 3 days.",
+  "haveSeenAllRecentPostsInPast3Days": "You've seen all new posts from the past 3 days.",
   "@haveSeenAllRecentPostsInPast3Days": {
     "description": "Body text shown in divider block when user have seen all recent posts in past 3 days"
   },
@@ -249,7 +249,7 @@
   "writeCaptionText": "Write caption...",
   "logOutText": "Log out",
   "logOutConfirmationText": "Are you sure you want to log out?",
-  "notShowAgainText": "Dont''t show again",
+  "notShowAgainText": "Dont't show again",
   "blockPostAuthorText": "Block post author",
   "blockAuthorText": "Block author",
   "blockAuthorConfirmationText": "Are you sure you want to block this author?",
@@ -273,8 +273,8 @@
   },
   "changeText": "Change",
   "changePhotoText": "Change photo",
-  "fullNameEditDescription": "Help people discover your account by using the name yor''re known by: either your full name, nickname, or business name.\n\nYou can only change your name twice within 14 days.",
-  "usernameEditDescription": "You''ll be able to change your username back to {username} for another 14 days",
+  "fullNameEditDescription": "Help people discover your account by using the name yor're known by: either your full name, nickname, or business name.\n\nYou can only change your name twice within 14 days.",
+  "usernameEditDescription": "You'll be able to change your username back to {username} for another 14 days",
   "@usernameEditDescription": {
     "placeholders": {
       "username": {
@@ -351,7 +351,7 @@
   "noLastMessagesText": "No last messages",
   "onlineText": "online",
   "moreText": "More",
-  "noAccountText": "Don''t have an account?",
+  "noAccountText": "Don't have an account?",
   "alreadyHaveAccountText": "Already have an account?",
   "nameText": "Name",
   "usernameText": "Username",
