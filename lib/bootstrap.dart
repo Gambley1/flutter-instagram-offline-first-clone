@@ -36,7 +36,7 @@ class AppBlocObserver extends BlocObserver {
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
 
-  logD('Handling a background message: ${message.toMap()}');
+  logI('Handling a background message: ${message.toMap()}');
 }
 
 Future<void> bootstrap(

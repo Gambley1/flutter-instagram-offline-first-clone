@@ -13,6 +13,7 @@ class AppScaffold extends StatelessWidget {
     required this.body,
     super.key,
     this.onPopInvoked,
+    this.canPop = true,
     this.safeArea = true,
     this.top = true,
     this.bottom = true,
@@ -33,6 +34,9 @@ class AppScaffold extends StatelessWidget {
 
   /// Will pop callback. If null, will pop the navigator.
   final void Function(bool)? onPopInvoked;
+
+  /// Whether the page can be poped.
+  final bool canPop;
 
   /// If true, will wrap the [body] with [SafeArea].
   final bool safeArea;
@@ -107,6 +111,7 @@ class AppScaffold extends StatelessWidget {
           drawer: drawer,
           bottomSheet: bottomSheet,
           onPopInvoked: onPopInvoked,
+          canPop: canPop,
           extendBody: extendBody,
           extendBodyBehindAppBar: extendBodyBehindAppBar,
         ),
@@ -127,6 +132,7 @@ class AppScaffold extends StatelessWidget {
       drawer: drawer,
       bottomSheet: bottomSheet,
       onPopInvoked: onPopInvoked,
+      canPop: canPop,
       extendBody: extendBody,
       extendBodyBehindAppBar: extendBodyBehindAppBar,
     );
@@ -145,6 +151,7 @@ class _MaterialScaffold extends StatelessWidget {
     required this.withSafeArea,
     required this.extendBody,
     required this.extendBodyBehindAppBar,
+    required this.canPop,
     this.backgroundColor,
     this.floatingActionButton,
     this.floatingActionButtonLocation,
@@ -183,6 +190,8 @@ class _MaterialScaffold extends StatelessWidget {
 
   final void Function(bool)? onPopInvoked;
 
+  final bool canPop;
+
   final bool extendBody;
 
   final bool extendBodyBehindAppBar;
@@ -208,15 +217,23 @@ class _MaterialScaffold extends StatelessWidget {
       appBar: appBar,
       drawer: drawer,
       bottomSheet: bottomSheet,
-    ).withPopScope(onPopInvoked).withAdaptiveSystemTheme(context);
+    )
+        .withPopScope(
+          onPopInvoked: onPopInvoked,
+          canPop: canPop,
+        )
+        .withAdaptiveSystemTheme(context);
   }
 }
 
 /// Will pop scope extension that wraps widget with [PopScope].
 extension WillPopScopeX on Widget {
   /// Wraps widget with [PopScope].
-  Widget withPopScope(void Function(bool)? onPopInvoked) =>
-      PopScope(onPopInvoked: onPopInvoked, child: this);
+  Widget withPopScope({
+    void Function(bool)? onPopInvoked,
+    bool canPop = true,
+  }) =>
+      PopScope(onPopInvoked: onPopInvoked, canPop: canPop, child: this);
 }
 
 /// Extension used to respectively change the `systemNavigationBar` theme.
