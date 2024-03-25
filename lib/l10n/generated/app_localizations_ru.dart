@@ -76,7 +76,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get uploadText => 'Загрузить';
 
   @override
-  String get loseAllEditsText => 'Если вы вернетесь сейчас, вы потеряете все внесенные вами изменения.';
+  String get loseAllEditsText =>
+      'Если вы вернетесь сейчас, вы потеряете все внесенные вами изменения.';
 
   @override
   String get saveDraft => 'Сохранить черновик';
@@ -106,31 +107,36 @@ class AppLocalizationsRu extends AppLocalizations {
   String get deleteCommentText => 'Удалить комментарий';
 
   @override
-  String get commentDeleteConfirmationText => 'Вы уверены что хотите удалить этот комментарий?';
+  String get commentDeleteConfirmationText =>
+      'Вы уверены что хотите удалить этот комментарий?';
 
   @override
   String get deleteMessageText => 'Удалить сообщение';
 
   @override
-  String get messageDeleteConfirmationText => 'Вы уверены что хотите удалить это сообщение?';
+  String get messageDeleteConfirmationText =>
+      'Вы уверены что хотите удалить это сообщение?';
 
   @override
   String get deleteChatText => 'Удалить чат';
 
   @override
-  String get chatDeleteConfirmationText => 'Вы уверены что хотите удалить этот чат?';
+  String get chatDeleteConfirmationText =>
+      'Вы уверены что хотите удалить этот чат?';
 
   @override
   String get deleteReelText => 'Удалить видео Reels';
 
   @override
-  String get reelDeleteConfirmationText => 'Вы уверены что хотите удалить это видео Reels?';
+  String get reelDeleteConfirmationText =>
+      'Вы уверены что хотите удалить это видео Reels?';
 
   @override
   String get deleteStoryText => 'Удалить историю';
 
   @override
-  String get storyDeleteConfirmationText => 'Вы уверены что хотите удалить эту историю?';
+  String get storyDeleteConfirmationText =>
+      'Вы уверены что хотите удалить эту историю?';
 
   @override
   String get commentText => 'Комментарий';
@@ -278,7 +284,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get haveSeenAllRecentPosts => 'Вы посмотрели все обновления';
 
   @override
-  String get haveSeenAllRecentPostsInPast3Days => 'Вы посмотрели все новые публикации за последние 3 дн.';
+  String get haveSeenAllRecentPostsInPast3Days =>
+      'Вы посмотрели все новые публикации за последние 3 дн.';
 
   @override
   String get suggestedForYouText => 'Рекомендуемые публикации';
@@ -310,7 +317,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get logOutText => 'Выйти';
 
   @override
-  String get logOutConfirmationText => 'Вы уверены что хотите выйти из аккаунта?';
+  String get logOutConfirmationText =>
+      'Вы уверены что хотите выйти из аккаунта?';
 
   @override
   String get notShowAgainText => 'Не показывать снова';
@@ -322,7 +330,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get blockAuthorText => 'Заблокировать автора';
 
   @override
-  String get blockAuthorConfirmationText => 'Вы уверены что хотите заблокировать этого автора?';
+  String get blockAuthorConfirmationText =>
+      'Вы уверены что хотите заблокировать этого автора?';
 
   @override
   String get blockText => 'Заблокировать';
@@ -369,7 +378,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get changePhotoText => 'Изменить фото';
 
   @override
-  String get fullNameEditDescription => 'Помогите людям найти вашу учетную запись, используя имя, под которым вы известны: полное имя, псевдоним или название компании.\n\nВы можете изменить свое имя только дважды в течение 14 дней.';
+  String get fullNameEditDescription =>
+      'Помогите людям найти вашу учетную запись, используя имя, под которым вы известны: полное имя, псевдоним или название компании.\n\nВы можете изменить свое имя только дважды в течение 14 дней.';
 
   @override
   String usernameEditDescription(String username) {
@@ -377,7 +387,8 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String profileInfoEditConfirmationText(String newUsername, String changeType) {
+  String profileInfoEditConfirmationText(
+      String newUsername, String changeType) {
     return 'Вы уверены что хотите сменить $changeType на $newUsername ?';
   }
 
@@ -444,13 +455,15 @@ class AppLocalizationsRu extends AppLocalizations {
   String get removeFollowerText => 'Удалить подписчика';
 
   @override
-  String get removeFollowerConfirmationText => 'Вы уверены что хотите удалить подписчика?';
+  String get removeFollowerConfirmationText =>
+      'Вы уверены что хотите удалить подписчика?';
 
   @override
   String get deletePostText => 'Удалить публикацию';
 
   @override
-  String get deletePostConfirmationText => 'Вы уверены что хотите удальть эту публикацию?';
+  String get deletePostConfirmationText =>
+      'Вы уверены что хотите удальть эту публикацию?';
 
   @override
   String get cancelText => 'Отмена';
@@ -510,7 +523,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get usernameText => 'Имя пользователя';
 
   @override
-  String get forgotPasswordEmailConfirmationText => 'Подтверждение учётной записи';
+  String get forgotPasswordEmailConfirmationText =>
+      'Подтверждение учётной записи';
 
   @override
   String verificationTokenSentText(String email) {
@@ -670,7 +684,8 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String get networkError => 'Произошла сетевая ошибка.\nПроверьте подключение и повторите попытку.';
+  String get networkError =>
+      'Произошла сетевая ошибка.\nПроверьте подключение и повторите попытку.';
 
   @override
   String get networkErrorButton => 'Попробуйте ещё раз';

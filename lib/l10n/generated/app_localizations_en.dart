@@ -82,7 +82,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get uploadText => 'Upload';
 
   @override
-  String get loseAllEditsText => 'If you go back now, youll loose all the edits youve made.';
+  String get loseAllEditsText =>
+      'If you go back now, youll loose all the edits youve made.';
 
   @override
   String get saveDraft => 'Save Draft';
@@ -112,31 +113,36 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deleteCommentText => 'Delete comment';
 
   @override
-  String get commentDeleteConfirmationText => 'Are you sure you want to delete this comment?';
+  String get commentDeleteConfirmationText =>
+      'Are you sure you want to delete this comment?';
 
   @override
   String get deleteMessageText => 'Delete message';
 
   @override
-  String get messageDeleteConfirmationText => 'Are you sure you want to delete this message?';
+  String get messageDeleteConfirmationText =>
+      'Are you sure you want to delete this message?';
 
   @override
   String get deleteChatText => 'Delete chat';
 
   @override
-  String get chatDeleteConfirmationText => 'Are you sure you want to delete this chat?';
+  String get chatDeleteConfirmationText =>
+      'Are you sure you want to delete this chat?';
 
   @override
   String get deleteReelText => 'Delete Reel';
 
   @override
-  String get reelDeleteConfirmationText => 'Are you sure you want to delete this Reel?';
+  String get reelDeleteConfirmationText =>
+      'Are you sure you want to delete this Reel?';
 
   @override
   String get deleteStoryText => 'Delete story';
 
   @override
-  String get storyDeleteConfirmationText => 'Are you sure you want to delete this story?';
+  String get storyDeleteConfirmationText =>
+      'Are you sure you want to delete this story?';
 
   @override
   String get commentText => 'Comment';
@@ -282,7 +288,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get haveSeenAllRecentPosts => 'You\'re all caught up';
 
   @override
-  String get haveSeenAllRecentPostsInPast3Days => 'You\'ve seen all new posts from the past 3 days.';
+  String get haveSeenAllRecentPostsInPast3Days =>
+      'You\'ve seen all new posts from the past 3 days.';
 
   @override
   String get suggestedForYouText => 'Suggested for you';
@@ -327,7 +334,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get blockAuthorText => 'Block author';
 
   @override
-  String get blockAuthorConfirmationText => 'Are you sure you want to block this author?';
+  String get blockAuthorConfirmationText =>
+      'Are you sure you want to block this author?';
 
   @override
   String get blockText => 'Block';
@@ -368,7 +376,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get changePhotoText => 'Change photo';
 
   @override
-  String get fullNameEditDescription => 'Help people discover your account by using the name yor\'re known by: either your full name, nickname, or business name.\n\nYou can only change your name twice within 14 days.';
+  String get fullNameEditDescription =>
+      'Help people discover your account by using the name yor\'re known by: either your full name, nickname, or business name.\n\nYou can only change your name twice within 14 days.';
 
   @override
   String usernameEditDescription(String username) {
@@ -376,7 +385,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String profileInfoEditConfirmationText(String newUsername, String changeType) {
+  String profileInfoEditConfirmationText(
+      String newUsername, String changeType) {
     return 'Are you sure you want to change your $changeType to $newUsername ?';
   }
 
@@ -436,13 +446,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get removeFollowerText => 'Remove follower';
 
   @override
-  String get removeFollowerConfirmationText => 'Are you sure you want to remove follower?';
+  String get removeFollowerConfirmationText =>
+      'Are you sure you want to remove follower?';
 
   @override
   String get deletePostText => 'Delete post';
 
   @override
-  String get deletePostConfirmationText => 'Are you sure you want to delete this post?';
+  String get deletePostConfirmationText =>
+      'Are you sure you want to delete this post?';
 
   @override
   String get cancelText => 'Cancel';
@@ -478,7 +490,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noImagesFoundedText => 'There is no images';
 
   @override
-  String get acceptAllPermissionsText => 'Failed! accept all access permissions.';
+  String get acceptAllPermissionsText =>
+      'Failed! accept all access permissions.';
 
   @override
   String get noLastMessagesText => 'No last messages';
@@ -655,7 +668,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get networkError => 'A network error has occurred.\nCheck your connection and try again.';
+  String get networkError =>
+      'A network error has occurred.\nCheck your connection and try again.';
 
   @override
   String get networkErrorButton => 'Try Again';
