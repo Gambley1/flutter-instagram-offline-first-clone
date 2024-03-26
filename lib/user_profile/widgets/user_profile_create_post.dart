@@ -31,17 +31,20 @@ class UserProfileCreatePost extends StatelessWidget {
         HomeProvider().animateToPage(1);
         return Future.value(true);
       },
-      child: PickImage().customMediaPicker(
-        key: imagePickerKey,
-        context: context,
-        source: ImageSource.both,
-        pickerSource: PickerSource.both,
-        onMediaPicked: (details) => context.pushNamed(
-          'publish_post',
-          extra: CreatePostProps(details: details),
+      child: PopScope(
+        canPop: false,
+        child: PickImage().customMediaPicker(
+          key: imagePickerKey,
+          context: context,
+          source: ImageSource.both,
+          pickerSource: PickerSource.both,
+          onMediaPicked: (details) => context.pushNamed(
+            'publish_post',
+            extra: CreatePostProps(details: details),
+          ),
+          onBackButtonTap:
+              onBackButtonTap != null ? () => onBackButtonTap?.call() : null,
         ),
-        onBackButtonTap:
-            onBackButtonTap != null ? () => onBackButtonTap?.call() : null,
       ),
     );
   }

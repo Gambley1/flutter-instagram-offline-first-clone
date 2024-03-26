@@ -36,6 +36,7 @@ class ChatsView extends StatelessWidget {
         return Future.value(true);
       },
       child: const AppScaffold(
+        canPop: false,
         body: CustomScrollView(
           slivers: [
             ChatsAppBar(),
