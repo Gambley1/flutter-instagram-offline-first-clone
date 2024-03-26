@@ -158,7 +158,8 @@ class ProfileAvatar extends StatelessWidget {
         if (this.showStories ?? true && stories.isNotEmpty) {
           if (showStories || (!showStories && (showWhenSeen ?? false))) {
             context.pushNamed(
-              'view_stories',
+              'stories',
+              pathParameters: {'user_id': author.id},
               queryParameters: {
                 'stories': json.encode(stories.map((e) => e.toJson()).toList()),
               },

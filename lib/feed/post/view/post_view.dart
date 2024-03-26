@@ -218,8 +218,11 @@ class PostLargeView extends StatelessWidget {
       },
       postOptionsSettings: isOwner
           ? PostOptionsSettings.owner(
-              onPostEdit: (block) =>
-                  context.pushNamed('post_edit', extra: block),
+              onPostEdit: (block) => context.pushNamed(
+                'post_edit',
+                pathParameters: {'post_id': block.id},
+                extra: block,
+              ),
               onPostDelete: (_) {
                 bloc.add(const PostDeleteRequested());
                 context.read<FeedBloc>().add(

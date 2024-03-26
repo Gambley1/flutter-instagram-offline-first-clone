@@ -38,7 +38,7 @@ GoRouter router(AppBloc appBloc) => GoRouter(
           builder: (context, state) => const AuthPage(),
         ),
         GoRoute(
-          path: '/user/profile/:user_id',
+          path: '/users/:user_id',
           name: 'user_profile',
           pageBuilder: (context, state) {
             final userId = state.pathParameters['user_id'];
@@ -87,7 +87,7 @@ GoRouter router(AppBloc appBloc) => GoRouter(
           },
         ),
         GoRoute(
-          path: '/chat/:chat_id',
+          path: '/chats/:chat_id',
           name: 'chat',
           parentNavigatorKey: _rootNavigatorKey,
           pageBuilder: (context, state) {
@@ -133,8 +133,8 @@ GoRouter router(AppBloc appBloc) => GoRouter(
           },
         ),
         GoRoute(
-          path: '/post/details/:id',
-          name: 'post_details',
+          path: '/posts/:id',
+          name: 'post',
           parentNavigatorKey: _rootNavigatorKey,
           pageBuilder: (context, state) {
             final id = state.pathParameters['id'];
@@ -155,7 +155,7 @@ GoRouter router(AppBloc appBloc) => GoRouter(
           },
         ),
         GoRoute(
-          path: '/post/edit',
+          path: '/posts/:post_id/edit',
           name: 'post_edit',
           parentNavigatorKey: _rootNavigatorKey,
           pageBuilder: (context, state) {
@@ -165,8 +165,8 @@ GoRouter router(AppBloc appBloc) => GoRouter(
           },
         ),
         GoRoute(
-          path: '/stories/view',
-          name: 'view_stories',
+          path: '/stories/:user_id',
+          name: 'stories',
           parentNavigatorKey: _rootNavigatorKey,
           pageBuilder: (context, state) {
             final author = state.extra! as User;
@@ -254,8 +254,12 @@ GoRouter router(AppBloc appBloc) => GoRouter(
             ),
             StatefulShellBranch(
               routes: [
+                /// This route doesn't return anything and doesn't throws an
+                /// Exception, because we ignore it if we tap of 2nd tab in
+                /// bottom nav bar. Instead, we execute a function to switch
+                /// a page in the `PageView`.
                 GoRoute(
-                  path: '/navigate_create_media',
+                  path: '/create_media',
                   redirect: (context, state) => null,
                 ),
               ],
@@ -285,7 +289,7 @@ GoRouter router(AppBloc appBloc) => GoRouter(
             StatefulShellBranch(
               routes: [
                 GoRoute(
-                  path: '/profile',
+                  path: '/user',
                   pageBuilder: (context, state) {
                     final user =
                         context.select((AppBloc bloc) => bloc.state.user);

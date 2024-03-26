@@ -210,7 +210,7 @@ class MessageSharedPost extends StatelessWidget {
         Tappable(
           animationEffect: TappableAnimationEffect.none,
           onTap: () => context.pushNamed(
-            'post_details',
+            'post',
             pathParameters: {'id': sharedPost.id},
           ),
           child: Column(
@@ -351,7 +351,7 @@ class MessageSharedReel extends StatelessWidget {
         Tappable(
           animationEffect: TappableAnimationEffect.none,
           onTap: () => context.pushNamed(
-            'post_details',
+            'post',
             pathParameters: {'id': sharedPost.id},
           ),
           child: Stack(
