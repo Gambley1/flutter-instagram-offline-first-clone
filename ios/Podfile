@@ -40,7 +40,7 @@ post_install do |installer|
     target.build_configurations.each do |build_configuration|
       # GoogleSignIn does not support arm64 simulators.
       # https://github.com/flutter/flutter/issues/85713
-      build_configuration.build_settings['EXCLUDED_ARCHS[sdk=iphonesimulator*]'] = 'arm64 i386'
+      build_configuration.build_settings['EXCLUDED_ARCHS[sdk=iphonesimulator*]'] = 'i386'
 
       # You can enable the permissions needed here. For example to enable camera
       # permission, just remove the `#` character in front so it looks like this:
