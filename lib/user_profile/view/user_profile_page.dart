@@ -20,17 +20,13 @@ import 'package:user_repository/user_repository.dart';
 
 class UserProfilePage extends StatelessWidget {
   const UserProfilePage({
+    this.props = const UserProfileProps.build(),
     super.key,
     this.userId,
-    this.isSponsored = false,
-    this.sponsoredPost,
-    this.promoBlockAction,
   });
 
   final String? userId;
-  final bool isSponsored;
-  final PostSponsoredBlock? sponsoredPost;
-  final BlockAction? promoBlockAction;
+  final UserProfileProps props;
 
   @override
   Widget build(BuildContext context) {
@@ -48,29 +44,20 @@ class UserProfilePage extends StatelessWidget {
             ..add(const UserProfileFollowersCountSubscriptionRequested()),
         ),
       ],
-      child: UserProfileView(
-        userId: userId,
-        isSponsored: isSponsored,
-        sponsoredPost: sponsoredPost,
-        promoBlockAction: promoBlockAction,
-      ),
+      child: UserProfileView(userId: userId, props: props),
     );
   }
 }
 
 class UserProfileView extends StatefulWidget {
   const UserProfileView({
+    required this.props,
     super.key,
     this.userId,
-    this.isSponsored = false,
-    this.sponsoredPost,
-    this.promoBlockAction,
   });
 
   final String? userId;
-  final bool isSponsored;
-  final PostSponsoredBlock? sponsoredPost;
-  final BlockAction? promoBlockAction;
+  final UserProfileProps props;
 
   @override
   State<UserProfileView> createState() => _UserProfileViewState();
@@ -79,6 +66,8 @@ class UserProfileView extends StatefulWidget {
 class _UserProfileViewState extends State<UserProfileView>
     with SingleTickerProviderStateMixin {
   late ScrollController _controller;
+
+  UserProfileProps get props => widget.props;
 
   @override
   void initState() {
@@ -89,12 +78,12 @@ class _UserProfileViewState extends State<UserProfileView>
   @override
   Widget build(BuildContext context) {
     final promoAction =
-        widget.promoBlockAction as NavigateToSponsoredPostAuthorProfileAction?;
+        props.promoBlockAction as NavigateToSponsoredPostAuthorProfileAction?;
     final user = context.select((UserProfileBloc bloc) => bloc.state.user);
 
     return AppScaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: !widget.isSponsored
+      floatingActionButton: !props.isSponsored
           ? null
           : PromoFloatingAction(
               url: promoAction!.promoUrl,
@@ -116,12 +105,12 @@ class _UserProfileViewState extends State<UserProfileView>
                   children: [
                     UserProfileAppBar(
                       userId: widget.userId,
-                      sponsoredPost: widget.sponsoredPost,
+                      sponsoredPost: props.sponsoredPost,
                     ),
-                    if (!user.isAnonymous || widget.sponsoredPost != null) ...[
+                    if (!user.isAnonymous || props.sponsoredPost != null) ...[
                       UserProfileHeader(
                         userId: widget.userId,
-                        sponsoredPost: widget.sponsoredPost,
+                        sponsoredPost: props.sponsoredPost,
                       ),
                       SliverPersistentHeader(
                         pinned: !ModalRoute.of(context)!.isFirst,
@@ -152,9 +141,7 @@ class _UserProfileViewState extends State<UserProfileView>
           },
           body: TabBarView(
             children: [
-              PostsPage(
-                sponsoredPost: widget.sponsoredPost,
-              ),
+              PostsPage(sponsoredPost: props.sponsoredPost),
               const UserProfileMentionedPostsPage(),
             ],
           ),

@@ -1,7 +1,6 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:animations/animations.dart';
 import 'package:firebase_remote_config_repository/firebase_remote_config_repository.dart';
@@ -40,24 +39,10 @@ GoRouter router(AppBloc appBloc) => GoRouter(
         GoRoute(
           path: '/users/:user_id',
           name: 'user_profile',
+          parentNavigatorKey: _rootNavigatorKey,
           pageBuilder: (context, state) {
             final userId = state.pathParameters['user_id'];
-            final isSponsored = (state.extra as bool?) ?? false;
-            final promoBlockAction =
-                state.uri.queryParameters['promo_action'] == null
-                    ? null
-                    : BlockAction.fromJson(
-                        jsonDecode(state.uri.queryParameters['promo_action']!)
-                            as Map<String, dynamic>,
-                      );
-            final sponsoredPost =
-                state.uri.queryParameters['sponsored_post'] == null
-                    ? null
-                    : PostSponsoredBlock.fromJson(
-                        jsonDecode(
-                          state.uri.queryParameters['sponsored_post']!,
-                        ) as Map<String, dynamic>,
-                      );
+            final props = state.extra as UserProfileProps?;
 
             return CustomTransitionPage(
               key: state.pageKey,
@@ -69,9 +54,7 @@ GoRouter router(AppBloc appBloc) => GoRouter(
                 ),
                 child: UserProfilePage(
                   userId: userId,
-                  isSponsored: isSponsored,
-                  promoBlockAction: promoBlockAction,
-                  sponsoredPost: sponsoredPost,
+                  props: props ?? const UserProfileProps.build(),
                 ),
               ),
               transitionsBuilder:

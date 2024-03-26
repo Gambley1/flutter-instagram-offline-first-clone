@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,6 +7,7 @@ import 'package:flutter_instagram_offline_first_clone/feed/feed.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/post/post.dart';
 import 'package:flutter_instagram_offline_first_clone/home/home.dart';
 import 'package:flutter_instagram_offline_first_clone/stories/user_stories/user_stories.dart';
+import 'package:flutter_instagram_offline_first_clone/user_profile/user_profile.dart';
 import 'package:go_router/go_router.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:posts_repository/posts_repository.dart';
@@ -142,11 +141,11 @@ class PostLargeView extends StatelessWidget {
           navigateToSponsoredPostAuthor: (action) => context.pushNamed(
             'user_profile',
             pathParameters: {'user_id': action.authorId},
-            queryParameters: {
-              'promo_action': json.encode(action.toJson()),
-              'sponsored_post': json.encode(block.toJson()),
-            },
-            extra: true,
+            extra: UserProfileProps.build(
+              isSponsored: true,
+              promoBlockAction: action,
+              sponsoredPost: block as PostSponsoredBlock,
+            ),
           ),
         ),
         onPostShareTap: (postId, author) => context.showScrollableModal(
