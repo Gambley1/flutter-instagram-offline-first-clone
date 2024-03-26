@@ -14,37 +14,37 @@ import 'package:shared/shared.dart';
 
 class UserProfileCreatePost extends StatelessWidget {
   const UserProfileCreatePost({
+    this.canPop = true,
     this.imagePickerKey,
     this.onPopInvoked,
     this.onBackButtonTap,
     super.key,
   });
 
+  final bool canPop;
   final Key? imagePickerKey;
   final VoidCallback? onBackButtonTap;
   final VoidCallback? onPopInvoked;
 
   @override
   Widget build(BuildContext context) {
-    return BackButtonListener(
-      onBackButtonPressed: () {
-        HomeProvider().animateToPage(1);
-        return Future.value(true);
+    return PopScope(
+      canPop: canPop,
+      onPopInvoked: (didPop) {
+        if (didPop) return;
+        onPopInvoked?.call();
       },
-      child: PopScope(
-        canPop: false,
-        child: PickImage().customMediaPicker(
-          key: imagePickerKey,
-          context: context,
-          source: ImageSource.both,
-          pickerSource: PickerSource.both,
-          onMediaPicked: (details) => context.pushNamed(
-            'publish_post',
-            extra: CreatePostProps(details: details),
-          ),
-          onBackButtonTap:
-              onBackButtonTap != null ? () => onBackButtonTap?.call() : null,
+      child: PickImage().customMediaPicker(
+        key: imagePickerKey,
+        context: context,
+        source: ImageSource.both,
+        pickerSource: PickerSource.both,
+        onMediaPicked: (details) => context.pushNamed(
+          'publish_post',
+          extra: CreatePostProps(details: details),
         ),
+        onBackButtonTap:
+            onBackButtonTap != null ? () => onBackButtonTap?.call() : null,
       ),
     );
   }

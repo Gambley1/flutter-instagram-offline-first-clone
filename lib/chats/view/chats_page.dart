@@ -30,19 +30,17 @@ class ChatsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BackButtonListener(
-      onBackButtonPressed: () {
+    return AppScaffold(
+      canPop: false,
+      onPopInvoked: (didPop) {
+        if (didPop) return;
         HomeProvider().animateToPage(1);
-        return Future.value(true);
       },
-      child: const AppScaffold(
-        canPop: false,
-        body: CustomScrollView(
-          slivers: [
-            ChatsAppBar(),
-            ChatsListView(),
-          ],
-        ),
+      body: const CustomScrollView(
+        slivers: [
+          ChatsAppBar(),
+          ChatsListView(),
+        ],
       ),
     );
   }

@@ -169,6 +169,7 @@ class _HomeViewState extends State<HomeView> {
               itemBuilder: (context, index) {
                 return switch (index) {
                   0 => UserProfileCreatePost(
+                      canPop: false,
                       imagePickerKey: customImagePickerKey,
                       onPopInvoked: () => HomeProvider().animateToPage(1),
                       onBackButtonTap: () => HomeProvider().animateToPage(1),

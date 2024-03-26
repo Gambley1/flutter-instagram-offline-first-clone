@@ -103,8 +103,8 @@ class UserProfileAvatar extends StatelessWidget {
     Future<void> precacheAvatarUrl(String url) =>
         precacheImage(CachedNetworkImageProvider(url), context);
 
-    final imageFile =
-        await PickImage().pickImage(context, source: ImageSource.both);
+    final imageFile = await PickImage()
+        .pickImage(context, source: ImageSource.both, pickAvatar: true);
     if (imageFile == null) return;
 
     final selectedFile = imageFile.selectedFiles.firstOrNull;
