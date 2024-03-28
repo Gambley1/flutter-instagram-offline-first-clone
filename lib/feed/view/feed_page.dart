@@ -113,16 +113,11 @@ class _FeedViewState extends State<FeedView> {
   }
 }
 
-class FeedBody extends StatefulWidget {
+class FeedBody extends StatelessWidget {
   const FeedBody({required this.controller, super.key});
 
   final ScrollController controller;
 
-  @override
-  State<FeedBody> createState() => _FeedBodyState();
-}
-
-class _FeedBodyState extends State<FeedBody> {
   @override
   Widget build(BuildContext context) {
     final feedPageController = FeedPageController();
