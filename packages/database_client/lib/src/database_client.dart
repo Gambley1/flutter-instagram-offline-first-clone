@@ -17,9 +17,6 @@ abstract class UserBaseRepository {
   /// Broadcasts the user profile identified by [id].
   Stream<User> profile({required String id});
 
-  /// Checks whether the user exists by the provided id.
-  Future<bool> isUserExists({required String id});
-
   /// Updates currently authenticated database user's metadata.
   Future<void> updateUser({
     String? fullName,
@@ -327,18 +324,6 @@ class PowerSyncDatabaseClient extends DatabaseClient {
       ).map(
         (event) => event.isEmpty ? User.anonymous : User.fromJson(event.first),
       );
-
-  @override
-  Future<bool> isUserExists({required String id}) async {
-    final user = await _powerSyncRepository.db().execute(
-      '''
-SELECT id FROM profiles WHERE id = ?
-''',
-      [id],
-    );
-    if (user.isEmpty) return false;
-    return true;
-  }
 
   @override
   Future<Post?> createPost({

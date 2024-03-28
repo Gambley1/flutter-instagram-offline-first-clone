@@ -166,10 +166,6 @@ class UserRepository implements UserBaseRepository {
   Stream<User> profile({required String id}) => _databaseClient.profile(id: id);
 
   @override
-  Future<bool> isUserExists({required String id}) =>
-      _databaseClient.isUserExists(id: id);
-
-  @override
   Stream<int> followersCountOf({required String userId}) =>
       _databaseClient.followersCountOf(userId: userId);
 
