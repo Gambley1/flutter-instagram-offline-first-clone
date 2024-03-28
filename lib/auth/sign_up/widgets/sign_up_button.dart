@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_instagram_offline_first_clone/auth/signup/cubit/sign_up_cubit.dart';
+import 'package:flutter_instagram_offline_first_clone/auth/sign_up/cubit/sign_up_cubit.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 
 class SignUpButton extends StatelessWidget {

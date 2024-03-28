@@ -1,18 +1,18 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_instagram_offline_first_clone/auth/signup/cubit/sign_up_cubit.dart';
+import 'package:flutter_instagram_offline_first_clone/auth/sign_up/cubit/sign_up_cubit.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:shared/shared.dart';
 
-class FullNameTextField extends StatefulWidget {
-  const FullNameTextField({super.key});
+class UsernameTextField extends StatefulWidget {
+  const UsernameTextField({super.key});
 
   @override
-  State<FullNameTextField> createState() => _FullNameTextFieldState();
+  State<UsernameTextField> createState() => _UsernameTextFieldState();
 }
 
-class _FullNameTextFieldState extends State<FullNameTextField> {
+class _UsernameTextFieldState extends State<UsernameTextField> {
   final _debouncer = Debouncer();
   final _focusNode = FocusNode();
 
@@ -22,7 +22,7 @@ class _FullNameTextFieldState extends State<FullNameTextField> {
     final cubit = context.read<SignUpCubit>();
     _focusNode.addListener(() {
       if (!_focusNode.hasFocus) {
-        cubit.onFullNameUnfocused();
+        cubit.onUsernameUnfocused();
       }
     });
   }
@@ -37,22 +37,19 @@ class _FullNameTextFieldState extends State<FullNameTextField> {
   Widget build(BuildContext context) {
     final isLoading = context
         .select((SignUpCubit cubit) => cubit.state.submissionStatus.isLoading);
-    final fullNameError = context
-        .select((SignUpCubit cubit) => cubit.state.fullName.errorMessage);
-
+    final usernameError = context
+        .select((SignUpCubit cubit) => cubit.state.username.errorMessage);
     return AppTextField(
       filled: true,
       focusNode: _focusNode,
-      hintText: context.l10n.nameText,
+      hintText: context.l10n.usernameText,
       textInputAction: TextInputAction.next,
-      textCapitalization: TextCapitalization.words,
-      autofillHints: const [AutofillHints.givenName],
       enabled: !isLoading,
       onChanged: (v) => _debouncer.run(
-        () => context.read<SignUpCubit>().onFullNameChanged(v),
+        () => context.read<SignUpCubit>().onUsernameChanged(v),
       ),
-      errorText: fullNameError,
       errorMaxLines: 3,
+      errorText: usernameError,
     );
   }
 }
