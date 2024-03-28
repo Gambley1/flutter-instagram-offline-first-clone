@@ -17,10 +17,6 @@ class ChatsRepository implements ChatsBaseRepository {
       _databaseClient.chatsOf(userId: userId);
 
   @override
-  Future<ChatInbox> getChat({required String chatId, required String userId}) =>
-      _databaseClient.getChat(chatId: chatId, userId: userId);
-
-  @override
   Stream<List<Message>> messagesOf({required String chatId}) =>
       _databaseClient.messagesOf(chatId: chatId);
 

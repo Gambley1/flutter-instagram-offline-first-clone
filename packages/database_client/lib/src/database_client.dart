@@ -186,9 +186,6 @@ abstract class ChatsBaseRepository {
   /// Returns a stream of real-time chats of the user identified by [userId].
   Stream<List<ChatInbox>> chatsOf({required String userId});
 
-  /// Returns a chat conversation with provided [chatId] and [userId].
-  Future<ChatInbox> getChat({required String chatId, required String userId});
-
   /// Returns a stream of real-time messages of the chat identified by [chatId].
   Stream<List<Message>> messagesOf({required String chatId});
 
@@ -983,39 +980,6 @@ where
       ).map(
         (event) => event.safeMap(ChatInbox.fromRow).toList(growable: false),
       );
-
-  @override
-  Future<ChatInbox> getChat({
-    required String chatId,
-    required String userId,
-  }) async {
-    final row = await _powerSyncRepository.db().get(
-      '''
-select
-  c.id,
-  c.type,
-  c.name,
-  p2.id as participant_id,
-  p2.full_name as participant_name,
-  p2.email as participant_email,
-  p2.username as participant_username,
-  p2.avatar_url as participant_avatar_url,
-  p2.push_token as participant_push_token
-from
-  conversations c
-  join participants pt on c.id = pt.conversation_id
-  join profiles p on pt.user_id = p.id
-  join participants pt2 on c.id = pt2.conversation_id
-  join profiles p2 on pt2.user_id = p2.id
-where
-  pt.user_id = ?1
-  and pt2.user_id != ?1
-  and c.id = ?2
-''',
-      [userId, chatId],
-    );
-    return ChatInbox.fromRow(row);
-  }
 
   @override
   Stream<List<Message>> messagesOf({required String chatId}) =>
