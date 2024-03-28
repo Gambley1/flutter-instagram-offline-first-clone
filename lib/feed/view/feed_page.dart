@@ -179,7 +179,6 @@ class _FeedBodyState extends State<FeedBody> {
                     index: index,
                     feedLength: feedPage.totalBlocks,
                     block: block,
-                    bloc: context.read<FeedBloc>(),
                     controller: animationController,
                     hasMorePosts: hasMorePosts,
                     isFailure: isFailure,
@@ -198,7 +197,6 @@ class _FeedBodyState extends State<FeedBody> {
     required int index,
     required int feedLength,
     required InstaBlock block,
-    required FeedBloc bloc,
     required FeedPageController controller,
     required bool hasMorePosts,
     required bool isFailure,
@@ -233,9 +231,7 @@ class _FeedBodyState extends State<FeedBody> {
         if (!hasMorePosts) return const SizedBox.shrink();
         return NetworkError(
           onRetry: () {
-            context
-                .read<FeedBloc>()
-                .add(FeedPageRequested(page: bloc.state.feed.feedPage.page));
+            context.read<FeedBloc>().add(const FeedPageRequested());
           },
         );
       } else {
