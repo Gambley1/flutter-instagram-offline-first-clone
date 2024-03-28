@@ -42,7 +42,7 @@ class PostBloc extends HydratedBloc<PostEvent, PostState> {
     );
     on<PostUpdateRequested>(_onPostUpdateRequested);
     on<PostLikeRequested>(_onPostLikeRequested);
-    on<PostAuthorFollowRequested>(_onPostAuthorSubscribeRequested);
+    on<PostAuthorFollowRequested>(_onPostAuthorFollowRequested);
     on<PostDeleteRequested>(_onPostDeleteRequested);
     on<PostShareRequested>(_onPostShareRequested);
   }
@@ -97,8 +97,8 @@ class PostBloc extends HydratedBloc<PostEvent, PostState> {
     }
     await emit.forEach(
       _userRepository.followingStatus(userId: event.ownerId),
-      onData: (isSubscribed) =>
-          state.copyWith(isFollowed: isSubscribed, isOwner: false),
+      onData: (isFollowed) =>
+          state.copyWith(isFollowed: isFollowed, isOwner: false),
     );
   }
 
@@ -150,7 +150,7 @@ class PostBloc extends HydratedBloc<PostEvent, PostState> {
     }
   }
 
-  Future<void> _onPostAuthorSubscribeRequested(
+  Future<void> _onPostAuthorFollowRequested(
     PostAuthorFollowRequested event,
     Emitter<PostState> emit,
   ) async {

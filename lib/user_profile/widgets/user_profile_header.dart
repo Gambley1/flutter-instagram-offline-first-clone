@@ -21,20 +21,11 @@ class UserProfileHeader extends StatelessWidget {
   final String userId;
   final PostSponsoredBlock? sponsoredPost;
 
-  void _navigateToSubscribersPage(BuildContext context) => context.pushNamed(
+  void _pushToUserStatistics(BuildContext context, {required int tabIndex}) =>
+      context.pushNamed(
         'user_statistics',
-        extra: 0,
-        queryParameters: {
-          'user_id': userId,
-        },
-      );
-
-  void _navigateToSubscriptionsPage(BuildContext context) => context.pushNamed(
-        'user_statistics',
-        extra: 1,
-        queryParameters: {
-          'user_id': userId,
-        },
+        extra: tabIndex,
+        queryParameters: {'user_id': userId},
       );
 
   @override
@@ -113,9 +104,8 @@ class UserProfileHeader extends StatelessWidget {
                 const Gap.h(AppSpacing.md),
                 Expanded(
                   child: UserProfileStatisticsCounts(
-                    onSubscribersTap: () => _navigateToSubscribersPage(context),
-                    onSubscribesTap: () =>
-                        _navigateToSubscriptionsPage(context),
+                    onStatisticTap: (tabIndex) =>
+                        _pushToUserStatistics(context, tabIndex: tabIndex),
                   ),
                 ),
               ],
@@ -157,14 +147,9 @@ class UserProfileHeader extends StatelessWidget {
 }
 
 class UserProfileStatisticsCounts extends StatelessWidget {
-  const UserProfileStatisticsCounts({
-    required this.onSubscribersTap,
-    required this.onSubscribesTap,
-    super.key,
-  });
+  const UserProfileStatisticsCounts({required this.onStatisticTap, super.key});
 
-  final VoidCallback onSubscribersTap;
-  final VoidCallback onSubscribesTap;
+  final ValueSetter<int> onStatisticTap;
 
   @override
   Widget build(BuildContext context) {
@@ -183,21 +168,20 @@ class UserProfileStatisticsCounts extends StatelessWidget {
           child: UserProfileStatistic(
             name: l10n.postsCount(postsCount),
             value: postsCount,
-            onTap: () {},
           ),
         ),
         Expanded(
           child: UserProfileStatistic(
             name: l10n.followersText,
             value: followersCount,
-            onTap: onSubscribersTap,
+            onTap: () => onStatisticTap.call(0),
           ),
         ),
         Expanded(
           child: UserProfileStatistic(
             name: l10n.followingsText,
             value: followingsCount,
-            onTap: onSubscribesTap,
+            onTap: () => onStatisticTap.call(1),
           ),
         ),
       ].spacerBetween(width: AppSpacing.sm),

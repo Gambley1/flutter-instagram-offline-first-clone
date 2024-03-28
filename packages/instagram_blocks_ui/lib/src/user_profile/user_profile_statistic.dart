@@ -6,13 +6,13 @@ class UserProfileStatistic extends StatelessWidget {
   const UserProfileStatistic({
     required this.name,
     required this.value,
-    required this.onTap,
+    this.onTap,
     super.key,
   });
 
   final String name;
   final int value;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
