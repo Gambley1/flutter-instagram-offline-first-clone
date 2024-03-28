@@ -229,9 +229,6 @@ abstract class StoriesBaseRepository {
   /// {@macro stories_base_repository}
   const StoriesBaseRepository();
 
-  /// Returns the [Story] identified by [id].
-  Future<Story> getStory({required String id});
-
   /// Broadcasts the stream of the stories from the database.
   Stream<List<Story>> getStories({
     required String userId,
@@ -1472,18 +1469,6 @@ WHERE user_id = ? AND expires_at > current_timestamp
 ''',
         parameters: [userId],
       ).map((event) => event.safeMap(Story.fromJson).toList(growable: false));
-
-  @override
-  Future<Story> getStory({required String id}) async {
-    final row = await _powerSyncRepository.db().execute(
-      '''
-SELECT * FROM stories WHERE id = ?
-''',
-      [id],
-    );
-    if (row.isEmpty) return Story.empty;
-    return Story.fromJson(row.first);
-  }
 
   @override
   Future<String> uploadStoryMedia({

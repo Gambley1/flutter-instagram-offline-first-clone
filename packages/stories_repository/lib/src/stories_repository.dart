@@ -66,10 +66,6 @@ class StoriesRepository extends StoriesBaseRepository {
   }) =>
       _databaseClient.getStories(userId: userId, includeAuthor: includeAuthor);
 
-  @override
-  Future<Story> getStory({required String id}) =>
-      _databaseClient.getStory(id: id);
-
   /// Broadcasts stories from database and local storage. Combines and merges
   /// into a single stories data flow.
   Stream<List<Story>> mergedStories({
