@@ -68,9 +68,6 @@ abstract class UserBaseRepository {
   /// Broadcasts a list of followers of the user identified by [userId].
   Stream<List<User>> streamFollowers({required String userId});
 
-  /// Broadcasts a list of followings of the user identified by [userId].
-  Stream<List<User>> streamFollowings({required String userId});
-
   /// Looks up into a database a returns users associated with the provided
   /// [query].
   Future<List<User>> searchUsers({
@@ -713,31 +710,6 @@ WHERE posts.id = ?
       followings.add(following);
     }
     return followings;
-  }
-
-  @override
-  Stream<List<User>> streamFollowings({required String userId}) async* {
-    final streamResult = _powerSyncRepository.db().watch(
-      'SELECT subscribed_to_id FROM subscriptions WHERE subscriber_id = ? ',
-      parameters: [userId],
-    );
-    await for (final result in streamResult) {
-      final followings = <User>[];
-      final followingsFutures = await Future.wait(
-        result.where((row) => row.isNotEmpty).safeMap(
-              (row) => _powerSyncRepository.db().getOptional(
-                'SELECT * FROM profiles WHERE id = ?',
-                [row['subscribed_to_id']],
-              ),
-            ),
-      );
-      for (final user in followingsFutures) {
-        if (user == null) continue;
-        final following = User.fromJson(user);
-        followings.add(following);
-      }
-      yield followings;
-    }
   }
 
   @override
