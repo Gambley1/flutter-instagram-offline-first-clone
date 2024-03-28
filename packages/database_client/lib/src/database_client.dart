@@ -66,7 +66,7 @@ abstract class UserBaseRepository {
   Future<List<User>> getFollowings({required String userId});
 
   /// Broadcasts a list of followers of the user identified by [userId].
-  Stream<List<User>> streamFollowers({required String userId});
+  Stream<List<User>> followers({required String userId});
 
   /// Looks up into a database a returns users associated with the provided
   /// [query].
@@ -667,7 +667,7 @@ WHERE posts.id = ?
   }
 
   @override
-  Stream<List<User>> streamFollowers({required String userId}) async* {
+  Stream<List<User>> followers({required String userId}) async* {
     final streamResult = _powerSyncRepository.db().watch(
       'SELECT subscriber_id FROM subscriptions WHERE subscribed_to_id = ? ',
       parameters: [userId],

@@ -249,6 +249,6 @@ class UserRepository implements UserBaseRepository {
       );
 
   @override
-  Stream<List<User>> streamFollowers({required String userId}) =>
-      _databaseClient.streamFollowers(userId: userId);
+  Stream<List<User>> followers({required String userId}) =>
+      _databaseClient.followers(userId: userId);
 }

@@ -168,7 +168,7 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
     Emitter<UserProfileState> emit,
   ) async {
     await emit.forEach(
-      _userRepository.streamFollowers(userId: _userId),
+      _userRepository.followers(userId: _userId),
       onData: (followers) => state.copyWith(followers: followers),
     );
   }
