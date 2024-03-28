@@ -422,38 +422,6 @@ ORDER BY created_at DESC
     return result.first['id'] as String;
   }
 
-  // ignore: unused_element
-  Future<List<Media>> _getPostMedia({
-    required List<Map<String, dynamic>> mediaJsons,
-  }) async {
-    final media = <Media>[];
-    for (final mediaJson in mediaJsons) {
-      if (mediaJson['type'] == ImageMedia.identifier) {
-        final row = await _powerSyncRepository.db().getOptional(
-          '''
-SELECT * FROM images WHERE id = ?
-''',
-          [mediaJson['id']],
-        );
-        if (row == null) continue;
-        final imageMedia = ImageMedia.fromJson(row);
-        media.add(imageMedia);
-      }
-      if (mediaJson['type'] == VideoMedia.identifier) {
-        final row = await _powerSyncRepository.db().getOptional(
-          '''
-SELECT * FROM videos WHERE id = ?
-''',
-          [mediaJson['id']],
-        );
-        if (row == null) continue;
-        final videoMedia = VideoMedia.fromJson(row);
-        media.add(videoMedia);
-      }
-    }
-    return media;
-  }
-
   @override
   Future<void> uploadMedia({
     required String id,
