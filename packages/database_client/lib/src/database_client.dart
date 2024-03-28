@@ -131,16 +131,6 @@ abstract class PostsBaseRepository {
     bool onlyReels = false,
   });
 
-  /// Uploads the post [Media] to the server.
-  Future<void> uploadMedia({
-    required String id,
-    required String ownerId,
-    required String url,
-    required String type,
-    required String blurHash,
-    required String? firstFrame,
-  });
-
   /// Create a new post with provided details.
   Future<Post?> createPost({
     required String id,
@@ -420,37 +410,6 @@ ORDER BY created_at DESC
         .execute('DELETE FROM posts WHERE id = ? RETURNING id', [id]);
     if (result.isEmpty) return null;
     return result.first['id'] as String;
-  }
-
-  @override
-  Future<void> uploadMedia({
-    required String id,
-    required String ownerId,
-    required String url,
-    required String type,
-    required String blurHash,
-    required String? firstFrame,
-  }) async {
-    if (type == ImageMedia.identifier) {
-      await _powerSyncRepository.db().execute(
-        '''
-INSERT INTO images(id, owner_id, url, blur_hash)
-VALUES(?1,?2,?3,?4)
-ON CONFLICT (id) DO UPDATE SET url = ?3, blur_hash = ?4, owner_id = ?2
-        ''',
-        [id, ownerId, url, blurHash],
-      );
-    }
-    if (type == VideoMedia.identifier) {
-      await _powerSyncRepository.db().execute(
-        '''
-INSERT INTO videos(id, owner_id, url, first_frame, blur_hash)
-VALUES(?1,?2,?3,?4,?5)
-ON CONFLICT (id) DO UPDATE SET url = ?3, blur_hash = ?5, owner_id = ?2, first_frame = ?4
-        ''',
-        [id, ownerId, url, firstFrame, blurHash],
-      );
-    }
   }
 
   @override

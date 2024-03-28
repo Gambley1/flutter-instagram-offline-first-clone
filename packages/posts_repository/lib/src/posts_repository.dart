@@ -130,24 +130,6 @@ class PostsRepository implements PostsBaseRepository {
       _databaseClient.getPostBy(id: id);
 
   @override
-  Future<void> uploadMedia({
-    required String id,
-    required String ownerId,
-    required String url,
-    required String type,
-    required String blurHash,
-    required String? firstFrame,
-  }) =>
-      _databaseClient.uploadMedia(
-        id: id,
-        ownerId: ownerId,
-        url: url,
-        type: type,
-        blurHash: blurHash,
-        firstFrame: firstFrame,
-      );
-
-  @override
   Future<List<User>> getPostLikers({
     required String postId,
     int limit = 30,
