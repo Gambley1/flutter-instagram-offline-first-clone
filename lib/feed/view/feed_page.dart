@@ -125,7 +125,7 @@ class FeedBody extends StatefulWidget {
 class _FeedBodyState extends State<FeedBody> {
   @override
   Widget build(BuildContext context) {
-    final animationController = FeedPageController();
+    final feedPageController = FeedPageController();
 
     return RefreshIndicator.adaptive(
       onRefresh: () async => Future.wait([
@@ -179,7 +179,7 @@ class _FeedBodyState extends State<FeedBody> {
                     index: index,
                     feedLength: feedPage.totalBlocks,
                     block: block,
-                    controller: animationController,
+                    feedPageController: feedPageController,
                     hasMorePosts: hasMorePosts,
                     isFailure: isFailure,
                   );
@@ -197,12 +197,12 @@ class _FeedBodyState extends State<FeedBody> {
     required int index,
     required int feedLength,
     required InstaBlock block,
-    required FeedPageController controller,
+    required FeedPageController feedPageController,
     required bool hasMorePosts,
     required bool isFailure,
   }) {
     if (block is DividerHorizontalBlock) {
-      return DividerBlock(feedAnimationController: controller);
+      return DividerBlock(feedPageController: feedPageController);
     }
     if (block is SectionHeaderBlock) {
       return switch (block.sectionType) {

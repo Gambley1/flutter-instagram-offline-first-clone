@@ -7,11 +7,11 @@ import 'package:lottie/lottie.dart';
 
 class DividerBlock extends StatefulWidget {
   const DividerBlock({
-    required this.feedAnimationController,
+    required this.feedPageController,
     super.key,
   });
 
-  final FeedPageController feedAnimationController;
+  final FeedPageController feedPageController;
 
   @override
   State<DividerBlock> createState() => _DividerBlockState();
@@ -40,13 +40,12 @@ class _DividerBlockState extends State<DividerBlock>
       children: [
         const AppDivider()
             .animate(
-          autoPlay: !widget.feedAnimationController.hasPlayedAnimation,
-          onInit: (animController) =>
-              widget.feedAnimationController.hasPlayedAnimation
-                  ? animController.value =
-                      widget.feedAnimationController.animationValue
-                  : animController.loop(count: 1),
-          onComplete: (animController) => widget.feedAnimationController
+          autoPlay: !widget.feedPageController.hasPlayedAnimation,
+          onInit: (animController) => widget
+                  .feedPageController.hasPlayedAnimation
+              ? animController.value = widget.feedPageController.animationValue
+              : animController.loop(count: 1),
+          onComplete: (animController) => widget.feedPageController
               .setPlayedAnimation(animController.value),
         )
             .shimmer(
@@ -72,15 +71,15 @@ class _DividerBlockState extends State<DividerBlock>
                     frameRate: const FrameRate(64),
                     controller: _controller,
                     onLoaded: (composition) {
-                      if (!widget.feedAnimationController.hasPlayedAnimation) {
-                        widget.feedAnimationController.setPlayedAnimation(1);
+                      if (!widget.feedPageController.hasPlayedAnimation) {
+                        widget.feedPageController.setPlayedAnimation(1);
                         _controller
                           ..duration = composition.duration
                           ..forward();
                         return;
                       } else {
                         _controller.value =
-                            widget.feedAnimationController.animationValue;
+                            widget.feedPageController.animationValue;
                       }
                     },
                   ),
@@ -105,13 +104,12 @@ class _DividerBlockState extends State<DividerBlock>
         ),
         const AppDivider()
             .animate(
-          autoPlay: !widget.feedAnimationController.hasPlayedAnimation,
-          onInit: (animController) =>
-              widget.feedAnimationController.hasPlayedAnimation
-                  ? animController.value =
-                      widget.feedAnimationController.animationValue
-                  : animController.loop(count: 1),
-          onComplete: (animController) => widget.feedAnimationController
+          autoPlay: !widget.feedPageController.hasPlayedAnimation,
+          onInit: (animController) => widget
+                  .feedPageController.hasPlayedAnimation
+              ? animController.value = widget.feedPageController.animationValue
+              : animController.loop(count: 1),
+          onComplete: (animController) => widget.feedPageController
               .setPlayedAnimation(animController.value),
         )
             .shimmer(
