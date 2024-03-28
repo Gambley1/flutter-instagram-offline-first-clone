@@ -49,12 +49,6 @@ final class UserProfileFollowersCountSubscriptionRequested
   const UserProfileFollowersCountSubscriptionRequested();
 }
 
-final class UserProfileLikePostRequested extends UserProfileEvent {
-  const UserProfileLikePostRequested(this.postId);
-
-  final String postId;
-}
-
 final class UserProfileFetchFollowersRequested extends UserProfileEvent {
   const UserProfileFetchFollowersRequested({this.userId});
 
