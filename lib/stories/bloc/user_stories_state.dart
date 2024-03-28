@@ -1,5 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-
 part of 'user_stories_bloc.dart';
 
 @immutable
@@ -11,6 +9,9 @@ class UserStoriesState extends Equatable {
     required this.showStories,
   });
 
+  factory UserStoriesState.fromJson(Map<String, dynamic> json) =>
+      _$UserStoriesStateFromJson(json);
+
   const UserStoriesState.initial()
       : this(
           author: User.anonymous,
@@ -21,9 +22,6 @@ class UserStoriesState extends Equatable {
   final User author;
   final List<Story> stories;
   final bool showStories;
-
-  factory UserStoriesState.fromJson(Map<String, dynamic> json) =>
-      _$UserStoriesStateFromJson(json);
 
   Map<String, dynamic> toJson() => _$UserStoriesStateToJson(this);
 
