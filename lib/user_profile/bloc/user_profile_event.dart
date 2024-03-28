@@ -8,15 +8,6 @@ sealed class UserProfileEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class UserProfileUpdated extends UserProfileEvent {
-  const UserProfileUpdated(this.user) : super();
-
-  final User user;
-
-  @override
-  List<Object> get props => [user];
-}
-
 final class UserProfileUpdateRequested extends UserProfileEvent {
   const UserProfileUpdateRequested({
     this.fullName,
@@ -31,12 +22,6 @@ final class UserProfileUpdateRequested extends UserProfileEvent {
   final String? username;
   final String? avatarUrl;
   final String? pushToken;
-}
-
-sealed class _PostEvent extends UserProfileEvent {
-  const _PostEvent(this.postId);
-
-  final String postId;
 }
 
 final class UserProfileSubscriptionRequested extends UserProfileEvent {
@@ -64,8 +49,10 @@ final class UserProfileFollowersCountSubscriptionRequested
   const UserProfileFollowersCountSubscriptionRequested();
 }
 
-final class UserProfileLikePostRequested extends _PostEvent {
-  const UserProfileLikePostRequested(super.postId);
+final class UserProfileLikePostRequested extends UserProfileEvent {
+  const UserProfileLikePostRequested(this.postId);
+
+  final String postId;
 }
 
 final class UserProfileFetchFollowersRequested extends UserProfileEvent {
