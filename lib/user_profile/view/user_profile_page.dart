@@ -224,29 +224,20 @@ class _PostsPageState extends State<PostsPage>
                 final block = widget.sponsoredPost ?? blocks[index];
                 final multiMedia = block.media.length > 1;
 
-                return BlocBuilder<AppBloc, AppState>(
-                  builder: (context, state) {
-                    final user = state.user;
-                    final isOwner = block.author.id == user.id;
-
-                    return PostPopup(
-                      block: block,
-                      index: index,
-                      builder: (_) => PostSmall(
-                        key: ValueKey(block.id),
-                        isOwner: isOwner,
-                        pinned: false,
-                        isReel: block.isReel,
-                        multiMedia: multiMedia,
-                        mediaUrl: block.firstMediaUrl!,
-                        imageThumbnailBuilder: (_, url) =>
-                            ImageAttachmentThumbnail(
-                          image: Attachment(imageUrl: url),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    );
-                  },
+                return PostPopup(
+                  block: block,
+                  index: index,
+                  builder: (_) => PostSmall(
+                    key: ValueKey(block.id),
+                    pinned: false,
+                    isReel: block.isReel,
+                    multiMedia: multiMedia,
+                    mediaUrl: block.firstMediaUrl!,
+                    imageThumbnailBuilder: (_, url) => ImageAttachmentThumbnail(
+                      image: Attachment(imageUrl: url),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 );
               },
             );

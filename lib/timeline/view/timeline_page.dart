@@ -2,7 +2,6 @@ import 'package:app_ui/app_ui.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/post/post.dart';
 import 'package:flutter_instagram_offline_first_clone/home/home.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
@@ -164,8 +163,6 @@ class _TimelineGridViewState extends State<TimelineGridView> {
 
   @override
   Widget build(BuildContext context) {
-    final user = context.read<AppBloc>().state.user;
-
     return SliverGrid.builder(
       gridDelegate: SliverQuiltedGridDelegate(
         crossAxisCount: 3,
@@ -184,7 +181,6 @@ class _TimelineGridViewState extends State<TimelineGridView> {
       itemBuilder: (context, index) {
         _structurePostDisplay(index);
         final multiMedia = _block.media.length > 1;
-        final isOwner = _block.author.id == user.id;
 
         return PostPopup(
           key: ValueKey(_block.id),
@@ -192,7 +188,6 @@ class _TimelineGridViewState extends State<TimelineGridView> {
           index: index,
           showComments: false,
           builder: (_) => PostSmall(
-            isOwner: isOwner,
             pinned: false,
             isReel: _block.isReel,
             multiMedia: multiMedia,

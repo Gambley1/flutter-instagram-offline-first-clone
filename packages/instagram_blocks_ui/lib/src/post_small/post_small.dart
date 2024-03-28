@@ -10,7 +10,6 @@ typedef ImageThumbnailBuilder = Widget Function(
 
 class PostSmall extends StatelessWidget {
   PostSmall({
-    required this.isOwner,
     required this.pinned,
     required this.multiMedia,
     required this.mediaUrl,
@@ -19,7 +18,6 @@ class PostSmall extends StatelessWidget {
     super.key,
   });
 
-  final bool isOwner;
   final String mediaUrl;
   final bool? isReel;
   final bool pinned;
