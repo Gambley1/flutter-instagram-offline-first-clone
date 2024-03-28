@@ -30,10 +30,6 @@ final class UserProfileSubscriptionRequested extends UserProfileEvent {
   final String? userId;
 }
 
-final class UserProfilePostsSubscriptionRequested extends UserProfileEvent {
-  const UserProfilePostsSubscriptionRequested();
-}
-
 final class UserProfilePostsCountSubscriptionRequested
     extends UserProfileEvent {
   const UserProfilePostsCountSubscriptionRequested();

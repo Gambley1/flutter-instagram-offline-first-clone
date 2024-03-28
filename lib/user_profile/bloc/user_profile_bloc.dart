@@ -48,6 +48,32 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
     );
   }
 
+  final String _userId;
+  final UserRepository _userRepository;
+  final PostsRepository _postsRepository;
+
+  bool get isOwner => _userId == _userRepository.currentUserId;
+
+  Stream<List<PostBlock>> userPosts({bool small = true}) {
+    if (small) {
+      return _postsRepository
+          .postsOf(userId: _userId)
+          .map((posts) => posts.map((e) => e.toPostSmallBlock).toList());
+    }
+    return _postsRepository.postsOf(userId: _userId).asyncMap((posts) async {
+      final postLikersFutures = posts.map(
+        (post) => _postsRepository.getPostLikersInFollowings(postId: post.id),
+      );
+      final postLikers = await Future.wait(postLikersFutures);
+      return List<PostLargeBlock>.generate(posts.length, (index) {
+        final likersInFollowings = postLikers[index];
+        final post = posts[index]
+            .toPostLargeBlock(likersInFollowings: likersInFollowings);
+        return post;
+      });
+    });
+  }
+
   Future<void> _onUserProfileSubscriptionRequested(
     UserProfileSubscriptionRequested event,
     Emitter<UserProfileState> emit,
@@ -89,33 +115,6 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
       onData: (followersCount) =>
           state.copyWith(followersCount: followersCount),
     );
-  }
-
-  final String _userId;
-  final UserRepository _userRepository;
-  final PostsRepository _postsRepository;
-
-  bool get isOwner => _userId == _userRepository.currentUserId;
-
-  Stream<List<PostBlock>> userPosts({bool small = true}) {
-    if (small) {
-      return _postsRepository
-          .postsOf(userId: _userId)
-          .map((posts) => posts.map((e) => e.toPostSmallBlock).toList());
-    }
-    return _postsRepository.postsOf(userId: _userId).asyncMap((posts) async {
-      final postLikersFutures = posts.map(
-        (post) => _postsRepository.getPostLikersInFollowings(postId: post.id),
-      );
-      final postLikers = await Future.wait(postLikersFutures);
-      final blocks = List<PostLargeBlock>.generate(posts.length, (index) {
-        final likersInFollowings = postLikers[index];
-        final post = posts[index]
-            .toPostLargeBlock(likersInFollowings: likersInFollowings);
-        return post;
-      });
-      return blocks;
-    });
   }
 
   Stream<bool> followingStatus({String? followerId}) =>

@@ -10,7 +10,6 @@ class UserProfileState extends Equatable {
   const UserProfileState._({
     required this.status,
     required this.user,
-    required this.posts,
     required this.followings,
     required this.followers,
     required this.postsCount,
@@ -22,7 +21,6 @@ class UserProfileState extends Equatable {
       : this._(
           status: UserProfileStatus.initial,
           user: User.anonymous,
-          posts: const [],
           followers: const [],
           followings: const [],
           postsCount: 0,
@@ -32,7 +30,6 @@ class UserProfileState extends Equatable {
 
   final UserProfileStatus status;
   final User user;
-  final List<PostBlock> posts;
   final List<User> followings;
   final List<User> followers;
   final int postsCount;
@@ -43,7 +40,6 @@ class UserProfileState extends Equatable {
   List<Object> get props => [
         status,
         user,
-        posts,
         followings,
         followers,
         postsCount,
@@ -54,7 +50,6 @@ class UserProfileState extends Equatable {
   UserProfileState copyWith({
     UserProfileStatus? status,
     User? user,
-    List<PostBlock>? posts,
     List<User>? followings,
     List<User>? followers,
     int? postsCount,
@@ -64,7 +59,6 @@ class UserProfileState extends Equatable {
     return UserProfileState._(
       status: status ?? this.status,
       user: user ?? this.user,
-      posts: posts ?? this.posts,
       followings: followings ?? this.followings,
       followers: followers ?? this.followers,
       postsCount: postsCount ?? this.postsCount,
