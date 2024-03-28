@@ -65,11 +65,6 @@ final class UserProfileFollowersSubscriptionRequested extends UserProfileEvent {
   const UserProfileFollowersSubscriptionRequested();
 }
 
-final class UserProfileFollowingsSubscriptionRequested
-    extends UserProfileEvent {
-  const UserProfileFollowingsSubscriptionRequested();
-}
-
 final class UserProfileFollowUserRequested extends UserProfileEvent {
   const UserProfileFollowUserRequested({this.userId});
 

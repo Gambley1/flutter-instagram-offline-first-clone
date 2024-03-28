@@ -42,10 +42,6 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
       _onFollowersSubscriptionRequested,
       transformer: throttleDroppable(),
     );
-    on<UserProfileFollowingsSubscriptionRequested>(
-      _onFollowingsSubscriptionRequested,
-      transformer: throttleDroppable(),
-    );
     on<UserProfileFollowUserRequested>(_onFollowUser);
     on<UserProfileRemoveFollowerRequested>(
       _onUserProfileRemoveFollowerRequested,
@@ -175,16 +171,6 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
     await emit.forEach(
       _userRepository.streamFollowers(userId: _userId),
       onData: (followers) => state.copyWith(followers: followers),
-    );
-  }
-
-  Future<void> _onFollowingsSubscriptionRequested(
-    UserProfileFollowingsSubscriptionRequested event,
-    Emitter<UserProfileState> emit,
-  ) async {
-    await emit.forEach(
-      _userRepository.streamFollowings(userId: _userId),
-      onData: (followings) => state.copyWith(followings: followings),
     );
   }
 
