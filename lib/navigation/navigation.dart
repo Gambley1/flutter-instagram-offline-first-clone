@@ -1,1 +1,1 @@
-export 'view/view.dart';
+export 'view/bottom_nav_bar.dart';
