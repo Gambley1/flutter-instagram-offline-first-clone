@@ -846,9 +846,11 @@ WHERE posts.id = ?
   Stream<bool> followingStatus({
     required String userId,
     String? followerId,
-  }) async* {
-    if (followerId == null && currentUserId == null) return;
-    yield* _powerSyncRepository.db().watch(
+  }) {
+    if (followerId == null && currentUserId == null) {
+      return const Stream.empty();
+    }
+    return _powerSyncRepository.db().watch(
       '''
     SELECT 1 FROM subscriptions WHERE subscriber_id = ? AND subscribed_to_id = ?
     ''',

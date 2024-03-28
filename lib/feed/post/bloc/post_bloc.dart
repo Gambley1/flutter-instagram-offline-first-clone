@@ -96,10 +96,7 @@ class PostBloc extends HydratedBloc<PostEvent, PostState> {
       return;
     }
     await emit.forEach(
-      _userRepository.followingStatus(
-        followerId: event.currentUserId,
-        userId: event.ownerId,
-      ),
+      _userRepository.followingStatus(userId: event.ownerId),
       onData: (isSubscribed) =>
           state.copyWith(isFollowed: isSubscribed, isOwner: false),
     );

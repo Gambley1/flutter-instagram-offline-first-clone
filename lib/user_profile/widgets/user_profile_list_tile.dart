@@ -47,13 +47,13 @@ class _UserProfileListTileState extends State<UserProfileListTile> {
       noText: context.l10n.cancelText,
       fn: () => context
           .read<UserProfileBloc>()
-          .add(UserProfileRemoveFollowerRequested(widget.user.id)),
+          .add(UserProfileRemoveFollowerRequested(userId: widget.user.id)),
     );
   }
 
   void _follow(BuildContext context) => context
       .read<UserProfileBloc>()
-      .add(UserProfileFollowUserRequested(widget.user.id));
+      .add(UserProfileFollowUserRequested(userId: widget.user.id));
 
   @override
   Widget build(BuildContext context) {
@@ -252,10 +252,8 @@ class FollowTextButton extends StatelessWidget {
           return const SizedBox.shrink();
         }
         return BetterStreamBuilder<bool>(
-          stream: context.read<UserRepository>().followingStatus(
-                followerId: context.read<AppBloc>().state.user.id,
-                userId: user.id,
-              ),
+          stream:
+              context.read<UserRepository>().followingStatus(userId: user.id),
           builder: (context, followed) {
             if (followed && wasFollowed) {
               return const SizedBox.shrink();
@@ -274,7 +272,7 @@ class FollowTextButton extends StatelessWidget {
                     ),
                     recognizer: TapGestureRecognizer()
                       ..onTap = () => context.read<UserProfileBloc>().add(
-                            UserProfileFollowUserRequested(user.id),
+                            UserProfileFollowUserRequested(userId: user.id),
                           ),
                   ),
                 ],

@@ -17,7 +17,7 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
     String? userId,
   })  : _userRepository = userRepository,
         _postsRepository = postsRepository,
-        _userId = userId,
+        _userId = userId ?? userRepository.currentUserId ?? '',
         super(const UserProfileState.initial()) {
     on<UserProfileSubscriptionRequested>(
       _onUserProfileSubscriptionRequested,
@@ -56,19 +56,11 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
     UserProfileSubscriptionRequested event,
     Emitter<UserProfileState> emit,
   ) async {
-    if (_userId == _currentUserId) {
-      await emit.forEach(
-        _userRepository.user,
-        onData: (user) =>
-            state.copyWith(user: user, status: UserProfileStatus.userUpdated),
-      );
-    } else {
-      await emit.forEach(
-        _userRepository.profile(id: _userId ?? event.userId!),
-        onData: (user) =>
-            state.copyWith(user: user, status: UserProfileStatus.userUpdated),
-      );
-    }
+    await emit.forEach(
+      isOwner ? _userRepository.user : _userRepository.profile(id: _userId),
+      onData: (user) =>
+          state.copyWith(user: user, status: UserProfileStatus.userUpdated),
+    );
   }
 
   Future<void> _onUserProfilePostsCountSubscriptionRequested(
@@ -76,7 +68,7 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
     Emitter<UserProfileState> emit,
   ) async {
     await emit.forEach(
-      _postsRepository.postsAmountOf(userId: _userId ?? _currentUserId),
+      _postsRepository.postsAmountOf(userId: _userId),
       onData: (postsCount) => state.copyWith(postsCount: postsCount),
     );
   }
@@ -86,7 +78,7 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
     Emitter<UserProfileState> emit,
   ) async {
     await emit.forEach(
-      _userRepository.followingsCountOf(userId: _userId ?? _currentUserId),
+      _userRepository.followingsCountOf(userId: _userId),
       onData: (followingsCount) =>
           state.copyWith(followingsCount: followingsCount),
     );
@@ -97,60 +89,41 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
     Emitter<UserProfileState> emit,
   ) async {
     await emit.forEach(
-      _userRepository.followersCountOf(userId: _userId ?? _currentUserId),
+      _userRepository.followersCountOf(userId: _userId),
       onData: (followersCount) =>
           state.copyWith(followersCount: followersCount),
     );
   }
 
-  final String? _userId;
+  final String _userId;
   final UserRepository _userRepository;
   final PostsRepository _postsRepository;
 
-  late final _currentUserId = _userRepository.currentUserId ?? '';
+  bool get isOwner => _userId == _userRepository.currentUserId;
 
-  bool get isOwner {
-    if (_userId == _currentUserId) return true;
-    return false;
-  }
-
-  Stream<List<PostBlock>> userPosts({
-    String? userId,
-    bool small = true,
-  }) async* {
+  Stream<List<PostBlock>> userPosts({bool small = true}) {
     if (small) {
-      yield* _postsRepository
-          .postsOf(userId: userId ?? _userId)
+      return _postsRepository
+          .postsOf(userId: _userId)
           .map((posts) => posts.map((e) => e.toPostSmallBlock).toList());
-    } else {
-      yield* _postsRepository
-          .postsOf(userId: userId ?? _userId)
-          .asyncMap((posts) async {
-        final postLikersFutures = posts.map(
-          (post) => _postsRepository.getPostLikersInFollowings(postId: post.id),
-        );
-        final postLikers = await Future.wait(postLikersFutures);
-        final blocks = List<InstaBlock>.generate(posts.length, (index) {
-          final likersInFollowings = postLikers[index];
-          final post = posts[index]
-              .toPostLargeBlock(likersInFollowings: likersInFollowings);
-          return post;
-        });
-        return blocks;
-      }).map((blocks) => blocks.toList().cast<PostBlock>());
     }
+    return _postsRepository.postsOf(userId: _userId).asyncMap((posts) async {
+      final postLikersFutures = posts.map(
+        (post) => _postsRepository.getPostLikersInFollowings(postId: post.id),
+      );
+      final postLikers = await Future.wait(postLikersFutures);
+      final blocks = List<PostLargeBlock>.generate(posts.length, (index) {
+        final likersInFollowings = postLikers[index];
+        final post = posts[index]
+            .toPostLargeBlock(likersInFollowings: likersInFollowings);
+        return post;
+      });
+      return blocks;
+    });
   }
 
-  Stream<bool> followingStatus({
-    required String userId,
-    String? followerId,
-  }) =>
-      _userRepository
-          .followingStatus(
-            followerId: followerId ?? _currentUserId,
-            userId: userId,
-          )
-          .asBroadcastStream();
+  Stream<bool> followingStatus({String? followerId}) =>
+      _userRepository.followingStatus(userId: _userId).asBroadcastStream();
 
   Future<void> _onUserProfileUpdateRequested(
     UserProfileUpdateRequested event,
@@ -175,20 +148,24 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
     UserProfileFetchFollowersRequested event,
     Emitter<UserProfileState> emit,
   ) async {
-    final followers = await _userRepository.getFollowers(
-      userId: _userId ?? _currentUserId,
-    );
-    emit(state.copyWith(followers: followers));
+    try {
+      final followers = await _userRepository.getFollowers(userId: _userId);
+      emit(state.copyWith(followers: followers));
+    } catch (error, stackTrace) {
+      addError(error, stackTrace);
+    }
   }
 
   Future<void> _onFollowingsFetch(
     UserProfileFetchFollowingsRequested event,
     Emitter<UserProfileState> emit,
   ) async {
-    final followings = await _userRepository.getFollowings(
-      userId: _userId ?? _currentUserId,
-    );
-    emit(state.copyWith(followings: followings));
+    try {
+      final followings = await _userRepository.getFollowings(userId: _userId);
+      emit(state.copyWith(followings: followings));
+    } catch (error, stackTrace) {
+      addError(error, stackTrace);
+    }
   }
 
   Future<void> _onFollowersSubscriptionRequested(
@@ -196,7 +173,7 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
     Emitter<UserProfileState> emit,
   ) async {
     await emit.forEach(
-      _userRepository.streamFollowers(userId: _userId ?? _currentUserId),
+      _userRepository.streamFollowers(userId: _userId),
       onData: (followers) => state.copyWith(followers: followers),
     );
   }
@@ -206,7 +183,7 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
     Emitter<UserProfileState> emit,
   ) async {
     await emit.forEach(
-      _userRepository.streamFollowings(userId: _userId ?? _currentUserId),
+      _userRepository.streamFollowings(userId: _userId),
       onData: (followings) => state.copyWith(followings: followings),
     );
   }
@@ -214,15 +191,20 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
   Future<void> _onFollowUser(
     UserProfileFollowUserRequested event,
     Emitter<UserProfileState> emit,
-  ) =>
-      _userRepository.follow(followToId: event.userId);
+  ) async {
+    try {
+      await _userRepository.follow(followToId: event.userId ?? _userId);
+    } catch (error, stackTrace) {
+      addError(error, stackTrace);
+    }
+  }
 
   Future<void> _onUserProfileRemoveFollowerRequested(
     UserProfileRemoveFollowerRequested event,
     Emitter<UserProfileState> emit,
   ) async {
     try {
-      await _userRepository.removeFollower(id: event.userId);
+      await _userRepository.removeFollower(id: event.userId ?? _userId);
     } catch (error, stackTrace) {
       addError(error, stackTrace);
     }

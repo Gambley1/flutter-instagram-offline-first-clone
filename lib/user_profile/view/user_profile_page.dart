@@ -20,12 +20,12 @@ import 'package:user_repository/user_repository.dart';
 
 class UserProfilePage extends StatelessWidget {
   const UserProfilePage({
+    required this.userId,
     this.props = const UserProfileProps.build(),
     super.key,
-    this.userId,
   });
 
-  final String? userId;
+  final String userId;
   final UserProfileProps props;
 
   @override
@@ -52,11 +52,11 @@ class UserProfilePage extends StatelessWidget {
 class UserProfileView extends StatefulWidget {
   const UserProfileView({
     required this.props,
+    required this.userId,
     super.key,
-    this.userId,
   });
 
-  final String? userId;
+  final String userId;
   final UserProfileProps props;
 
   @override
@@ -104,7 +104,6 @@ class _UserProfileViewState extends State<UserProfileView>
                 sliver: MultiSliver(
                   children: [
                     UserProfileAppBar(
-                      userId: widget.userId,
                       sponsoredPost: props.sponsoredPost,
                     ),
                     if (!user.isAnonymous || props.sponsoredPost != null) ...[
@@ -275,18 +274,13 @@ class UserProfileMentionedPostsPage extends StatelessWidget {
 }
 
 class UserProfileAppBar extends StatelessWidget {
-  const UserProfileAppBar({
-    required this.userId,
-    this.sponsoredPost,
-    super.key,
-  });
+  const UserProfileAppBar({this.sponsoredPost, super.key});
 
-  final String? userId;
   final PostSponsoredBlock? sponsoredPost;
 
   @override
   Widget build(BuildContext context) {
-    final currentUser = context.select((AppBloc bloc) => bloc.state.user);
+    final isOwner = context.select((UserProfileBloc bloc) => bloc.isOwner);
     final user$ = context.select((UserProfileBloc b) => b.state.user);
     final user = sponsoredPost == null
         ? user$
@@ -320,18 +314,17 @@ class UserProfileAppBar extends StatelessWidget {
             ),
           ],
         ),
-        actions: userId != null && userId != currentUser.id ||
-                (userId == null && !ModalRoute.of(context)!.isFirst)
-            ? const [
-                UserProfileActions(),
-              ]
-            : [
-                const UserProfileAddMediaButton(),
-                if (ModalRoute.of(context)!.isFirst) ...const [
-                  Gap.h(AppSpacing.md),
-                  UserProfileSettingsButton(),
-                ],
-              ],
+        actions: [
+          if (!isOwner)
+            const UserProfileActions()
+          else ...[
+            const UserProfileAddMediaButton(),
+            if (ModalRoute.of(context)?.isFirst ?? false) ...const [
+              Gap.h(AppSpacing.md),
+              UserProfileSettingsButton(),
+            ],
+          ],
+        ],
       ),
     );
   }

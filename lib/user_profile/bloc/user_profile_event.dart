@@ -94,13 +94,13 @@ final class UserProfileFollowingsSubscriptionRequested
 }
 
 final class UserProfileFollowUserRequested extends UserProfileEvent {
-  const UserProfileFollowUserRequested(this.userId);
+  const UserProfileFollowUserRequested({this.userId});
 
-  final String userId;
+  final String? userId;
 }
 
 final class UserProfileRemoveFollowerRequested extends UserProfileEvent {
-  const UserProfileRemoveFollowerRequested(this.userId);
+  const UserProfileRemoveFollowerRequested({this.userId});
 
-  final String userId;
+  final String? userId;
 }

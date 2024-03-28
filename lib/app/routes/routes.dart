@@ -41,7 +41,7 @@ GoRouter router(AppBloc appBloc) => GoRouter(
           name: 'user_profile',
           parentNavigatorKey: _rootNavigatorKey,
           pageBuilder: (context, state) {
-            final userId = state.pathParameters['user_id'];
+            final userId = state.pathParameters['user_id']!;
             final props = state.extra as UserProfileProps?;
 
             return CustomTransitionPage(
@@ -460,20 +460,14 @@ GoRouter router(AppBloc appBloc) => GoRouter(
                       name: 'user_statistics',
                       parentNavigatorKey: _rootNavigatorKey,
                       pageBuilder: (context, state) {
-                        String? userId() {
-                          final uid = state.uri.queryParameters['user_id'];
-                          if (uid == null) return null;
-                          if (uid.isEmpty) return null;
-                          return uid;
-                        }
-
+                        final userId = state.uri.queryParameters['user_id']!;
                         final tabIndex = state.extra! as int;
 
                         return CustomTransitionPage(
                           key: state.pageKey,
                           child: BlocProvider(
                             create: (context) => UserProfileBloc(
-                              userId: userId(),
+                              userId: userId,
                               userRepository: context.read<UserRepository>(),
                               postsRepository: context.read<PostsRepository>(),
                             )

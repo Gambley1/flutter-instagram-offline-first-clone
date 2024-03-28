@@ -13,12 +13,12 @@ import 'package:user_repository/user_repository.dart';
 
 class UserProfileHeader extends StatelessWidget {
   const UserProfileHeader({
-    this.userId,
+    required this.userId,
     this.sponsoredPost,
     super.key,
   });
 
-  final String? userId;
+  final String userId;
   final PostSponsoredBlock? sponsoredPost;
 
   void _navigateToSubscribersPage(BuildContext context) => context.pushNamed(
@@ -142,9 +142,9 @@ class UserProfileHeader extends StatelessWidget {
                     const Flexible(child: ShowSuggestedPeopleButton()),
                   ].spacerBetween(width: AppSpacing.sm)
                 else ...[
-                  Expanded(
+                  const Expanded(
                     flex: 3,
-                    child: UserProfileFollowUserButton(userId: userId),
+                    child: UserProfileFollowUserButton(),
                   ),
                 ],
               ],
@@ -253,9 +253,7 @@ class _ShowSuggestedPeopleButtonState extends State<ShowSuggestedPeopleButton> {
 }
 
 class UserProfileFollowUserButton extends StatelessWidget {
-  const UserProfileFollowUserButton({required this.userId, super.key});
-
-  final String? userId;
+  const UserProfileFollowUserButton({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -265,7 +263,7 @@ class UserProfileFollowUserButton extends StatelessWidget {
     final l10n = context.l10n;
 
     return BetterStreamBuilder<bool>(
-      stream: bloc.followingStatus(userId: userId!),
+      stream: bloc.followingStatus(),
       builder: (context, isFollowed) {
         return UserProfileButton(
           label: isFollowed ? '${l10n.followingUser} ▼' : l10n.followUser,
@@ -285,13 +283,13 @@ class UserProfileFollowUserButton extends StatelessWidget {
                     options: followerModalOptions(
                       unfollowLabel: context.l10n.cancelFollowingText,
                       onUnfollowTap: () =>
-                          bloc.add(UserProfileFollowUserRequested(userId!)),
+                          bloc.add(const UserProfileFollowUserRequested()),
                     ),
                   );
                   if (option == null) return;
                   callback.call(option);
                 }
-              : () => bloc.add(UserProfileFollowUserRequested(userId!)),
+              : () => bloc.add(const UserProfileFollowUserRequested()),
         );
       },
     );

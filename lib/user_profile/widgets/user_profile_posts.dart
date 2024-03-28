@@ -51,9 +51,7 @@ class _UserProfilePostsState extends State<UserProfilePosts> {
         slivers: [
           UserProfilePostsAppBar(userId: widget.userId),
           StreamBuilder<List<PostBlock>>(
-            stream: context
-                .read<UserProfileBloc>()
-                .userPosts(userId: widget.userId, small: false),
+            stream: context.read<UserProfileBloc>().userPosts(small: false),
             builder: (context, snapshot) {
               final blocks = snapshot.data;
 
@@ -89,12 +87,12 @@ class UserProfilePostsAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bloc = context.read<UserProfileBloc>();
-    final isOwner = context.select<UserProfileBloc, bool>((b) => b.isOwner);
+    final isOwner = context.select((UserProfileBloc b) => b.isOwner);
 
     late final followText = Padding(
       padding: const EdgeInsets.only(right: AppSpacing.lg),
       child: Tappable(
-        onTap: () => bloc.add(UserProfileFollowUserRequested(userId)),
+        onTap: () => bloc.add(const UserProfileFollowUserRequested()),
         child: Text(
           context.l10n.followUser,
           style: context.titleLarge?.copyWith(
@@ -109,7 +107,7 @@ class UserProfilePostsAppBar extends StatelessWidget {
       pinned: true,
       actions: [
         BetterStreamBuilder<bool>(
-          stream: bloc.followingStatus(userId: userId),
+          stream: bloc.followingStatus(),
           builder: (context, isFollowed) {
             if (isFollowed || isOwner) return const SizedBox.shrink();
 
