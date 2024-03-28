@@ -1,14 +1,7 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'user_profile_bloc.dart';
 
 enum UserProfileStatus {
   initial,
-  fetchingNotificationsEnabled,
-  fetchingNotificationsEnabledFailed,
-  fetchingNotificationsEnabledSucceeded,
-  togglingNotifications,
-  togglingNotificationsFailed,
-  togglingNotificationsSucceeded,
   userUpdated,
   userUpdateFailed,
 }
