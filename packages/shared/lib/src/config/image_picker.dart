@@ -6,7 +6,6 @@ import 'package:app_ui/app_ui.dart' hide AppTheme;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker_plus/image_picker_plus.dart';
-import 'package:insta_assets_picker/insta_assets_picker.dart';
 import 'package:shared/shared.dart';
 
 export 'package:image_picker_plus/src/images_view_page.dart';
@@ -42,20 +41,6 @@ class PickImage {
         crossAxisCount: 4,
         crossAxisSpacing: 1.7,
         mainAxisSpacing: 1.5,
-      );
-
-  Future<List<AssetEntity>?> pickAssets(
-    BuildContext context, {
-    required ValueSetter<Stream<InstaAssetsExportDetails>> onCompleted,
-    int maxAssets = 10,
-    bool closeOnComplete = false,
-  }) =>
-      InstaAssetPicker.pickAssets(
-        context,
-        pickerTheme: context.theme,
-        onCompleted: onCompleted,
-        maxAssets: maxAssets,
-        closeOnComplete: closeOnComplete,
       );
 
   Future<void> pickAssetsFromBoth(
