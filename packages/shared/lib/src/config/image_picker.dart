@@ -43,7 +43,7 @@ class PickImage {
         mainAxisSpacing: 1.5,
       );
 
-  Future<void> pickAssetsFromBoth(
+  Future<void> pickImagesAndVideos(
     BuildContext context, {
     required Future<void> Function(
       BuildContext context,
