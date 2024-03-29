@@ -393,6 +393,7 @@ class UserProfileAddMediaButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final user = context.select((AppBloc bloc) => bloc.state.user);
     final enableStory =
         context.select((CreateStoriesBloc bloc) => bloc.state.isAvailable);
@@ -400,14 +401,14 @@ class UserProfileAddMediaButton extends StatelessWidget {
     return Tappable(
       onTap: () => context
           .showListOptionsModal(
-        title: context.l10n.createText,
+        title: l10n.createText,
         options: createMediaModalOptions(
-          reelLabel: context.l10n.reelText,
-          postLabel: context.l10n.postText,
-          storyLabel: context.l10n.storyText,
           context: context,
-          goTo: (route, {extra}) => context.pushNamed(route, extra: extra),
+          reelLabel: l10n.reelText,
+          postLabel: l10n.postText,
+          storyLabel: l10n.storyText,
           enableStory: enableStory,
+          goTo: (route, {extra}) => context.pushNamed(route, extra: extra),
           onStoryCreated: (path) {
             context.read<CreateStoriesBloc>().add(
                   CreateStoriesStoryCreateRequested(
@@ -418,8 +419,8 @@ class UserProfileAddMediaButton extends StatelessWidget {
                       toggleLoadingIndeterminate(enable: false);
                       openSnackbar(
                         SnackbarMessage.error(
-                          title: context.l10n.somethingWentWrongText,
-                          description: context.l10n.failedToCreateStoryText,
+                          title: l10n.somethingWentWrongText,
+                          description: l10n.failedToCreateStoryText,
                         ),
                       );
                     },
@@ -428,7 +429,7 @@ class UserProfileAddMediaButton extends StatelessWidget {
                       toggleLoadingIndeterminate(enable: false);
                       openSnackbar(
                         SnackbarMessage.success(
-                          title: context.l10n.successfullyCreatedStoryText,
+                          title: l10n.successfullyCreatedStoryText,
                         ),
                         clearIfQueue: true,
                       );
