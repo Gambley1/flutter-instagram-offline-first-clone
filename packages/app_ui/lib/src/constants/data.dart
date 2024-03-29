@@ -77,7 +77,7 @@ List<ModalOption> createMediaModalOptions({
   required void Function(String route, {Object? extra}) goTo,
   required bool enableStory,
   required VoidCallback onCreateReelTap,
-  Object? storyExtra,
+  ValueSetter<String>? onStoryCreated,
 }) =>
     <ModalOption>[
       ModalOption(
@@ -94,7 +94,7 @@ List<ModalOption> createMediaModalOptions({
         ModalOption(
           name: storyLabel,
           iconData: Icons.cameraswitch_outlined,
-          onTap: () => goTo('create_stories', extra: storyExtra),
+          onTap: () => goTo('create_stories', extra: onStoryCreated),
         ),
     ];
 

@@ -408,7 +408,7 @@ class UserProfileAddMediaButton extends StatelessWidget {
           context: context,
           goTo: (route, {extra}) => context.pushNamed(route, extra: extra),
           enableStory: enableStory,
-          storyExtra: (String path) {
+          onStoryCreated: (path) {
             context.read<CreateStoriesBloc>().add(
                   CreateStoriesStoryCreateRequested(
                     author: user,
