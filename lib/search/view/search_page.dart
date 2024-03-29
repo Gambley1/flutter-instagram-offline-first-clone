@@ -2,7 +2,7 @@ import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
-import 'package:flutter_instagram_offline_first_clone/stories/user_stories/view/view.dart';
+import 'package:flutter_instagram_offline_first_clone/stories/stories.dart';
 import 'package:go_router/go_router.dart';
 import 'package:search_repository/search_repository.dart';
 import 'package:shared/shared.dart';
