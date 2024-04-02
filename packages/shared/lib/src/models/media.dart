@@ -41,7 +41,6 @@ class ListMediaConverterFromRemoteConfig
 /// A reusable Instagram Media which represents a content-based component.
 /// {@endtemplate}
 @immutable
-@JsonSerializable()
 abstract class Media extends Equatable {
   /// {@macro insta_bloc}
   const Media({
