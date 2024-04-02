@@ -55,7 +55,6 @@ class FeedPageController extends ChangeNotifier {
     required String postId,
     required String caption,
     required bool isReel,
-    BuildContext? context,
   }) async {
     final navigateToReelPage = isReel ||
         (selectedFiles.length == 1 &&

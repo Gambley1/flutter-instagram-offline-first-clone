@@ -445,7 +445,6 @@ class UserProfileAddMediaButton extends StatelessWidget {
               extra: CreatePostProps(
                 details: details,
                 isReel: true,
-                context: context,
               ),
             ),
           ),

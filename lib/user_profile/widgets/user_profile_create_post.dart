@@ -54,12 +54,10 @@ class CreatePostProps {
   const CreatePostProps({
     required this.details,
     this.isReel = false,
-    this.context,
   });
 
   final SelectedImagesDetails details;
   final bool isReel;
-  final BuildContext? context;
 }
 
 class CreatePostPage extends StatefulWidget {
@@ -118,7 +116,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
           selectedFiles: selectedFiles,
           caption: _captionController.text.trim(),
           isReel: widget.props.isReel,
-          context: widget.props.context,
         ),
       );
       goHome.call();
