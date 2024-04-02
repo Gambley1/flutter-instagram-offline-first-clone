@@ -15,7 +15,7 @@ void initUtilities(BuildContext context, Locale locale) {
   final t = context.t;
 
   PickImage().init(
-    TabsTexts(
+    tabsTexts: TabsTexts(
       photoText: l10n.photoText,
       videoText: l10n.videoText,
       acceptAllPermissions: l10n.acceptAllPermissionsText,

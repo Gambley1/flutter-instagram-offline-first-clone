@@ -21,8 +21,8 @@ class PickImage {
   late TabsTexts _tabsTexts;
 
   // ignore: use_setters_to_change_properties
-  void init(TabsTexts tabsTexts) {
-    _tabsTexts = tabsTexts;
+  void init({TabsTexts? tabsTexts}) {
+    _tabsTexts = tabsTexts ?? const TabsTexts();
   }
 
   static final _defaultFilterOption = FilterOptionGroup(
