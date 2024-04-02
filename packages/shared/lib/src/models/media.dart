@@ -51,7 +51,6 @@ abstract class Media extends Equatable {
   });
 
   /// The unique identifier of the media.
-  @JsonKey(name: 'media_id')
   final String id;
 
   /// The URL of the media.
