@@ -35,13 +35,11 @@ class PostsRepository implements PostsBaseRepository {
   @override
   Future<Post?> createPost({
     required String id,
-    required String userId,
     required String caption,
     required String media,
   }) =>
       _databaseClient.createPost(
         id: id,
-        userId: userId,
         caption: caption,
         media: media,
       );

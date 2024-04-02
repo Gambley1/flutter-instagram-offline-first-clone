@@ -131,7 +131,6 @@ abstract class PostsBaseRepository {
   /// Create a new post with provided details.
   Future<Post?> createPost({
     required String id,
-    required String userId,
     required String caption,
     required String media,
   });
@@ -309,7 +308,6 @@ class PowerSyncDatabaseClient extends DatabaseClient {
   @override
   Future<Post?> createPost({
     required String id,
-    required String userId,
     required String caption,
     required String media,
   }) async {
@@ -321,7 +319,13 @@ class PowerSyncDatabaseClient extends DatabaseClient {
     VALUES(?, ?, ?, ?, ?)
     RETURNING *
     ''',
-        [id, userId, caption, media, DateTime.timestamp().toIso8601String()],
+        [
+          id,
+          currentUserId,
+          caption,
+          media,
+          DateTime.timestamp().toIso8601String(),
+        ],
       ),
       _powerSyncRepository.db().get(
         '''

@@ -467,7 +467,6 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     try {
       final newPost = await _postsRepository.createPost(
         id: event.postId,
-        userId: event.userId,
         caption: event.caption,
         media: json.encode(event.media),
       );

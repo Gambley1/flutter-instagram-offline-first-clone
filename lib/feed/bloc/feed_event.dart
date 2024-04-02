@@ -45,13 +45,11 @@ final class FeedUpdateRequested extends FeedEvent {
 final class FeedPostCreateRequested extends FeedEvent {
   const FeedPostCreateRequested({
     required this.postId,
-    required this.userId,
     required this.caption,
     required this.media,
   });
 
   final String postId;
-  final String userId;
   final String caption;
   final List<Map<String, dynamic>> media;
 }

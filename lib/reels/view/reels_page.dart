@@ -136,7 +136,6 @@ class _ReelsViewState extends State<ReelsView> {
                 extra: CreatePostProps(
                   details: details,
                   isReel: true,
-                  context: context,
                 ),
               ),
             ),

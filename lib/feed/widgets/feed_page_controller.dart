@@ -2,8 +2,6 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_instagram_offline_first_clone/app/app.dart';
-import 'package:flutter_instagram_offline_first_clone/feed/bloc/feed_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/feed.dart';
 import 'package:go_router/go_router.dart';
 import 'package:powersync_repository/powersync_repository.dart';
@@ -62,7 +60,6 @@ class FeedPageController extends ChangeNotifier {
     final navigateToReelPage = isReel ||
         (selectedFiles.length == 1 &&
             selectedFiles.every((e) => !e.isThatImage));
-    final user = _context.read<AppBloc>().state.user;
     StatefulNavigationShell.of(_context)
         .goBranch(navigateToReelPage ? 3 : 0, initialLocation: true);
     void uploadPost({
@@ -72,7 +69,6 @@ class FeedPageController extends ChangeNotifier {
         _context.read<FeedBloc>().add(
               FeedPostCreateRequested(
                 postId: id,
-                userId: user.id,
                 caption: caption,
                 media: media,
               ),
