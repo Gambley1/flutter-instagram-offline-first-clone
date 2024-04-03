@@ -114,8 +114,6 @@ class MessageBubble extends StatelessWidget {
       return messageWidget;
     }
 
-    logI('Return Viewable widget');
-
     return Viewable(
       itemKey: ValueKey(message.id),
       onSeen: () => context.read<ChatBloc>().add(ChatMessageSeen(message.id)),
