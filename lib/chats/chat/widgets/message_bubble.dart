@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/chats/chat/chat.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
+import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:shared/shared.dart';
 
 typedef MessageTapCallback<T> = Future<T?> Function(
@@ -44,7 +45,7 @@ class MessageBubble extends StatelessWidget {
     final isMine = message.sender?.id == user.id;
     final messageAlignment = !isMine ? Alignment.topLeft : Alignment.topRight;
 
-    return Tappable(
+    final messageWidget = Tappable(
       animationEffect: TappableAnimationEffect.none,
       onTapUp: (details) async {
         late final onDeleteTap = context.confirmAction(
@@ -107,6 +108,18 @@ class MessageBubble extends StatelessWidget {
           );
         },
       ),
+    );
+
+    if (isMine || isMine && message.isRead || !isMine && message.isRead) {
+      return messageWidget;
+    }
+
+    logI('Return Viewable widget');
+
+    return Viewable(
+      itemKey: ValueKey(message.id),
+      onSeen: () => context.read<ChatBloc>().add(ChatMessageSeen(message.id)),
+      child: messageWidget,
     );
   }
 }
