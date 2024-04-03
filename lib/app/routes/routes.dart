@@ -522,13 +522,9 @@ class GoRouterAppBlocRefreshStream extends ChangeNotifier {
   GoRouterAppBlocRefreshStream(Stream<AppState> stream) {
     notifyListeners();
     _subscription = stream.asBroadcastStream().listen((appState) {
-      if (_appState == appState) return;
-      _appState = appState;
       notifyListeners();
     });
   }
-
-  AppState _appState = const AppState.unauthenticated();
 
   late final StreamSubscription<dynamic> _subscription;
 
