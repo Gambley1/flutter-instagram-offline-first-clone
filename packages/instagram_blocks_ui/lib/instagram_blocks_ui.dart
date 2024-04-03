@@ -31,4 +31,5 @@ export 'src/widgets/widgets.dart'
         TimeAgo,
         TwoRotatingArc,
         UserComment,
-        VideoPlay;
+        VideoPlay,
+        Viewable;
