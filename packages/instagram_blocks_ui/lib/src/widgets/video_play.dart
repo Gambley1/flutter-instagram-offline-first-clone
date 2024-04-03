@@ -2,13 +2,9 @@ import 'dart:io';
 
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:instagram_blocks_ui/src/blur_hash_image_placeholder.dart';
-import 'package:instagram_blocks_ui/src/safe_set_state_mixin.dart';
-import 'package:instagram_blocks_ui/src/smooth_video_progress_indicator.dart';
-import 'package:instagram_blocks_ui/src/widgets/popping_icon_overlay.dart';
 import 'package:shared/shared.dart';
-import 'package:video_player/video_player.dart';
-import 'package:visibility_detector/visibility_detector.dart';
 
 class VideoPlay extends StatefulWidget {
   const VideoPlay({
@@ -205,17 +201,14 @@ class _VideoPlayState extends State<VideoPlay>
                   }
                   return videoPlayer;
                 }
-                return VisibilityDetector(
-                  key: ValueKey(widget.id),
-                  onVisibilityChanged: (info) {
-                    if (!info.visibleBounds.isEmpty) {
-                      if (widget.play) _controller.play();
-                    } else {
-                      _controller
-                        ..pause()
-                        ..seekTo(Duration.zero);
-                    }
+                return Viewable(
+                  itemKey: ValueKey(widget.id),
+                  onSeen: () {
+                    if (widget.play) _controller.play();
                   },
+                  onUnseen: () => _controller
+                    ..pause()
+                    ..seekTo(Duration.zero),
                   child: widget.withProgressIndicator
                       ? withProgressIndicator
                       : videoPlayer,

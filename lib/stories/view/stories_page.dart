@@ -12,7 +12,6 @@ import 'package:shared/shared.dart';
 import 'package:stories_repository/stories_repository.dart';
 import 'package:story_view/story_view.dart';
 import 'package:user_repository/user_repository.dart';
-import 'package:visibility_detector/visibility_detector.dart';
 
 class StoriesPage extends StatelessWidget {
   const StoriesPage({
@@ -103,20 +102,19 @@ class _StoriesViewState extends State<StoriesView> with SafeSetStateMixin {
 
     return Stack(
       children: [
-        VisibilityDetector(
-          key: ValueKey(user.id),
-          onVisibilityChanged: (info) {
-            if (!info.visibleBounds.isEmpty) {
-              _wasVisible.value = true;
-              if (_controller.playbackNotifier.value == PlaybackState.pause) {
-                if (!_wasVisible.value) {
-                  return;
-                }
-                if (mounted) _controller.play();
+        Viewable(
+          itemKey: ValueKey(user.id),
+          onSeen: () {
+            _wasVisible.value = true;
+            if (_controller.playbackNotifier.value == PlaybackState.pause) {
+              if (!_wasVisible.value) {
+                return;
               }
-            } else {
-              if (mounted) _controller.pause();
+              if (mounted) _controller.play();
             }
+          },
+          onUnseen: () {
+            if (mounted) _controller.pause();
           },
           child: ValueListenableBuilder(
             valueListenable: _storyItems,
