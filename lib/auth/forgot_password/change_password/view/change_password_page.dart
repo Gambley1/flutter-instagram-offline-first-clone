@@ -23,6 +23,7 @@ class ChangePasswordView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
+      enablePopScope: true,
       onPopInvoked: (didPop) {
         if (didPop) return;
         _confirmGoBack(context);

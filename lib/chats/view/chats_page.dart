@@ -31,6 +31,7 @@ class ChatsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
+      enablePopScope: true,
       canPop: false,
       onPopInvoked: (didPop) {
         if (didPop) return;

@@ -12,6 +12,7 @@ class AppScaffold extends StatelessWidget {
   const AppScaffold({
     required this.body,
     super.key,
+    this.enablePopScope = false,
     this.onPopInvoked,
     this.canPop = true,
     this.safeArea = true,
@@ -31,6 +32,9 @@ class AppScaffold extends StatelessWidget {
     this.bottomSheet,
     this.extendBodyBehindAppBar = false,
   });
+
+  /// Whether to wrap [Scaffold] with the [PopScope].
+  final bool enablePopScope;
 
   /// Will pop callback. If null, will pop the navigator.
   final void Function(bool)? onPopInvoked;
@@ -110,6 +114,7 @@ class AppScaffold extends StatelessWidget {
           appBar: appBar,
           drawer: drawer,
           bottomSheet: bottomSheet,
+          enablePopScope: enablePopScope,
           onPopInvoked: onPopInvoked,
           canPop: canPop,
           extendBody: extendBody,
@@ -131,6 +136,7 @@ class AppScaffold extends StatelessWidget {
       appBar: appBar,
       drawer: drawer,
       bottomSheet: bottomSheet,
+      enablePopScope: enablePopScope,
       onPopInvoked: onPopInvoked,
       canPop: canPop,
       extendBody: extendBody,
@@ -152,6 +158,7 @@ class _MaterialScaffold extends StatelessWidget {
     required this.extendBody,
     required this.extendBodyBehindAppBar,
     required this.canPop,
+    required this.enablePopScope,
     this.backgroundColor,
     this.floatingActionButton,
     this.floatingActionButtonLocation,
@@ -188,6 +195,8 @@ class _MaterialScaffold extends StatelessWidget {
 
   final Widget? bottomSheet;
 
+  final bool enablePopScope;
+
   final void Function(bool)? onPopInvoked;
 
   final bool canPop;
@@ -198,7 +207,7 @@ class _MaterialScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    final scaffold = Scaffold(
       extendBody: extendBody,
       extendBodyBehindAppBar: extendBodyBehindAppBar,
       body: withSafeArea
@@ -217,19 +226,18 @@ class _MaterialScaffold extends StatelessWidget {
       appBar: appBar,
       drawer: drawer,
       bottomSheet: bottomSheet,
-    )
-        .withPopScope(
-          onPopInvoked: onPopInvoked,
-          canPop: canPop,
-        )
-        .withAdaptiveSystemTheme(context);
+    ).withAdaptiveSystemTheme(context);
+    if (enablePopScope) {
+      return scaffold.popScope(onPopInvoked: onPopInvoked, canPop: canPop);
+    }
+    return scaffold;
   }
 }
 
 /// Will pop scope extension that wraps widget with [PopScope].
 extension WillPopScopeX on Widget {
   /// Wraps widget with [PopScope].
-  Widget withPopScope({
+  Widget popScope({
     void Function(bool)? onPopInvoked,
     bool canPop = true,
   }) =>
