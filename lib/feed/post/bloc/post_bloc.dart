@@ -82,7 +82,7 @@ class PostBloc extends HydratedBloc<PostEvent, PostState> {
     Emitter<PostState> emit,
   ) async {
     await emit.forEach(
-      _postsRepository.isLiked(userId: event.currentUserId, id: id),
+      _postsRepository.isLiked(id: id),
       onData: (isLiked) => state.copyWith(isLiked: isLiked),
     );
   }

@@ -61,11 +61,7 @@ class PostPopup extends StatelessWidget {
         postId: block.id,
         postsRepository: context.read<PostsRepository>(),
         userRepository: context.read<UserRepository>(),
-      )..add(
-          PostIsLikedSubscriptionRequested(
-            context.read<AppBloc>().state.user.id,
-          ),
-        ),
+      )..add(const PostIsLikedSubscriptionRequested()),
       child: PopupModal(
         block: block,
         index: index,

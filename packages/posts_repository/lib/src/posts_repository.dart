@@ -51,10 +51,9 @@ class PostsRepository implements PostsBaseRepository {
   @override
   Stream<bool> isLiked({
     required String id,
-    required String userId,
     bool post = true,
   }) =>
-      _databaseClient.isLiked(id: id, userId: userId, post: post);
+      _databaseClient.isLiked(id: id, post: post);
 
   @override
   Stream<int> likesOf({required String id, bool post = true}) =>

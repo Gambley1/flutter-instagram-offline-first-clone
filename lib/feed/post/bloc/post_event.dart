@@ -16,9 +16,7 @@ final class PostCommentsCountSubscriptionRequested extends PostEvent {
 }
 
 final class PostIsLikedSubscriptionRequested extends PostEvent {
-  const PostIsLikedSubscriptionRequested(this.currentUserId);
-
-  final String currentUserId;
+  const PostIsLikedSubscriptionRequested();
 }
 
 final class PostUpdateRequested extends PostEvent {

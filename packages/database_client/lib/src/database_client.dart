@@ -117,7 +117,6 @@ abstract class PostsBaseRepository {
   /// identified by [userId].
   Stream<bool> isLiked({
     required String id,
-    required String userId,
     bool post = true,
   });
 
@@ -499,7 +498,6 @@ WHERE $statement = ? AND $statement IS NOT NULL
   @override
   Stream<bool> isLiked({
     required String id,
-    required String userId,
     bool post = true,
   }) {
     final statement = post ? 'post_id' : 'comment_id';
@@ -511,7 +509,7 @@ WHERE $statement = ? AND $statement IS NOT NULL
         WHERE user_id = ? AND $statement = ? AND $statement IS NOT NULL
       )
 ''',
-      parameters: [userId, id],
+      parameters: [currentUserId, id],
     ).map((event) => (event.first.values.first! as int).isTrue);
   }
 
