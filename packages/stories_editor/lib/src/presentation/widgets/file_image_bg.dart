@@ -26,8 +26,8 @@ class _FileImageBGState extends State<FileImageBG> with SafeSetStateMixin {
   GlobalKey? currentKey;
 
   final StreamController<Color> stateController = StreamController<Color>();
-  Color color1 = const Color(0xFFFFFFFF);
-  Color color2 = const Color(0xFFFFFFFF);
+  var color1 = Colors.grey[350]!;
+  var color2 = Colors.grey[350]!;
 
   Timer? _timer;
 

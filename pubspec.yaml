@@ -58,6 +58,7 @@ dependencies:
   notifications_repository:
     path: packages/notifications_repository
   ogp_data_extract: ^0.1.4
+  palette_generator: ^0.3.3+3
   path_provider: ^2.1.2
   persistent_storage:
     path: packages/storage/persistent_storage

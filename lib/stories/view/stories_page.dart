@@ -70,11 +70,42 @@ class _StoriesViewState extends State<StoriesView> with SafeSetStateMixin {
   final _showOverlay = ValueNotifier<bool>(true);
   final _wasVisible = ValueNotifier<bool>(false);
 
+  Color? _textColor;
+
   @override
   void initState() {
     super.initState();
     _storyItems.value = widget.stories.toStoryItems(_controller);
     _showOverlay.addListener(_showOverlayListener);
+  }
+
+  Future<void> _initTextColor() async {
+    final colorScheme = await ColorScheme.fromImageProvider(
+      provider: NetworkImage(_currentStory.value.contentUrl),
+    );
+    final dominantColor = colorScheme.surface;
+    setState(() {
+      _textColor = _getContrastingColor(dominantColor);
+    });
+  }
+
+  Color _getContrastingColor(Color color) {
+    const blackThreshold = 0.18;
+    const whiteThreshold = 0.95;
+    final luminance = color.computeLuminance();
+    if (luminance > whiteThreshold) {
+      return AppColors.black;
+    } else if (luminance < blackThreshold) {
+      return AppColors.white;
+    } else {
+      var hslColor = HSLColor.fromColor(color);
+      hslColor = hslColor.withLightness(
+        hslColor.lightness < 0.5
+            ? hslColor.lightness + 0.1
+            : hslColor.lightness - 0.1,
+      );
+      return hslColor.toColor();
+    }
   }
 
   void _showOverlayListener() {
@@ -130,6 +161,7 @@ class _StoriesViewState extends State<StoriesView> with SafeSetStateMixin {
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       _currentStory.value = widget.stories[index];
                       _createdAt.value = widget.stories[index].createdAt;
+                      _initTextColor();
                     });
                     if (widget.onStorySeen != null) {
                       widget.onStorySeen!.call(index, widget.stories);
@@ -161,6 +193,7 @@ class _StoriesViewState extends State<StoriesView> with SafeSetStateMixin {
               child: StoriesAuthorListTile(
                 author: widget.author,
                 createdAt: _createdAt.value,
+                textColor: _textColor,
               ),
             );
           },
@@ -178,6 +211,7 @@ class _StoriesViewState extends State<StoriesView> with SafeSetStateMixin {
                   controller: _controller,
                   author: widget.author,
                   currentStory: _currentStory.value,
+                  textColor: _textColor,
                   onStoryDeleted: (story) {
                     final storyIndex = widget.stories.indexOf(story);
                     if (storyIndex == -1) return;
@@ -213,6 +247,7 @@ class StoryOptions extends StatelessWidget {
     required this.controller,
     required this.author,
     required this.onStoryDeleted,
+    this.textColor,
     super.key,
   });
 
@@ -220,6 +255,7 @@ class StoryOptions extends StatelessWidget {
   final StoryController controller;
   final User author;
   final ValueSetter<Story> onStoryDeleted;
+  final Color? textColor;
 
   @override
   Widget build(BuildContext context) {
@@ -269,18 +305,21 @@ class StoryOptions extends StatelessWidget {
               option.onTap(context);
             });
           },
-          child: Column(
-            children: [
-              const Icon(Icons.more_vert_outlined),
-              const Gap.v(AppSpacing.sm),
-              Text(
-                context.l10n.moreText,
-                style: context.bodyMedium?.copyWith(
-                  fontWeight: AppFontWeight.bold,
-                  letterSpacing: 0.4,
-                ),
-              ),
-            ],
+          child: AnimatedDefaultTextStyle(
+            duration: 150.ms,
+            style: context.bodyMedium!.copyWith(
+              fontWeight: AppFontWeight.bold,
+              letterSpacing: 0.4,
+              color: textColor,
+            ),
+            overflow: TextOverflow.ellipsis,
+            child: Column(
+              children: [
+                Icon(Icons.more_vert_outlined, color: textColor),
+                const Gap.v(AppSpacing.sm),
+                Text(context.l10n.moreText),
+              ],
+            ),
           ),
         ),
       ],
@@ -292,11 +331,13 @@ class StoriesAuthorListTile extends StatelessWidget {
   const StoriesAuthorListTile({
     required this.author,
     required this.createdAt,
+    this.textColor,
     super.key,
   });
 
   final User author;
   final DateTime? createdAt;
+  final Color? textColor;
 
   @override
   Widget build(BuildContext context) {
@@ -320,36 +361,32 @@ class StoriesAuthorListTile extends StatelessWidget {
           pathParameters: {'user_id': author.id},
         ),
       ),
-      title: Row(
-        children: [
-          Text.rich(
-            overflow: TextOverflow.ellipsis,
-            style: context.bodyLarge?.copyWith(
-              fontWeight: AppFontWeight.bold,
-              color: context.adaptiveColor,
+      title: AnimatedDefaultTextStyle(
+        duration: 150.ms,
+        style: context.bodyLarge!.apply(color: textColor),
+        overflow: TextOverflow.ellipsis,
+        child: Row(
+          children: [
+            Text.rich(
+              TextSpan(
+                text: author.displayUsername,
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () => context.pushNamed(
+                        'user_profile',
+                        pathParameters: {'user_id': author.id},
+                      ),
+              ),
             ),
-            TextSpan(
-              text: author.displayUsername,
-              recognizer: TapGestureRecognizer()
-                ..onTap = () => context.pushNamed(
-                      'user_profile',
-                      pathParameters: {'user_id': author.id},
-                    ),
-            ),
-          ),
-          const Gap.h(AppSpacing.sm),
-          if (createdAt != null)
-            Text(
-              createdAt!.timeAgo(context),
-              style: context.bodyLarge?.apply(color: context.adaptiveColor),
-            ),
-        ],
+            const Gap.h(AppSpacing.sm),
+            if (createdAt != null) Text(createdAt!.timeAgo(context)),
+          ],
+        ),
       ),
       trailing: isMine
           ? null
           : Tappable(
               onTap: () {},
-              child: const Icon(Icons.more_vert_outlined),
+              child: Icon(Icons.more_vert_outlined, color: textColor),
             ),
     );
   }
