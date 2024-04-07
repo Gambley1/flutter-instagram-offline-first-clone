@@ -103,7 +103,6 @@ abstract class PostsBaseRepository {
   /// [id].
   Future<void> like({
     required String id,
-    required String userId,
     bool post = true,
   });
 
@@ -537,14 +536,14 @@ WHERE posts.id = ?
   @override
   Future<void> like({
     required String id,
-    required String userId,
     bool post = true,
   }) async {
+    if (currentUserId == null) return;
     final statement = post ? 'post_id' : 'comment_id';
     final exists = await _powerSyncRepository.db().execute(
       'SELECT 1 FROM likes '
       'WHERE user_id = ? AND $statement = ? AND $statement IS NOT NULL',
-      [userId, id],
+      [currentUserId, id],
     );
     if (exists.isEmpty) {
       await _powerSyncRepository.db().execute(
@@ -552,7 +551,7 @@ WHERE posts.id = ?
           INSERT INTO likes(user_id, $statement, id)
             VALUES(?, ?, uuid())
       ''',
-        [userId, id],
+        [currentUserId, id],
       );
       return;
     }
@@ -561,7 +560,7 @@ WHERE posts.id = ?
           DELETE FROM likes 
           WHERE user_id = ? AND $statement = ? AND $statement IS NOT NULL
       ''',
-      [userId, id],
+      [currentUserId, id],
     );
   }
 

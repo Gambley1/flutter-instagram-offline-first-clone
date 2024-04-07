@@ -43,9 +43,7 @@ final class PostLikersPageRequested extends PostEvent {
 }
 
 final class PostLikeRequested extends PostEvent {
-  const PostLikeRequested(this.userId);
-
-  final String userId;
+  const PostLikeRequested();
 }
 
 final class PostAuthorFollowRequested extends PostEvent {

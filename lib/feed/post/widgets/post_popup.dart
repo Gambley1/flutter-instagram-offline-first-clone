@@ -5,7 +5,6 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/comments/view/comments_page.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/post/post.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
@@ -159,8 +158,6 @@ class _PostPopupState extends State<PopupModal>
 
   @override
   Widget build(BuildContext context) {
-    final user = context.read<AppBloc>().state.user;
-
     return ValueListenableBuilder<bool>(
       valueListenable: _isLiked,
       child: RepaintBoundary(child: widget.builder.call(context)),
@@ -181,7 +178,6 @@ class _PostPopupState extends State<PopupModal>
           onLongPress: () => onLongPress(context.read<PostBloc>()),
           onLongPressEnd: (details) => onLongPressEnd(
             details,
-            userId: user.id,
             isLiked: isLiked,
             context: context,
           ),
@@ -258,12 +254,11 @@ class _PostPopupState extends State<PopupModal>
 
   Future<void> onLongPressEnd(
     LongPressEndDetails details, {
-    required String userId,
     required bool isLiked,
     required BuildContext context,
   }) async {
     if (_likeVisibility.value) {
-      context.read<PostBloc>().add(PostLikeRequested(userId));
+      context.read<PostBloc>().add(const PostLikeRequested());
       if (!isLiked) {
         _animateLike();
         await Future<void>.delayed(550.ms);

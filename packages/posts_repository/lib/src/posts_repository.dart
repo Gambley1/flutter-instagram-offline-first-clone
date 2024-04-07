@@ -27,10 +27,9 @@ class PostsRepository implements PostsBaseRepository {
   @override
   Future<void> like({
     required String id,
-    required String userId,
     bool post = true,
   }) =>
-      _databaseClient.like(userId: userId, id: id, post: post);
+      _databaseClient.like(id: id, post: post);
 
   @override
   Future<Post?> createPost({

@@ -142,7 +142,7 @@ class PostBloc extends HydratedBloc<PostEvent, PostState> {
     Emitter<PostState> emit,
   ) async {
     try {
-      await _postsRepository.like(id: id, userId: event.userId);
+      await _postsRepository.like(id: id);
       emit(state.copyWith(status: PostStatus.success));
     } catch (error, stackTrace) {
       addError(error, stackTrace);
