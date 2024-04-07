@@ -18,9 +18,7 @@ final class CommentIsLikedByOwnerSubscriptionRequested extends CommentEvent {
 }
 
 final class CommentIsLikedSubscriptionRequested extends CommentEvent {
-  const CommentIsLikedSubscriptionRequested(this.userId);
-
-  final String userId;
+  const CommentIsLikedSubscriptionRequested();
 }
 
 final class CommentsRepliedCommentsSubscriptionRequested extends CommentEvent {
@@ -30,12 +28,7 @@ final class CommentsRepliedCommentsSubscriptionRequested extends CommentEvent {
 }
 
 final class CommentLikeRequested extends CommentEvent {
-  const CommentLikeRequested(this.userId);
-
-  final String userId;
-
-  @override
-  List<Object?> get props => [userId];
+  const CommentLikeRequested();
 }
 
 final class CommentDeleteRequested extends CommentEvent {

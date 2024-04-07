@@ -2,7 +2,6 @@ import 'package:app_ui/app_ui.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/feed.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/post/post.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
@@ -47,11 +46,7 @@ class FeedPageState extends State<FeedPage> with RouteAware {
       create: (context) => StoriesBloc(
         storiesRepository: context.read<StoriesRepository>(),
         userRepository: context.read<UserRepository>(),
-      )..add(
-          StoriesFetchUserFollowingsStories(
-            context.read<AppBloc>().state.user.id,
-          ),
-        ),
+      )..add(const StoriesFetchUserFollowingsStories()),
       child: const FeedView(),
     );
   }
@@ -128,11 +123,9 @@ class FeedBody extends StatelessWidget {
           () => context.read<FeedBloc>().add(const FeedRefreshRequested()),
         ),
         Future.microtask(
-          () => context.read<StoriesBloc>().add(
-                StoriesFetchUserFollowingsStories(
-                  context.read<AppBloc>().state.user.id,
-                ),
-              ),
+          () => context
+              .read<StoriesBloc>()
+              .add(const StoriesFetchUserFollowingsStories()),
         ),
       ]),
       child: InViewNotifierCustomScrollView(

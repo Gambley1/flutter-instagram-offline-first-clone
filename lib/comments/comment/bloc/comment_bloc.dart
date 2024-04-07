@@ -46,7 +46,7 @@ class CommentBloc extends HydratedBloc<CommentEvent, CommentState> {
     CommentLikeRequested event,
     Emitter<CommentState> emit,
   ) =>
-      _postsRepository.like(id: id, userId: event.userId, post: false);
+      _postsRepository.like(id: id, post: false);
 
   Future<void> _onCommentDeleteRequested(
     CommentDeleteRequested event,
@@ -69,7 +69,7 @@ class CommentBloc extends HydratedBloc<CommentEvent, CommentState> {
     Emitter<CommentState> emit,
   ) async {
     await emit.forEach(
-      _postsRepository.isLiked(id: id, userId: event.userId, post: false),
+      _postsRepository.isLiked(id: id, post: false),
       onData: (isLiked) => state.copyWith(isLiked: isLiked),
     );
   }

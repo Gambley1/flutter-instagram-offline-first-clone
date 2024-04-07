@@ -32,10 +32,8 @@ class _UserProfileListTileState extends State<UserProfileListTile> {
   void initState() {
     super.initState();
     if (widget.follower) {
-      _isFollowed = context.read<UserRepository>().isFollowed(
-            followerId: context.read<AppBloc>().state.user.id,
-            userId: widget.user.id,
-          );
+      _isFollowed =
+          context.read<UserRepository>().isFollowed(userId: widget.user.id);
     }
   }
 

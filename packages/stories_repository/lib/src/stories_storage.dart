@@ -53,7 +53,7 @@ class StoriesStorage {
   /// to true. Otherwise, it returns the original story unchanged.
   List<Story> mergeStories(
     List<Story> list1, {
-    required String userId,
+    String? userId,
     List<Story>? list2,
   }) {
     list2 ??= [

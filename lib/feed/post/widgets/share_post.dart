@@ -278,6 +278,11 @@ class _SharePostButtonState extends State<SharePostButton> {
 
   Future<void> _onPostShareTap() async {
     final user = context.read<AppBloc>().state.user;
+    final sender = PostAuthor(
+      id: user.id,
+      avatarUrl: user.avatarUrl ?? '',
+      username: user.displayUsername,
+    );
     void pop() => context.pop();
 
     toggleLoadingIndeterminate();
@@ -288,22 +293,12 @@ class _SharePostButtonState extends State<SharePostButton> {
                 sender: user,
                 receiver: receiver,
                 postAuthor: widget.block.author,
-                sharedPostMessage: Message(
-                  sender: PostAuthor(
-                    id: user.id,
-                    avatarUrl: user.avatarUrl ?? '',
-                    username: user.displayUsername,
-                  ),
-                ),
+                sharedPostMessage: Message(sender: sender),
                 message: _messageController.text.trim().isEmpty
                     ? null
                     : Message(
                         message: _messageController.text,
-                        sender: PostAuthor(
-                          id: user.id,
-                          avatarUrl: user.avatarUrl!,
-                          username: user.username!,
-                        ),
+                        sender: sender,
                       ),
               ),
             ),

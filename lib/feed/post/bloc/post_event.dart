@@ -47,13 +47,9 @@ final class PostLikeRequested extends PostEvent {
 }
 
 final class PostAuthorFollowRequested extends PostEvent {
-  const PostAuthorFollowRequested({
-    required this.authorId,
-    required this.currentUserId,
-  });
+  const PostAuthorFollowRequested({required this.authorId});
 
   final String authorId;
-  final String currentUserId;
 }
 
 final class PostDeleteRequested extends PostEvent {

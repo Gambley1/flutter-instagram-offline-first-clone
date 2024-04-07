@@ -26,15 +26,13 @@ class CommentView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = context.select((AppBloc bloc) => bloc.state.user);
-
     return BlocProvider(
       create: (context) => CommentBloc(
         commentId: comment.id,
         postsRepository: context.read<PostsRepository>(),
       )
         ..add(const CommentLikesSubscriptionRequested())
-        ..add(CommentIsLikedSubscriptionRequested(user.id))
+        ..add(const CommentIsLikedSubscriptionRequested())
         ..add(CommentIsLikedByOwnerSubscriptionRequested(post.author.id)),
       child: CommentGroup(comment: comment, post: post, isReplied: isReplied),
     );
@@ -92,7 +90,7 @@ class CommentGroup extends StatelessWidget {
           isReplied: isReplied,
           isLiked: isLiked,
           isLikedByOwner: isLikedByOwner,
-          onLikeComment: () => bloc.add(CommentLikeRequested(user.id)),
+          onLikeComment: () => bloc.add(const CommentLikeRequested()),
           onCommentDelete: (_) => context.confirmAction(
             title: context.l10n.deleteCommentText,
             content: context.l10n.commentDeleteConfirmationText,

@@ -44,7 +44,7 @@ class PostView extends StatelessWidget {
       )
         ..add(const PostLikesCountSubscriptionRequested())
         ..add(const PostCommentsCountSubscriptionRequested())
-        ..add(PostIsLikedSubscriptionRequested(user.id))
+        ..add(const PostIsLikedSubscriptionRequested())
         ..add(
           PostAuthoFollowingStatusSubscriptionRequested(
             ownerId: block.author.id,
@@ -82,7 +82,6 @@ class PostLargeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bloc = context.read<PostBloc>();
-    final user = context.select((AppBloc bloc) => bloc.state.user);
 
     final isOwner = context.select((PostBloc bloc) => bloc.state.isOwner);
     final isLiked = context.select((PostBloc bloc) => bloc.state.isLiked);
@@ -97,16 +96,12 @@ class PostLargeView extends StatelessWidget {
         block: block as PostSponsoredBlock,
         isOwner: isOwner,
         isLiked: isLiked,
-        likePost: () => bloc.add(PostLikeRequested(user.id)),
+        likePost: () => bloc.add(const PostLikeRequested()),
         likesCount: likesCount,
         isFollowed: isOwner || (isFollowed ?? true),
         wasFollowed: true,
-        follow: () => bloc.add(
-          PostAuthorFollowRequested(
-            authorId: block.author.id,
-            currentUserId: user.id,
-          ),
-        ),
+        follow: () =>
+            bloc.add(PostAuthorFollowRequested(authorId: block.author.id)),
         enableFollowButton: true,
         onCommentsTap: (showFullSized) => context.showScrollableModal(
           showFullSized: showFullSized,
@@ -193,16 +188,12 @@ class PostLargeView extends StatelessWidget {
       block: block,
       isOwner: isOwner,
       isLiked: isLiked,
-      likePost: () => bloc.add(PostLikeRequested(user.id)),
+      likePost: () => bloc.add(const PostLikeRequested()),
       likesCount: likesCount,
       isFollowed: isOwner || (isFollowed ?? true),
       wasFollowed: true,
-      follow: () => bloc.add(
-        PostAuthorFollowRequested(
-          authorId: block.author.id,
-          currentUserId: user.id,
-        ),
-      ),
+      follow: () =>
+          bloc.add(PostAuthorFollowRequested(authorId: block.author.id)),
       enableFollowButton: true,
       commentsCount: commentsCount,
       postIndex: postIndex,

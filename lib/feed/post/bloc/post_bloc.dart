@@ -156,10 +156,7 @@ class PostBloc extends HydratedBloc<PostEvent, PostState> {
   ) async {
     emit(state.copyWith(status: PostStatus.loading));
     try {
-      await _userRepository.follow(
-        followerId: event.currentUserId,
-        followToId: event.authorId,
-      );
+      await _userRepository.follow(followToId: event.authorId);
       emit(state.copyWith(status: PostStatus.success));
     } catch (error, stackTrace) {
       addError(error, stackTrace);

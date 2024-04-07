@@ -174,11 +174,11 @@ class UserRepository implements UserBaseRepository {
       _databaseClient.followingsCountOf(userId: userId);
 
   @override
-  Future<List<User>> getFollowers({required String userId}) =>
+  Future<List<User>> getFollowers({String? userId}) =>
       _databaseClient.getFollowers(userId: userId);
 
   @override
-  Future<List<User>> getFollowings({required String userId}) =>
+  Future<List<User>> getFollowings({String? userId}) =>
       _databaseClient.getFollowings(userId: userId);
 
   @override
@@ -204,8 +204,8 @@ class UserRepository implements UserBaseRepository {
 
   @override
   Future<bool> isFollowed({
-    required String followerId,
     required String userId,
+    String? followerId,
   }) =>
       _databaseClient.isFollowed(followerId: followerId, userId: userId);
 

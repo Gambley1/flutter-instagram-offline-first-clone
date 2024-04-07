@@ -42,8 +42,8 @@ abstract class UserBaseRepository {
   /// Check if the user identified by [followerId] is followed to
   /// the user identified by [userId].
   Future<bool> isFollowed({
-    required String followerId,
     required String userId,
+    String? followerId,
   });
 
   /// Returns realtime stream of followings status of the user identified by
@@ -60,10 +60,10 @@ abstract class UserBaseRepository {
   Stream<int> followingsCountOf({required String userId});
 
   /// Returns a list of followers of the user identified by [userId].
-  Future<List<User>> getFollowers({required String userId});
+  Future<List<User>> getFollowers({String? userId});
 
   /// Returns a list of followings of the user identified by [userId].
-  Future<List<User>> getFollowings({required String userId});
+  Future<List<User>> getFollowings({String? userId});
 
   /// Broadcasts a list of followers of the user identified by [userId].
   Stream<List<User>> followers({required String userId});
@@ -99,8 +99,7 @@ abstract class PostsBaseRepository {
     int offset = 0,
   });
 
-  /// Likes the post as user by [userId] by provided either post or comment
-  /// [id].
+  /// Likes the post by provided either post or comment [id].
   Future<void> like({
     required String id,
     bool post = true,
@@ -116,6 +115,7 @@ abstract class PostsBaseRepository {
   /// identified by [userId].
   Stream<bool> isLiked({
     required String id,
+    String? userId,
     bool post = true,
   });
 
@@ -497,6 +497,7 @@ WHERE $statement = ? AND $statement IS NOT NULL
   @override
   Stream<bool> isLiked({
     required String id,
+    String? userId,
     bool post = true,
   }) {
     final statement = post ? 'post_id' : 'comment_id';
@@ -508,7 +509,7 @@ WHERE $statement = ? AND $statement IS NOT NULL
         WHERE user_id = ? AND $statement = ? AND $statement IS NOT NULL
       )
 ''',
-      parameters: [currentUserId, id],
+      parameters: [userId ?? currentUserId, id],
     ).map((event) => (event.first.values.first! as int).isTrue);
   }
 
@@ -641,10 +642,10 @@ WHERE posts.id = ?
       );
 
   @override
-  Future<List<User>> getFollowers({required String userId}) async {
+  Future<List<User>> getFollowers({String? userId}) async {
     final followersId = await _powerSyncRepository.db().getAll(
       'SELECT subscriber_id FROM subscriptions WHERE subscribed_to_id = ? ',
-      [userId],
+      [userId ?? currentUserId],
     );
     if (followersId.isEmpty) return [];
 
@@ -687,10 +688,10 @@ WHERE posts.id = ?
   }
 
   @override
-  Future<List<User>> getFollowings({required String userId}) async {
+  Future<List<User>> getFollowings({String? userId}) async {
     final followingsUserId = await _powerSyncRepository.db().getAll(
       'SELECT subscribed_to_id FROM subscriptions WHERE subscriber_id = ? ',
-      [userId],
+      [userId ?? currentUserId],
     );
     if (followingsUserId.isEmpty) return [];
 
@@ -709,14 +710,14 @@ WHERE posts.id = ?
 
   @override
   Future<bool> isFollowed({
-    required String followerId,
     required String userId,
+    String? followerId,
   }) async {
     final result = await _powerSyncRepository.db().execute(
       '''
     SELECT 1 FROM subscriptions WHERE subscriber_id = ? AND subscribed_to_id = ?
     ''',
-      [followerId, userId],
+      [followerId ?? currentUserId, userId],
     );
     return result.isNotEmpty;
   }

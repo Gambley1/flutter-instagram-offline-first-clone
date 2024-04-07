@@ -70,14 +70,14 @@ class StoriesRepository extends StoriesBaseRepository {
   /// into a single stories data flow.
   Stream<List<Story>> mergedStories({
     required String authorId,
-    required String userId,
+    String? userId,
   }) =>
       Rx.combineLatest2(
         getStories(userId: authorId, includeAuthor: false),
         _storage._seenStoriesStreamController,
         (dbStories, localStories) => _storage.mergeStories(
           dbStories,
-          userId: userId,
+          userId: _databaseClient.currentUserId,
           list2: localStories
               .firstWhereOrNull((seenStories) => seenStories.userId == userId)
               ?.stories,

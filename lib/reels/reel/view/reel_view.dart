@@ -4,7 +4,6 @@ import 'package:app_ui/app_ui.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_instagram_offline_first_clone/app/bloc/app_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/comments/comments.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/feed.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/post/post.dart';
@@ -209,9 +208,7 @@ class _ReelState extends State<Reel> {
       ),
       builder: (context, isLiked, child) {
         return PoppingIconAnimationOverlay(
-          onTap: () => context
-              .read<PostBloc>()
-              .add(PostLikeRequested(context.read<AppBloc>().state.user.id)),
+          onTap: () => context.read<PostBloc>().add(const PostLikeRequested()),
           isLiked: isLiked,
           child: child!,
         );
@@ -279,7 +276,6 @@ class VerticalButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = context.select((AppBloc bloc) => bloc.state.user);
     final isLiked = context.select((PostBloc bloc) => bloc.state.isLiked);
     final likes = context.select((PostBloc bloc) => bloc.state.likes);
     final commentsCount =
@@ -307,7 +303,7 @@ class VerticalButtons extends StatelessWidget {
               icon: isLiked ? Icons.favorite : Icons.favorite_outline,
               iconColor: isLiked ? AppColors.red : null,
               onButtonTap: () =>
-                  context.read<PostBloc>().add(PostLikeRequested(user.id)),
+                  context.read<PostBloc>().add(const PostLikeRequested()),
               size: AppSize.iconSize,
               statisticCount: likes,
             ),
@@ -406,7 +402,6 @@ class ReelAuthorListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final author = block.author;
 
-    final user = context.select((AppBloc bloc) => bloc.state.user);
     final isFollowed = context.select((PostBloc bloc) => bloc.state.isFollowed);
     final isOwner = context.select((PostBloc bloc) => bloc.state.isOwner);
 
@@ -441,12 +436,9 @@ class ReelAuthorListTile extends StatelessWidget {
           Flexible(
             flex: 3,
             child: Tappable(
-              onTap: () => context.read<PostBloc>().add(
-                    PostAuthorFollowRequested(
-                      authorId: author.id,
-                      currentUserId: user.id,
-                    ),
-                  ),
+              onTap: () => context
+                  .read<PostBloc>()
+                  .add(PostAuthorFollowRequested(authorId: author.id)),
               child: DecoratedBox(
                 decoration: BoxDecoration(
                   borderRadius: const BorderRadius.all(Radius.circular(8)),

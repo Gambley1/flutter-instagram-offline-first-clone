@@ -29,13 +29,12 @@ class StoriesBloc extends Bloc<StoriesEvent, StoriesState> {
     StoriesFetchUserFollowingsStories event,
     Emitter<StoriesState> emit,
   ) async {
-    final followings =
-        await _userRepository.getFollowings(userId: event.userId);
+    final followings = await _userRepository.getFollowings();
     final stories = <User, List<Story>>{};
     for (final following in followings) {
       try {
         final userStories = await _storiesRepository
-            .mergedStories(authorId: following.id, userId: event.userId)
+            .mergedStories(authorId: following.id)
             .first;
         if (state.users.map((e) => e.id).contains(following.id) &&
             userStories.isEmpty) {

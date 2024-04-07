@@ -8,12 +8,7 @@ sealed class StoriesEvent extends Equatable {
 }
 
 final class StoriesFetchUserFollowingsStories extends StoriesEvent {
-  const StoriesFetchUserFollowingsStories(this.userId);
-
-  final String userId;
-
-  @override
-  List<Object> get props => [userId];
+  const StoriesFetchUserFollowingsStories();
 }
 
 final class StoriesStorySeen extends StoriesEvent {
