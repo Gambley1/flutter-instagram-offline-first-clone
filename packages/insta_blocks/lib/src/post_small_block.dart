@@ -34,13 +34,9 @@ class PostSmallBlock extends PostBlock {
         createdAt: DateTime.parse(shared['shared_post_created_at'] as String),
         media: shared['shared_post_media'] == null
             ? []
-            : List<Media>.from(
-                (jsonDecode(shared['shared_post_media'] as String? ?? '')
-                            as List<dynamic>?)
-                        ?.map((e) => Media.fromJson(e as Map<String, dynamic>))
-                        .toList() ??
-                    [],
-              ).toList(),
+            : List<Map<String, dynamic>>.from(
+                jsonDecode(shared['shared_post_media'] as String) as List,
+              ).map(Media.fromJson).toList(),
         caption: shared['shared_post_caption'] as String? ?? '',
       );
 
