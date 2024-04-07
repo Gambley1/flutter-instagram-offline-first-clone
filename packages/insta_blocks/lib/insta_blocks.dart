@@ -4,7 +4,7 @@ library insta_blocks;
 
 export 'src/block_action.dart'
     show
-        BlocActionX,
+        BlockActionX,
         BlockAction,
         NavigateToPostAuthorProfileAction,
         NavigateToSponsoredPostAuthorProfileAction,

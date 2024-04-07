@@ -16,7 +16,7 @@ enum BlockActionType {
 
 /// The extension on [BlockAction] which provides a method to execute the
 /// action.
-extension BlocActionX on BlockAction {
+extension BlockActionX on BlockAction {
   /// Executes the action.
   FutureOr<void> when({
     FutureOr<void> Function(NavigateToPostAuthorProfileAction)?
