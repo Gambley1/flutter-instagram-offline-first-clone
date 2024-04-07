@@ -34,7 +34,7 @@ class UserProfileAvatar extends StatelessWidget {
     this.placeholderBuilder,
     this.showStories = false,
     this.onAddButtonTap,
-    this.withAdaptiveBorder = true,
+    this.withAdaptiveBorder = false,
   });
 
   final List<Story> stories;

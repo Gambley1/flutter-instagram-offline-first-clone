@@ -533,7 +533,6 @@ class UsersListView extends StatelessWidget {
                                 UserProfileAvatar(
                                   avatarUrl: user.avatarUrl,
                                   enableBorder: false,
-                                  withAdaptiveBorder: false,
                                 ),
                                 if (selectedUsers.contains(user))
                                   Positioned(
@@ -582,7 +581,6 @@ class UsersListView extends StatelessWidget {
                             onUserSelected.call(user, clearQuery: true),
                         leading: UserProfileAvatar(
                           avatarUrl: user.avatarUrl,
-                          withAdaptiveBorder: false,
                           isLarge: false,
                         ),
                         title: Text(

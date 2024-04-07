@@ -71,7 +71,6 @@ class _UserProfileEditViewState extends State<UserProfileEditView> {
               avatarUrl: user.avatarUrl,
               onTapPickImage: true,
               animationEffect: TappableAnimationEffect.scale,
-              withAdaptiveBorder: false,
               scaleStrength: ScaleStrength.xxs,
               onImagePick: (imageUrl) {
                 context.read<UserProfileBloc>().add(

@@ -100,7 +100,6 @@ class PopupDialogHeader extends StatelessWidget {
         avatarUrl: block.author.avatarUrl,
         isLarge: false,
         enableBorder: false,
-        withAdaptiveBorder: false,
       ),
       title: Text(
         block.author.username,

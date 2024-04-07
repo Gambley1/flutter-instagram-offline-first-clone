@@ -225,7 +225,6 @@ class MessageSharedPost extends StatelessWidget {
                 leading: UserProfileAvatar(
                   avatarUrl: sharedPost.author.avatarUrl,
                   isLarge: false,
-                  withAdaptiveBorder: false,
                 ),
                 title: Text(
                   sharedPost.author.username,
@@ -399,7 +398,6 @@ class MessageSharedReel extends StatelessWidget {
                   leading: UserProfileAvatar(
                     avatarUrl: sharedPost.author.avatarUrl,
                     isLarge: false,
-                    withAdaptiveBorder: false,
                   ),
                   title: Text(
                     sharedPost.author.username,

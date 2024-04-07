@@ -120,7 +120,6 @@ class _CommentTextFieldState extends State<CommentTextField> {
                       onTap: (_) {},
                       avatarUrl: user.avatarUrl,
                       withShimmerPlaceholder: true,
-                      withAdaptiveBorder: false,
                     ),
                     subtitle: AppTextField(
                       textController: _commentTextController,
