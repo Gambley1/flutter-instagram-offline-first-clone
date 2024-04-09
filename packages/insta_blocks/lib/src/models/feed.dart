@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:shared/shared.dart';
+import 'package:insta_blocks/insta_blocks.dart';
 
 /// {@template feed}
 /// Represents a page of feed data containing [Feed] blocks, the page number,
