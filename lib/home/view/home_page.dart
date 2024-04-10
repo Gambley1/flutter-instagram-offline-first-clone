@@ -202,7 +202,7 @@ class VideoPlayerProvider extends InheritedWidget {
   static VideoPlayerProvider of(BuildContext context) {
     final provider =
         context.getInheritedWidgetOfExactType<VideoPlayerProvider>();
-    assert(provider != null, 'No provider found in context!');
+    assert(provider != null, 'No VideoPlayerProvider found in context!');
     return provider!;
   }
 
