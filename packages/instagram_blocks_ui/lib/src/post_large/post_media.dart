@@ -50,26 +50,23 @@ class _PostMediaState extends State<PostMedia> {
         },
       );
 
-  late Debouncer _debouncer;
-  late ValueNotifier<int> _currentIndex;
-  late ValueNotifier<bool> _showImagesCountText;
-
   bool get singleImage => widget.media.length == 1;
-  bool get showImagesCount => !singleImage && widget.media.isNotEmpty;
+  bool get showMediaCount => !singleImage && widget.media.isNotEmpty;
+
+  late ValueNotifier<int> _currentIndex;
+  late ValueNotifier<bool> _showMediaCount;
 
   @override
   void initState() {
     super.initState();
-    _debouncer = Debouncer(milliseconds: 5000);
     _currentIndex = ValueNotifier(0);
-    _showImagesCountText = ValueNotifier(!widget.autoHideCurrentIndex);
+    _showMediaCount = ValueNotifier(!widget.autoHideCurrentIndex);
   }
 
   @override
   void dispose() {
-    _debouncer.dispose();
     _currentIndex.dispose();
-    _showImagesCountText.dispose();
+    _showMediaCount.dispose();
     super.dispose();
   }
 
@@ -78,7 +75,7 @@ class _PostMediaState extends State<PostMedia> {
     final carousel = MediaCarousel(
       media: widget.media,
       postIndex: widget.postIndex,
-      settings: _defaultSettings(_showImagesCountText, _currentIndex)
+      settings: _defaultSettings(_showMediaCount, _currentIndex)
           .merge(other: widget.mediaCarouselSettings),
     );
 
@@ -94,31 +91,74 @@ class _PostMediaState extends State<PostMedia> {
               child: carousel,
             ),
           ),
-        if (showImagesCount)
-          Positioned(
-            top: AppSpacing.md,
-            right: AppSpacing.md,
-            child: AnimatedBuilder(
-              animation:
-                  Listenable.merge([_showImagesCountText, _currentIndex]),
-              builder: (context, child) {
-                if (widget.autoHideCurrentIndex) {
-                  if (_showImagesCountText.value) {
-                    _debouncer.run(() => _showImagesCountText.value = false);
-                  }
-                }
-
-                return RepaintBoundary(
-                  child: _CurrentPostImageIndexOfTotal(
-                    currentIndex: _currentIndex.value + 1,
-                    total: widget.media.length,
-                    showText: _showImagesCountText.value,
-                  ),
-                );
-              },
-            ),
+        if (showMediaCount)
+          _MediaCount(
+            currentIndex: _currentIndex,
+            showMediaCount: _showMediaCount,
+            autoHideCurrentIndex: widget.autoHideCurrentIndex,
+            media: widget.media,
           ),
       ],
+    );
+  }
+}
+
+class _MediaCount extends StatefulWidget {
+  const _MediaCount({
+    required this.currentIndex,
+    required this.showMediaCount,
+    required this.media,
+    required this.autoHideCurrentIndex,
+  });
+
+  final ValueNotifier<int> currentIndex;
+  final ValueNotifier<bool> showMediaCount;
+  final List<Media> media;
+  final bool autoHideCurrentIndex;
+
+  @override
+  State<_MediaCount> createState() => _MediaCountState();
+}
+
+class _MediaCountState extends State<_MediaCount> {
+  late Debouncer _debouncer;
+
+  @override
+  void initState() {
+    super.initState();
+    _debouncer = Debouncer(milliseconds: 5000);
+  }
+
+  @override
+  void dispose() {
+    _debouncer.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      top: AppSpacing.md,
+      right: AppSpacing.md,
+      child: AnimatedBuilder(
+        animation:
+            Listenable.merge([widget.showMediaCount, widget.currentIndex]),
+        builder: (context, child) {
+          if (widget.autoHideCurrentIndex) {
+            if (widget.showMediaCount.value) {
+              _debouncer.run(() => widget.showMediaCount.value = false);
+            }
+          }
+
+          return RepaintBoundary(
+            child: _CurrentPostImageIndexOfTotal(
+              total: widget.media.length,
+              currentIndex: widget.currentIndex.value + 1,
+              showText: widget.showMediaCount.value,
+            ),
+          );
+        },
+      ),
     );
   }
 }
