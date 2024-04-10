@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:shared/shared.dart';
 
-class PostMedia extends StatelessWidget {
+class PostMedia extends StatefulWidget {
   const PostMedia({
     required this.media,
     required this.withInViewNotifier,
@@ -29,46 +29,68 @@ class PostMedia extends StatelessWidget {
   final bool withInViewNotifier;
   final bool autoHideCurrentIndex;
 
+  @override
+  State<PostMedia> createState() => _PostMediaState();
+}
+
+class _PostMediaState extends State<PostMedia> {
   MediaCarouselSettings _defaultSettings(
     ValueNotifier<bool> showImagesCountText,
     ValueNotifier<int> currentIndex,
   ) =>
       MediaCarouselSettings.create(
-        videoPlayerBuilder: videoPlayerBuilder,
-        aspectRatio: media.isReel ? kDefaultVideoAspectRatio : null,
-        fit: media.hasVideo ? kDefaultVideoMediaBoxFit : null,
-        withInViewNotifier: withInViewNotifier,
+        videoPlayerBuilder: widget.videoPlayerBuilder,
+        aspectRatio: widget.media.isReel ? kDefaultVideoAspectRatio : null,
+        fit: widget.media.hasVideo ? kDefaultVideoMediaBoxFit : null,
+        withInViewNotifier: widget.withInViewNotifier,
         onPageChanged: (index, _) {
           showImagesCountText.value = true;
           currentIndex.value = index;
-          onPageChanged?.call(index);
+          widget.onPageChanged?.call(index);
         },
       );
 
+  late Debouncer _debouncer;
+  late ValueNotifier<int> _currentIndex;
+  late ValueNotifier<bool> _showImagesCountText;
+
+  bool get singleImage => widget.media.length == 1;
+  bool get showImagesCount => !singleImage && widget.media.isNotEmpty;
+
+  @override
+  void initState() {
+    super.initState();
+    _debouncer = Debouncer(milliseconds: 5000);
+    _currentIndex = ValueNotifier(0);
+    _showImagesCountText = ValueNotifier(!widget.autoHideCurrentIndex);
+  }
+
+  @override
+  void dispose() {
+    _debouncer.dispose();
+    _currentIndex.dispose();
+    _showImagesCountText.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final currentIndex = ValueNotifier<int>(0);
-    final showImagesCountText = ValueNotifier(!autoHideCurrentIndex);
-
-    final singleImage = media.length == 1;
-    final showImagesCount = !singleImage && media.isNotEmpty;
-
     final carousel = MediaCarousel(
-      media: media,
-      postIndex: postIndex,
-      settings: _defaultSettings(showImagesCountText, currentIndex)
-          .merge(other: mediaCarouselSettings),
+      media: widget.media,
+      postIndex: widget.postIndex,
+      settings: _defaultSettings(_showImagesCountText, _currentIndex)
+          .merge(other: widget.mediaCarouselSettings),
     );
 
     return Stack(
       children: [
-        if (!withLikeOverlay)
+        if (!widget.withLikeOverlay)
           carousel
         else
           RepaintBoundary(
             child: PoppingIconAnimationOverlay(
-              isLiked: isLiked,
-              onTap: likePost,
+              isLiked: widget.isLiked,
+              onTap: widget.likePost,
               child: carousel,
             ),
           ),
@@ -77,23 +99,20 @@ class PostMedia extends StatelessWidget {
             top: AppSpacing.md,
             right: AppSpacing.md,
             child: AnimatedBuilder(
-              animation: Listenable.merge([showImagesCountText, currentIndex]),
+              animation:
+                  Listenable.merge([_showImagesCountText, _currentIndex]),
               builder: (context, child) {
-                if (autoHideCurrentIndex) {
-                  if (showImagesCountText.value) {
-                    void showImagesCount() {
-                      showImagesCountText.value = false;
-                    }
-
-                    showImagesCount.debounce(milliseconds: 5000);
+                if (widget.autoHideCurrentIndex) {
+                  if (_showImagesCountText.value) {
+                    _debouncer.run(() => _showImagesCountText.value = false);
                   }
                 }
 
                 return RepaintBoundary(
                   child: _CurrentPostImageIndexOfTotal(
-                    currentIndex: currentIndex.value + 1,
-                    total: media.length,
-                    showText: showImagesCountText.value,
+                    currentIndex: _currentIndex.value + 1,
+                    total: widget.media.length,
+                    showText: _showImagesCountText.value,
                   ),
                 );
               },
