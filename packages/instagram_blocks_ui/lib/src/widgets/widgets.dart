@@ -1,7 +1,6 @@
 export 'animated_circle_border_painter.dart';
 export 'animated_visibility.dart';
 export 'avatar_image_picker.dart';
-export 'expandable_text.dart';
 export 'follow_button.dart';
 export 'media_carousel.dart';
 export 'popping_icon_overlay.dart';

@@ -18,7 +18,6 @@ export 'src/widgets/widgets.dart'
         AnimatedCircleBorderPainter,
         AnimatedVisibility,
         AvatarImagePicker,
-        ExpandableText,
         FollowButton,
         MediaCarousel,
         PoppingIconAnimationOverlay,
