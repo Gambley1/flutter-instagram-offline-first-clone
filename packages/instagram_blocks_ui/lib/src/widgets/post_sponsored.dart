@@ -6,7 +6,6 @@ class PostSponsored extends StatelessWidget {
   const PostSponsored({
     required this.block,
     required this.isOwner,
-    required this.wasFollowed,
     required this.isFollowed,
     required this.follow,
     required this.isLiked,
@@ -28,7 +27,6 @@ class PostSponsored extends StatelessWidget {
 
   final PostSponsoredBlock block;
   final bool isOwner;
-  final bool wasFollowed;
   final bool isFollowed;
   final VoidCallback follow;
   final bool isLiked;

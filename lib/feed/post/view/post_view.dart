@@ -99,7 +99,6 @@ class PostLargeView extends StatelessWidget {
         likePost: () => bloc.add(const PostLikeRequested()),
         likesCount: likesCount,
         isFollowed: isOwner || (isFollowed ?? true),
-        wasFollowed: true,
         follow: () =>
             bloc.add(PostAuthorFollowRequested(authorId: block.author.id)),
         enableFollowButton: true,
