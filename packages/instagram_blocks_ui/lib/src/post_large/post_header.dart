@@ -3,12 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:shared/shared.dart';
 
-typedef AvatarBuilder = Widget Function(
-  BuildContext context,
-  PostAuthor author,
-  ValueSetter<String?>? onAvatarTap,
-);
-
 class PostHeader extends StatelessWidget {
   const PostHeader({
     required this.block,

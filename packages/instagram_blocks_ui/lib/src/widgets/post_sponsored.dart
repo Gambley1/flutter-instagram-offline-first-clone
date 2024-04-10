@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
-import 'package:instagram_blocks_ui/src/post_large/post_header.dart';
 import 'package:shared/shared.dart';
 
 class PostSponsored extends StatelessWidget {

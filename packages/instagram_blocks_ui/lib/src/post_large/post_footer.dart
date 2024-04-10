@@ -41,8 +41,7 @@ class PostFooter extends StatelessWidget {
   final ValueSetter<String> onUserTap;
   final ValueSetter<bool> onCommentsTap;
   final void Function(String, PostAuthor) onPostShareTap;
-  final Widget? Function(String? name, String? userId, int count)?
-      likesCountBuilder;
+  final LikesCountBuilder? likesCountBuilder;
 
   @override
   Widget build(BuildContext context) {

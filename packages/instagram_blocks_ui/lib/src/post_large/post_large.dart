@@ -6,6 +6,18 @@ import 'package:instagram_blocks_ui/src/post_large/post_header.dart';
 import 'package:instagram_blocks_ui/src/post_large/post_media.dart';
 import 'package:shared/shared.dart';
 
+typedef AvatarBuilder = Widget Function(
+  BuildContext context,
+  PostAuthor author,
+  ValueSetter<String?>? onAvatarTap,
+);
+
+typedef LikesCountBuilder = Widget? Function(
+  String? name,
+  String? userId,
+  int count,
+);
+
 class PostLarge extends StatelessWidget {
   const PostLarge({
     required this.block,
@@ -48,8 +60,7 @@ class PostLarge extends StatelessWidget {
   final VideoPlayerBuilder? videoPlayerBuilder;
   final int? postIndex;
   final bool withInViewNotifier;
-  final Widget? Function(String? name, String? userId, int count)?
-      likesCountBuilder;
+  final LikesCountBuilder? likesCountBuilder;
 
   @override
   Widget build(BuildContext context) {
