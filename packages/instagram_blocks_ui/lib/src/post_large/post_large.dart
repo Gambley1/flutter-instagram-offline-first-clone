@@ -16,7 +16,6 @@ class PostLarge extends StatelessWidget {
     required this.likesCount,
     required this.commentsCount,
     required this.isFollowed,
-    required this.wasFollowed,
     required this.follow,
     required this.enableFollowButton,
     required this.onCommentsTap,
@@ -34,7 +33,6 @@ class PostLarge extends StatelessWidget {
 
   final PostBlock block;
   final bool isOwner;
-  final bool wasFollowed;
   final bool isFollowed;
   final VoidCallback follow;
   final bool isLiked;
@@ -76,7 +74,6 @@ class PostLarge extends StatelessWidget {
           isOwner: isOwner,
           isSponsored: isSponsored,
           isFollowed: isFollowed,
-          wasFollowed: wasFollowed,
           enableFollowButton: enableFollowButton,
           postAuthorAvatarBuilder: postAuthorAvatarBuilder,
           postOptionsSettings: postOptionsSettings,

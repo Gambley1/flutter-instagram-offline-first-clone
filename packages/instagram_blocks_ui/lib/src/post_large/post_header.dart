@@ -17,7 +17,6 @@ class PostHeader extends StatelessWidget {
     required this.block,
     required this.isOwner,
     required this.isFollowed,
-    required this.wasFollowed,
     required this.onAvatarTap,
     required this.follow,
     required this.enableFollowButton,
@@ -33,8 +32,6 @@ class PostHeader extends StatelessWidget {
   final bool isOwner;
 
   final bool isFollowed;
-
-  final bool wasFollowed;
 
   final AvatarTapCallback? onAvatarTap;
 
@@ -126,11 +123,7 @@ class PostHeader extends StatelessWidget {
               bool showFollowButton() {
                 if (isSponsored) return false;
                 if (isOwner) return false;
-                if (!wasFollowed && isFollowed) return true;
-                if (!wasFollowed && !isFollowed) return true;
-                if (wasFollowed && !isFollowed) return true;
-                if (wasFollowed && isFollowed) return false;
-                return false;
+                return !isFollowed;
               }
 
               return Row(
@@ -139,7 +132,6 @@ class PostHeader extends StatelessWidget {
                     FollowButton(
                       follow: follow,
                       isFollowed: isFollowed,
-                      wasFollowed: wasFollowed,
                       isOutlined: this.color != null,
                     ),
                     const Gap.h(AppSpacing.md),

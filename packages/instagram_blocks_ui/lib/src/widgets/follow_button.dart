@@ -5,28 +5,20 @@ import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 class FollowButton extends StatelessWidget {
   const FollowButton({
     required this.isFollowed,
-    required this.wasFollowed,
     required this.follow,
     this.isOutlined = false,
     super.key,
   });
 
   final bool isFollowed;
-  final bool wasFollowed;
   final VoidCallback follow;
   final bool isOutlined;
 
   String? _followingStatus(BuildContext context) {
-    switch ((wasFollowed, isFollowed)) {
-      case (true, true):
-        return BlockSettings().followTextDelegate.followingText;
-      case (false, false):
-        return BlockSettings().followTextDelegate.followText;
-      case (true, false):
-        return BlockSettings().followTextDelegate.followText;
-      case _:
-        return null;
+    if (!isFollowed) {
+      return BlockSettings().followTextDelegate.followText;
     }
+    return BlockSettings().followTextDelegate.followingText;
   }
 
   @override

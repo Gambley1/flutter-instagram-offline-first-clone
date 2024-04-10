@@ -60,7 +60,6 @@ class PostSponsored extends StatelessWidget {
       likesCount: likesCount,
       commentsCount: commentsCount,
       isFollowed: isFollowed,
-      wasFollowed: wasFollowed,
       follow: follow,
       enableFollowButton: enableFollowButton,
       onCommentsTap: onCommentsTap,
