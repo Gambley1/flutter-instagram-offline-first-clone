@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:instagram_blocks_ui/src/block_actions_callback.dart';
 import 'package:instagram_blocks_ui/src/carousel_indicator_controller.dart';
-import 'package:instagram_blocks_ui/src/like_button.dart';
 import 'package:instagram_blocks_ui/src/media_carousel_settings.dart';
 import 'package:instagram_blocks_ui/src/post_large/post_footer.dart';
 import 'package:instagram_blocks_ui/src/post_large/post_header.dart';
@@ -39,7 +38,7 @@ class PostLarge extends StatelessWidget {
   final bool isFollowed;
   final VoidCallback follow;
   final bool isLiked;
-  final LikeCallback likePost;
+  final VoidCallback likePost;
   final int likesCount;
   final int commentsCount;
   final bool enableFollowButton;

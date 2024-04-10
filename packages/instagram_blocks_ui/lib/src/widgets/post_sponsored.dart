@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:instagram_blocks_ui/src/block_actions_callback.dart';
-import 'package:instagram_blocks_ui/src/like_button.dart';
 import 'package:instagram_blocks_ui/src/post_large/post_header.dart';
 import 'package:shared/shared.dart';
 
@@ -35,7 +34,7 @@ class PostSponsored extends StatelessWidget {
   final bool isFollowed;
   final VoidCallback follow;
   final bool isLiked;
-  final LikeCallback likePost;
+  final VoidCallback likePost;
   final int likesCount;
   final int commentsCount;
   final bool enableFollowButton;

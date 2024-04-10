@@ -41,7 +41,7 @@ class UserComment extends StatelessWidget {
   final bool isLiked;
   final bool isLikedByOwner;
   final int likesCount;
-  final LikeCallback onLikeComment;
+  final VoidCallback onLikeComment;
   final VoidCallback onAvatarTap;
   final ValueSetter<String>? onReplyButtonTap;
   final ValueSetter<String> onCommentDelete;

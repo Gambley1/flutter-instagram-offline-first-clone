@@ -36,7 +36,7 @@ class PostFooter extends StatelessWidget {
   final bool isLiked;
   final int likesCount;
   final int commentsCount;
-  final LikeCallback likePost;
+  final VoidCallback likePost;
   final List<String> imagesUrl;
   final AvatarTapCallback onAvatarTap;
   final UserTapCallback onUserTap;

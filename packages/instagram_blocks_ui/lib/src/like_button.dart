@@ -1,8 +1,6 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 
-typedef LikeCallback = void Function();
-
 class LikeButton extends StatelessWidget {
   const LikeButton({
     required this.isLiked,
@@ -16,7 +14,7 @@ class LikeButton extends StatelessWidget {
 
   final bool isLiked;
 
-  final LikeCallback onLikedTap;
+  final VoidCallback onLikedTap;
 
   final TappableAnimationEffect tapEffect;
 

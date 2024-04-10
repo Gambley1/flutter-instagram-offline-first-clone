@@ -1,7 +1,6 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
-import 'package:instagram_blocks_ui/src/like_button.dart';
 import 'package:shared/shared.dart';
 
 class PostMedia extends StatelessWidget {
@@ -21,7 +20,7 @@ class PostMedia extends StatelessWidget {
 
   final List<Media> media;
   final int? postIndex;
-  final LikeCallback? likePost;
+  final VoidCallback? likePost;
   final bool isLiked;
   final ValueSetter<int>? onPageChanged;
   final VideoPlayerBuilder? videoPlayerBuilder;
