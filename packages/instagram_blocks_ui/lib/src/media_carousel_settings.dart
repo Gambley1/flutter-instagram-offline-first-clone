@@ -1,7 +1,6 @@
-// ignore_for_file: public_member_api_docs, avoid_positional_boolean_parameters
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/material.dart' show BoxFit, BuildContext, Widget;
-import 'package:shared/shared.dart';
+import 'package:flutter/material.dart' show BoxFit;
+import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 
 const kDefaultVideoAspectRatio = 8 / 12;
 const kDefaultAspectRatio = 1.0;
@@ -11,13 +10,6 @@ const kDefaultVideoMediaBoxFit = BoxFit.cover;
 typedef PageChangedCallback = void Function(
   int index,
   CarouselPageChangedReason reason,
-);
-
-typedef VideoPlayerBuilder = Widget Function(
-  BuildContext context,
-  VideoMedia media,
-  double aspectRatio,
-  bool shouldPlay,
 );
 
 class MediaCarouselSettings {

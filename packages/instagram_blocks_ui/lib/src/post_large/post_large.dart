@@ -1,6 +1,7 @@
+// ignore_for_file: avoid_positional_boolean_parameters
+
 import 'package:flutter/material.dart';
 import 'package:instagram_blocks_ui/src/carousel_indicator_controller.dart';
-import 'package:instagram_blocks_ui/src/media_carousel_settings.dart';
 import 'package:instagram_blocks_ui/src/post_large/post_footer.dart';
 import 'package:instagram_blocks_ui/src/post_large/post_header.dart';
 import 'package:instagram_blocks_ui/src/post_large/post_media.dart';
@@ -19,6 +20,13 @@ typedef LikesCountBuilder = Widget? Function(
 );
 
 typedef OnPostShareTap = void Function(String postId, PostAuthor author);
+
+typedef VideoPlayerBuilder = Widget Function(
+  BuildContext context,
+  VideoMedia media,
+  double aspectRatio,
+  bool shouldPlay,
+);
 
 class PostLarge extends StatelessWidget {
   const PostLarge({
