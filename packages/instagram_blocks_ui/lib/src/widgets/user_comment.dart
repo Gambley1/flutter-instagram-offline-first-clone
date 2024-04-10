@@ -6,14 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:instagram_blocks_ui/src/like_button.dart';
 import 'package:instagram_blocks_ui/src/likes_count.dart';
-import 'package:instagram_blocks_ui/src/post_large/post_header.dart';
 import 'package:shared/shared.dart';
 import 'package:user_repository/user_repository.dart';
 
 typedef CommentUserAvatarBuilder = Widget Function(
   BuildContext context,
   User author,
-  AvatarTapCallback onAvatarTap,
+  ValueSetter<String?> onAvatarTap,
   double? radius,
 );
 

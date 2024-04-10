@@ -10,7 +10,6 @@ import 'package:instagram_blocks_ui/src/comments_count.dart';
 import 'package:instagram_blocks_ui/src/like_button.dart';
 import 'package:instagram_blocks_ui/src/likes_count.dart';
 import 'package:instagram_blocks_ui/src/post_large/post_caption.dart';
-import 'package:instagram_blocks_ui/src/post_large/post_header.dart';
 import 'package:shared/shared.dart';
 import 'package:user_repository/user_repository.dart';
 
@@ -38,7 +37,7 @@ class PostFooter extends StatelessWidget {
   final int commentsCount;
   final VoidCallback likePost;
   final List<String> imagesUrl;
-  final AvatarTapCallback onAvatarTap;
+  final ValueSetter<String?> onAvatarTap;
   final ValueSetter<String> onUserTap;
   final ValueSetter<bool> onCommentsTap;
   final void Function(String, PostAuthor) onPostShareTap;
