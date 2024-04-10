@@ -5,8 +5,9 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_remote_config_repository/firebase_remote_config_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_instagram_offline_first_clone/app/bloc/app_bloc.dart';
+import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/chats/chats.dart';
+import 'package:flutter_instagram_offline_first_clone/home/home.dart';
 import 'package:flutter_instagram_offline_first_clone/navigation/navigation.dart';
 import 'package:flutter_instagram_offline_first_clone/stories/stories.dart';
 import 'package:flutter_instagram_offline_first_clone/user_profile/user_profile.dart';
@@ -16,34 +17,6 @@ import 'package:posts_repository/posts_repository.dart';
 import 'package:shared/shared.dart';
 import 'package:stories_repository/stories_repository.dart';
 import 'package:user_repository/user_repository.dart';
-
-class HomeProvider extends ChangeNotifier {
-  factory HomeProvider() => _internal;
-
-  HomeProvider._();
-
-  static final _internal = HomeProvider._();
-
-  late PageController pageController;
-
-  void setPageController(PageController controller) {
-    pageController = controller;
-    notifyListeners();
-  }
-
-  void animateToPage(int page) => pageController.animateToPage(
-        page,
-        curve: Easing.legacy,
-        duration: 150.ms,
-      );
-
-  bool enablePageView = true;
-
-  void togglePageView({bool enable = true}) {
-    enablePageView = enable;
-    notifyListeners();
-  }
-}
 
 class HomePage extends StatelessWidget {
   const HomePage({
