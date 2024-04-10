@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
-import 'package:instagram_blocks_ui/src/block_actions_callback.dart';
 import 'package:instagram_blocks_ui/src/post_large/post_header.dart';
 import 'package:shared/shared.dart';
 
@@ -40,7 +39,7 @@ class PostSponsored extends StatelessWidget {
   final bool enableFollowButton;
   final ValueSetter<bool> onCommentsTap;
   final void Function(String, PostAuthor) onPostShareTap;
-  final OptionalBlockActionCallback onPressed;
+  final ValueSetter<BlockAction?> onPressed;
   final UserTapCallback onUserTap;
   final PostOptionsSettings postOptionsSettings;
   final AvatarBuilder? postAuthorAvatarBuilder;

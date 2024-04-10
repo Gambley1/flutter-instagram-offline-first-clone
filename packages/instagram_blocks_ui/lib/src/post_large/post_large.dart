@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:instagram_blocks_ui/src/block_actions_callback.dart';
 import 'package:instagram_blocks_ui/src/carousel_indicator_controller.dart';
 import 'package:instagram_blocks_ui/src/media_carousel_settings.dart';
 import 'package:instagram_blocks_ui/src/post_large/post_footer.dart';
@@ -40,7 +39,7 @@ class PostLarge extends StatelessWidget {
   final int likesCount;
   final int commentsCount;
   final bool enableFollowButton;
-  final OptionalBlockActionCallback onPressed;
+  final ValueSetter<BlockAction?> onPressed;
   final ValueSetter<bool> onCommentsTap;
   final void Function(String, PostAuthor) onPostShareTap;
   final UserTapCallback onUserTap;
