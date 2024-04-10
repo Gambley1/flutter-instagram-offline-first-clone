@@ -5,7 +5,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:instagram_blocks_ui/src/carousel_dot_indicator.dart';
-import 'package:instagram_blocks_ui/src/carousel_indicator_controller.dart';
 import 'package:instagram_blocks_ui/src/comments_count.dart';
 import 'package:instagram_blocks_ui/src/like_button.dart';
 import 'package:instagram_blocks_ui/src/likes_count.dart';
@@ -16,7 +15,7 @@ import 'package:user_repository/user_repository.dart';
 class PostFooter extends StatelessWidget {
   const PostFooter({
     required this.block,
-    required this.controller,
+    required this.indicatorValue,
     required this.imagesUrl,
     required this.isLiked,
     required this.likePost,
@@ -31,7 +30,7 @@ class PostFooter extends StatelessWidget {
   });
 
   final PostBlock block;
-  final CarouselIndicatorController controller;
+  final ValueNotifier<int> indicatorValue;
   final bool isLiked;
   final int likesCount;
   final int commentsCount;
@@ -105,7 +104,7 @@ class PostFooter extends StatelessWidget {
               ),
               if (imagesUrl.length > 1)
                 ValueListenableBuilder(
-                  valueListenable: controller,
+                  valueListenable: indicatorValue,
                   builder: (context, index, child) {
                     return CarouselDotIndicator(
                       photoCount: imagesUrl.length,

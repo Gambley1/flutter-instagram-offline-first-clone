@@ -1,7 +1,7 @@
 // ignore_for_file: avoid_positional_boolean_parameters
+// ignore_for_file: use_setters_to_change_properties
 
 import 'package:flutter/material.dart';
-import 'package:instagram_blocks_ui/src/carousel_indicator_controller.dart';
 import 'package:instagram_blocks_ui/src/post_large/post_footer.dart';
 import 'package:instagram_blocks_ui/src/post_large/post_header.dart';
 import 'package:instagram_blocks_ui/src/post_large/post_media.dart';
@@ -28,7 +28,7 @@ typedef VideoPlayerBuilder = Widget Function(
   bool shouldPlay,
 );
 
-class PostLarge extends StatelessWidget {
+class PostLarge extends StatefulWidget {
   const PostLarge({
     required this.block,
     required this.isOwner,
@@ -73,39 +73,59 @@ class PostLarge extends StatelessWidget {
   final LikesCountBuilder? likesCountBuilder;
 
   @override
+  State<PostLarge> createState() => _PostLargeState();
+}
+
+class _PostLargeState extends State<PostLarge> {
+  late ValueNotifier<int> _indicatorValue;
+
+  @override
+  void initState() {
+    super.initState();
+    _indicatorValue = ValueNotifier(0);
+  }
+
+  @override
+  void dispose() {
+    _indicatorValue.dispose();
+    super.dispose();
+  }
+
+  void _updateCurrentIndex(int index) => _indicatorValue.value = index;
+
+  @override
   Widget build(BuildContext context) {
-    final isSponsored = block is PostSponsoredBlock;
-    final indicatorController = CarouselIndicatorController();
+    final isSponsored = widget.block is PostSponsoredBlock;
 
     final postMedia = PostMedia(
-      isLiked: isLiked,
-      media: block.media,
-      likePost: likePost,
-      onPageChanged: indicatorController.updateCurrentIndex,
-      videoPlayerBuilder: videoPlayerBuilder,
-      postIndex: postIndex,
-      withInViewNotifier: withInViewNotifier,
+      isLiked: widget.isLiked,
+      media: widget.block.media,
+      likePost: widget.likePost,
+      onPageChanged: _updateCurrentIndex,
+      videoPlayerBuilder: widget.videoPlayerBuilder,
+      postIndex: widget.postIndex,
+      withInViewNotifier: widget.withInViewNotifier,
     );
 
     Widget postHeader({Color? color}) => PostHeader(
-          follow: follow,
-          block: block,
+          follow: widget.follow,
+          block: widget.block,
           color: color,
-          isOwner: isOwner,
+          isOwner: widget.isOwner,
           isSponsored: isSponsored,
-          isFollowed: isFollowed,
-          enableFollowButton: enableFollowButton,
-          postAuthorAvatarBuilder: postAuthorAvatarBuilder,
-          postOptionsSettings: postOptionsSettings,
-          onAvatarTap: !block.hasNavigationAction
+          isFollowed: widget.isFollowed,
+          enableFollowButton: widget.enableFollowButton,
+          postAuthorAvatarBuilder: widget.postAuthorAvatarBuilder,
+          postOptionsSettings: widget.postOptionsSettings,
+          onAvatarTap: !widget.block.hasNavigationAction
               ? null
-              : (_) => onPressed(block.action),
+              : (_) => widget.onPressed(widget.block.action),
         );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (block.isReel)
+        if (widget.block.isReel)
           Stack(
             children: [
               postMedia,
@@ -117,18 +137,18 @@ class PostLarge extends StatelessWidget {
           postMedia,
         ],
         PostFooter(
-          block: block,
-          controller: indicatorController,
-          imagesUrl: block.mediaUrls,
-          isLiked: isLiked,
-          likePost: likePost,
-          likesCount: likesCount,
-          commentsCount: commentsCount,
-          onAvatarTap: (_) => onPressed(block.action),
-          onUserTap: onUserTap,
-          onCommentsTap: onCommentsTap,
-          onPostShareTap: onPostShareTap,
-          likesCountBuilder: likesCountBuilder,
+          block: widget.block,
+          indicatorValue: _indicatorValue,
+          imagesUrl: widget.block.mediaUrls,
+          isLiked: widget.isLiked,
+          likePost: widget.likePost,
+          likesCount: widget.likesCount,
+          commentsCount: widget.commentsCount,
+          onAvatarTap: (_) => widget.onPressed(widget.block.action),
+          onUserTap: widget.onUserTap,
+          onCommentsTap: widget.onCommentsTap,
+          onPostShareTap: widget.onPostShareTap,
+          likesCountBuilder: widget.likesCountBuilder,
         ),
       ],
     );
