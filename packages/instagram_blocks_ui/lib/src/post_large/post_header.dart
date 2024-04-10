@@ -4,7 +4,6 @@ import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:shared/shared.dart';
 
 typedef AvatarTapCallback = void Function(String? avatarUrl);
-typedef UserTapCallback = void Function(String userId);
 
 typedef AvatarBuilder = Widget Function(
   BuildContext context,

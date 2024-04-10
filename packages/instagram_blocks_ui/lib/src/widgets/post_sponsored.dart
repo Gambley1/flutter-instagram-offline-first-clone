@@ -40,7 +40,7 @@ class PostSponsored extends StatelessWidget {
   final ValueSetter<bool> onCommentsTap;
   final void Function(String, PostAuthor) onPostShareTap;
   final ValueSetter<BlockAction?> onPressed;
-  final UserTapCallback onUserTap;
+  final ValueSetter<String> onUserTap;
   final PostOptionsSettings postOptionsSettings;
   final AvatarBuilder? postAuthorAvatarBuilder;
   final VideoPlayerBuilder? videoPlayerBuilder;

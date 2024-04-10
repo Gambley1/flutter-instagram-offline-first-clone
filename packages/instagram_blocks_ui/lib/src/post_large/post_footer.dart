@@ -39,7 +39,7 @@ class PostFooter extends StatelessWidget {
   final VoidCallback likePost;
   final List<String> imagesUrl;
   final AvatarTapCallback onAvatarTap;
-  final UserTapCallback onUserTap;
+  final ValueSetter<String> onUserTap;
   final ValueSetter<bool> onCommentsTap;
   final void Function(String, PostAuthor) onPostShareTap;
   final Widget? Function(String? name, String? userId, int count)?
