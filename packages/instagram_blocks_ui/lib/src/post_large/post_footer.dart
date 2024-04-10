@@ -56,7 +56,7 @@ class PostFooter extends StatelessWidget {
       children: <Widget>[
         if (isSponsored)
           SponsoredPostAction(
-            imageUrl: block.firstMedia?.url ?? '',
+            imageUrl: block.firstMedia?.url,
             onTap: () => onAvatarTap.call(author.avatarUrl),
           ),
         const AppDivider(padding: AppSpacing.md),
@@ -261,31 +261,31 @@ class LikersInFollowings extends StatelessWidget {
 
 class SponsoredPostAction extends StatefulWidget {
   const SponsoredPostAction({
-    required this.imageUrl,
     required this.onTap,
+    required this.imageUrl,
     super.key,
   });
 
-  final String imageUrl;
+  final String? imageUrl;
   final VoidCallback onTap;
 
   @override
   State<SponsoredPostAction> createState() => _SponsoredPostActionState();
 }
 
-class _SponsoredPostActionState extends State<SponsoredPostAction> {
+class _SponsoredPostActionState extends State<SponsoredPostAction>
+    with SafeSetStateMixin {
   ColorScheme? _colorScheme;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      final imageUrl = widget.imageUrl;
+      if (imageUrl == null) return safeSetState(() => _colorScheme = null);
       ColorScheme.fromImageProvider(
-        provider: NetworkImage(widget.imageUrl),
-      ).then((value) {
-        if (!mounted) return;
-        setState(() => _colorScheme = value);
-      });
+        provider: NetworkImage(imageUrl),
+      ).then((value) => safeSetState(() => _colorScheme = value));
     });
   }
 
