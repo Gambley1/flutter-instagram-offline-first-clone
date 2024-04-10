@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/bloc/app_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/feed.dart';
+import 'package:flutter_instagram_offline_first_clone/feed/post/video/video.dart';
 import 'package:flutter_instagram_offline_first_clone/home/home.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:go_router/go_router.dart';
@@ -27,7 +28,7 @@ class BottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final videoPlayer = VideoPlayerProvider.of(context);
+    final videoPlayer = VideoPlayerInheritedWidget.of(context);
 
     final user = context.select((AppBloc bloc) => bloc.state.user);
 
@@ -57,15 +58,15 @@ class BottomNavBar extends StatelessWidget {
       onTap: (index) {
         HomeProvider().togglePageView(enable: index == 0);
         if ([0, 1, 2, 3].contains(index)) {
-          if (index case 0) videoPlayer.videoPlayerState.playFeed();
-          if (index case 1) videoPlayer.videoPlayerState.playTimeline();
+          if (index case 0) videoPlayer.videoPlayerProvider.playFeed();
+          if (index case 1) videoPlayer.videoPlayerProvider.playTimeline();
           if (index case 2) {
             HomeProvider().animateToPage(0);
             HomeProvider().togglePageView();
           }
-          if (index case 3) videoPlayer.videoPlayerState.playReels();
+          if (index case 3) videoPlayer.videoPlayerProvider.playReels();
         } else {
-          videoPlayer.videoPlayerState.stopAll();
+          videoPlayer.videoPlayerProvider.stopAll();
         }
         if (index != 2) {
           navigationShell.goBranch(

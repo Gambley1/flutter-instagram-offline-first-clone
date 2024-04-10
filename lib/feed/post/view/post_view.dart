@@ -5,7 +5,7 @@ import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/comments/comments.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/feed.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/post/post.dart';
-import 'package:flutter_instagram_offline_first_clone/home/home.dart';
+import 'package:flutter_instagram_offline_first_clone/feed/post/video/video.dart';
 import 'package:flutter_instagram_offline_first_clone/stories/stories.dart';
 import 'package:flutter_instagram_offline_first_clone/user_profile/user_profile.dart';
 import 'package:go_router/go_router.dart';
@@ -153,15 +153,15 @@ class PostLargeView extends StatelessWidget {
         videoPlayerBuilder: !withCustomVideoPlayer
             ? null
             : (_, media, aspectRatio, isInView) {
-                final videoPlayer =
-                    VideoPlayerProvider.of(context).videoPlayerState;
+                final videoPlayerProvider =
+                    VideoPlayerInheritedWidget.of(context).videoPlayerProvider;
 
                 return VideoPlayerNotifierWidget(
                   type: videoPlayerType,
                   builder: (context, shouldPlay, child) {
                     final play = shouldPlay && isInView;
                     return ValueListenableBuilder(
-                      valueListenable: videoPlayer.withSound,
+                      valueListenable: videoPlayerProvider.withSound,
                       builder: (context, withSound, child) {
                         return VideoPlay(
                           key: ValueKey(media.id),
@@ -171,7 +171,7 @@ class PostLargeView extends StatelessWidget {
                           blurHash: media.blurHash,
                           withSound: withSound,
                           onSoundToggled: (enable) {
-                            videoPlayer.withSound.value = enable;
+                            videoPlayerProvider.withSound.value = enable;
                           },
                         );
                       },
@@ -251,15 +251,15 @@ class PostLargeView extends StatelessWidget {
       videoPlayerBuilder: !withCustomVideoPlayer
           ? null
           : (_, media, aspectRatio, isInView) {
-              final videoPlayer =
-                  VideoPlayerProvider.of(context).videoPlayerState;
+              final videoPlayerProvider =
+                  VideoPlayerInheritedWidget.of(context).videoPlayerProvider;
 
               return VideoPlayerNotifierWidget(
                 type: videoPlayerType,
                 builder: (context, shouldPlay, child) {
                   final play = shouldPlay && isInView;
                   return ValueListenableBuilder(
-                    valueListenable: videoPlayer.withSound,
+                    valueListenable: videoPlayerProvider.withSound,
                     builder: (context, withSound, child) {
                       return VideoPlay(
                         key: ValueKey(media.id),
@@ -269,7 +269,7 @@ class PostLargeView extends StatelessWidget {
                         blurHash: media.blurHash,
                         withSound: withSound,
                         onSoundToggled: (enable) {
-                          videoPlayer.withSound.value = enable;
+                          videoPlayerProvider.withSound.value = enable;
                         },
                       );
                     },

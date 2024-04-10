@@ -5,7 +5,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/feed.dart';
-import 'package:flutter_instagram_offline_first_clone/home/home.dart';
+import 'package:flutter_instagram_offline_first_clone/feed/post/video/video.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:flutter_instagram_offline_first_clone/reels/reel/reel.dart';
 import 'package:flutter_instagram_offline_first_clone/user_profile/widgets/widgets.dart';
@@ -52,7 +52,8 @@ class _ReelsViewState extends State<ReelsView> {
 
   @override
   Widget build(BuildContext context) {
-    final videoPlayer = VideoPlayerProvider.of(context).videoPlayerState;
+    final videoPlayerProvider =
+        VideoPlayerInheritedWidget.of(context).videoPlayerProvider;
 
     return Stack(
       fit: StackFit.expand,
@@ -97,8 +98,8 @@ class _ReelsViewState extends State<ReelsView> {
                     return ListenableBuilder(
                       listenable: Listenable.merge(
                         [
-                          videoPlayer.shouldPlayReels,
-                          videoPlayer.withSound,
+                          videoPlayerProvider.shouldPlayReels,
+                          videoPlayerProvider.withSound,
                           _currentIndex,
                         ],
                       ),
@@ -108,9 +109,9 @@ class _ReelsViewState extends State<ReelsView> {
                         if (block is PostReelBlock) {
                           return ReelView(
                             key: ValueKey(block.id),
-                            play:
-                                isCurrent && videoPlayer.shouldPlayReels.value,
-                            withSound: videoPlayer.withSound.value,
+                            play: isCurrent &&
+                                videoPlayerProvider.shouldPlayReels.value,
+                            withSound: videoPlayerProvider.withSound.value,
                             block: block,
                           );
                         }

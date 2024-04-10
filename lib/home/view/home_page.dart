@@ -7,12 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/chats/chats.dart';
+import 'package:flutter_instagram_offline_first_clone/feed/post/video/video.dart';
 import 'package:flutter_instagram_offline_first_clone/home/home.dart';
 import 'package:flutter_instagram_offline_first_clone/navigation/navigation.dart';
 import 'package:flutter_instagram_offline_first_clone/stories/stories.dart';
 import 'package:flutter_instagram_offline_first_clone/user_profile/user_profile.dart';
 import 'package:go_router/go_router.dart';
-import 'package:inview_notifier_list/inview_notifier_list.dart';
 import 'package:posts_repository/posts_repository.dart';
 import 'package:shared/shared.dart';
 import 'package:stories_repository/stories_repository.dart';
@@ -57,7 +57,7 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  late VideoPlayerState _videoPlayerState;
+  late VideoPlayerProvider _videoPlayerProvider;
   late PageController _pageController;
 
   Future<void> setupInteractedMessage(BuildContext context) async {
@@ -83,7 +83,7 @@ class _HomeViewState extends State<HomeView> {
 
     _pageController = PageController(initialPage: 1)
       ..addListener(_onPageScroll);
-    _videoPlayerState = VideoPlayerState();
+    _videoPlayerProvider = VideoPlayerProvider();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       HomeProvider().setPageController(_pageController);
@@ -104,17 +104,17 @@ class _HomeViewState extends State<HomeView> {
     final isReels = !isScrolling && mainPageView && navigationBarIndex == 3;
 
     if (isScrolling) {
-      _videoPlayerState.stopAll();
+      _videoPlayerProvider.stopAll();
     }
     switch ((isFeed, isTimeline, isReels)) {
       case (true, false, false):
-        _videoPlayerState.playFeed();
+        _videoPlayerProvider.playFeed();
       case (false, true, false):
-        _videoPlayerState.playTimeline();
+        _videoPlayerProvider.playTimeline();
       case (false, false, true):
-        _videoPlayerState.playReels();
+        _videoPlayerProvider.playReels();
       case _:
-        _videoPlayerState.stopAll();
+        _videoPlayerProvider.stopAll();
     }
   }
 
@@ -143,8 +143,8 @@ class _HomeViewState extends State<HomeView> {
         firebaseRemoteConfigRepository:
             context.read<FirebaseRemoteConfigRepository>(),
       )..add(const CreateStoriesIsFeatureAvailableSubscriptionRequested()),
-      child: VideoPlayerProvider(
-        videoPlayerState: _videoPlayerState,
+      child: VideoPlayerInheritedWidget(
+        videoPlayerProvider: _videoPlayerProvider,
         child: ListenableBuilder(
           listenable: HomeProvider(),
           builder: (context, child) {
@@ -182,128 +182,6 @@ class _HomeViewState extends State<HomeView> {
           },
         ),
       ),
-    );
-  }
-}
-
-class VideoPlayerProvider extends InheritedWidget {
-  const VideoPlayerProvider({
-    required this.videoPlayerState,
-    required super.child,
-    super.key,
-  });
-
-  final VideoPlayerState videoPlayerState;
-
-  @override
-  bool updateShouldNotify(VideoPlayerProvider oldWidget) =>
-      videoPlayerState != oldWidget.videoPlayerState;
-
-  static VideoPlayerProvider of(BuildContext context) {
-    final provider =
-        context.getInheritedWidgetOfExactType<VideoPlayerProvider>();
-    assert(provider != null, 'No VideoPlayerProvider found in context!');
-    return provider!;
-  }
-
-  static VideoPlayerProvider? maybeOf(BuildContext context) =>
-      context.getInheritedWidgetOfExactType<VideoPlayerProvider>();
-}
-
-class VideoPlayerState {
-  VideoPlayerState();
-
-  final enablePageView = ValueNotifier(true);
-  final shouldPlayFeed = ValueNotifier(true);
-  final shouldPlayReels = ValueNotifier(true);
-  final shouldPlayTimeline = ValueNotifier(true);
-  final withSound = ValueNotifier(false);
-
-  // ignore: use_setters_to_change_properties
-  void togglePageView({bool enable = true}) {
-    enablePageView.value = enable;
-  }
-
-  void playFeed() {
-    shouldPlayFeed.value = true;
-    shouldPlayReels.value = false;
-    shouldPlayTimeline.value = false;
-  }
-
-  void playTimeline() {
-    shouldPlayFeed.value = false;
-    shouldPlayReels.value = false;
-    shouldPlayTimeline.value = true;
-  }
-
-  void playReels() {
-    shouldPlayFeed.value = false;
-    shouldPlayReels.value = true;
-    shouldPlayTimeline.value = false;
-  }
-
-  void stopAll() {
-    shouldPlayFeed.value = false;
-    shouldPlayReels.value = false;
-    shouldPlayTimeline.value = false;
-  }
-}
-
-enum VideoPlayerType { feed, timeline, reels }
-
-class VideoPlayerNotifierWidget extends StatefulWidget {
-  const VideoPlayerNotifierWidget({
-    required this.type,
-    required this.builder,
-    this.id,
-    this.checkIsInView,
-    this.child,
-    super.key,
-  });
-
-  final VideoPlayerType type;
-  final String? id;
-  final bool? checkIsInView;
-  final Widget? child;
-  final Widget Function(BuildContext context, bool shouldPlay, Widget? child)
-      builder;
-
-  @override
-  State<VideoPlayerNotifierWidget> createState() => _VideoPlayerNotifierState();
-}
-
-class _VideoPlayerNotifierState extends State<VideoPlayerNotifierWidget> {
-  late VideoPlayerState _videoPlayerState;
-  late ValueNotifier<bool> _shouldPlayType;
-
-  @override
-  void initState() {
-    super.initState();
-    _videoPlayerState = VideoPlayerProvider.of(context).videoPlayerState;
-    _shouldPlayType = switch (widget.type) {
-      VideoPlayerType.feed => _videoPlayerState.shouldPlayFeed,
-      VideoPlayerType.reels => _videoPlayerState.shouldPlayReels,
-      VideoPlayerType.timeline => _videoPlayerState.shouldPlayTimeline,
-    };
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ValueListenableBuilder<bool>(
-      valueListenable: _shouldPlayType,
-      child: widget.child,
-      builder: (context, shouldPlay, child) {
-        if (widget.checkIsInView ?? false) {
-          return InViewNotifierWidget(
-            id: widget.id!,
-            builder: (context, isInView, _) {
-              final play = isInView && shouldPlay;
-              return widget.builder(context, play, child);
-            },
-          );
-        }
-        return widget.builder(context, shouldPlay, child);
-      },
     );
   }
 }
