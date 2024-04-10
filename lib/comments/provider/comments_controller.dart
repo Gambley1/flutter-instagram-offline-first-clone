@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class CommentsController {
+class CommentsProvider {
   final isCommentReplyingTo = ValueNotifier<bool>(false);
   final _commentReplyingToUsername = ValueNotifier<String?>(null);
   final _commentReplyingToCommentId = ValueNotifier<String?>(null);

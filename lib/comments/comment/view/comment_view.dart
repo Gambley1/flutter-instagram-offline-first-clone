@@ -81,7 +81,7 @@ class CommentGroup extends StatelessWidget {
             withAdaptiveBorder: false,
           ),
           onReplyButtonTap: (username) => context
-              .read<CommentsController>()
+              .read<CommentsProvider>()
               .setReplyingTo(
                 commentId: isReplied ? comment.repliedToCommentId! : comment.id,
                 username: username,

@@ -29,9 +29,9 @@ class _CommentTextFieldState extends State<CommentTextField> {
   void initState() {
     super.initState();
     _commentTextController =
-        context.read<CommentsController>().commentTextController;
+        context.read<CommentsProvider>().commentTextController;
 
-    _focusNode = context.read<CommentsController>().commentFocusNode;
+    _focusNode = context.read<CommentsProvider>().commentFocusNode;
     _focusNode.addListener(() {
       if (_focusNode.hasFocus) {
         if (!widget.controller.isAttached) return;
@@ -48,7 +48,7 @@ class _CommentTextFieldState extends State<CommentTextField> {
   @override
   Widget build(BuildContext context) {
     final user = context.select((AppBloc b) => b.state.user);
-    final commentsController = context.read<CommentsController>();
+    final commentsController = context.read<CommentsProvider>();
 
     return Padding(
       padding: EdgeInsets.only(bottom: context.viewInsets.bottom),
