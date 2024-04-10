@@ -40,7 +40,7 @@ class PostFooter extends StatelessWidget {
   final ValueSetter<String?> onAvatarTap;
   final ValueSetter<String> onUserTap;
   final ValueSetter<bool> onCommentsTap;
-  final void Function(String, PostAuthor) onPostShareTap;
+  final OnPostShareTap onPostShareTap;
   final LikesCountBuilder? likesCountBuilder;
 
   @override

@@ -37,7 +37,7 @@ class PostSponsored extends StatelessWidget {
   final int commentsCount;
   final bool enableFollowButton;
   final ValueSetter<bool> onCommentsTap;
-  final void Function(String, PostAuthor) onPostShareTap;
+  final OnPostShareTap onPostShareTap;
   final ValueSetter<BlockAction?> onPressed;
   final ValueSetter<String> onUserTap;
   final PostOptionsSettings postOptionsSettings;

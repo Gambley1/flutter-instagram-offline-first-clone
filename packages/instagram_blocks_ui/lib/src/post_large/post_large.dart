@@ -18,6 +18,8 @@ typedef LikesCountBuilder = Widget? Function(
   int count,
 );
 
+typedef OnPostShareTap = void Function(String postId, PostAuthor author);
+
 class PostLarge extends StatelessWidget {
   const PostLarge({
     required this.block,
@@ -53,7 +55,7 @@ class PostLarge extends StatelessWidget {
   final bool enableFollowButton;
   final ValueSetter<BlockAction?> onPressed;
   final ValueSetter<bool> onCommentsTap;
-  final void Function(String, PostAuthor) onPostShareTap;
+  final OnPostShareTap onPostShareTap;
   final ValueSetter<String> onUserTap;
   final PostOptionsSettings postOptionsSettings;
   final AvatarBuilder? postAuthorAvatarBuilder;
