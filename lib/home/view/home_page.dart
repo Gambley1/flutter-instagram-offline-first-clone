@@ -1,11 +1,9 @@
 // ignore_for_file: avoid_positional_boolean_parameters
 
 import 'package:app_ui/app_ui.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_remote_config_repository/firebase_remote_config_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/chats/chats.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/post/video/video.dart';
 import 'package:flutter_instagram_offline_first_clone/home/home.dart';
@@ -60,26 +58,9 @@ class _HomeViewState extends State<HomeView> {
   late VideoPlayerProvider _videoPlayerProvider;
   late PageController _pageController;
 
-  Future<void> setupInteractedMessage(BuildContext context) async {
-    final initialMessage = await FirebaseMessaging.instance.getInitialMessage();
-    if (initialMessage != null) {
-      await _handleMessage(initialMessage);
-    }
-
-    FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
-  }
-
-  Future<void> _handleMessage(RemoteMessage message) async {
-    if (message.data['chat_id'] != null) {
-      final user = context.read<AppBloc>().state.user;
-      if (user.isAnonymous) return;
-    }
-  }
-
   @override
   void initState() {
     super.initState();
-    setupInteractedMessage(context);
 
     _pageController = PageController(initialPage: 1)
       ..addListener(_onPageScroll);
