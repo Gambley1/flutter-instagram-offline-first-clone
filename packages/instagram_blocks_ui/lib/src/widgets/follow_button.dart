@@ -14,10 +14,8 @@ class FollowButton extends StatelessWidget {
   final VoidCallback follow;
   final bool isOutlined;
 
-  String? _followingStatus(BuildContext context) {
-    if (!isFollowed) {
-      return BlockSettings().followTextDelegate.followText;
-    }
+  String? get _followingStatus {
+    if (!isFollowed) return BlockSettings().followTextDelegate.followText;
     return BlockSettings().followTextDelegate.followingText;
   }
 
@@ -47,7 +45,7 @@ class FollowButton extends StatelessWidget {
           ),
         );
 
-    return switch (_followingStatus(context)) {
+    return switch (_followingStatus) {
       null => const SizedBox.shrink(),
       final String data => Tappable(
           onTap: follow,
