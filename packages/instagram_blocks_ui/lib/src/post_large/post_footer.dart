@@ -16,7 +16,7 @@ class PostFooter extends StatelessWidget {
   const PostFooter({
     required this.block,
     required this.indicatorValue,
-    required this.imagesUrl,
+    required this.mediasUrl,
     required this.isLiked,
     required this.likePost,
     required this.commentsCount,
@@ -35,7 +35,7 @@ class PostFooter extends StatelessWidget {
   final int likesCount;
   final int commentsCount;
   final VoidCallback likePost;
-  final List<String> imagesUrl;
+  final List<String> mediasUrl;
   final ValueSetter<String?> onAvatarTap;
   final ValueSetter<String> onUserTap;
   final ValueSetter<bool> onCommentsTap;
@@ -102,12 +102,12 @@ class PostFooter extends StatelessWidget {
                   ),
                 ),
               ),
-              if (imagesUrl.length > 1)
+              if (mediasUrl.length > 1)
                 ValueListenableBuilder(
                   valueListenable: indicatorValue,
                   builder: (context, index, child) {
                     return CarouselDotIndicator(
-                      mediaCount: imagesUrl.length,
+                      mediaCount: mediasUrl.length,
                       activeMediaIndex: index,
                     );
                   },

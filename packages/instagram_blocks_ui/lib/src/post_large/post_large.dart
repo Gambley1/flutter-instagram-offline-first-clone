@@ -139,7 +139,7 @@ class _PostLargeState extends State<PostLarge> {
         PostFooter(
           block: widget.block,
           indicatorValue: _indicatorValue,
-          imagesUrl: widget.block.mediaUrls,
+          mediasUrl: widget.block.mediaUrls,
           isLiked: widget.isLiked,
           likePost: widget.likePost,
           likesCount: widget.likesCount,
