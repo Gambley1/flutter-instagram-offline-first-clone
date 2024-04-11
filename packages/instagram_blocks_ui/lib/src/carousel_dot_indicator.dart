@@ -3,15 +3,31 @@ import 'package:flutter/material.dart';
 
 class CarouselDotIndicator extends StatelessWidget {
   const CarouselDotIndicator({
-    required this.photoCount,
-    required this.activePhotoIndex,
+    required this.mediaCount,
+    required this.activeMediaIndex,
     super.key,
   });
 
-  final int photoCount;
-  final int activePhotoIndex;
+  final int mediaCount;
+  final int activeMediaIndex;
 
-  Widget _buildDot({required bool isActive}) {
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: List.generate(mediaCount, (i) => i)
+          .map((i) => _DotIndicator(isActive: i == activeMediaIndex))
+          .toList(growable: false),
+    );
+  }
+}
+
+class _DotIndicator extends StatelessWidget {
+  const _DotIndicator({required this.isActive});
+
+  final bool isActive;
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       margin:
           const EdgeInsets.only(left: AppSpacing.xxs, right: AppSpacing.xxs),
@@ -21,15 +37,6 @@ class CarouselDotIndicator extends StatelessWidget {
         shape: BoxShape.circle,
         color: isActive ? Colors.blue.shade500 : Colors.grey,
       ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: List.generate(photoCount, (i) => i)
-          .map((i) => _buildDot(isActive: i == activePhotoIndex))
-          .toList(),
     );
   }
 }

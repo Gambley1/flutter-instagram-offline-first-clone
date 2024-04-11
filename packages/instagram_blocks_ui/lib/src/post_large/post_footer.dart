@@ -107,8 +107,8 @@ class PostFooter extends StatelessWidget {
                   valueListenable: indicatorValue,
                   builder: (context, index, child) {
                     return CarouselDotIndicator(
-                      photoCount: imagesUrl.length,
-                      activePhotoIndex: index,
+                      mediaCount: imagesUrl.length,
+                      activeMediaIndex: index,
                     );
                   },
                 ),
