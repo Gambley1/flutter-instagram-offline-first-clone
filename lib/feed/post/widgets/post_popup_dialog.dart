@@ -41,40 +41,43 @@ class PostPopupDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: AnimatedPopupDialog(
-        controller: popupDialogAnimationController,
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            color: context.customReversedAdaptiveColor(
-              light: AppColors.brightGrey,
-              dark: context.theme.splashColor,
+      child: RepaintBoundary(
+        child: AnimatedPopupDialog(
+          controller: popupDialogAnimationController,
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              color: context.customReversedAdaptiveColor(
+                light: AppColors.brightGrey,
+                dark: context.theme.splashColor,
+              ),
             ),
-          ),
-          margin: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.md,
-            vertical: AppSpacing.md,
-          ),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                PopupDialogHeader(block: block),
-                PopupDialogBody(
-                  block: block,
-                  messageVisibility: messageVisibility,
-                  messageText: messageText,
-                  messagePositionLeft: messagePositionLeft,
-                  likeIconAnimationController: likeIconAnimationController,
-                ),
-                PopupDialogFooter(
-                  likeButtonKey: likeButtonKey,
-                  commentOrViewProfileButtonKey: commentOrViewProfileButtonKey,
-                  showComments: showComments,
-                  sharePostKey: sharePostKey,
-                  optionsKey: optionsKey,
-                ),
-              ],
+            margin: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.md,
+              vertical: AppSpacing.md,
+            ),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  PopupDialogHeader(block: block),
+                  PopupDialogBody(
+                    block: block,
+                    messageVisibility: messageVisibility,
+                    messageText: messageText,
+                    messagePositionLeft: messagePositionLeft,
+                    likeIconAnimationController: likeIconAnimationController,
+                  ),
+                  PopupDialogFooter(
+                    likeButtonKey: likeButtonKey,
+                    commentOrViewProfileButtonKey:
+                        commentOrViewProfileButtonKey,
+                    showComments: showComments,
+                    sharePostKey: sharePostKey,
+                    optionsKey: optionsKey,
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -332,7 +335,7 @@ class AnimatedPopupDialog extends StatefulWidget {
 }
 
 class AnimatedPopupDialogState extends State<AnimatedPopupDialog>
-    with SafeSetStateMixin {
+    with SingleTickerProviderStateMixin, SafeSetStateMixin {
   late AnimationController _animationController;
   late Animation<double> _opacityAnimation;
   late Animation<double> _sigmaBlurXAnimation;
@@ -342,7 +345,8 @@ class AnimatedPopupDialogState extends State<AnimatedPopupDialog>
   void initState() {
     super.initState();
 
-    _animationController = widget.controller!..addListener(_animationListener);
+    _animationController =
+        widget.controller ?? AnimationController(vsync: this);
     _opacityAnimation = Tween<double>(begin: 0, end: 0.6).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeOutExpo),
     );
@@ -354,24 +358,24 @@ class AnimatedPopupDialogState extends State<AnimatedPopupDialog>
     );
   }
 
-  void _animationListener() => safeSetState(() {});
-
   @override
   void dispose() {
-    _animationController.removeListener(_animationListener);
     if (widget.controller == null) _animationController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BackdropFilter(
-      filter: ImageFilter.blur(
-        sigmaX: _sigmaBlurXAnimation.value * 13,
-        sigmaY: _sigmaBlurYAnimation.value * 10,
-      ),
-      child: Material(
-        color: AppColors.black.withOpacity(_opacityAnimation.value),
+    return ListenableBuilder(
+      listenable: _animationController,
+      child: ListenableBuilder(
+        listenable: _animationController,
+        builder: (context, child) {
+          return Material(
+            color: AppColors.black.withOpacity(_opacityAnimation.value),
+            child: child,
+          );
+        },
         child: Center(
           child: widget.child
               .animate(autoPlay: true, controller: _animationController)
@@ -382,6 +386,15 @@ class AnimatedPopupDialogState extends State<AnimatedPopupDialog>
               .fadeIn(),
         ),
       ),
+      builder: (context, child) {
+        return BackdropFilter(
+          filter: ImageFilter.blur(
+            sigmaX: _sigmaBlurXAnimation.value * 13,
+            sigmaY: _sigmaBlurYAnimation.value * 10,
+          ),
+          child: child,
+        );
+      },
     );
   }
 }

@@ -26,7 +26,6 @@ ImageMedia _$ImageMediaFromJson(Map<String, dynamic> json) => $checkedCreate(
 
 Map<String, dynamic> _$ImageMediaToJson(ImageMedia instance) {
   final val = <String, dynamic>{
-    'media_id': instance.id,
     'url': instance.url,
     'type': instance.type,
   };
@@ -38,6 +37,7 @@ Map<String, dynamic> _$ImageMediaToJson(ImageMedia instance) {
   }
 
   writeNotNull('blur_hash', instance.blurHash);
+  val['media_id'] = instance.id;
   return val;
 }
 
@@ -49,19 +49,18 @@ MemoryImageMedia _$MemoryImageMediaFromJson(Map<String, dynamic> json) =>
         final val = MemoryImageMedia(
           bytes: $checkedConvert(
               'bytes', (v) => const UintConverter().fromJson(v as List<int>)),
-          id: $checkedConvert('media_id', (v) => v as String),
+          id: $checkedConvert('id', (v) => v as String),
           url: $checkedConvert('url', (v) => v as String? ?? ''),
           type: $checkedConvert(
               'type', (v) => v as String? ?? MemoryImageMedia.identifier),
         );
         return val;
       },
-      fieldKeyMap: const {'id': 'media_id'},
     );
 
 Map<String, dynamic> _$MemoryImageMediaToJson(MemoryImageMedia instance) =>
     <String, dynamic>{
-      'media_id': instance.id,
+      'id': instance.id,
       'url': instance.url,
       'type': instance.type,
       'bytes': const UintConverter().toJson(instance.bytes),

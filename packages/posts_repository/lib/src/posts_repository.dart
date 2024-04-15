@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:database_client/database_client.dart';
 import 'package:shared/shared.dart';
 import 'package:user_repository/user_repository.dart';
@@ -149,4 +151,200 @@ class PostsRepository implements PostsBaseRepository {
         limit: limit,
         offset: offset,
       );
+
+  /// Returns a list of recommended posts.
+  static final recommendedPosts = <PostLargeBlock>[
+    PostLargeBlock(
+      id: uuid.v4(),
+      author: PostAuthor.randomConfirmed(),
+      createdAt: DateTime.now().subtract(
+        Duration(
+          minutes: math.Random().nextInt(60),
+          hours: math.Random().nextInt(24),
+          days: math.Random().nextInt(12),
+        ),
+      ),
+      media: [
+        ImageMedia(
+          id: uuid.v4(),
+          url:
+              'https://img.freepik.com/free-photo/morskie-oko-tatry_1204-510.jpg?size=626&ext=jpg',
+        ),
+      ],
+      caption: 'Hello world!',
+    ),
+    PostLargeBlock(
+      id: uuid.v4(),
+      author: PostAuthor.randomConfirmed(),
+      createdAt: DateTime.now().subtract(
+        Duration(
+          minutes: math.Random().nextInt(60),
+          hours: math.Random().nextInt(24),
+          days: math.Random().nextInt(12),
+        ),
+      ),
+      media: [
+        VideoMedia(
+          id: uuid.v4(),
+          firstFrameUrl: '',
+          url:
+              'https://player.vimeo.com/progressive_redirect/playback/903856061/rendition/540p/file.mp4?loc=external&oauth2_token_id=1747418641&signature=1bf8c7fcb5788b45eb5b8b30519f1eb872eb5be562ef9b0e04191ee44d53acff',
+        ),
+      ],
+      caption: 'Hello world!',
+    ),
+    PostLargeBlock(
+      id: uuid.v4(),
+      author: PostAuthor.randomConfirmed(),
+      createdAt: DateTime.now().subtract(
+        Duration(
+          minutes: math.Random().nextInt(60),
+          hours: math.Random().nextInt(24),
+          days: math.Random().nextInt(12),
+        ),
+      ),
+      media: [
+        ImageMedia(
+          id: uuid.v4(),
+          url:
+              'https://img.freepik.com/free-photo/beautiful-shot-high-mountains-covered-with-green-plants-near-lake-storm-clouds_181624-7731.jpg?size=626&ext=jpg',
+        ),
+      ],
+      caption: 'Hello world!',
+    ),
+    PostLargeBlock(
+      id: uuid.v4(),
+      author: PostAuthor.randomConfirmed(),
+      createdAt: DateTime.now().subtract(
+        Duration(
+          minutes: math.Random().nextInt(60),
+          hours: math.Random().nextInt(24),
+          days: math.Random().nextInt(12),
+        ),
+      ),
+      media: [
+        ImageMedia(
+          id: uuid.v4(),
+          url:
+              'https://img.freepik.com/free-photo/landscape-morning-fog-mountains-with-hot-air-balloons-sunrise_335224-794.jpg?size=626&ext=jpg',
+        ),
+      ],
+      caption: 'Hello world!',
+    ),
+    PostLargeBlock(
+      id: uuid.v4(),
+      author: PostAuthor.randomConfirmed(),
+      createdAt: DateTime.now().subtract(
+        Duration(
+          minutes: math.Random().nextInt(60),
+          hours: math.Random().nextInt(24),
+          days: math.Random().nextInt(12),
+        ),
+      ),
+      media: [
+        ImageMedia(
+          id: uuid.v4(),
+          url:
+              'https://img.freepik.com/free-photo/magical-shot-dolomite-mountains-fanes-sennes-prags-national-park-italy-during-summer_181624-43445.jpg?size=626&ext=jpg',
+        ),
+      ],
+      caption: 'Hello world!',
+    ),
+    PostLargeBlock(
+      id: uuid.v4(),
+      author: PostAuthor.randomConfirmed(),
+      createdAt: DateTime.now().subtract(
+        Duration(
+          minutes: math.Random().nextInt(60),
+          hours: math.Random().nextInt(24),
+          days: math.Random().nextInt(12),
+        ),
+      ),
+      media: [
+        ImageMedia(
+          id: uuid.v4(),
+          url:
+              'https://img.freepik.com/free-photo/morskie-oko-tatry_1204-510.jpg?size=626&ext=jpg',
+        ),
+      ],
+      caption: 'Hello world!',
+    ),
+    PostLargeBlock(
+      id: uuid.v4(),
+      author: PostAuthor.randomConfirmed(),
+      createdAt: DateTime.now().subtract(
+        Duration(
+          minutes: math.Random().nextInt(60),
+          hours: math.Random().nextInt(24),
+          days: math.Random().nextInt(12),
+        ),
+      ),
+      media: [
+        ImageMedia(
+          id: uuid.v4(),
+          url:
+              'https://img.freepik.com/premium-photo/clouds-is-top-wooden-boat-crystal-lake-with-majestic-mountain-reflection-water-chapel-is-right-coast_146671-14200.jpg?size=626&ext=jpg',
+        ),
+      ],
+      caption: 'Hello world!',
+    ),
+    PostLargeBlock(
+      id: uuid.v4(),
+      author: PostAuthor.randomConfirmed(),
+      createdAt: DateTime.now().subtract(
+        Duration(
+          minutes: math.Random().nextInt(60),
+          hours: math.Random().nextInt(24),
+          days: math.Random().nextInt(12),
+        ),
+      ),
+      media: [
+        VideoMedia(
+          id: uuid.v4(),
+          firstFrameUrl: '',
+          url:
+              'https://player.vimeo.com/progressive_redirect/playback/899246570/rendition/540p/file.mp4?loc=external&oauth2_token_id=1747418641&signature=40dde4d43100a4ef1b77b713dee18a003757a7748ffab1cfbddce2818c818283',
+        ),
+      ],
+      caption: 'Hello world!',
+    ),
+    PostLargeBlock(
+      id: uuid.v4(),
+      author: PostAuthor.randomConfirmed(),
+      createdAt: DateTime.now().subtract(
+        Duration(
+          minutes: math.Random().nextInt(60),
+          hours: math.Random().nextInt(24),
+          days: math.Random().nextInt(12),
+        ),
+      ),
+      media: [
+        ImageMedia(
+          id: uuid.v4(),
+          url:
+              'https://img.freepik.com/premium-photo/clouds-is-top-wooden-boat-crystal-lake-with-majestic-mountain-reflection-water-chapel-is-right-coast_146671-14200.jpg?size=626&ext=jpg',
+        ),
+      ],
+      caption: 'Hello world!',
+    ),
+    PostLargeBlock(
+      id: uuid.v4(),
+      author: PostAuthor.randomConfirmed(),
+      createdAt: DateTime.now().subtract(
+        Duration(
+          minutes: math.Random().nextInt(60),
+          hours: math.Random().nextInt(24),
+          days: math.Random().nextInt(12),
+        ),
+      ),
+      media: [
+        ImageMedia(
+          id: uuid.v4(),
+          url:
+              'https://img.freepik.com/premium-photo/clouds-is-top-wooden-boat-crystal-lake-with-majestic-mountain-reflection-water-chapel-is-right-coast_146671-14200.jpg?size=626&ext=jpg',
+        ),
+      ],
+      caption: 'Hello world!',
+    ),
+  ].withNavigateToPostAuthorAction;
 }

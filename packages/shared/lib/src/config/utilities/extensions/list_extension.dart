@@ -2,14 +2,14 @@ import 'dart:developer' as dev;
 
 /// Iterable extensions
 extension ListExtension<T> on List<T> {
-  /// Updates the list by finding an element matching [findCallback], replacing
-  /// it with [newItem] using [onUpdate] function, or inserting [newItem]
-  /// if no match.
+  /// Updates the list by finding an element matching [findItemCallback],
+  /// replacing it with [newItem] using [onUpdate] function, or inserting
+  /// [newItem] if no match.
   ///
   /// If [isDelete] is true, the matching element will be removed instead of
   /// replaced.
   List<T> updateWith<E extends T>({
-    required bool Function(T item, T newItem) findCallback,
+    required bool Function(T item, T newItem) findItemCallback,
     required T Function(E item, T newItem) onUpdate,
     required T? newItem,
     bool isDelete = false,
@@ -20,7 +20,7 @@ extension ListExtension<T> on List<T> {
           'Return the original list without any modifications');
       return this;
     }
-    final index = indexWhere((item) => findCallback(item, newItem));
+    final index = indexWhere((item) => findItemCallback(item, newItem));
 
     if (index != -1) {
       if (isDelete) {

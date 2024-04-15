@@ -14,6 +14,13 @@ import 'package:posts_repository/posts_repository.dart';
 import 'package:shared/shared.dart' hide NumDurationExtension;
 import 'package:user_repository/user_repository.dart';
 
+typedef ListPositionDimension = ({
+  PositionDimension likeButton,
+  PositionDimension commentOrViewProfileButton,
+  PositionDimension sharePost,
+  PositionDimension options,
+});
+
 class PositionDimension extends Equatable {
   const PositionDimension({
     required this.positionTop,
@@ -22,6 +29,15 @@ class PositionDimension extends Equatable {
     required this.positionRight,
     required this.positionCenter,
   });
+
+  const PositionDimension.zero()
+      : this(
+          positionTop: 0,
+          positionBottom: 0,
+          positionLeft: 0,
+          positionRight: 0,
+          positionCenter: 0,
+        );
 
   final double positionTop;
   final double positionBottom;
@@ -160,9 +176,15 @@ class _PostPopupState extends State<PopupModal>
   Widget build(BuildContext context) {
     return ValueListenableBuilder<bool>(
       valueListenable: _isLiked,
-      child: RepaintBoundary(child: widget.builder.call(context)),
+      child: RepaintBoundary(
+        key: ValueKey(
+          '${widget.block.id}${widget.block.createdAt}-repaintBoundary',
+        ),
+        child: widget.builder.call(context),
+      ),
       builder: (context, isLiked, child) {
         return Tappable(
+          key: ValueKey(widget.block.id + widget.block.createdAt.toString()),
           onTap: () => context.pushNamed(
             'user_posts',
             queryParameters: {
@@ -172,6 +194,7 @@ class _PostPopupState extends State<PopupModal>
           ),
           onLongPressMoveUpdate: (details) => onLongPressMoveUpdate(
             details,
+            l10n: context.l10n,
             isLiked: isLiked,
             context: context,
           ),
@@ -189,11 +212,10 @@ class _PostPopupState extends State<PopupModal>
 
   void onLongPressMoveUpdate(
     LongPressMoveUpdateDetails details, {
+    required AppLocalizations l10n,
     required BuildContext context,
     required bool isLiked,
   }) {
-    final l10n = context.l10n;
-
     final likePosition = _getOffset(_likeButtonKey);
     final commentPosition = _getOffset(_commentOrViewProfileButtonKey);
     final sharePosition = _getOffset(_sharePostKey);
@@ -241,8 +263,8 @@ class _PostPopupState extends State<PopupModal>
       _messageVisibility.value = false;
     }
 
-    _popupEmptyDialog = _createPopupEmptyDialog();
-    Overlay.of(context).insert(_popupEmptyDialog!);
+    // _popupEmptyDialog = _createPopupEmptyDialog();
+    // Overlay.of(context).insert(_popupEmptyDialog!);
   }
 
   void onLongPress(PostBloc bloc) {
