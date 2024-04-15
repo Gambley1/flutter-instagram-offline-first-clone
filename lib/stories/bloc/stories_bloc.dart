@@ -66,11 +66,18 @@ class StoriesBloc extends Bloc<StoriesEvent, StoriesState> {
   Future<void> _onStoriesStorySeen(
     StoriesStorySeen event,
     Emitter<StoriesState> emit,
-  ) =>
-      _storiesRepository.setUserStorySeen(
+  ) async {
+    try {
+      await _storiesRepository.setUserStorySeen(
         story: event.story,
         userId: event.userId,
       );
+      emit(state.copyWith(status: StoriesStatus.success));
+    } catch (error, stackTrace) {
+      addError(error, stackTrace);
+      emit(state.copyWith(status: StoriesStatus.failure));
+    }
+  }
 
   Future<void> _onStoriesStoryDeleteRequested(
     StoriesStoryDeleteRequested event,
@@ -78,11 +85,10 @@ class StoriesBloc extends Bloc<StoriesEvent, StoriesState> {
   ) async {
     try {
       await _storiesRepository.deleteStory(id: event.id);
-
       event.onStoryDeleted?.call();
     } catch (error, stackTrace) {
       addError(error, stackTrace);
-      logE('Failed to delete story.', error: error, stackTrace: stackTrace);
+      emit(state.copyWith(status: StoriesStatus.failure));
     }
   }
 }
