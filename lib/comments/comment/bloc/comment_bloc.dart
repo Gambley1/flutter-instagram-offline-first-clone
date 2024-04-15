@@ -36,23 +36,32 @@ class CommentBloc extends HydratedBloc<CommentEvent, CommentState> {
   }
 
   final String _commentId;
+  final PostsRepository _postsRepository;
 
   @override
   String get id => _commentId;
 
-  final PostsRepository _postsRepository;
-
   Future<void> _onCommentLikeRequested(
     CommentLikeRequested event,
     Emitter<CommentState> emit,
-  ) =>
-      _postsRepository.like(id: id, post: false);
+  ) async {
+    try {
+      await _postsRepository.like(id: id, post: false);
+    } catch (error, stackTrace) {
+      addError(error, stackTrace);
+    }
+  }
 
   Future<void> _onCommentDeleteRequested(
     CommentDeleteRequested event,
     Emitter<CommentState> emit,
-  ) =>
-      _postsRepository.deleteComment(id: id);
+  ) async {
+    try {
+      await _postsRepository.deleteComment(id: id);
+    } catch (error, stackTrace) {
+      addError(error, stackTrace);
+    }
+  }
 
   Future<void> _onCommentLikesSubscriptionRequested(
     CommentLikesSubscriptionRequested event,
