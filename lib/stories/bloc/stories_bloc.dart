@@ -29,34 +29,38 @@ class StoriesBloc extends Bloc<StoriesEvent, StoriesState> {
     StoriesFetchUserFollowingsStories event,
     Emitter<StoriesState> emit,
   ) async {
-    final followings = await _userRepository.getFollowings();
-    final stories = <User, List<Story>>{};
-    for (final following in followings) {
-      try {
-        final userStories = await _storiesRepository
-            .mergedStories(authorId: following.id)
-            .first;
-        if (state.users.map((e) => e.id).contains(following.id) &&
-            userStories.isEmpty) {
-          emit(state.copyWith(users: [...state.users]..remove(following)));
+    try {
+      final followings = await _userRepository.getFollowings();
+      final stories = <User, List<Story>>{};
+      for (final following in followings) {
+        try {
+          final userStories = await _storiesRepository
+              .mergedStories(authorId: following.id)
+              .first;
+          if (state.users.map((e) => e.id).contains(following.id) &&
+              userStories.isEmpty) {
+            emit(state.copyWith(users: [...state.users]..remove(following)));
+          }
+          if (userStories.isEmpty) continue;
+          stories[following] = userStories;
+        } catch (_) {
+          continue;
         }
-        if (userStories.isEmpty) continue;
-        stories[following] = userStories;
-      } catch (error, stackTrace) {
-        addError(error, stackTrace);
-        emit(state.copyWith(status: StoriesStatus.failure));
       }
+      final users = stories.keys
+              .every((user) => stories[user]!.every((story) => story.seen))
+          ? stories.keys.toList()
+          : stories.keys
+              .toIList()
+              .whereMoveToTheEnd(
+                (user) => stories[user]!.every((story) => story.seen),
+              )
+              .toList();
+      emit(state.copyWith(users: users, status: StoriesStatus.success));
+    } catch (error, stackTrace) {
+      addError(error, stackTrace);
+      emit(state.copyWith(status: StoriesStatus.failure));
     }
-    final users = stories.keys
-            .every((user) => stories[user]!.every((story) => story.seen))
-        ? stories.keys.toList()
-        : stories.keys
-            .toIList()
-            .whereMoveToTheEnd(
-              (user) => stories[user]!.every((story) => story.seen),
-            )
-            .toList();
-    emit(state.copyWith(users: users, status: StoriesStatus.success));
   }
 
   Future<void> _onStoriesStorySeen(
