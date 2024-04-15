@@ -10,14 +10,14 @@ class ChatsBloc extends Bloc<ChatEvent, ChatsState> {
   ChatsBloc({required ChatsRepository chatsRepository})
       : _chatsRepository = chatsRepository,
         super(const ChatsState.initial()) {
-    on<ChatsSubscriptionRequested>(_onSubscriptionRequested);
+    on<ChatsSubscriptionRequested>(_onChatsSubscriptionRequested);
     on<ChatsCreateChatRequested>(_onChatsCreateChatRequested);
     on<ChatsDeleteChatRequested>(_onChatsDeleteChatRequested);
   }
 
   final ChatsRepository _chatsRepository;
 
-  void _onSubscriptionRequested(
+  Future<void> _onChatsSubscriptionRequested(
     ChatsSubscriptionRequested event,
     Emitter<ChatsState> emit,
   ) =>
@@ -34,15 +34,28 @@ class ChatsBloc extends Bloc<ChatEvent, ChatsState> {
   Future<void> _onChatsCreateChatRequested(
     ChatsCreateChatRequested event,
     Emitter<ChatsState> emit,
-  ) =>
-      _chatsRepository.createChat(
+  ) async {
+    try {
+      await _chatsRepository.createChat(
         userId: event.userId,
         participantId: event.participantId,
       );
+    } catch (error, stackTrace) {
+      addError(error, stackTrace);
+    }
+  }
 
   Future<void> _onChatsDeleteChatRequested(
     ChatsDeleteChatRequested event,
     Emitter<ChatsState> emit,
-  ) async =>
-      _chatsRepository.deleteChat(chatId: event.chatId, userId: event.userId);
+  ) async {
+    try {
+      await _chatsRepository.deleteChat(
+        chatId: event.chatId,
+        userId: event.userId,
+      );
+    } catch (error, stackTrace) {
+      addError(error, stackTrace);
+    }
+  }
 }
