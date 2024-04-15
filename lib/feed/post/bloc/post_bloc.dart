@@ -64,6 +64,10 @@ class PostBloc extends HydratedBloc<PostEvent, PostState> {
     await emit.forEach(
       _postsRepository.likesOf(id: id),
       onData: (likesCount) => state.copyWith(likes: likesCount),
+      onError: (error, stackTrace) {
+        addError(error, stackTrace);
+        return state.copyWith(status: PostStatus.failure);
+      },
     );
   }
 
@@ -74,6 +78,10 @@ class PostBloc extends HydratedBloc<PostEvent, PostState> {
     await emit.forEach(
       _postsRepository.commentsAmountOf(postId: id),
       onData: (commentsCount) => state.copyWith(commentsCount: commentsCount),
+      onError: (error, stackTrace) {
+        addError(error, stackTrace);
+        return state.copyWith(status: PostStatus.failure);
+      },
     );
   }
 
@@ -84,6 +92,10 @@ class PostBloc extends HydratedBloc<PostEvent, PostState> {
     await emit.forEach(
       _postsRepository.isLiked(id: id),
       onData: (isLiked) => state.copyWith(isLiked: isLiked),
+      onError: (error, stackTrace) {
+        addError(error, stackTrace);
+        return state.copyWith(status: PostStatus.failure);
+      },
     );
   }
 
@@ -99,6 +111,10 @@ class PostBloc extends HydratedBloc<PostEvent, PostState> {
       _userRepository.followingStatus(userId: event.ownerId),
       onData: (isFollowed) =>
           state.copyWith(isFollowed: isFollowed, isOwner: false),
+      onError: (error, stackTrace) {
+        addError(error, stackTrace);
+        return state.copyWith(status: PostStatus.failure);
+      },
     );
   }
 
