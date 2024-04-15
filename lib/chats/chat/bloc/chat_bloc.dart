@@ -52,8 +52,10 @@ class ChatBloc extends HydratedBloc<ChatEvent, ChatState> {
         receiver: event.receiver,
         message: event.message,
       );
+      emit(state.copyWith(status: ChatStatus.success));
     } catch (error, stackTrace) {
       addError(error, stackTrace);
+      emit(state.copyWith(status: ChatStatus.failure));
     }
   }
 
@@ -63,8 +65,10 @@ class ChatBloc extends HydratedBloc<ChatEvent, ChatState> {
   ) async {
     try {
       await _chatsRepository.deleteMessage(messageId: event.messageId);
+      emit(state.copyWith(status: ChatStatus.success));
     } catch (error, stackTrace) {
       addError(error, stackTrace);
+      emit(state.copyWith(status: ChatStatus.failure));
     }
   }
 
@@ -74,8 +78,10 @@ class ChatBloc extends HydratedBloc<ChatEvent, ChatState> {
   ) async {
     try {
       await _chatsRepository.readMessage(messageId: event.messageId);
+      emit(state.copyWith(status: ChatStatus.success));
     } catch (error, stackTrace) {
       addError(error, stackTrace);
+      emit(state.copyWith(status: ChatStatus.failure));
     }
   }
 
@@ -88,8 +94,10 @@ class ChatBloc extends HydratedBloc<ChatEvent, ChatState> {
         oldMessage: event.oldMessage,
         newMessage: event.newMessage,
       );
+      emit(state.copyWith(status: ChatStatus.success));
     } catch (error, stackTrace) {
       addError(error, stackTrace);
+      emit(state.copyWith(status: ChatStatus.failure));
     }
   }
 
