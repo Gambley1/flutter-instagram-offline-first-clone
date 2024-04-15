@@ -178,7 +178,7 @@ class _PostPopupState extends State<PopupModal>
       valueListenable: _isLiked,
       child: RepaintBoundary(
         key: ValueKey(
-          '${widget.block.id}${widget.block.createdAt}repaintBoundry',
+          '${widget.block.id}${widget.block.createdAt}-repaintBoundary',
         ),
         child: widget.builder.call(context),
       ),

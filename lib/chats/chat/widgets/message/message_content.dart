@@ -30,12 +30,8 @@ class _ContentRenderBox extends RenderBox
     final constraints = this.constraints;
     final width = _computeWidth(
       constraints: constraints,
-      // TODOreplace by dryLayoutChild, need implement computeDryLayout
-      //  in MessageSkeleton
       layoutChild: ChildLayoutHelper.layoutChild,
     );
-    // TODOconstraints.minHeight,
-    //  maybe using calculated height from _computeWidth?
     size = Size(width, constraints.minHeight);
     _layout(constraints.copyWith(maxWidth: width));
   }

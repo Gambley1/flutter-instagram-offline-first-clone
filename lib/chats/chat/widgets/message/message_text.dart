@@ -7,13 +7,12 @@ import 'package:shared/shared.dart' as s;
 class MessageText extends StatelessWidget {
   const MessageText({required this.text, required this.shortInfo, super.key});
 
-  final s.RichableText text;
+  final s.CustomRichText text;
   final Widget shortInfo;
 
   @override
   Widget build(BuildContext context) {
     return MessageWrap(
-      // TODOwrap to DefaultTextStyle for custom emoji
       wrapGravity: WrapGravity.top,
       content: Text.rich(text.toInlineSpan(context)),
       shortInfo: Padding(
@@ -24,11 +23,10 @@ class MessageText extends StatelessWidget {
   }
 }
 
-extension RichTextExt on s.RichableText {
+extension RichTextExt on s.CustomRichText {
   InlineSpan toInlineSpan(BuildContext context) {
     return TextSpan(
       children: entities.map((s.Entity e) {
-        // TODOsupport multiple types
         return e.types.first.map(
           planeText: (_) {
             return TextSpan(text: e.text);

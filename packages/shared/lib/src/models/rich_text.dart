@@ -3,13 +3,13 @@
 import 'package:shared/src/models/entity.dart';
 import 'package:shared/src/models/type.dart' as t;
 
-class RichableText {
-  const RichableText({
+class CustomRichText {
+  const CustomRichText({
     required this.entities,
   });
 
-  factory RichableText.planeText(String text) {
-    return RichableText(
+  factory CustomRichText.planeText(String text) {
+    return CustomRichText(
       entities: <Entity>[
         Entity(text: text, types: <t.Type>[const t.Type.planeText()]),
       ],

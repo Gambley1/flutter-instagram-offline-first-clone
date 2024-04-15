@@ -11,7 +11,7 @@ class MessageCaption extends StatelessWidget {
     this.padding,
   });
 
-  final s.RichableText text;
+  final s.CustomRichText text;
   final Widget shortInfo;
   final EdgeInsets? padding;
 

@@ -85,7 +85,7 @@ class MessageAnimation extends StatelessWidget {
             right: chatContextData.horizontalPadding,
             top: chatContextData.verticalPadding,
           ),
-          text: RichableText.planeText(
+          text: CustomRichText.planeText(
             'Hi fa fe fa fa f',
           ),
           shortInfo: shortInfoFactory.create(

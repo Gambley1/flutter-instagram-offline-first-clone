@@ -12,15 +12,13 @@ class ChatMessageFactory {
 
   Widget createChatNotificationFromText({
     required BuildContext context,
-    required RichableText text,
+    required CustomRichText text,
   }) {
     return _Notification(
-      // TODOwrap to DefaultTextStyle for custom emoji
       text: text.toInlineSpan(context),
     );
   }
 
-  // TODOmove to another class for message parts
   Widget createChatNotificationBubble({required InlineSpan span}) =>
       _Notification(text: span);
 
@@ -35,7 +33,6 @@ class ChatMessageFactory {
       child: Container(
         padding: const EdgeInsets.only(top: 3, bottom: 3, left: 6, right: 6),
         decoration: BoxDecoration(
-          // TODOextract color to styles
           color: Colors.black.withAlpha(60),
           borderRadius: const BorderRadius.all(Radius.circular(16)),
         ),

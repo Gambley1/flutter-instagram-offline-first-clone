@@ -200,7 +200,8 @@
     "giffy",
     "giphy",
     "ccon",
-    "nodoc"
+    "nodoc",
+    "ChildLayouter"
   ],
   "ignorePaths": [
     ".github/workflows/**",
