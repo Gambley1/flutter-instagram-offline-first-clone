@@ -70,6 +70,10 @@ class CommentBloc extends HydratedBloc<CommentEvent, CommentState> {
     await emit.forEach(
       _postsRepository.likesOf(id: id, post: false),
       onData: (likes) => state.copyWith(likes: likes),
+      onError: (error, stackTrace) {
+        addError(error, stackTrace);
+        return state.copyWith(status: CommentStatus.failure);
+      },
     );
   }
 
@@ -80,6 +84,10 @@ class CommentBloc extends HydratedBloc<CommentEvent, CommentState> {
     await emit.forEach(
       _postsRepository.isLiked(id: id, post: false),
       onData: (isLiked) => state.copyWith(isLiked: isLiked),
+      onError: (error, stackTrace) {
+        addError(error, stackTrace);
+        return state.copyWith(status: CommentStatus.failure);
+      },
     );
   }
 
@@ -91,6 +99,10 @@ class CommentBloc extends HydratedBloc<CommentEvent, CommentState> {
       _postsRepository.isLiked(id: id, userId: event.ownerId, post: false),
       onData: (isLikedByOwner) =>
           state.copyWith(isLikedByOwner: isLikedByOwner),
+      onError: (error, stackTrace) {
+        addError(error, stackTrace);
+        return state.copyWith(status: CommentStatus.failure);
+      },
     );
   }
 
@@ -102,6 +114,10 @@ class CommentBloc extends HydratedBloc<CommentEvent, CommentState> {
       _postsRepository.repliedCommentsOf(commentId: event.commentId),
       onData: (repliedComments) =>
           state.copyWith(repliedComments: repliedComments),
+      onError: (error, stackTrace) {
+        addError(error, stackTrace);
+        return state.copyWith(status: CommentStatus.failure);
+      },
     );
   }
 
