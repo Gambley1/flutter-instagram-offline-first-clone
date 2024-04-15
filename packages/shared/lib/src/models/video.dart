@@ -1,3 +1,5 @@
+// ignore_for_file: overridden_fields
+
 import 'dart:io';
 
 import 'package:json_annotation/json_annotation.dart';
@@ -15,16 +17,20 @@ part 'video.g.dart';
 class VideoMedia extends Media {
   /// {@macro video_media}
   const VideoMedia({
-    required super.id,
+    required this.id,
     required super.url,
     required this.firstFrameUrl,
     super.blurHash,
     super.type = VideoMedia.identifier,
-  });
+  }) : super(id: id);
 
   /// Converts a `Map<String, dynamic>` into a [VideoMedia] instance.
   factory VideoMedia.fromJson(Map<String, dynamic> json) =>
       _$VideoMediaFromJson(json);
+
+  @override
+  @JsonKey(name: 'media_id')
+  final String id;
 
   /// The `url` of the first frame of the video.
   @JsonKey(defaultValue: '')
@@ -38,7 +44,6 @@ class VideoMedia extends Media {
 }
 
 @immutable
-@JsonSerializable()
 
 /// {@template memory_video_media}
 /// A memory video media block.

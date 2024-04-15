@@ -102,3 +102,14 @@ extension PostBlockActions on PostBlock {
   bool get hasNavigationAction =>
       action?.actionType == BlockActionType.navigation;
 }
+
+/// THe extension on `List<PostLargeBlock>`.
+extension PostListExtension on List<PostLargeBlock> {
+  /// Provides each element in list of [PostLargeBlock] with action
+  /// [NavigateToPostAuthorProfileAction].
+  List<PostLargeBlock> get withNavigateToPostAuthorAction => map(
+        (e) => e.copyWith(
+          action: NavigateToPostAuthorProfileAction(authorId: e.author.id),
+        ),
+      ).toList();
+}

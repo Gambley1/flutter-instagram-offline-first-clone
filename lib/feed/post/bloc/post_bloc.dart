@@ -132,8 +132,10 @@ class PostBloc extends HydratedBloc<PostEvent, PostState> {
       if (post != null) {
         event.onPostUpdated?.call(post.toPostLargeBlock());
       }
+      emit(state.copyWith(status: PostStatus.success));
     } catch (error, stackTrace) {
       addError(error, stackTrace);
+      emit(state.copyWith(status: PostStatus.failure));
     }
   }
 
@@ -167,14 +169,22 @@ class PostBloc extends HydratedBloc<PostEvent, PostState> {
   Future<void> _onPostDeleteRequested(
     PostDeleteRequested event,
     Emitter<PostState> emit,
-  ) =>
-      _postsRepository.deletePost(id: id);
+  ) async {
+    try {
+      await _postsRepository.deletePost(id: id);
+      emit(state.copyWith(status: PostStatus.success));
+    } catch (error, stackTrace) {
+      addError(error, stackTrace);
+      emit(state.copyWith(status: PostStatus.failure));
+    }
+  }
 
   Future<void> _onPostShareRequested(
     PostShareRequested event,
     Emitter<PostState> emit,
-  ) =>
-      _postsRepository.sharePost(
+  ) async {
+    try {
+      await _postsRepository.sharePost(
         id: id,
         sender: event.sender,
         receiver: event.receiver,
@@ -182,6 +192,12 @@ class PostBloc extends HydratedBloc<PostEvent, PostState> {
         message: event.message,
         postAuthor: event.postAuthor,
       );
+      emit(state.copyWith(status: PostStatus.success));
+    } catch (error, stackTrace) {
+      addError(error, stackTrace);
+      emit(state.copyWith(status: PostStatus.failure));
+    }
+  }
 
   @override
   PostState? fromJson(Map<String, dynamic> json) => PostState.fromJson(json);

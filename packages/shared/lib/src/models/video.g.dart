@@ -32,7 +32,6 @@ VideoMedia _$VideoMediaFromJson(Map<String, dynamic> json) => $checkedCreate(
 
 Map<String, dynamic> _$VideoMediaToJson(VideoMedia instance) {
   final val = <String, dynamic>{
-    'media_id': instance.id,
     'url': instance.url,
     'type': instance.type,
   };
@@ -44,6 +43,7 @@ Map<String, dynamic> _$VideoMediaToJson(VideoMedia instance) {
   }
 
   writeNotNull('blur_hash', instance.blurHash);
+  val['media_id'] = instance.id;
   val['first_frame_url'] = instance.firstFrameUrl;
   return val;
 }

@@ -1,3 +1,5 @@
+// ignore_for_file: overridden_fields
+
 import 'dart:typed_data';
 
 import 'package:json_annotation/json_annotation.dart';
@@ -15,15 +17,19 @@ part 'image.g.dart';
 class ImageMedia extends Media {
   /// {@macro image_media}
   const ImageMedia({
-    required super.id,
+    required this.id,
     required super.url,
     super.blurHash,
     super.type = ImageMedia.identifier,
-  });
+  }) : super(id: id);
 
   /// Converts a `Map<String, dynamic>` into a [ImageMedia] instance.
   factory ImageMedia.fromJson(Map<String, dynamic> json) =>
       _$ImageMediaFromJson(json);
+
+  @override
+  @JsonKey(name: 'media_id')
+  final String id;
 
   /// The image media block type identifier.
   static const identifier = '__image_media__';
@@ -62,10 +68,6 @@ class MemoryImageMedia extends Media {
     super.url = '',
     super.type = MemoryImageMedia.identifier,
   });
-
-  /// Converts a `Map<String, dynamic>` into a [MemoryImageMedia] instance.
-  factory MemoryImageMedia.fromJson(Map<String, dynamic> json) =>
-      _$MemoryImageMediaFromJson(json);
 
   /// Bytes of the memory image.
   @UintConverter()

@@ -454,14 +454,11 @@ ORDER BY created_at DESC LIMIT ?1 OFFSET ?2
       [limit, offset],
     );
 
-    final posts = <Post>[];
-
-    for (final row in result) {
+    final instaBlocks = result.map((row) {
       final json = Map<String, dynamic>.from(row);
-      final post = Post.fromJson(json);
-      posts.add(post);
-    }
-    return posts;
+      return Post.fromJson(json);
+    });
+    return instaBlocks.toList();
   }
 
   @override
@@ -1020,9 +1017,7 @@ where
 order by created_at asc
 ''',
         parameters: [chatId],
-      ).map(
-        (event) => event.safeMap(Message.fromRow).toList(growable: false),
-      );
+      ).map((event) => event.safeMap(Message.fromRow).toList(growable: false));
 
   @override
   Future<void> createChat({

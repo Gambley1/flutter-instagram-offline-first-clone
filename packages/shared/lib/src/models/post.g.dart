@@ -14,11 +14,11 @@ Post _$PostFromJson(Map<String, dynamic> json) => $checkedCreate(
       ($checkedConvert) {
         final val = Post(
           id: $checkedConvert('id', (v) => v as String),
+          createdAt:
+              $checkedConvert('created_at', (v) => DateTime.parse(v as String)),
           author: $checkedConvert('author',
               (v) => const UserConverter().fromJson(v as Map<String, dynamic>)),
           caption: $checkedConvert('caption', (v) => v as String),
-          createdAt:
-              $checkedConvert('created_at', (v) => DateTime.parse(v as String)),
           media: $checkedConvert(
               'media',
               (v) => v == null
