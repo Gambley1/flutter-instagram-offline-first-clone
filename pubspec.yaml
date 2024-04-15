@@ -37,7 +37,7 @@ dependencies:
   flutter_bloc: ^8.1.5
   flutter_localizations:
     sdk: flutter
-  flutter_markdown: ">=0.6.20 <0.7.0"
+  flutter_markdown: ^0.6.23
   flutter_portal: ^1.1.4
   flutter_staggered_grid_view: ^0.7.0
   form_fields:
