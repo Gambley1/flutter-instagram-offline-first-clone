@@ -24,7 +24,7 @@ class ChatsBloc extends Bloc<ChatEvent, ChatsState> {
       emit.forEach<List<ChatInbox>>(
         _chatsRepository.chatsOf(userId: event.userId),
         onData: (chats) =>
-            state.copyWith(chats: chats, status: ChatsStatus.loaded),
+            state.copyWith(chats: chats, status: ChatsStatus.populated),
         onError: (error, stackTrace) {
           addError(error, stackTrace);
           return state.copyWith(status: ChatsStatus.failure);

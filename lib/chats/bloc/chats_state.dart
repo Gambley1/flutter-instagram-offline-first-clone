@@ -1,7 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'chats_bloc.dart';
 
-enum ChatsStatus { initial, loading, loaded, failure }
+enum ChatsStatus { initial, loading, populated, failure }
 
 class ChatsState extends Equatable {
   const ChatsState._({
