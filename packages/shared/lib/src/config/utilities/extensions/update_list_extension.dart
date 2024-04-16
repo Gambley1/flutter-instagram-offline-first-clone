@@ -1,5 +1,17 @@
 import 'dart:developer' as dev;
 
+/// Represents a typedef called `FindItemCallback` that takes in two parameters:
+/// - `item` of type `T`: The item to be compared.
+/// - `newItem` of type `T`: The new item to be compared with.
+///
+/// This typedef is used to define a callback function that determines whether
+/// an item matches the new item based on some condition.
+typedef FindItemCallback<T> = bool Function(T item, T newItem);
+
+/// Represents a typedef called `UpdateCallback` that defines a callback 
+/// function used to update an item of type `T` with a new item of type `T`.
+typedef UpdateCallback<T, E> = T Function(E item, T newItem);
+
 /// Extension method on List that updates the list.
 extension UpdateListExtension<T> on List<T> {
   /// Updates the list by finding an element matching [findItemCallback],
@@ -10,8 +22,8 @@ extension UpdateListExtension<T> on List<T> {
   /// replaced.
   List<T> updateWith<E extends T>({
     required T? newItem,
-    required bool Function(T item, T newItem) findItemCallback,
-    required T Function(E item, T newItem) onUpdate,
+    required FindItemCallback<T> findItemCallback,
+    required UpdateCallback<T, E> onUpdate,
     bool isDelete = false,
     bool insertIfNotFound = true,
   }) {
