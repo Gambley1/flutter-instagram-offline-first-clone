@@ -1,7 +1,7 @@
 import 'dart:developer' as dev;
 
-/// Iterable extensions
-extension ListExtension<T> on List<T> {
+/// Extension method on List that updates the list.
+extension UpdateListExtension<T> on List<T> {
   /// Updates the list by finding an element matching [findItemCallback],
   /// replacing it with [newItem] using [onUpdate] function, or inserting
   /// [newItem] if no match.
@@ -9,9 +9,9 @@ extension ListExtension<T> on List<T> {
   /// If [isDelete] is true, the matching element will be removed instead of
   /// replaced.
   List<T> updateWith<E extends T>({
+    required T? newItem,
     required bool Function(T item, T newItem) findItemCallback,
     required T Function(E item, T newItem) onUpdate,
-    required T? newItem,
     bool isDelete = false,
     bool insertIfNotFound = true,
   }) {
