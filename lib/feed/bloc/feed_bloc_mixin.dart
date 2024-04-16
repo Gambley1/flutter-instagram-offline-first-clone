@@ -1,6 +1,6 @@
 part of 'feed_bloc.dart';
 
-typedef FeedPageProcessResult
+typedef PaginatedFeedResult
     = Future<({int newPage, bool hasMore, List<InstaBlock> blocks})>;
 
 typedef ListPostMapper = List<InstaBlock> Function(List<Post> post);
@@ -50,7 +50,7 @@ mixin FeedBlocMixin on Bloc<FeedEvent, FeedState> {
     return post?.toPostLargeBlock();
   }
 
-  FeedPageProcessResult fetchFeedPage({
+  PaginatedFeedResult fetchFeedPage({
     int page = 0,
     ListPostMapper? mapper,
     bool withSponsoredBlocks = true,

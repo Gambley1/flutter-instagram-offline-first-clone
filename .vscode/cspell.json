@@ -201,7 +201,8 @@
     "giphy",
     "ccon",
     "nodoc",
-    "ChildLayouter"
+    "ChildLayouter",
+    "Paginated"
   ],
   "ignorePaths": [
     ".github/workflows/**",
