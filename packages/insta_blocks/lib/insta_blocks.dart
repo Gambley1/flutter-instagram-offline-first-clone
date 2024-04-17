@@ -14,7 +14,11 @@ export 'src/divider_horizontal_block.dart' show DividerHorizontalBlock;
 export 'src/insta_block.dart' show InstaBlock;
 export 'src/models/models.dart' show Feed, FeedPage, PostAuthor, ReelsPage;
 export 'src/post_block.dart'
-    show PostBlock, PostBlockActions, PostListExtension;
+    show
+        PostBlock,
+        PostBlockActions,
+        PostBlockListExtension,
+        PostConverterExtension;
 export 'src/post_large_block.dart' show PostLargeBlock;
 export 'src/post_reel_block.dart' show PostReelBlock;
 export 'src/post_small_block.dart' show PostSmallBlock;

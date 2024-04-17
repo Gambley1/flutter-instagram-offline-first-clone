@@ -1,7 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter_instagram_offline_first_clone/feed/feed.dart'
-    show PostConverterExtension;
 import 'package:posts_repository/posts_repository.dart';
 import 'package:shared/shared.dart';
 
