@@ -83,7 +83,8 @@ sealed class PageUpdate {
   /// ```
   ///
   /// Note: The [block] and [newBlock] should have the same type [T].
-  /// If the [block] and [newBlock] have different types, the method will throw an error.
+  /// If the [block] and [newBlock] have different types, the method will throw
+  /// an error.
   ///
   PostBlock onUpdate<T>(T block, PostBlock newBlock);
 
@@ -263,7 +264,10 @@ mixin FeedBlocMixin on Bloc<FeedEvent, FeedState> {
   /// ```dart
   /// List<Post> posts = [...];
   /// List<List<User>> postLikers = [...];
-  /// List<InstaBlock> instaBlocks = postsToLargeBlocksMapper(posts, postLikers);
+  /// List<InstaBlock> instaBlocks = postsToLargeBlocksMapper(
+  ///  posts,
+  ///  postLikers,
+  /// );
   /// ```
   List<InstaBlock> postsToLargeBlocksMapper(
     List<Post> posts,
@@ -319,15 +323,15 @@ mixin FeedBlocMixin on Bloc<FeedEvent, FeedState> {
 
   /// Computes the sponsored blocks based on the given arguments.
   ///
-  /// The function randomly selects a sponsored block from the sponsored blocks 
+  /// The function randomly selects a sponsored block from the sponsored blocks
   /// list, and randomly selects a skip range based on the previous skip range
   /// and the length of the blocks.
-  /// It then updates the blocks list by inserting the sponsored block at the 
+  /// It then updates the blocks list by inserting the sponsored block at the
   /// appropriate position, and removes a portion of the blocks based on the
   /// skip range.
   ///
   /// If there are no more blocks, the function adds a [DividerHorizontalBlock]
-  /// and a [SectionHeaderBlock] of type [SectionHeaderBlockType.suggested] 
+  /// and a [SectionHeaderBlock] of type [SectionHeaderBlockType.suggested]
   /// to the blocks list.
   ///
   /// The updated blocks list is sent back through the provided [SendPort].
