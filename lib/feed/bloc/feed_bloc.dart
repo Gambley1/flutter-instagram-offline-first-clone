@@ -176,7 +176,12 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> with FeedBlocMixin {
         media: json.encode(event.media),
       );
       if (newPost != null) {
-        add(FeedUpdateRequested(post: newPost, isCreate: true));
+        add(
+          FeedUpdateRequested(
+            update:
+                FeedPageUpdate(newPost: newPost, type: PageUpdateType.create),
+          ),
+        );
       }
       emit(state.populated());
       toggleLoadingIndeterminate(enable: false);
@@ -196,40 +201,25 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> with FeedBlocMixin {
     Emitter<FeedState> emit,
   ) async {
     emit(state.loading());
+    final update = event.update;
     final oldFeed = state.feed;
 
     try {
-      final feedPost = oldFeed.feedPage.blocks.firstWhereOrNull(
-        (block) => switch ('') {
-          _ when block is PostBlock => block.id == event.post.id,
-          _ => false,
-        },
+      final feedBlock = oldFeed.feedPage.blocks.findPostBlock(
+        test: (block) => block.id == update.newPost.id,
       );
-      final reel = oldFeed.reelsPage.blocks.firstWhereOrNull(
-        (block) => switch ('') {
-          _ when block is PostBlock => block.id == event.post.id &&
-              (block.type == PostReelBlock.identifier),
-          _ => false,
-        },
+      final reel = oldFeed.reelsPage.blocks.findPostBlock(
+        test: (block) =>
+            block.id == update.newPost.id &&
+            block.type == PostReelBlock.identifier,
       );
-      if (feedPost == null && reel == null && !event.isCreate) {
+      if (feedBlock == null && reel == null && !update.isCreate) {
         return emit(state.populated());
       }
-      final updatedFeedBlocks = updateBlocks(
-        blocks: oldFeed.feedPage.blocks.whereType<PostBlock>().toList(),
-        newBlock: event.post.toPostLargeBlock(),
-        isDelete: event.isDelete,
-        isFeedPage: true,
-      );
+      final updatedFeedBlocks = oldFeed.updateFeedPage(update: update);
       List<InstaBlock>? updatedReelsBlocks;
-      if (((!event.isCreate && !event.isDelete) && reel != null) ||
-          (event.post.media.isReel)) {
-        updatedReelsBlocks = updateBlocks(
-          blocks: oldFeed.reelsPage.blocks.whereType<PostBlock>().toList(),
-          newBlock: event.post.toPostReelBlock,
-          isDelete: event.isDelete,
-          isFeedPage: false,
-        );
+      if (update.isUpdate && reel != null && update.canUpdateReel) {
+        updatedReelsBlocks = oldFeed.updateReelsPage(update: update);
       }
 
       final feed = oldFeed.copyWith(

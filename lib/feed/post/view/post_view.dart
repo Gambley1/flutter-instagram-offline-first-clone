@@ -215,8 +215,10 @@ class PostLargeView extends StatelessWidget {
                 bloc.add(const PostDeleteRequested());
                 context.read<FeedBloc>().add(
                       FeedUpdateRequested(
-                        post: block.toPost,
-                        isDelete: true,
+                        update: FeedPageUpdate(
+                          newPost: block.toPost,
+                          type: PageUpdateType.delete,
+                        ),
                       ),
                     );
               },

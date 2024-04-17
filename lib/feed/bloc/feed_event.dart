@@ -28,18 +28,12 @@ final class FeedReelsPageRequested extends FeedPageBasedEvent {
 }
 
 final class FeedUpdateRequested extends FeedEvent {
-  const FeedUpdateRequested({
-    required this.post,
-    this.isCreate = false,
-    this.isDelete = false,
-  });
+  const FeedUpdateRequested({required this.update});
 
-  final Post post;
-  final bool isCreate;
-  final bool isDelete;
+  final PageUpdate update;
 
   @override
-  List<Object?> get props => [post, isCreate, isDelete];
+  List<Object?> get props => [update];
 }
 
 final class FeedPostCreateRequested extends FeedEvent {
