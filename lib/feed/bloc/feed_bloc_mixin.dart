@@ -376,10 +376,14 @@ mixin FeedBlocMixin on Bloc<FeedEvent, FeedState> {
     }
 
     if (!hasMore) {
-      blocks.followedBy([
-        if (blocks.isNotEmpty) DividerHorizontalBlock(),
-        const SectionHeaderBlock(sectionType: SectionHeaderBlockType.suggested),
-      ]).toList();
+      return sendPort.send(
+        blocks.followedBy([
+          if (blocks.isNotEmpty) DividerHorizontalBlock(),
+          const SectionHeaderBlock(
+            sectionType: SectionHeaderBlockType.suggested,
+          ),
+        ]).toList(),
+      );
     }
 
     return sendPort.send(blocks);
