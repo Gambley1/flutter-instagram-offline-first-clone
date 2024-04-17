@@ -121,6 +121,7 @@ final class FeedPageUpdate extends PageUpdate {
       };
 }
 
+/// {@template feed_bloc_mixin}
 /// A mixin class that provides common functionality for a feed bloc.
 ///
 /// This mixin class is intended to be used with a `Bloc` class that handles
@@ -154,6 +155,7 @@ final class FeedPageUpdate extends PageUpdate {
 /// - `Bloc` class for handling feed-related events and states
 /// - `PostsRepository` class for fetching posts and post likers
 /// - `FirebaseRemoteConfigRepository` class for fetching remote data
+/// {@endtemplate}
 mixin FeedBlocMixin on Bloc<FeedEvent, FeedState> {
   int get feedPageLimit => 10;
   int get reelsPageLimit => 10;
