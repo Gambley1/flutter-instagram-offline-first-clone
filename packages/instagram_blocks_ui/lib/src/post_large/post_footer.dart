@@ -26,8 +26,9 @@ class PostFooter extends StatelessWidget {
     required this.onCommentsTap,
     required this.onPostShareTap,
     this.likesCountBuilder,
+    List<User>? likersInFollowings,
     super.key,
-  });
+  }) : _likersInFollowings = likersInFollowings ?? const [];
 
   final PostBlock block;
   final ValueNotifier<int> indicatorValue;
@@ -41,15 +42,13 @@ class PostFooter extends StatelessWidget {
   final ValueSetter<bool> onCommentsTap;
   final OnPostShareTap onPostShareTap;
   final LikesCountBuilder? likesCountBuilder;
+  final List<User> _likersInFollowings;
 
   @override
   Widget build(BuildContext context) {
     final isSponsored = block is PostSponsoredBlock;
     final author = block.author;
-    final likersInFollowings = block is! PostLargeBlock ||
-            (block as PostLargeBlock).likersInFollowings.isEmpty
-        ? <User>[]
-        : (block as PostLargeBlock).likersInFollowings.toList();
+    final likersInFollowings = _likersInFollowings;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

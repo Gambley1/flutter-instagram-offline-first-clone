@@ -1,7 +1,6 @@
 import 'package:insta_blocks/src/models/post_author_converter.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:shared/shared.dart';
-import 'package:user_repository/user_repository.dart';
 
 part 'post_large_block.g.dart';
 
@@ -17,7 +16,6 @@ class PostLargeBlock extends PostBlock {
     required super.createdAt,
     required super.media,
     required super.caption,
-    this.likersInFollowings = const [],
     super.action,
     super.type = PostLargeBlock.identifier,
   });
@@ -29,10 +27,6 @@ class PostLargeBlock extends PostBlock {
   /// The large post block type identifier.
   static const identifier = '__post_large__';
 
-  /// List of user profiles that liked the post and are currently in followings
-  /// list of currently authenticated user.
-  final List<User> likersInFollowings;
-
   @override
   PostLargeBlock copyWith({
     String? id,
@@ -40,7 +34,6 @@ class PostLargeBlock extends PostBlock {
     DateTime? createdAt,
     List<Media>? media,
     String? caption,
-    List<User>? likersInFollowings,
     BlockAction? action,
   }) {
     return PostLargeBlock(
@@ -50,7 +43,6 @@ class PostLargeBlock extends PostBlock {
       media: media ?? this.media,
       caption: caption ?? this.caption,
       action: action ?? this.action,
-      likersInFollowings: likersInFollowings ?? this.likersInFollowings,
     );
   }
 
@@ -64,7 +56,6 @@ class PostLargeBlock extends PostBlock {
       media: other.media,
       caption: other.caption,
       action: other.action,
-      likersInFollowings: other.likersInFollowings,
     );
   }
 

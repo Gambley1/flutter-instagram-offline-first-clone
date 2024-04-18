@@ -26,14 +26,18 @@ final class PostUpdateRequested extends PostEvent {
   final ValueSetter<PostBlock>? onPostUpdated;
 }
 
-final class PostAuthoFollowingStatusSubscriptionRequested extends PostEvent {
-  const PostAuthoFollowingStatusSubscriptionRequested({
+final class PostAuthorFollowingStatusSubscriptionRequested extends PostEvent {
+  const PostAuthorFollowingStatusSubscriptionRequested({
     required this.ownerId,
     required this.currentUserId,
   });
 
   final String ownerId;
   final String currentUserId;
+}
+
+final class PostLikersInFollowingsFetchRequested extends PostEvent {
+  const PostLikersInFollowingsFetchRequested();
 }
 
 final class PostLikersPageRequested extends PostEvent {

@@ -31,7 +31,7 @@ class PostBloc extends HydratedBloc<PostEvent, PostState> {
       _onPostIsLikedSubscriptionRequested,
       transformer: throttleDroppable(),
     );
-    on<PostAuthoFollowingStatusSubscriptionRequested>(
+    on<PostAuthorFollowingStatusSubscriptionRequested>(
       _onPostAuthorFollowingStatusSubscriptionRequested,
       transformer: throttleDroppable(),
     );
@@ -44,6 +44,10 @@ class PostBloc extends HydratedBloc<PostEvent, PostState> {
     on<PostAuthorFollowRequested>(_onPostAuthorFollowRequested);
     on<PostDeleteRequested>(_onPostDeleteRequested);
     on<PostShareRequested>(_onPostShareRequested);
+    on<PostLikersInFollowingsFetchRequested>(
+      _onPostLikersInFollowingsFetchRequested,
+      transformer: concurrent(),
+    );
   }
 
   static const _usersLimit = 100;
@@ -99,7 +103,7 @@ class PostBloc extends HydratedBloc<PostEvent, PostState> {
   }
 
   Future<void> _onPostAuthorFollowingStatusSubscriptionRequested(
-    PostAuthoFollowingStatusSubscriptionRequested event,
+    PostAuthorFollowingStatusSubscriptionRequested event,
     Emitter<PostState> emit,
   ) async {
     if (event.currentUserId == event.ownerId) {
@@ -145,7 +149,7 @@ class PostBloc extends HydratedBloc<PostEvent, PostState> {
           await _postsRepository.updatePost(id: id, caption: event.caption);
 
       if (post != null) {
-        event.onPostUpdated?.call(post.toPostLargeBlock());
+        event.onPostUpdated?.call(post.toPostLargeBlock);
       }
       emit(state.copyWith(status: PostStatus.success));
     } catch (error, stackTrace) {
@@ -208,6 +212,20 @@ class PostBloc extends HydratedBloc<PostEvent, PostState> {
         postAuthor: event.postAuthor,
       );
       emit(state.copyWith(status: PostStatus.success));
+    } catch (error, stackTrace) {
+      addError(error, stackTrace);
+      emit(state.copyWith(status: PostStatus.failure));
+    }
+  }
+
+  Future<void> _onPostLikersInFollowingsFetchRequested(
+    PostLikersInFollowingsFetchRequested event,
+    Emitter<PostState> emit,
+  ) async {
+    try {
+      final likersInFollowings =
+          await _postsRepository.getPostLikersInFollowings(postId: id);
+      emit(state.copyWith(likersInFollowings: likersInFollowings));
     } catch (error, stackTrace) {
       addError(error, stackTrace);
       emit(state.copyWith(status: PostStatus.failure));

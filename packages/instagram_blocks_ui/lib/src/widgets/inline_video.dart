@@ -354,7 +354,13 @@ class ToggleSoundButton extends StatelessWidget {
   }
 }
 
+/// {@template video_settings}
+/// Represents the settings for a video.
+///
+/// Encapsulates various properties required to configure a video player.
+/// {@endtemplate}
 class VideoSettings {
+  /// {@macro video_settings.build}
   const VideoSettings.build({
     required bool shouldPlay,
     String? id,
@@ -395,6 +401,7 @@ class VideoSettings {
           videoPlayerOptions: videoPlayerOptions,
         );
 
+  /// {@macro video_settings}
   const VideoSettings._({
     required this.shouldPlay,
     required this.videoUrl,

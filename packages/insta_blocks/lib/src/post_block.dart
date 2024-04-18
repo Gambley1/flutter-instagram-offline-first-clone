@@ -2,7 +2,6 @@ import 'package:equatable/equatable.dart';
 import 'package:insta_blocks/src/block_action.dart';
 import 'package:insta_blocks/src/models/models.dart';
 import 'package:shared/shared.dart';
-import 'package:user_repository/user_repository.dart';
 
 /// {@template post_block}
 /// An abstract block which represents a post block.
@@ -112,7 +111,7 @@ extension PostBlockActions on PostBlock {
 /// ```dart
 /// List<PostLargeBlock> postList = ...;
 ///
-/// List<PostLargeBlock> postListWithAction = 
+/// List<PostLargeBlock> postListWithAction =
 ///   postList.withNavigateToPostAuthorAction;
 /// ```
 /// The `withNavigateToPostAuthorAction` method returns a new list where each
@@ -150,8 +149,7 @@ extension PostBlockListExtension on List<PostLargeBlock> {
 /// {@endtemplate}
 extension PostConverterExtension on Post {
   /// Converts [Post] instance into [PostLargeBlock] instance.
-  PostLargeBlock toPostLargeBlock({List<User> likersInFollowings = const []}) =>
-      PostLargeBlock(
+  PostLargeBlock get toPostLargeBlock => PostLargeBlock(
         id: id,
         author: PostAuthor.confirmed(
           id: author.id,
@@ -161,7 +159,6 @@ extension PostConverterExtension on Post {
         createdAt: createdAt,
         media: media,
         caption: caption,
-        likersInFollowings: likersInFollowings,
         action: NavigateToPostAuthorProfileAction(authorId: author.id),
       );
 

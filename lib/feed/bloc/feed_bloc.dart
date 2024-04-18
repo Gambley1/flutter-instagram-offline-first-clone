@@ -12,7 +12,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:posts_repository/posts_repository.dart';
 import 'package:shared/shared.dart';
-import 'package:user_repository/user_repository.dart';
 
 part 'feed_bloc_mixin.dart';
 part 'feed_event.dart';

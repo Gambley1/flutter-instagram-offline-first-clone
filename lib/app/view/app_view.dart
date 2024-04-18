@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:math';
+
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -58,4 +61,106 @@ class AppView extends StatelessWidget {
       },
     );
   }
+}
+
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({required this.title, super.key});
+  final String title;
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  bool _isRunning = false;
+
+  @override
+  void initState() {
+    _controller =
+        AnimationController(vsync: this, duration: const Duration(seconds: 2))
+          ..repeat();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('${widget.title} ${_isRunning ? "- Running" : ""}'),
+      ),
+      body: Center(
+        child: AnimatedBuilder(
+          animation: _controller,
+          builder: (_, child) {
+            return Transform.rotate(
+              angle: _controller.value * 2 * pi,
+              child: child,
+            );
+          },
+          child: const FlutterLogo(size: 200),
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          setState(() {
+            _isRunning = true;
+          });
+          await run();
+          setState(() {
+            _isRunning = false;
+          });
+        },
+        child: const Icon(Icons.run_circle),
+      ),
+    );
+  }
+}
+
+Future<void> run() async {
+  final dt = DateTime.now();
+  // run1();
+  await run2();
+  logD(
+    (DateTime.now().millisecondsSinceEpoch - dt.millisecondsSinceEpoch) / 1000,
+  );
+}
+
+Future<void> run1() async {
+  var str = '';
+  for (var i = 0; i < 40000; i++) {
+    str = '$str $i';
+  }
+  logD(str);
+}
+
+Future<void> run2() async {
+  var str = '';
+  await runLoop(
+    length: 40000,
+    execute: (index) => str = '$str $index',
+  );
+  logD(str);
+}
+
+Future<bool> runLoop({
+  required int length,
+  required void Function(int index) execute,
+  int chunkLength = 25,
+}) {
+  final completer = Completer<bool>();
+  // ignore: omit_local_variable_types
+  void Function(int i) exec = (i) {};
+  exec = (i) {
+    if (i >= length) return completer.complete(true);
+    for (var j = i; j < min(length, i + chunkLength); j++) {
+      execute(j);
+    }
+    Future.delayed(Duration.zero, () {
+      exec(i + chunkLength);
+    });
+  };
+  exec(0);
+  return completer.future;
 }

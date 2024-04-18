@@ -11,6 +11,7 @@ class PostState extends Equatable {
     required this.commentsCount,
     required this.isLiked,
     required this.isOwner,
+    this.likersInFollowings,
     this.isFollowed,
   });
 
@@ -30,6 +31,7 @@ class PostState extends Equatable {
   final PostStatus status;
   final int likes;
   final List<User> likers;
+  final List<User>? likersInFollowings;
   final int commentsCount;
   final bool isLiked;
   final bool isOwner;
@@ -38,13 +40,22 @@ class PostState extends Equatable {
   Map<String, dynamic> toJson() => _$PostStateToJson(this);
 
   @override
-  List<Object?> get props =>
-      [status, likes, isLiked, likers, commentsCount, isOwner, isFollowed];
+  List<Object?> get props => [
+        status,
+        likes,
+        isLiked,
+        likers,
+        likersInFollowings,
+        commentsCount,
+        isOwner,
+        isFollowed,
+      ];
 
   PostState copyWith({
     PostStatus? status,
     int? likes,
     List<User>? likers,
+    List<User>? likersInFollowings,
     int? commentsCount,
     bool? isLiked,
     bool? isOwner,
@@ -54,6 +65,7 @@ class PostState extends Equatable {
       status: status ?? this.status,
       likes: likes ?? this.likes,
       likers: likers ?? this.likers,
+      likersInFollowings: likersInFollowings ?? this.likersInFollowings,
       commentsCount: commentsCount ?? this.commentsCount,
       isLiked: isLiked ?? this.isLiked,
       isOwner: isOwner ?? this.isOwner,

@@ -65,7 +65,7 @@ sealed class PageUpdate {
 
   /// Returns the new large block derived from the `newPost` by calling the
   /// `toPostLargeBlock()` method.
-  PostLargeBlock get newLargeBlock => newPost.toPostLargeBlock();
+  PostLargeBlock get newLargeBlock => newPost.toPostLargeBlock;
 
   /// Returns the new reel block derived from the `newPost` by calling the
   /// `toPostReelBlock()` method.
@@ -177,7 +177,7 @@ mixin FeedBlocMixin on Bloc<FeedEvent, FeedState> {
   ///
   Future<PostBlock?> getPostBy(String id) async {
     final post = await postsRepository.getPostBy(id: id);
-    return post?.toPostLargeBlock();
+    return post?.toPostLargeBlock;
   }
 
   /// Fetches a paginated feed page.
@@ -212,10 +212,7 @@ mixin FeedBlocMixin on Bloc<FeedEvent, FeedState> {
     final newPage = currentPage + 1;
     final hasMore = posts.length >= feedPageLimit;
 
-    final postLikers = await _fetchPostLikersInFollowings(posts);
-
-    final instaBlocks =
-        mapper?.call(posts) ?? postsToLargeBlocksMapper(posts, postLikers);
+    final instaBlocks = mapper?.call(posts) ?? postsToLargeBlocksMapper(posts);
     if (!withSponsoredBlocks) {
       return (newPage: newPage, hasMore: hasMore, blocks: instaBlocks);
     }
@@ -223,18 +220,6 @@ mixin FeedBlocMixin on Bloc<FeedEvent, FeedState> {
         await insertSponsoredBlocks(hasMore: hasMore, blocks: instaBlocks);
     return (newPage: newPage, hasMore: hasMore, blocks: blocks);
   }
-
-  /// Fetches the likers of the posts in the given list from the followings.
-  ///
-  /// If a post has no likers or if an error occurs during the fetching process,
-  /// the corresponding inner list will be empty.
-  Future<List<List<User>>> _fetchPostLikersInFollowings(List<Post> posts) =>
-      Stream.fromIterable(posts)
-          .asyncMap(
-            (post) =>
-                postsRepository.getPostLikersInFollowings(postId: post.id),
-          )
-          .toList();
 
   /// Converts a list of [Post] objects to a list of [InstaBlock] objects
   /// representing reel blocks.
@@ -259,26 +244,15 @@ mixin FeedBlocMixin on Bloc<FeedEvent, FeedState> {
     return instaBlocks;
   }
 
-  /// Converts a list of [Post] objects and a corresponding list of lists of
-  /// [User] objects into a list of [InstaBlock] objects.
+  /// Converts a list of [Post] objects.
   ///
   /// Example usage:
   /// ```dart
   /// List<Post> posts = [...];
-  /// List<List<User>> postLikers = [...];
-  /// List<InstaBlock> instaBlocks = postsToLargeBlocksMapper(
-  ///  posts,
-  ///  postLikers,
-  /// );
+  /// List<InstaBlock> instaBlocks = postsToLargeBlocksMapper(posts);
   /// ```
-  List<InstaBlock> postsToLargeBlocksMapper(
-    List<Post> posts,
-    List<List<User>> postLikers,
-  ) =>
-      posts.map<InstaBlock>((post) {
-        final likersInFollowings = postLikers[posts.indexOf(post)];
-        return post.toPostLargeBlock(likersInFollowings: likersInFollowings);
-      }).toList();
+  List<InstaBlock> postsToLargeBlocksMapper(List<Post> posts) =>
+      posts.map<InstaBlock>((post) => post.toPostLargeBlock).toList();
 
   /// Inserts sponsored blocks into a list of [InstaBlock].
   ///

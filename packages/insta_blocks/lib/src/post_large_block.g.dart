@@ -26,13 +26,6 @@ PostLargeBlock _$PostLargeBlockFromJson(Map<String, dynamic> json) =>
               (v) => const ListMediaConverterFromRemoteConfig()
                   .fromJson(v as List)),
           caption: $checkedConvert('caption', (v) => v as String),
-          likersInFollowings: $checkedConvert(
-              'likers_in_followings',
-              (v) =>
-                  (v as List<dynamic>?)
-                      ?.map((e) => User.fromJson(e as Map<String, dynamic>))
-                      .toList() ??
-                  const []),
           action: $checkedConvert(
               'action',
               (v) => const BlockActionConverter()
@@ -42,10 +35,7 @@ PostLargeBlock _$PostLargeBlockFromJson(Map<String, dynamic> json) =>
         );
         return val;
       },
-      fieldKeyMap: const {
-        'createdAt': 'created_at',
-        'likersInFollowings': 'likers_in_followings'
-      },
+      fieldKeyMap: const {'createdAt': 'created_at'},
     );
 
 Map<String, dynamic> _$PostLargeBlockToJson(PostLargeBlock instance) {
@@ -65,7 +55,5 @@ Map<String, dynamic> _$PostLargeBlockToJson(PostLargeBlock instance) {
   }
 
   writeNotNull('action', const BlockActionConverter().toJson(instance.action));
-  val['likers_in_followings'] =
-      instance.likersInFollowings.map((e) => e.toJson()).toList();
   return val;
 }

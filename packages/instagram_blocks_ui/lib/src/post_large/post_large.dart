@@ -6,6 +6,7 @@ import 'package:instagram_blocks_ui/src/post_large/post_footer.dart';
 import 'package:instagram_blocks_ui/src/post_large/post_header.dart';
 import 'package:instagram_blocks_ui/src/post_large/post_media.dart';
 import 'package:shared/shared.dart';
+import 'package:user_repository/user_repository.dart';
 
 typedef AvatarBuilder = Widget Function(
   BuildContext context,
@@ -49,6 +50,7 @@ class PostLarge extends StatefulWidget {
     this.videoPlayerBuilder,
     this.postIndex,
     this.likesCountBuilder,
+    this.likersInFollowings,
     super.key,
   });
 
@@ -71,6 +73,7 @@ class PostLarge extends StatefulWidget {
   final int? postIndex;
   final bool withInViewNotifier;
   final LikesCountBuilder? likesCountBuilder;
+  final List<User>? likersInFollowings;
 
   @override
   State<PostLarge> createState() => _PostLargeState();
@@ -149,6 +152,7 @@ class _PostLargeState extends State<PostLarge> {
           onCommentsTap: widget.onCommentsTap,
           onPostShareTap: widget.onPostShareTap,
           likesCountBuilder: widget.likesCountBuilder,
+          likersInFollowings: widget.likersInFollowings,
         ),
       ],
     );

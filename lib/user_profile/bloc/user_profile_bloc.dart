@@ -59,18 +59,9 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
           .postsOf(userId: _userId)
           .map((posts) => posts.map((e) => e.toPostSmallBlock).toList());
     }
-    return _postsRepository.postsOf(userId: _userId).asyncMap((posts) async {
-      final postLikersFutures = posts.map(
-        (post) => _postsRepository.getPostLikersInFollowings(postId: post.id),
-      );
-      final postLikers = await Future.wait(postLikersFutures);
-      return List<PostLargeBlock>.generate(posts.length, (index) {
-        final likersInFollowings = postLikers[index];
-        final post = posts[index]
-            .toPostLargeBlock(likersInFollowings: likersInFollowings);
-        return post;
-      });
-    });
+    return _postsRepository
+        .postsOf(userId: _userId)
+        .map((posts) => posts.map((e) => e.toPostLargeBlock).toList());
   }
 
   Future<void> _onUserProfileSubscriptionRequested(

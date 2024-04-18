@@ -46,11 +46,12 @@ class PostView extends StatelessWidget {
         ..add(const PostCommentsCountSubscriptionRequested())
         ..add(const PostIsLikedSubscriptionRequested())
         ..add(
-          PostAuthoFollowingStatusSubscriptionRequested(
+          PostAuthorFollowingStatusSubscriptionRequested(
             ownerId: block.author.id,
             currentUserId: user.id,
           ),
-        ),
+        )
+        ..add(const PostLikersInFollowingsFetchRequested()),
       child: builder?.call(context) ??
           PostLargeView(
             block: block,
@@ -89,6 +90,8 @@ class PostLargeView extends StatelessWidget {
     final isFollowed = context.select((PostBloc bloc) => bloc.state.isFollowed);
     final commentsCount =
         context.select((PostBloc bloc) => bloc.state.commentsCount);
+    final likersInFollowings =
+        context.select((PostBloc bloc) => bloc.state.likersInFollowings);
 
     if (block is PostSponsoredBlock) {
       return PostSponsored(
@@ -198,6 +201,7 @@ class PostLargeView extends StatelessWidget {
       commentsCount: commentsCount,
       postIndex: postIndex,
       withInViewNotifier: withInViewNotifier,
+      likersInFollowings: likersInFollowings,
       postAuthorAvatarBuilder: (context, author, onAvatarTap) {
         return UserStoriesAvatar(
           author: author.toUser,
