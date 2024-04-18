@@ -123,7 +123,7 @@ class FeedBody extends StatelessWidget {
                 .add(const StoriesFetchUserFollowingsStories()),
           ),
         ]);
-        FeedPageController().markAsUnseen();
+        FeedPageController().markAnimationAsUnseen();
       },
       child: InViewNotifierCustomScrollView(
         cacheExtent: 2760,

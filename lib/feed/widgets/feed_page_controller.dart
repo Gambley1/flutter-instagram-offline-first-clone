@@ -40,7 +40,7 @@ class FeedPageController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void markAsUnseen() {
+  void markAnimationAsUnseen() {
     _hasPlayedAnimation = false;
     _animationValue = 0;
     notifyListeners();
