@@ -165,12 +165,12 @@ class PostLargeView extends StatelessWidget {
                       builder: (context, withSound, child) {
                         return InlineVideo(
                           key: ValueKey(media.id),
-                          url: media.url,
-                          play: play,
+                          videoUrl: media.url,
+                          shouldPlay: play,
                           aspectRatio: aspectRatio,
                           blurHash: media.blurHash,
                           withSound: withSound,
-                          onSoundToggled: (enable) {
+                          onSoundToggled: ({required enable}) {
                             videoPlayerProvider.withSound.value = enable;
                           },
                         );
@@ -265,12 +265,12 @@ class PostLargeView extends StatelessWidget {
                     builder: (context, withSound, child) {
                       return InlineVideo(
                         key: ValueKey(media.id),
-                        url: media.url,
-                        play: play,
+                        videoUrl: media.url,
+                        shouldPlay: play,
                         aspectRatio: aspectRatio,
                         blurHash: media.blurHash,
                         withSound: withSound,
-                        onSoundToggled: (enable) {
+                        onSoundToggled: ({required enable}) {
                           videoPlayerProvider.withSound.value = enable;
                         },
                       );

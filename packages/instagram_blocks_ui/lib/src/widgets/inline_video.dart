@@ -8,17 +8,17 @@ import 'package:shared/shared.dart';
 
 class InlineVideo extends StatefulWidget {
   const InlineVideo({
-    required this.play,
-    this.url,
-    this.file,
+    required this.shouldPlay,
+    this.videoUrl,
+    this.videoFile,
     super.key,
     this.blurHash,
     this.withSound = true,
-    this.aspectRatio = 4 / 5,
-    this.expand = false,
+    this.aspectRatio = _aspectRatio,
+    this.shouldExpand = false,
     this.id,
     this.initDelay = Duration.zero,
-    this.controller,
+    this.videoPlayerController,
     this.onSoundToggled,
     this.withSoundButton = true,
     this.withPlayerController = true,
@@ -29,17 +29,19 @@ class InlineVideo extends StatefulWidget {
     this.videoPlayerOptions,
   });
 
+  static const _aspectRatio = 4 / 5;
+
   final String? id;
-  final String? url;
-  final File? file;
+  final String? videoUrl;
+  final File? videoFile;
   final String? blurHash;
   final double aspectRatio;
-  final bool expand;
-  final bool play;
+  final bool shouldExpand;
+  final bool shouldPlay;
   final bool withSound;
   final Duration initDelay;
-  final VideoPlayerController? controller;
-  final ValueSetter<bool>? onSoundToggled;
+  final VideoPlayerController? videoPlayerController;
+  final void Function({required bool enable})? onSoundToggled;
   final bool withSoundButton;
   final bool withPlayerController;
   final bool withVisibilityDetector;
@@ -54,8 +56,11 @@ class InlineVideo extends StatefulWidget {
 
 class _InlineVideoState extends State<InlineVideo>
     with AutomaticKeepAliveClientMixin, SafeSetStateMixin {
+  late VideoPlayerController? _videoPlayerController;
   late VideoPlayerController _controller;
-  final _isInitialized = ValueNotifier(false);
+
+  bool _isInitialized = false;
+  bool _playerWasSeen = false;
 
   @override
   void initState() {
@@ -66,23 +71,18 @@ class _InlineVideoState extends State<InlineVideo>
   @override
   void didUpdateWidget(InlineVideo oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.play) {
+    if (!_controller.value.isPlaying &&
+        oldWidget.withSound != widget.withSound) {
+      _controller.setVolume(widget.withSound ? 1 : 0);
+    }
+    if (oldWidget.shouldPlay == widget.shouldPlay) return;
+    if (widget.shouldPlay) {
       Future<void>.delayed(
         widget.initDelay,
         () => _controller
           ..play()
           ..setLooping(true),
       );
-      if (!oldWidget.withSound && widget.withSound) {
-        _controller.setVolume(1);
-      } else {
-        if (_controller.value.volume == 1) {
-          if (oldWidget.play == widget.play) return;
-          _controller.setVolume(1);
-        } else {
-          _controller.setVolume(0);
-        }
-      }
     } else {
       _controller
         ..pause()
@@ -90,27 +90,34 @@ class _InlineVideoState extends State<InlineVideo>
     }
   }
 
-  Future<void> _initializeController() async {
-    _controller = (widget.controller ??
-        (widget.file != null
-            ? VideoPlayerController.file(
-                widget.file!,
-                videoPlayerOptions: widget.videoPlayerOptions,
-              )
-            : VideoPlayerController.networkUrl(
-                Uri.parse(widget.url!),
-                videoPlayerOptions: widget.videoPlayerOptions,
-              )))
-      ..addListener(_controllerListener);
-    await Future.wait([
-      _controller.initialize(),
-      _togglePlayer(),
-      _toggleSound(),
-    ]);
+  void _initializeController() {
+    if (widget.videoPlayerController != null) {
+      _controller = widget.videoPlayerController!;
+    } else {
+      _videoPlayerController = widget.videoFile != null
+          ? VideoPlayerController.file(
+              widget.videoFile!,
+              videoPlayerOptions: widget.videoPlayerOptions,
+            )
+          : VideoPlayerController.networkUrl(
+              Uri.parse(widget.videoUrl!),
+              videoPlayerOptions: widget.videoPlayerOptions,
+            );
+      _controller = _videoPlayerController!;
+    }
+    _controller
+      ..addListener(_controllerListener)
+      ..initialize().then((_) async {
+        safeSetState(() {});
+        await Future.wait([
+          _togglePlayer(),
+          _toggleSound(),
+        ]);
+      });
   }
 
   Future<void> _togglePlayer() async {
-    if (widget.play) {
+    if (widget.shouldPlay) {
       await Future.wait([
         _controller.play(),
         _controller.setLooping(true),
@@ -132,20 +139,34 @@ class _InlineVideoState extends State<InlineVideo>
   }
 
   void _controllerListener() {
-    if (_controller.value.isInitialized) {
-      _isInitialized.value = true;
-    } else {
-      _isInitialized.value = false;
+    if (!mounted) {
+      return;
     }
+    safeSetState(() {
+      _isInitialized = _controller.value.isInitialized;
+    });
+  }
+
+  void _onVideoSeen() {
+    if (_playerWasSeen) return;
+    safeSetState(() => _playerWasSeen = true);
+    if (widget.shouldPlay) _controller.play();
+  }
+
+  void _onVideoUnseen() {
+    safeSetState(() => _playerWasSeen = false);
+    _controller
+      ..pause()
+      ..seekTo(Duration.zero);
   }
 
   @override
   void dispose() {
-    if (_controller.value.isPlaying) _controller.pause();
+    super.dispose();
+    _videoPlayerController?.dispose();
     _controller
       ..removeListener(_controllerListener)
       ..dispose();
-    super.dispose();
   }
 
   @override
@@ -154,108 +175,155 @@ class _InlineVideoState extends State<InlineVideo>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return ValueListenableBuilder<bool>(
-      valueListenable: _isInitialized,
-      builder: (context, isInitialized, _) {
-        return AnimatedCrossFade(
-          duration: 110.ms,
-          firstChild: RatioBox(
-            aspectRatio: widget.aspectRatio,
-            expand: widget.expand,
-            child: widget.loadingBuilder?.call(context) ??
-                BlurHashImagePlaceholder(blurHash: widget.blurHash),
-          ),
-          secondChild: ValueListenableBuilder(
-            valueListenable: _controller,
-            child: Builder(
-              builder: (_) {
-                late Widget videoPlayer = RatioBox(
-                  aspectRatio: widget.aspectRatio,
-                  expand: widget.expand,
-                  child: VideoPlayer(_controller),
-                );
-                if (widget.stackedWidget != null) {
-                  videoPlayer = AspectRatio(
-                    aspectRatio: widget.aspectRatio,
-                    child: Stack(
-                      children: [
-                        VideoPlayer(_controller),
-                        widget.stackedWidget!,
-                      ],
-                    ),
-                  );
-                }
-                late final withProgressIndicator = Stack(
-                  alignment: Alignment.bottomCenter,
-                  children: [
-                    AspectRatio(
-                      aspectRatio: widget.aspectRatio,
-                      child: VideoPlayer(_controller),
-                    ),
-                    SmoothVideoProgressIndicator(controller: _controller),
-                  ],
-                );
-                if (!widget.withVisibilityDetector) {
-                  if (widget.withProgressIndicator) {
-                    return withProgressIndicator;
-                  }
-                  return videoPlayer;
-                }
-                return Viewable(
-                  itemKey: ValueKey(widget.id),
-                  onSeen: () {
-                    if (widget.play) _controller.play();
+
+    final inlineVideo = InlineVideoStack(
+      controller: _controller,
+      aspectRatio: widget.aspectRatio,
+      shouldExpand: widget.shouldExpand,
+      withVisibilityDetector: widget.withVisibilityDetector,
+      withProgressIndicator: widget.withProgressIndicator,
+      onSeen: _onVideoSeen,
+      onUnseen: _onVideoUnseen,
+      id: widget.id,
+      stackedWidget: widget.stackedWidget,
+    );
+
+    if (!widget.withPlayerController && !widget.withSoundButton) {
+      return inlineVideo;
+    }
+
+    return AnimatedCrossFade(
+      duration: 110.ms,
+      firstChild: InlineVideoPlaceholder(
+        blurHash: widget.blurHash,
+        aspectRatio: widget.aspectRatio,
+        shouldExpand: widget.shouldExpand,
+        loadingBuilder: widget.loadingBuilder,
+      ),
+      secondChild: Stack(
+        children: [
+          if (widget.withPlayerController)
+            ListenableBuilder(
+              listenable: _controller,
+              child: inlineVideo,
+              builder: (_, child) => InlineVideoPlayerController(
+                isPlaying: _controller.value.isPlaying,
+                togglePlayer: ({required enable}) =>
+                    enable ? _controller.play() : _controller.pause(),
+                child: child!,
+              ),
+            )
+          else
+            inlineVideo,
+          if (widget.withSoundButton)
+            Positioned(
+              right: AppSpacing.md,
+              bottom: AppSpacing.md,
+              child: ListenableBuilder(
+                listenable: _controller,
+                builder: (_, __) => ToggleSoundButton(
+                  soundEnabled: _controller.value.volume == 1,
+                  onSoundToggled: ({required enable}) {
+                    widget.onSoundToggled?.call(enable: enable);
+                    _controller.setVolume(enable ? 1 : 0);
                   },
-                  onUnseen: () => _controller
-                    ..pause()
-                    ..seekTo(Duration.zero),
-                  child: widget.withProgressIndicator
-                      ? withProgressIndicator
-                      : videoPlayer,
-                );
-              },
+                ),
+              ),
             ),
-            builder: (context, controller, child) {
-              if (!widget.withPlayerController && !widget.withSoundButton) {
-                return child!;
-              }
-              return Stack(
-                children: [
-                  if (widget.withPlayerController)
-                    ListenableBuilder(
-                      listenable: _controller,
-                      child: child,
-                      builder: (_, child) => InlineVideoPlayerController(
-                        isPlaying: _controller.value.isPlaying,
-                        togglePlayer: ({required enable}) =>
-                            enable ? _controller.play() : _controller.pause(),
-                        child: child!,
-                      ),
-                    )
-                  else
-                    child!,
-                  if (widget.withSoundButton)
-                    Positioned(
-                      right: AppSpacing.md,
-                      bottom: AppSpacing.md,
-                      child: ListenableBuilder(
-                        listenable: _controller,
-                        builder: (_, __) => ToggleSoundButton(
-                          soundEnabled: _controller.value.volume == 1,
-                          onSoundToggled: ({required enable}) =>
-                              _controller.setVolume(enable ? 1 : 0),
-                        ),
-                      ),
-                    ),
-                ],
-              );
-            },
-          ),
-          crossFadeState: isInitialized
-              ? CrossFadeState.showSecond
-              : CrossFadeState.showFirst,
-        );
-      },
+        ],
+      ),
+      crossFadeState:
+          _isInitialized ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+    );
+  }
+}
+
+class InlineVideoPlaceholder extends StatelessWidget {
+  const InlineVideoPlaceholder({
+    required this.aspectRatio,
+    required this.shouldExpand,
+    required this.blurHash,
+    required this.loadingBuilder,
+    super.key,
+  });
+
+  final double aspectRatio;
+  final bool shouldExpand;
+  final String? blurHash;
+  final WidgetBuilder? loadingBuilder;
+
+  @override
+  Widget build(BuildContext context) {
+    return RatioBox(
+      aspectRatio: aspectRatio,
+      expand: shouldExpand,
+      child: loadingBuilder?.call(context) ??
+          BlurHashImagePlaceholder(blurHash: blurHash),
+    );
+  }
+}
+
+class InlineVideoStack extends StatelessWidget {
+  const InlineVideoStack({
+    required this.controller,
+    required this.aspectRatio,
+    required this.shouldExpand,
+    required this.withVisibilityDetector,
+    required this.withProgressIndicator,
+    required this.onSeen,
+    required this.onUnseen,
+    required this.id,
+    required this.stackedWidget,
+    super.key,
+  });
+
+  final String? id;
+  final double aspectRatio;
+  final bool shouldExpand;
+  final bool withVisibilityDetector;
+  final bool withProgressIndicator;
+  final VideoPlayerController controller;
+  final Widget? stackedWidget;
+  final VoidCallback onSeen;
+  final VoidCallback onUnseen;
+
+  @override
+  Widget build(BuildContext context) {
+    late Widget videoPlayer = RatioBox(
+      aspectRatio: aspectRatio,
+      expand: shouldExpand,
+      child: VideoPlayer(controller),
+    );
+    if (stackedWidget != null) {
+      videoPlayer = AspectRatio(
+        aspectRatio: aspectRatio,
+        child: Stack(
+          children: [
+            VideoPlayer(controller),
+            stackedWidget!,
+          ],
+        ),
+      );
+    }
+    late final videoWithProgressIndicator = Stack(
+      alignment: Alignment.bottomCenter,
+      children: [
+        AspectRatio(
+          aspectRatio: aspectRatio,
+          child: VideoPlayer(controller),
+        ),
+        SmoothVideoProgressIndicator(controller: controller),
+      ],
+    );
+    if (!withVisibilityDetector) {
+      if (withProgressIndicator) return videoWithProgressIndicator;
+      return videoPlayer;
+    }
+    return Viewable(
+      itemKey: ValueKey(id),
+      onSeen: onSeen,
+      onUnseen: onUnseen,
+      child: withProgressIndicator ? videoWithProgressIndicator : videoPlayer,
     );
   }
 }

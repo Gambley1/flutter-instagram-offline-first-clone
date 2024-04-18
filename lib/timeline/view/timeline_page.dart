@@ -199,10 +199,10 @@ class _TimelineGridViewState extends State<TimelineGridView> {
                     checkIsInView: true,
                     builder: (context, shouldPlay, child) {
                       return InlineVideo(
-                        url: _block.firstMedia!.url,
-                        play: shouldPlay,
+                        videoUrl: _block.firstMedia!.url,
+                        shouldPlay: shouldPlay,
                         withSound: false,
-                        expand: true,
+                        shouldExpand: true,
                         blurHash: _block.firstMedia!.blurHash,
                         withSoundButton: false,
                         withPlayerController: false,

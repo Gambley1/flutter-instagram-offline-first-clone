@@ -143,10 +143,10 @@ class PopupDialogBody extends StatelessWidget {
           )
         else
           InlineVideo(
-            url: block.firstMedia!.url,
+            videoUrl: block.firstMedia!.url,
             blurHash: block.firstMedia!.blurHash,
             withPlayerController: false,
-            play: true,
+            shouldPlay: true,
           ),
         AnimatedBuilder(
           animation: Listenable.merge(

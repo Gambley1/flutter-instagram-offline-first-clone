@@ -128,14 +128,14 @@ class _ReelState extends State<Reel> {
           alignment: Alignment.center,
           children: [
             InlineVideo(
-              url: block.reel.url,
-              play: widget.play,
+              videoUrl: block.reel.url,
+              shouldPlay: widget.play,
               blurHash: block.reel.blurHash,
               withSound: widget.withSound || true,
               aspectRatio: 9 / 15,
               withSoundButton: false,
               withPlayerController: false,
-              controller: _videoController,
+              videoPlayerController: _videoController,
               loadingBuilder: (context) => const ReelShimmerLoading(),
               stackedWidget: ValueListenableBuilder<bool>(
                 valueListenable: _isPaused,

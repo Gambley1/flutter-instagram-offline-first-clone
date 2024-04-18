@@ -132,8 +132,8 @@ class _MediaCarouselVideo extends StatelessWidget {
             ) ??
             InlineVideo(
               key: ValueKey(media.id),
-              url: url,
-              play: shouldPlay && (isInView ?? true),
+              videoUrl: url,
+              shouldPlay: shouldPlay && (isInView ?? true),
               blurHash: blurHash,
               withSound: false,
               id: media.id,
@@ -171,8 +171,8 @@ class _MediaCarouselMemoryVideo extends StatelessWidget {
         return InlineVideo(
           key: ValueKey(media.id),
           id: media.id,
-          file: media.file,
-          play: shouldPlay && (isInView ?? true),
+          videoFile: media.file,
+          shouldPlay: shouldPlay && (isInView ?? true),
           blurHash: blurHash,
           aspectRatio: settings.aspectRatio!,
           withPlayerController: false,

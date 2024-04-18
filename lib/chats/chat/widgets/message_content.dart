@@ -360,10 +360,10 @@ class MessageSharedReel extends StatelessWidget {
                 builder: (context, isInView, _) {
                   return InlineVideo(
                     aspectRatio: 1,
-                    play: isInView,
+                    shouldPlay: isInView,
                     id: sharedPost.id,
                     blurHash: sharedPost.firstMedia?.blurHash,
-                    url: sharedPost.firstMedia?.url,
+                    videoUrl: sharedPost.firstMedia?.url,
                     withSound: false,
                     withPlayerController: false,
                     withSoundButton: false,
