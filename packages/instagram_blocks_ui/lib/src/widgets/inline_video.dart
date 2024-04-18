@@ -59,7 +59,6 @@ class _InlineVideoState extends State<InlineVideo>
   late VideoPlayerController? _videoPlayerController;
   late VideoPlayerController _controller;
 
-  bool _isInitialized = false;
   bool _playerWasSeen = false;
 
   @override
@@ -73,21 +72,10 @@ class _InlineVideoState extends State<InlineVideo>
     super.didUpdateWidget(oldWidget);
     if (!_controller.value.isPlaying &&
         oldWidget.withSound != widget.withSound) {
-      _controller.setVolume(widget.withSound ? 1 : 0);
+      _toggleSound();
     }
     if (oldWidget.shouldPlay == widget.shouldPlay) return;
-    if (widget.shouldPlay) {
-      Future<void>.delayed(
-        widget.initDelay,
-        () => _controller
-          ..play()
-          ..setLooping(true),
-      );
-    } else {
-      _controller
-        ..pause()
-        ..seekTo(Duration.zero);
-    }
+    _togglePlayer();
   }
 
   void _initializeController() {
@@ -105,47 +93,26 @@ class _InlineVideoState extends State<InlineVideo>
             );
       _controller = _videoPlayerController!;
     }
-    _controller
-      ..addListener(_controllerListener)
-      ..initialize().then((_) async {
-        safeSetState(() {});
-        await Future.wait([
-          _togglePlayer(),
-          _toggleSound(),
-        ]);
-      });
-  }
-
-  Future<void> _togglePlayer() async {
-    if (widget.shouldPlay) {
-      await Future.wait([
-        _controller.play(),
-        _controller.setLooping(true),
-      ]);
-    } else {
-      await Future.wait([
-        _controller.pause(),
-        _controller.seekTo(Duration.zero),
-      ]);
-    }
-  }
-
-  Future<void> _toggleSound() async {
-    if (widget.withSound) {
-      await _controller.setVolume(1);
-    } else {
-      await _controller.setVolume(0);
-    }
-  }
-
-  void _controllerListener() {
-    if (!mounted) {
-      return;
-    }
-    safeSetState(() {
-      _isInitialized = _controller.value.isInitialized;
+    _controller.initialize().then((_) async {
+      safeSetState(() {});
+      _togglePlayer();
+      _toggleSound();
     });
   }
+
+  void _togglePlayer() {
+    if (widget.shouldPlay) {
+      _controller
+        ..play()
+        ..setLooping(true);
+    } else {
+      _controller
+        ..pause()
+        ..seekTo(Duration.zero);
+    }
+  }
+
+  void _toggleSound() => _controller.setVolume(widget.withSound ? 1 : 0);
 
   void _onVideoSeen() {
     if (_playerWasSeen) return;
@@ -164,9 +131,7 @@ class _InlineVideoState extends State<InlineVideo>
   void dispose() {
     super.dispose();
     _videoPlayerController?.dispose();
-    _controller
-      ..removeListener(_controllerListener)
-      ..dispose();
+    _controller.dispose();
   }
 
   @override
@@ -194,6 +159,7 @@ class _InlineVideoState extends State<InlineVideo>
 
     return AnimatedCrossFade(
       duration: 110.ms,
+      alignment: Alignment.center,
       firstChild: InlineVideoPlaceholder(
         blurHash: widget.blurHash,
         aspectRatio: widget.aspectRatio,
@@ -232,8 +198,9 @@ class _InlineVideoState extends State<InlineVideo>
             ),
         ],
       ),
-      crossFadeState:
-          _isInitialized ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+      crossFadeState: _controller.value.isInitialized
+          ? CrossFadeState.showSecond
+          : CrossFadeState.showFirst,
     );
   }
 }
