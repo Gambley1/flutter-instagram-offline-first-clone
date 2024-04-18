@@ -222,7 +222,7 @@ class _InlineVideoState extends State<InlineVideo>
               return Stack(
                 children: [
                   if (widget.withPlayControll)
-                    VideoPlayControll(
+                    InlineVideoPlayerController(
                       controller: _controller,
                       controllerValue: controller,
                       child: child!,
@@ -272,8 +272,8 @@ class RatioBox extends StatelessWidget {
   }
 }
 
-class VideoPlayControll extends StatelessWidget {
-  const VideoPlayControll({
+class InlineVideoPlayerController extends StatelessWidget {
+  const InlineVideoPlayerController({
     required this.child,
     required this.controller,
     required this.controllerValue,
