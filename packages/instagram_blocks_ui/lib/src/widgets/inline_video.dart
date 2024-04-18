@@ -121,12 +121,12 @@ class _InlineVideoState extends State<InlineVideo>
 
   void _onVideoSeen() {
     if (_playerWasSeen) return;
-    safeSetState(() => _playerWasSeen = true);
+    _playerWasSeen = true;
     if (widget.shouldPlay) _controller.play();
   }
 
   void _onVideoUnseen() {
-    safeSetState(() => _playerWasSeen = false);
+    _playerWasSeen = false;
     _controller
       ..pause()
       ..seekTo(Duration.zero);
