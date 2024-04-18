@@ -119,7 +119,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> with FeedBlocMixin {
     try {
       final (:newPage, :hasMore, :blocks) = await fetchFeedPage();
       final feed = state.feed.copyWith(
-        feedPage: state.feed.feedPage.copyWith(
+        feedPage: FeedPage(
           page: newPage,
           blocks: blocks,
           hasMore: hasMore,

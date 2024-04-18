@@ -28,19 +28,24 @@ class FeedPageController extends ChangeNotifier {
     _context = context;
   }
 
-  final _animationPlayed = ValueNotifier(false);
+  bool _hasPlayedAnimation = false;
+  double _animationValue = 0;
 
-  final _animationValue = ValueNotifier<double>(0);
+  bool get hasPlayedAnimation => _hasPlayedAnimation;
+  set hasPlayedAnimation(bool value) {
+    _hasPlayedAnimation = value;
+    notifyListeners();
+  }
 
-  bool get hasPlayedAnimation => _animationPlayed.value;
+  double get animationValue => _animationValue;
+  set animationValue(double value) {
+    _animationValue = value;
+    notifyListeners();
+  }
 
-  double get animationValue => _animationValue.value;
-
-  void setPlayedAnimation(double value) {
-    if (_animationPlayed.value == true) return;
-
-    _animationPlayed.value = true;
-    _animationValue.value = value;
+  void markAsUnseen() {
+    _hasPlayedAnimation = false;
+    _animationValue = 0;
     notifyListeners();
   }
 

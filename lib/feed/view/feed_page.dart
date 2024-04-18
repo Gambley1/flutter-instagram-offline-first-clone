@@ -118,16 +118,19 @@ class FeedBody extends StatelessWidget {
     final feedPageController = FeedPageController();
 
     return RefreshIndicator.adaptive(
-      onRefresh: () async => Future.wait([
-        Future.microtask(
-          () => context.read<FeedBloc>().add(const FeedRefreshRequested()),
-        ),
-        Future.microtask(
-          () => context
-              .read<StoriesBloc>()
-              .add(const StoriesFetchUserFollowingsStories()),
-        ),
-      ]),
+      onRefresh: () async {
+        await Future.wait([
+          Future.microtask(
+            () => context.read<FeedBloc>().add(const FeedRefreshRequested()),
+          ),
+          Future.microtask(
+            () => context
+                .read<StoriesBloc>()
+                .add(const StoriesFetchUserFollowingsStories()),
+          ),
+        ]);
+        FeedPageController().markAsUnseen();
+      },
       child: InViewNotifierCustomScrollView(
         cacheExtent: 2760,
         initialInViewIds: const ['0'],
