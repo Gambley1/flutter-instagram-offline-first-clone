@@ -358,7 +358,7 @@ class MessageSharedReel extends StatelessWidget {
               InViewNotifierWidget(
                 id: message.id,
                 builder: (context, isInView, _) {
-                  return VideoPlay(
+                  return InlineVideo(
                     aspectRatio: 1,
                     play: isInView,
                     id: sharedPost.id,

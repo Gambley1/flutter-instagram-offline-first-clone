@@ -130,7 +130,7 @@ class _MediaCarouselVideo extends StatelessWidget {
               settings.aspectRatio!,
               (isInView ?? true) && shouldPlay,
             ) ??
-            VideoPlay(
+            InlineVideo(
               key: ValueKey(media.id),
               url: url,
               play: shouldPlay && (isInView ?? true),
@@ -168,7 +168,7 @@ class _MediaCarouselMemoryVideo extends StatelessWidget {
       builder: (context, currentIndex, _) {
         final shouldPlay = currentIndex == realIndex;
 
-        return VideoPlay(
+        return InlineVideo(
           key: ValueKey(media.id),
           id: media.id,
           file: media.file,

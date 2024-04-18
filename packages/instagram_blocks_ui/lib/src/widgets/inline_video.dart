@@ -6,8 +6,8 @@ import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:instagram_blocks_ui/src/blur_hash_image_placeholder.dart';
 import 'package:shared/shared.dart';
 
-class VideoPlay extends StatefulWidget {
-  const VideoPlay({
+class InlineVideo extends StatefulWidget {
+  const InlineVideo({
     required this.play,
     this.url,
     this.file,
@@ -49,10 +49,10 @@ class VideoPlay extends StatefulWidget {
   final VideoPlayerOptions? videoPlayerOptions;
 
   @override
-  State<VideoPlay> createState() => _VideoPlayState();
+  State<InlineVideo> createState() => _InlineVideoState();
 }
 
-class _VideoPlayState extends State<VideoPlay>
+class _InlineVideoState extends State<InlineVideo>
     with AutomaticKeepAliveClientMixin, SafeSetStateMixin {
   late VideoPlayerController _controller;
   final _isInitialized = ValueNotifier(false);
@@ -64,7 +64,7 @@ class _VideoPlayState extends State<VideoPlay>
   }
 
   @override
-  void didUpdateWidget(VideoPlay oldWidget) {
+  void didUpdateWidget(InlineVideo oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.play) {
       Future<void>.delayed(

@@ -163,7 +163,7 @@ class PostLargeView extends StatelessWidget {
                     return ValueListenableBuilder(
                       valueListenable: videoPlayerProvider.withSound,
                       builder: (context, withSound, child) {
-                        return VideoPlay(
+                        return InlineVideo(
                           key: ValueKey(media.id),
                           url: media.url,
                           play: play,
@@ -263,7 +263,7 @@ class PostLargeView extends StatelessWidget {
                   return ValueListenableBuilder(
                     valueListenable: videoPlayerProvider.withSound,
                     builder: (context, withSound, child) {
-                      return VideoPlay(
+                      return InlineVideo(
                         key: ValueKey(media.id),
                         url: media.url,
                         play: play,

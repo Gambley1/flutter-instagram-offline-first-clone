@@ -19,6 +19,7 @@ export 'src/widgets/widgets.dart'
         AnimatedVisibility,
         AvatarImagePicker,
         FollowButton,
+        InlineVideo,
         MediaCarousel,
         PoppingIconAnimationOverlay,
         PostSponsored,
@@ -30,5 +31,4 @@ export 'src/widgets/widgets.dart'
         TimeAgo,
         TwoRotatingArc,
         UserComment,
-        VideoPlay,
         Viewable;

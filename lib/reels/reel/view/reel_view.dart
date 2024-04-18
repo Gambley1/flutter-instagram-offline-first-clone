@@ -127,7 +127,7 @@ class _ReelState extends State<Reel> {
         child: Stack(
           alignment: Alignment.center,
           children: [
-            VideoPlay(
+            InlineVideo(
               url: block.reel.url,
               play: widget.play,
               blurHash: block.reel.blurHash,
