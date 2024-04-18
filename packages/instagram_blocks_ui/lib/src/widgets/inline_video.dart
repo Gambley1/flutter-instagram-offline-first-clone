@@ -233,7 +233,14 @@ class _InlineVideoState extends State<InlineVideo>
                     Positioned(
                       right: AppSpacing.md,
                       bottom: AppSpacing.md,
-                      child: ToggleSoundButton(controller: _controller),
+                      child: ListenableBuilder(
+                        listenable: _controller,
+                        builder: (context, child) => ToggleSoundButton(
+                          soundEnabled: _controller.value.volume == 1,
+                          onSoundToggled: ({required enable}) =>
+                              _controller.setVolume(enable ? 1 : 0),
+                        ),
+                      ),
                     ),
                 ],
               );
@@ -302,53 +309,38 @@ class InlineVideoPlayerController extends StatelessWidget {
 
 class ToggleSoundButton extends StatelessWidget {
   const ToggleSoundButton({
-    required this.controller,
+    required this.soundEnabled,
     this.onSoundToggled,
     super.key,
   });
 
-  final VideoPlayerController controller;
-  final ValueSetter<bool>? onSoundToggled;
+  final bool soundEnabled;
+  final void Function({required bool enable})? onSoundToggled;
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: controller,
-      builder: (context, controller, snapshot) {
-        return Tappable(
-          fadeStrength: FadeStrength.medium,
-          onTap: () {
-            if (controller.volume == 0) {
-              this.controller.setVolume(1);
-              onSoundToggled?.call(true);
-            } else {
-              this.controller.setVolume(0);
-              onSoundToggled?.call(false);
-            }
-          },
-          child: Container(
-            height: 35,
-            width: 35,
-            decoration: BoxDecoration(
-              color: context.customReversedAdaptiveColor(
-                light: AppColors.lightDark,
-                dark: AppColors.dark,
-              ),
-              border: Border.all(color: AppColors.borderOutline),
-              shape: BoxShape.circle,
-            ),
-            child: Center(
-              child: Icon(
-                controller.volume == 1
-                    ? Icons.volume_up_rounded
-                    : Icons.volume_off_rounded,
-                color: AppColors.white,
-                size: AppSize.iconSizeSmall,
-              ),
-            ),
+    return Tappable(
+      fadeStrength: FadeStrength.medium,
+      onTap: () => onSoundToggled?.call(enable: !soundEnabled),
+      child: Container(
+        height: 35,
+        width: 35,
+        decoration: BoxDecoration(
+          color: context.customReversedAdaptiveColor(
+            light: AppColors.lightDark,
+            dark: AppColors.dark,
           ),
-        );
-      },
+          border: Border.all(color: AppColors.borderOutline),
+          shape: BoxShape.circle,
+        ),
+        child: Center(
+          child: Icon(
+            soundEnabled ? Icons.volume_up_rounded : Icons.volume_off_rounded,
+            color: AppColors.white,
+            size: AppSize.iconSizeSmall,
+          ),
+        ),
+      ),
     );
   }
 }
