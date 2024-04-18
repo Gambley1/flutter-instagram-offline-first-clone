@@ -74,8 +74,8 @@ class _FeedViewState extends State<FeedView> {
     _nestedScrollController = ScrollController();
     _feedScrollController = ScrollController();
     FeedPageController().init(
-      nestedController: _nestedScrollController,
-      feedController: _feedScrollController,
+      nestedScrollController: _nestedScrollController,
+      feedScrollController: _feedScrollController,
       context: context,
     );
   }

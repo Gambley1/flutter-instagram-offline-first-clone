@@ -14,17 +14,17 @@ class FeedPageController extends ChangeNotifier {
 
   static final FeedPageController _internal = FeedPageController._();
 
-  late ScrollController nestedScrollController;
-  late ScrollController feedScrollController;
+  late ScrollController _nestedScrollController;
+  late ScrollController _feedScrollController;
   late BuildContext _context;
 
   void init({
-    required ScrollController nestedController,
-    required ScrollController feedController,
+    required ScrollController nestedScrollController,
+    required ScrollController feedScrollController,
     required BuildContext context,
   }) {
-    nestedScrollController = nestedController;
-    feedScrollController = feedController;
+    _nestedScrollController = nestedScrollController;
+    _feedScrollController = feedScrollController;
     _context = context;
   }
 
@@ -49,7 +49,7 @@ class FeedPageController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void scrollToTop() => nestedScrollController.animateTo(
+  void scrollToTop() => _nestedScrollController.animateTo(
         0,
         duration: 250.ms,
         curve: Curves.ease,
@@ -66,23 +66,23 @@ class FeedPageController extends ChangeNotifier {
             selectedFiles.every((e) => !e.isThatImage));
     StatefulNavigationShell.of(_context)
         .goBranch(navigateToReelPage ? 3 : 0, initialLocation: true);
-    void uploadPost({
-      required String id,
-      required List<Map<String, dynamic>> media,
-    }) =>
+
+    late final postId = uuid.v4();
+
+    void uploadPost({required List<Map<String, dynamic>> media}) =>
         _context.read<FeedBloc>().add(
               FeedPostCreateRequested(
-                postId: id,
+                postId: postId,
                 caption: caption,
                 media: media,
               ),
             );
+
+    late final storage = Supabase.instance.client.storage.from('posts');
+
     if (isReel) {
       try {
-        late final postId = uuid.v4();
-        late final storage = Supabase.instance.client.storage.from('posts');
-
-        late final mediaPath = '$postId/video_0';
+        final mediaPath = '$postId/video_0';
 
         final selectedFile = selectedFiles.first;
         final firstFrame = await VideoPlus.getVideoThumbnail(
@@ -136,7 +136,7 @@ class FeedPageController extends ChangeNotifier {
             'first_frame_url': firstFrameUrl,
           }
         ];
-        uploadPost(media: media, id: postId);
+        uploadPost(media: media);
       } catch (error, stackTrace) {
         logE(
           'Failed to create reel!',
@@ -145,8 +145,6 @@ class FeedPageController extends ChangeNotifier {
         );
       }
     } else {
-      final storage = Supabase.instance.client.storage.from('posts');
-
       final media = <Map<String, dynamic>>[];
       for (var i = 0; i < selectedFiles.length; i++) {
         late final selectedByte = selectedFiles[i].selectedByte;
@@ -234,7 +232,7 @@ class FeedPageController extends ChangeNotifier {
           });
         }
       }
-      uploadPost(id: postId, media: media);
+      uploadPost(media: media);
     }
   }
 }
