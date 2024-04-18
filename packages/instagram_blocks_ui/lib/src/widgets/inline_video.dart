@@ -233,7 +233,7 @@ class _InlineVideoState extends State<InlineVideo>
                     Positioned(
                       right: AppSpacing.md,
                       bottom: AppSpacing.md,
-                      child: SoundToggleButton(controller: _controller),
+                      child: ToggleSoundButton(controller: _controller),
                     ),
                 ],
               );
@@ -300,8 +300,8 @@ class InlineVideoPlayerController extends StatelessWidget {
   }
 }
 
-class SoundToggleButton extends StatelessWidget {
-  const SoundToggleButton({
+class ToggleSoundButton extends StatelessWidget {
+  const ToggleSoundButton({
     required this.controller,
     this.onSoundToggled,
     super.key,
