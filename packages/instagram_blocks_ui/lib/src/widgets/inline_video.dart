@@ -23,6 +23,9 @@ class _InlineVideoState extends State<InlineVideo>
   bool _playerWasSeen = false;
 
   VideoSettings get videoSettings => widget.videoSettings;
+  Duration? get initDelay => videoSettings.initDelay == null
+      ? null
+      : Duration(milliseconds: videoSettings.initDelay!);
 
   @override
   void initState() {
@@ -74,7 +77,7 @@ class _InlineVideoState extends State<InlineVideo>
 
     if (videoSettings.shouldPlay) {
       if (videoSettings.initDelay == null) return enablePlayer();
-      Future<void>.delayed(videoSettings.initDelay!, enablePlayer);
+      Future<void>.delayed(initDelay!, enablePlayer);
     } else {
       _controller
         ..pause()
@@ -82,8 +85,7 @@ class _InlineVideoState extends State<InlineVideo>
     }
   }
 
-  void _toggleSound() =>
-      _controller.setVolume(videoSettings.withSound ? 1 : 0);
+  void _toggleSound() => _controller.setVolume(videoSettings.withSound ? 1 : 0);
 
   void _onVideoSeen() {
     if (_playerWasSeen) return;
@@ -362,7 +364,7 @@ class VideoSettings {
     double? aspectRatio,
     bool? shouldExpand,
     bool? withSound,
-    Duration? initDelay,
+    int? initDelay,
     VideoPlayerController? videoPlayerController,
     void Function({required bool enable})? onSoundToggled,
     bool? withSoundButton,
@@ -381,7 +383,7 @@ class VideoSettings {
           shouldExpand: shouldExpand ?? false,
           shouldPlay: shouldPlay,
           withSound: withSound ?? true,
-          initDelay: initDelay,
+          initDelay: initDelay ?? _defaultInitDelay,
           videoPlayerController: videoPlayerController,
           onSoundToggled: onSoundToggled,
           withSoundButton: withSoundButton ?? true,
@@ -422,7 +424,7 @@ class VideoSettings {
   final bool shouldExpand;
   final bool shouldPlay;
   final bool withSound;
-  final Duration? initDelay;
+  final int? initDelay;
   final VideoPlayerController? videoPlayerController;
   final void Function({required bool enable})? onSoundToggled;
   final bool withSoundButton;
@@ -434,4 +436,5 @@ class VideoSettings {
   final VideoPlayerOptions? videoPlayerOptions;
 
   static const _aspectRatio = 4 / 5;
+  static const _defaultInitDelay = 150;
 }

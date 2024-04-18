@@ -210,7 +210,7 @@ class _TimelineGridViewState extends State<TimelineGridView> {
                           videoPlayerOptions: VideoPlayerOptions(
                             mixWithOthers: true,
                           ),
-                          initDelay: 250.ms,
+                          initDelay: 250,
                         ),
                       );
                     },
