@@ -132,12 +132,14 @@ class _MediaCarouselVideo extends StatelessWidget {
             ) ??
             InlineVideo(
               key: ValueKey(media.id),
-              videoUrl: url,
-              shouldPlay: shouldPlay && (isInView ?? true),
-              blurHash: blurHash,
-              withSound: false,
-              id: media.id,
-              aspectRatio: settings.aspectRatio!,
+              videoSettings: VideoSettings.build(
+                videoUrl: url,
+                shouldPlay: shouldPlay && (isInView ?? true),
+                blurHash: blurHash,
+                withSound: false,
+                id: media.id,
+                aspectRatio: settings.aspectRatio,
+              ),
             );
       },
     );
@@ -170,13 +172,15 @@ class _MediaCarouselMemoryVideo extends StatelessWidget {
 
         return InlineVideo(
           key: ValueKey(media.id),
-          id: media.id,
-          videoFile: media.file,
-          shouldPlay: shouldPlay && (isInView ?? true),
-          blurHash: blurHash,
-          aspectRatio: settings.aspectRatio!,
-          withPlayerController: false,
-          withSoundButton: false,
+          videoSettings: VideoSettings.build(
+            id: media.id,
+            videoFile: media.file,
+            shouldPlay: shouldPlay && (isInView ?? true),
+            blurHash: blurHash,
+            aspectRatio: settings.aspectRatio,
+            withPlayerController: false,
+            withSoundButton: false,
+          ),
         );
       },
     );

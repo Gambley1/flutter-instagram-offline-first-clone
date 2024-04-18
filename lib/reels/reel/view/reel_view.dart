@@ -128,62 +128,64 @@ class _ReelState extends State<Reel> {
           alignment: Alignment.center,
           children: [
             InlineVideo(
-              videoUrl: block.reel.url,
-              shouldPlay: widget.play,
-              blurHash: block.reel.blurHash,
-              withSound: widget.withSound || true,
-              aspectRatio: 9 / 15,
-              withSoundButton: false,
-              withPlayerController: false,
-              videoPlayerController: _videoController,
-              loadingBuilder: (context) => const ReelShimmerLoading(),
-              stackedWidget: ValueListenableBuilder<bool>(
-                valueListenable: _isPaused,
-                child: Stack(
-                  children: [
-                    VerticalButtons(block),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        bottom: AppSpacing.md,
-                        left: AppSpacing.lg,
-                      ),
-                      child: Align(
-                        alignment: Alignment.bottomLeft,
-                        child: ConstrainedBox(
-                          constraints: BoxConstraints.tightFor(
-                            width: context.screenWidth * .8,
-                          ),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              ReelAuthorListTile(block: block),
-                              if (block.caption.isNotEmpty) ...[
-                                const Gap.v(AppSpacing.md),
-                                ReelCaption(caption: block.caption),
-                              ],
-                              const Gap.v(AppSpacing.sm),
-                              SizedBox(
-                                height: 32,
-                                child: ReelParticipants(
-                                  participant: block.author.username,
+              videoSettings: VideoSettings.build(
+                videoUrl: block.reel.url,
+                shouldPlay: widget.play,
+                blurHash: block.reel.blurHash,
+                withSound: widget.withSound || true,
+                aspectRatio: 9 / 15,
+                withSoundButton: false,
+                withPlayerController: false,
+                videoPlayerController: _videoController,
+                loadingBuilder: (context) => const ReelShimmerLoading(),
+                stackedWidget: ValueListenableBuilder<bool>(
+                  valueListenable: _isPaused,
+                  child: Stack(
+                    children: [
+                      VerticalButtons(block),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          bottom: AppSpacing.md,
+                          left: AppSpacing.lg,
+                        ),
+                        child: Align(
+                          alignment: Alignment.bottomLeft,
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints.tightFor(
+                              width: context.screenWidth * .8,
+                            ),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                ReelAuthorListTile(block: block),
+                                if (block.caption.isNotEmpty) ...[
+                                  const Gap.v(AppSpacing.md),
+                                  ReelCaption(caption: block.caption),
+                                ],
+                                const Gap.v(AppSpacing.sm),
+                                SizedBox(
+                                  height: 32,
+                                  child: ReelParticipants(
+                                    participant: block.author.username,
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
+                  builder: (context, isPaused, child) {
+                    return AnimatedOpacity(
+                      opacity: isPaused ? 0 : 1,
+                      duration: 150.ms,
+                      child: child,
+                    );
+                  },
                 ),
-                builder: (context, isPaused, child) {
-                  return AnimatedOpacity(
-                    opacity: isPaused ? 0 : 1,
-                    duration: 150.ms,
-                    child: child,
-                  );
-                },
               ),
             ),
             if (_videoController != null)

@@ -7,48 +7,9 @@ import 'package:instagram_blocks_ui/src/blur_hash_image_placeholder.dart';
 import 'package:shared/shared.dart';
 
 class InlineVideo extends StatefulWidget {
-  const InlineVideo({
-    required this.shouldPlay,
-    this.videoUrl,
-    this.videoFile,
-    super.key,
-    this.blurHash,
-    this.withSound = true,
-    this.aspectRatio = _aspectRatio,
-    this.shouldExpand = false,
-    this.id,
-    this.initDelay,
-    this.videoPlayerController,
-    this.onSoundToggled,
-    this.withSoundButton = true,
-    this.withPlayerController = true,
-    this.withVisibilityDetector = true,
-    this.withProgressIndicator = false,
-    this.loadingBuilder,
-    this.stackedWidget,
-    this.videoPlayerOptions,
-  });
+  const InlineVideo({required this.videoSettings, super.key});
 
-  static const _aspectRatio = 4 / 5;
-
-  final String? id;
-  final String? videoUrl;
-  final File? videoFile;
-  final String? blurHash;
-  final double aspectRatio;
-  final bool shouldExpand;
-  final bool shouldPlay;
-  final bool withSound;
-  final Duration? initDelay;
-  final VideoPlayerController? videoPlayerController;
-  final void Function({required bool enable})? onSoundToggled;
-  final bool withSoundButton;
-  final bool withPlayerController;
-  final bool withVisibilityDetector;
-  final bool withProgressIndicator;
-  final WidgetBuilder? loadingBuilder;
-  final Widget? stackedWidget;
-  final VideoPlayerOptions? videoPlayerOptions;
+  final VideoSettings videoSettings;
 
   @override
   State<InlineVideo> createState() => _InlineVideoState();
@@ -61,6 +22,8 @@ class _InlineVideoState extends State<InlineVideo>
 
   bool _playerWasSeen = false;
 
+  VideoSettings get videoSettings => widget.videoSettings;
+
   @override
   void initState() {
     super.initState();
@@ -71,25 +34,27 @@ class _InlineVideoState extends State<InlineVideo>
   void didUpdateWidget(InlineVideo oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (!_controller.value.isPlaying &&
-        oldWidget.withSound != widget.withSound) {
+        oldWidget.videoSettings.withSound != videoSettings.withSound) {
       _toggleSound();
     }
-    if (oldWidget.shouldPlay == widget.shouldPlay) return;
+    if (oldWidget.videoSettings.shouldPlay == videoSettings.shouldPlay) {
+      return;
+    }
     _togglePlayer();
   }
 
   void _initializeController() {
-    if (widget.videoPlayerController != null) {
-      _controller = widget.videoPlayerController!;
+    if (videoSettings.videoPlayerController != null) {
+      _controller = videoSettings.videoPlayerController!;
     } else {
-      _videoPlayerController = widget.videoFile != null
+      _videoPlayerController = videoSettings.videoFile != null
           ? VideoPlayerController.file(
-              widget.videoFile!,
-              videoPlayerOptions: widget.videoPlayerOptions,
+              videoSettings.videoFile!,
+              videoPlayerOptions: videoSettings.videoPlayerOptions,
             )
           : VideoPlayerController.networkUrl(
-              Uri.parse(widget.videoUrl!),
-              videoPlayerOptions: widget.videoPlayerOptions,
+              Uri.parse(videoSettings.videoUrl!),
+              videoPlayerOptions: videoSettings.videoPlayerOptions,
             );
       _controller = _videoPlayerController!;
     }
@@ -107,9 +72,9 @@ class _InlineVideoState extends State<InlineVideo>
         ..setLooping(true);
     }
 
-    if (widget.shouldPlay) {
-      if (widget.initDelay == null) return enablePlayer();
-      Future<void>.delayed(widget.initDelay!, enablePlayer);
+    if (videoSettings.shouldPlay) {
+      if (videoSettings.initDelay == null) return enablePlayer();
+      Future<void>.delayed(videoSettings.initDelay!, enablePlayer);
     } else {
       _controller
         ..pause()
@@ -117,12 +82,13 @@ class _InlineVideoState extends State<InlineVideo>
     }
   }
 
-  void _toggleSound() => _controller.setVolume(widget.withSound ? 1 : 0);
+  void _toggleSound() =>
+      _controller.setVolume(videoSettings.withSound ? 1 : 0);
 
   void _onVideoSeen() {
     if (_playerWasSeen) return;
     _playerWasSeen = true;
-    if (widget.shouldPlay) _controller.play();
+    if (videoSettings.shouldPlay) _controller.play();
   }
 
   void _onVideoUnseen() {
@@ -148,17 +114,17 @@ class _InlineVideoState extends State<InlineVideo>
 
     final inlineVideo = InlineVideoStack(
       controller: _controller,
-      aspectRatio: widget.aspectRatio,
-      shouldExpand: widget.shouldExpand,
-      withVisibilityDetector: widget.withVisibilityDetector,
-      withProgressIndicator: widget.withProgressIndicator,
+      aspectRatio: videoSettings.aspectRatio,
+      shouldExpand: videoSettings.shouldExpand,
+      withVisibilityDetector: videoSettings.withVisibilityDetector,
+      withProgressIndicator: videoSettings.withProgressIndicator,
       onSeen: _onVideoSeen,
       onUnseen: _onVideoUnseen,
-      id: widget.id,
-      stackedWidget: widget.stackedWidget,
+      id: videoSettings.id,
+      stackedWidget: videoSettings.stackedWidget,
     );
 
-    if (!widget.withPlayerController && !widget.withSoundButton) {
+    if (!videoSettings.withPlayerController && !videoSettings.withSoundButton) {
       return inlineVideo;
     }
 
@@ -166,14 +132,14 @@ class _InlineVideoState extends State<InlineVideo>
       duration: 110.ms,
       alignment: Alignment.center,
       firstChild: InlineVideoPlaceholder(
-        blurHash: widget.blurHash,
-        aspectRatio: widget.aspectRatio,
-        shouldExpand: widget.shouldExpand,
-        loadingBuilder: widget.loadingBuilder,
+        blurHash: videoSettings.blurHash,
+        aspectRatio: videoSettings.aspectRatio,
+        shouldExpand: videoSettings.shouldExpand,
+        loadingBuilder: videoSettings.loadingBuilder,
       ),
       secondChild: Stack(
         children: [
-          if (widget.withPlayerController)
+          if (videoSettings.withPlayerController)
             ListenableBuilder(
               listenable: _controller,
               child: inlineVideo,
@@ -186,7 +152,7 @@ class _InlineVideoState extends State<InlineVideo>
             )
           else
             inlineVideo,
-          if (widget.withSoundButton)
+          if (videoSettings.withSoundButton)
             Positioned(
               right: AppSpacing.md,
               bottom: AppSpacing.md,
@@ -195,7 +161,7 @@ class _InlineVideoState extends State<InlineVideo>
                 builder: (_, __) => ToggleSoundButton(
                   soundEnabled: _controller.value.volume == 1,
                   onSoundToggled: ({required enable}) {
-                    widget.onSoundToggled?.call(enable: enable);
+                    videoSettings.onSoundToggled?.call(enable: enable);
                     _controller.setVolume(enable ? 1 : 0);
                   },
                 ),
@@ -384,4 +350,88 @@ class ToggleSoundButton extends StatelessWidget {
       ),
     );
   }
+}
+
+class VideoSettings {
+  const VideoSettings.build({
+    required bool shouldPlay,
+    String? id,
+    String? videoUrl,
+    File? videoFile,
+    String? blurHash,
+    double? aspectRatio,
+    bool? shouldExpand,
+    bool? withSound,
+    Duration? initDelay,
+    VideoPlayerController? videoPlayerController,
+    void Function({required bool enable})? onSoundToggled,
+    bool? withSoundButton,
+    bool? withPlayerController,
+    bool? withVisibilityDetector,
+    bool? withProgressIndicator,
+    WidgetBuilder? loadingBuilder,
+    Widget? stackedWidget,
+    VideoPlayerOptions? videoPlayerOptions,
+  }) : this._(
+          id: id,
+          videoUrl: videoUrl,
+          videoFile: videoFile,
+          blurHash: blurHash,
+          aspectRatio: aspectRatio ?? _aspectRatio,
+          shouldExpand: shouldExpand ?? false,
+          shouldPlay: shouldPlay,
+          withSound: withSound ?? true,
+          initDelay: initDelay,
+          videoPlayerController: videoPlayerController,
+          onSoundToggled: onSoundToggled,
+          withSoundButton: withSoundButton ?? true,
+          withPlayerController: withPlayerController ?? true,
+          withVisibilityDetector: withVisibilityDetector ?? true,
+          withProgressIndicator: withProgressIndicator ?? false,
+          loadingBuilder: loadingBuilder,
+          stackedWidget: stackedWidget,
+          videoPlayerOptions: videoPlayerOptions,
+        );
+
+  const VideoSettings._({
+    required this.shouldPlay,
+    required this.videoUrl,
+    required this.videoFile,
+    required this.blurHash,
+    required this.withSound,
+    required this.aspectRatio,
+    required this.shouldExpand,
+    required this.id,
+    required this.initDelay,
+    required this.videoPlayerController,
+    required this.onSoundToggled,
+    required this.withSoundButton,
+    required this.withPlayerController,
+    required this.withVisibilityDetector,
+    required this.withProgressIndicator,
+    required this.loadingBuilder,
+    required this.stackedWidget,
+    required this.videoPlayerOptions,
+  });
+
+  final String? id;
+  final String? videoUrl;
+  final File? videoFile;
+  final String? blurHash;
+  final double aspectRatio;
+  final bool shouldExpand;
+  final bool shouldPlay;
+  final bool withSound;
+  final Duration? initDelay;
+  final VideoPlayerController? videoPlayerController;
+  final void Function({required bool enable})? onSoundToggled;
+  final bool withSoundButton;
+  final bool withPlayerController;
+  final bool withVisibilityDetector;
+  final bool withProgressIndicator;
+  final WidgetBuilder? loadingBuilder;
+  final Widget? stackedWidget;
+  final VideoPlayerOptions? videoPlayerOptions;
+
+  static const _aspectRatio = 4 / 5;
 }

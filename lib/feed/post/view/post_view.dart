@@ -165,14 +165,16 @@ class PostLargeView extends StatelessWidget {
                       builder: (context, withSound, child) {
                         return InlineVideo(
                           key: ValueKey(media.id),
-                          videoUrl: media.url,
-                          shouldPlay: play,
-                          aspectRatio: aspectRatio,
-                          blurHash: media.blurHash,
-                          withSound: withSound,
-                          onSoundToggled: ({required enable}) {
-                            videoPlayerProvider.withSound.value = enable;
-                          },
+                          videoSettings: VideoSettings.build(
+                            videoUrl: media.url,
+                            shouldPlay: play,
+                            aspectRatio: aspectRatio,
+                            blurHash: media.blurHash,
+                            withSound: withSound,
+                            onSoundToggled: ({required enable}) {
+                              videoPlayerProvider.withSound.value = enable;
+                            },
+                          ),
                         );
                       },
                     );
@@ -265,14 +267,16 @@ class PostLargeView extends StatelessWidget {
                     builder: (context, withSound, child) {
                       return InlineVideo(
                         key: ValueKey(media.id),
-                        videoUrl: media.url,
-                        shouldPlay: play,
-                        aspectRatio: aspectRatio,
-                        blurHash: media.blurHash,
-                        withSound: withSound,
-                        onSoundToggled: ({required enable}) {
-                          videoPlayerProvider.withSound.value = enable;
-                        },
+                        videoSettings: VideoSettings.build(
+                          videoUrl: media.url,
+                          shouldPlay: play,
+                          aspectRatio: aspectRatio,
+                          blurHash: media.blurHash,
+                          withSound: withSound,
+                          onSoundToggled: ({required enable}) {
+                            videoPlayerProvider.withSound.value = enable;
+                          },
+                        ),
                       );
                     },
                   );
