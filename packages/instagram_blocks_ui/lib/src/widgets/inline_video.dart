@@ -17,7 +17,7 @@ class InlineVideo extends StatefulWidget {
     this.aspectRatio = _aspectRatio,
     this.shouldExpand = false,
     this.id,
-    this.initDelay = Duration.zero,
+    this.initDelay,
     this.videoPlayerController,
     this.onSoundToggled,
     this.withSoundButton = true,
@@ -39,7 +39,7 @@ class InlineVideo extends StatefulWidget {
   final bool shouldExpand;
   final bool shouldPlay;
   final bool withSound;
-  final Duration initDelay;
+  final Duration? initDelay;
   final VideoPlayerController? videoPlayerController;
   final void Function({required bool enable})? onSoundToggled;
   final bool withSoundButton;
@@ -101,10 +101,15 @@ class _InlineVideoState extends State<InlineVideo>
   }
 
   void _togglePlayer() {
-    if (widget.shouldPlay) {
+    void enablePlayer() {
       _controller
         ..play()
         ..setLooping(true);
+    }
+
+    if (widget.shouldPlay) {
+      if (widget.initDelay == null) return enablePlayer();
+      Future<void>.delayed(widget.initDelay!, enablePlayer);
     } else {
       _controller
         ..pause()
