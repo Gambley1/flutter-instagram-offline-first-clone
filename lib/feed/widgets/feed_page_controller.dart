@@ -15,16 +15,13 @@ class FeedPageController extends ChangeNotifier {
   static final FeedPageController _internal = FeedPageController._();
 
   late ScrollController _nestedScrollController;
-  late ScrollController _feedScrollController;
   late BuildContext _context;
 
   void init({
     required ScrollController nestedScrollController,
-    required ScrollController feedScrollController,
     required BuildContext context,
   }) {
     _nestedScrollController = nestedScrollController;
-    _feedScrollController = feedScrollController;
     _context = context;
   }
 

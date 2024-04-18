@@ -64,7 +64,6 @@ class FeedView extends StatefulWidget {
 
 class _FeedViewState extends State<FeedView> {
   late ScrollController _nestedScrollController;
-  late ScrollController _feedScrollController;
 
   @override
   void initState() {
@@ -72,10 +71,8 @@ class _FeedViewState extends State<FeedView> {
     context.read<FeedBloc>().add(const FeedPageRequested(page: 0));
 
     _nestedScrollController = ScrollController();
-    _feedScrollController = ScrollController();
     FeedPageController().init(
       nestedScrollController: _nestedScrollController,
-      feedScrollController: _feedScrollController,
       context: context,
     );
   }
@@ -83,7 +80,6 @@ class _FeedViewState extends State<FeedView> {
   @override
   void dispose() {
     _nestedScrollController.dispose();
-    _feedScrollController.dispose();
     super.dispose();
   }
 
@@ -102,16 +98,14 @@ class _FeedViewState extends State<FeedView> {
             ),
           ];
         },
-        body: FeedBody(controller: _feedScrollController),
+        body: const FeedBody(),
       ),
     );
   }
 }
 
 class FeedBody extends StatelessWidget {
-  const FeedBody({required this.controller, super.key});
-
-  final ScrollController controller;
+  const FeedBody({super.key});
 
   @override
   Widget build(BuildContext context) {
