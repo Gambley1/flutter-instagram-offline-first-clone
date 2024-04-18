@@ -365,7 +365,7 @@ class MessageSharedReel extends StatelessWidget {
                     blurHash: sharedPost.firstMedia?.blurHash,
                     url: sharedPost.firstMedia?.url,
                     withSound: false,
-                    withPlayControll: false,
+                    withPlayerController: false,
                     withSoundButton: false,
                   );
                 },

@@ -205,7 +205,7 @@ class _TimelineGridViewState extends State<TimelineGridView> {
                         expand: true,
                         blurHash: _block.firstMedia!.blurHash,
                         withSoundButton: false,
-                        withPlayControll: false,
+                        withPlayerController: false,
                         videoPlayerOptions: VideoPlayerOptions(
                           mixWithOthers: true,
                         ),

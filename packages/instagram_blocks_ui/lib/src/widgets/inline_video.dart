@@ -21,7 +21,7 @@ class InlineVideo extends StatefulWidget {
     this.controller,
     this.onSoundToggled,
     this.withSoundButton = true,
-    this.withPlayControll = true,
+    this.withPlayerController = true,
     this.withVisibilityDetector = true,
     this.withProgressIndicator = false,
     this.loadingBuilder,
@@ -41,7 +41,7 @@ class InlineVideo extends StatefulWidget {
   final VideoPlayerController? controller;
   final ValueSetter<bool>? onSoundToggled;
   final bool withSoundButton;
-  final bool withPlayControll;
+  final bool withPlayerController;
   final bool withVisibilityDetector;
   final bool withProgressIndicator;
   final WidgetBuilder? loadingBuilder;
@@ -216,16 +216,21 @@ class _InlineVideoState extends State<InlineVideo>
               },
             ),
             builder: (context, controller, child) {
-              if (!widget.withPlayControll && !widget.withSoundButton) {
+              if (!widget.withPlayerController && !widget.withSoundButton) {
                 return child!;
               }
               return Stack(
                 children: [
-                  if (widget.withPlayControll)
-                    InlineVideoPlayerController(
-                      controller: _controller,
-                      controllerValue: controller,
-                      child: child!,
+                  if (widget.withPlayerController)
+                    ListenableBuilder(
+                      listenable: _controller,
+                      child: child,
+                      builder: (_, child) => InlineVideoPlayerController(
+                        isPlaying: _controller.value.isPlaying,
+                        togglePlayer: ({required enable}) =>
+                            enable ? _controller.play() : _controller.pause(),
+                        child: child!,
+                      ),
                     )
                   else
                     child!,
@@ -235,7 +240,7 @@ class _InlineVideoState extends State<InlineVideo>
                       bottom: AppSpacing.md,
                       child: ListenableBuilder(
                         listenable: _controller,
-                        builder: (context, child) => ToggleSoundButton(
+                        builder: (_, __) => ToggleSoundButton(
                           soundEnabled: _controller.value.volume == 1,
                           onSoundToggled: ({required enable}) =>
                               _controller.setVolume(enable ? 1 : 0),
@@ -282,26 +287,22 @@ class RatioBox extends StatelessWidget {
 class InlineVideoPlayerController extends StatelessWidget {
   const InlineVideoPlayerController({
     required this.child,
-    required this.controller,
-    required this.controllerValue,
+    required this.isPlaying,
+    this.togglePlayer,
     super.key,
   });
 
   final Widget child;
-  final VideoPlayerController? controller;
-  final VideoPlayerValue controllerValue;
+  final bool isPlaying;
+  final void Function({required bool enable})? togglePlayer;
 
   @override
   Widget build(BuildContext context) {
     return PoppingIconAnimationOverlay(
-      icon: !controllerValue.isPlaying ? Icons.pause : Icons.play_arrow,
-      onTap: () {
-        if (controllerValue.isPlaying) {
-          controller?.pause();
-        } else {
-          controller?.play();
-        }
-      },
+      icon: isPlaying ? Icons.play_arrow : Icons.pause,
+      onTap: togglePlayer == null
+          ? null
+          : () => togglePlayer!.call(enable: !isPlaying),
       child: child,
     );
   }

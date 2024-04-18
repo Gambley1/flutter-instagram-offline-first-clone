@@ -175,7 +175,7 @@ class _MediaCarouselMemoryVideo extends StatelessWidget {
           play: shouldPlay && (isInView ?? true),
           blurHash: blurHash,
           aspectRatio: settings.aspectRatio!,
-          withPlayControll: false,
+          withPlayerController: false,
           withSoundButton: false,
         );
       },

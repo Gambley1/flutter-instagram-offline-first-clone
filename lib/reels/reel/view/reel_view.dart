@@ -134,7 +134,7 @@ class _ReelState extends State<Reel> {
               withSound: widget.withSound || true,
               aspectRatio: 9 / 15,
               withSoundButton: false,
-              withPlayControll: false,
+              withPlayerController: false,
               controller: _videoController,
               loadingBuilder: (context) => const ReelShimmerLoading(),
               stackedWidget: ValueListenableBuilder<bool>(
