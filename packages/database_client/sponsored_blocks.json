@@ -1,0 +1,102 @@
+[
+  {
+    "id": "b6faca71-061c-4f05-93f0-d164baacca3d",
+    "author": {
+      "id": "67c36f68-3b92-4e11-89e9-cd7a22f3c37b",
+      "username": "emil.zulufov",
+      "avatar_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkmZB67e6esDKyxIUTnQhNmOvexujNJ3pccQ&usqp=CAU",
+      "is_confirmed": true
+    },
+    "created_at": "2023-11-09T00:00:00.000",
+    "media": [
+      {
+        "media_id": "65ef96dc-8ade-4a7d-b8e1-b62fc9f002be",
+        "url": "https://blog.nursing.com/hs-fs/hubfs/visual%20nursing%20app.webp?width=1080&height=1080&name=visual%20nursing%20app.webp",
+        "type": "__image_media__"
+      }
+    ],
+    "caption": "Hello world, this is a sponsored block #1",
+    "action": {
+      "author_id": "67c36f68-3b92-4e11-89e9-cd7a22f3c37b",
+      "promo_preview_image_url": "https://instagram.fala5-2.fna.fbcdn.net/v/t51.2885-19/349043288_799972341566680_146016102643359969_n.jpg?stp=dst-jpg_s320x320&_nc_ht=instagram.fala5-2.fna.fbcdn.net&_nc_cat=104&_nc_ohc=sEVHyymBefkAX9i3zYg&edm=AOQ1c0wBAAAA&ccb=7-5&oh=00_AfBiQuXJ5iIIVb8qP-_RfY8a6gADNgP_PLsQEhqdhM8DRA&oe=6552BA94&_nc_sid=8b3546",
+      "promo_url": "https://www.instagram.com/zulu_em/",
+      "type": "__navigate_to_sponsored_author__"
+    },
+    "type": "__post_sponsored__"
+  },
+  {
+    "id": "0bcf4fa1-2a58-4809-b07b-5654e32e6fc2",
+    "author": {
+      "id": "67c36f68-3b92-4e11-89e9-cd7a22f3c37b",
+      "username": "emil.zulufov",
+      "avatar_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkmZB67e6esDKyxIUTnQhNmOvexujNJ3pccQ&usqp=CAU",
+      "is_confirmed": true
+    },
+    "created_at": "2023-11-09T00:00:00.000",
+    "media": [
+      {
+        "media_id": "4cec5b62-a298-47f6-90f1-f1fc81e6a8a9",
+        "url": "https://images.squarespace-cdn.com/content/v1/54222358e4b0ef23d87a996b/1659992618857-S3ZIJIAT0V659W9HFTEF/3.png",
+        "type": "__image_media__"
+      }
+    ],
+    "caption": "Hello world, this is a sponsored block #2",
+    "action": {
+      "author_id": "67c36f68-3b92-4e11-89e9-cd7a22f3c37b",
+      "promo_preview_image_url": "https://instagram.fala5-2.fna.fbcdn.net/v/t51.2885-19/349043288_799972341566680_146016102643359969_n.jpg?stp=dst-jpg_s320x320&_nc_ht=instagram.fala5-2.fna.fbcdn.net&_nc_cat=104&_nc_ohc=sEVHyymBefkAX9i3zYg&edm=AOQ1c0wBAAAA&ccb=7-5&oh=00_AfBiQuXJ5iIIVb8qP-_RfY8a6gADNgP_PLsQEhqdhM8DRA&oe=6552BA94&_nc_sid=8b3546",
+      "promo_url": "https://www.instagram.com/zulu_em/",
+      "type": "__navigate_to_sponsored_author__"
+    },
+    "type": "__post_sponsored__"
+  },
+  {
+    "id": "4071ae1f-7e64-43d7-9763-4ced3b84dcfc",
+    "author": {
+      "id": "67c36f68-3b92-4e11-89e9-cd7a22f3c37b",
+      "username": "emil.zulufov",
+      "avatar_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkmZB67e6esDKyxIUTnQhNmOvexujNJ3pccQ&usqp=CAU",
+      "is_confirmed": true
+    },
+    "created_at": "2023-11-09T00:00:00.000",
+    "media": [
+      {
+        "media_id": "a3161598-f965-4a57-b800-e407b77d6d6f",
+        "url": "https://global.discourse-cdn.com/business7/uploads/adalo/original/2X/b/bc2fa4e8174f0b997c0a0f4167fe6895ae3092c4.jpeg",
+        "type": "__image_media__"
+      }
+    ],
+    "caption": "Hello world, this is a sponsored block #3",
+    "action": {
+      "author_id": "67c36f68-3b92-4e11-89e9-cd7a22f3c37b",
+      "promo_preview_image_url": "https://instagram.fala5-2.fna.fbcdn.net/v/t51.2885-19/349043288_799972341566680_146016102643359969_n.jpg?stp=dst-jpg_s320x320&_nc_ht=instagram.fala5-2.fna.fbcdn.net&_nc_cat=104&_nc_ohc=sEVHyymBefkAX9i3zYg&edm=AOQ1c0wBAAAA&ccb=7-5&oh=00_AfBiQuXJ5iIIVb8qP-_RfY8a6gADNgP_PLsQEhqdhM8DRA&oe=6552BA94&_nc_sid=8b3546",
+      "promo_url": "https://www.instagram.com/zulu_em/",
+      "type": "__navigate_to_sponsored_author__"
+    },
+    "type": "__post_sponsored__"
+  },
+  {
+    "id": "4f6a8b3f-07f6-4b33-a9fe-2420f750fe31",
+    "author": {
+      "id": "67c36f68-3b92-4e11-89e9-cd7a22f3c37b",
+      "username": "emil.zulufov",
+      "avatar_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkmZB67e6esDKyxIUTnQhNmOvexujNJ3pccQ&usqp=CAU",
+      "is_confirmed": true
+    },
+    "created_at": "2023-11-09T00:00:00.000",
+    "media": [
+      {
+        "media_id": "717e2996-be35-4077-bc2d-2248a989dd18",
+        "url": "https://images.squarespace-cdn.com/content/v1/54222358e4b0ef23d87a996b/1659992618857-S3ZIJIAT0V659W9HFTEF/3.png",
+        "type": "__image_media__"
+      }
+    ],
+    "caption": "Hello world, this is a sponsored block #4",
+    "action": {
+      "author_id": "67c36f68-3b92-4e11-89e9-cd7a22f3c37b",
+      "promo_preview_image_url": "https://instagram.fala5-2.fna.fbcdn.net/v/t51.2885-19/349043288_799972341566680_146016102643359969_n.jpg?stp=dst-jpg_s320x320&_nc_ht=instagram.fala5-2.fna.fbcdn.net&_nc_cat=104&_nc_ohc=sEVHyymBefkAX9i3zYg&edm=AOQ1c0wBAAAA&ccb=7-5&oh=00_AfBiQuXJ5iIIVb8qP-_RfY8a6gADNgP_PLsQEhqdhM8DRA&oe=6552BA94&_nc_sid=8b3546",
+      "promo_url": "https://www.instagram.com/zulu_em/",
+      "type": "__navigate_to_sponsored_author__"
+    },
+    "type": "__post_sponsored__"
+  }
+]
