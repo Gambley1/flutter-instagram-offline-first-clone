@@ -102,7 +102,7 @@ class _InlineVideoState extends State<InlineVideo>
   void dispose() {
     _controller
         .pause()
-        .then((_) => Future<void>.delayed(1.seconds, _controller.dispose));
+        .then((_) => Future<void>.delayed(2.seconds, _controller.dispose));
     super.dispose();
   }
 
