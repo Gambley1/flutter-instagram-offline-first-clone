@@ -25,7 +25,7 @@ class ReelView extends StatelessWidget {
     super.key,
   });
 
-  final PostBlock block;
+  final PostReelBlock block;
   final bool withSound;
   final bool play;
 
@@ -52,7 +52,7 @@ class Reel extends StatefulWidget {
     super.key,
   });
 
-  final PostBlock block;
+  final PostReelBlock block;
   final bool withSound;
   final bool play;
 
@@ -61,7 +61,7 @@ class Reel extends StatefulWidget {
 }
 
 class _ReelState extends State<Reel> {
-  VideoPlayerController? _videoController;
+  late VideoPlayerController _videoController;
   late ValueNotifier<bool> _isPaused;
   late ValueNotifier<bool> _isLiked;
 
@@ -70,11 +70,9 @@ class _ReelState extends State<Reel> {
   @override
   void initState() {
     super.initState();
-    _videoController = widget.block is! PostReelBlock
-        ? null
-        : VideoPlayerController.networkUrl(
-            Uri.parse((widget.block as PostReelBlock).reel.url),
-          );
+    _videoController = VideoPlayerController.networkUrl(
+      Uri.parse(widget.block.reel.url),
+    );
     _isPaused = ValueNotifier(false)..addListener(_isPausedListener);
     _isLiked = ValueNotifier(false);
 
@@ -83,9 +81,9 @@ class _ReelState extends State<Reel> {
 
   void _isPausedListener() {
     if (_isPaused.value) {
-      _videoController?.pause();
+      _videoController.pause();
     } else {
-      Future<void>.delayed(300.ms, () => _videoController?.play());
+      Future<void>.delayed(300.ms, () => _videoController.play());
     }
   }
 
@@ -96,7 +94,7 @@ class _ReelState extends State<Reel> {
 
   @override
   void dispose() {
-    _videoController?.dispose();
+    _videoController.dispose();
     _isPaused
       ..removeListener(_isPausedListener)
       ..dispose();
@@ -107,17 +105,7 @@ class _ReelState extends State<Reel> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.block is! PostReelBlock) {
-      return SizedBox.expand(
-        child: Center(
-          child: Text(
-            context.l10n.somethingWentWrongText,
-            style: context.headlineLarge,
-          ),
-        ),
-      );
-    }
-    final block = widget.block as PostReelBlock;
+    final block = widget.block;
 
     return ValueListenableBuilder<bool>(
       valueListenable: _isLiked,
@@ -188,23 +176,22 @@ class _ReelState extends State<Reel> {
                 ),
               ),
             ),
-            if (_videoController != null)
-              ValueListenableBuilder<bool>(
-                valueListenable: _isPaused,
-                child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: SmoothVideoProgressIndicator(
-                    controller: _videoController!,
-                  ),
+            ValueListenableBuilder<bool>(
+              valueListenable: _isPaused,
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: SmoothVideoProgressIndicator(
+                  controller: _videoController,
                 ),
-                builder: (context, isPaused, child) {
-                  return AnimatedOpacity(
-                    opacity: isPaused ? 0 : 1,
-                    duration: 150.ms,
-                    child: child,
-                  );
-                },
               ),
+              builder: (context, isPaused, child) {
+                return AnimatedOpacity(
+                  opacity: isPaused ? 0 : 1,
+                  duration: 150.ms,
+                  child: child,
+                );
+              },
+            ),
           ],
         ),
       ),
@@ -274,7 +261,7 @@ class ReelShimmerLoading extends StatelessWidget {
 class VerticalButtons extends StatelessWidget {
   const VerticalButtons(this.block, {super.key});
 
-  final PostBlock block;
+  final PostReelBlock block;
 
   @override
   Widget build(BuildContext context) {
@@ -284,7 +271,8 @@ class VerticalButtons extends StatelessWidget {
         context.select((PostBloc bloc) => bloc.state.commentsCount);
     final isOwner = context.select((PostBloc bloc) => bloc.state.isOwner);
 
-    Future<void> onCommentsTap(PostBlock block) => context.showScrollableModal(
+    Future<void> onCommentsTap(PostReelBlock block) =>
+        context.showScrollableModal(
           pageBuilder: (scrollController, draggableScrollController) =>
               CommentsPage(
             post: block,
@@ -400,7 +388,7 @@ class VerticalButtons extends StatelessWidget {
 class ReelAuthorListTile extends StatelessWidget {
   const ReelAuthorListTile({required this.block, super.key});
 
-  final PostBlock block;
+  final PostReelBlock block;
 
   @override
   Widget build(BuildContext context) {
