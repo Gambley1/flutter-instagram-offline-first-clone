@@ -276,8 +276,8 @@ class ChatMessagesListView extends StatefulWidget {
 
 class _ChatMessagesListViewState extends State<ChatMessagesListView> {
   final Map<String, int> _messagesIndex = {};
-  final _highlightMessageId = ValueNotifier<String?>(null);
-  final _showScrollToBottom = ValueNotifier(false);
+  late ValueNotifier<String?> _highlightMessageId;
+  late ValueNotifier<bool> _showScrollToBottom;
 
   Timer? _highlightTimer;
 
@@ -287,6 +287,9 @@ class _ChatMessagesListViewState extends State<ChatMessagesListView> {
   @override
   void initState() {
     super.initState();
+    _highlightMessageId = ValueNotifier(null);
+    _showScrollToBottom = ValueNotifier(false);
+
     didUpdateWidget(widget);
   }
 
