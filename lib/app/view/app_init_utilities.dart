@@ -2,7 +2,6 @@ import 'package:app_ui/app_ui.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
-import 'package:flutter_instagram_offline_first_clone/l10n/time_ago.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:shared/shared.dart';
 import 'package:stories_editor/stories_editor.dart';
@@ -63,10 +62,6 @@ void initUtilities(BuildContext context, Locale locale) {
     commentDelegate: CommentTextDelegate(
       seeAllCommentsText: l10n.seeAllComments,
       replyText: l10n.replyText,
-    ),
-    dateTimeDelegate: DateTimeTextDelegate(
-      timeAgo: (createdAt) => createdAt.timeAgo(context),
-      timeAgoShort: (createdAt) => createdAt.timeAgoShort(context),
     ),
     followDelegate: FollowTextDelegate(
       followText: l10n.followUser,

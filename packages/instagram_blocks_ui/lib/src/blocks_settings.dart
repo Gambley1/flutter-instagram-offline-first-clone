@@ -9,18 +9,15 @@ final class BlockSettings {
 
   late PostTextDelegate postTextDelegate;
   late FollowTextDelegate followTextDelegate;
-  late DateTimeTextDelegate dateTimeTextDelegate;
   late CommentTextDelegate commentTextDelegate;
 
   void init({
     required PostTextDelegate postDelegate,
     required FollowTextDelegate followDelegate,
-    required DateTimeTextDelegate dateTimeDelegate,
     required CommentTextDelegate commentDelegate,
   }) {
     postTextDelegate = postDelegate;
     followTextDelegate = followDelegate;
-    dateTimeTextDelegate = dateTimeDelegate;
     commentTextDelegate = commentDelegate;
   }
 }
@@ -82,14 +79,4 @@ final class FollowTextDelegate {
 
   final String followText;
   final String followingText;
-}
-
-final class DateTimeTextDelegate {
-  const DateTimeTextDelegate({
-    required this.timeAgo,
-    required this.timeAgoShort,
-  });
-
-  final String Function(DateTime createdAt) timeAgo;
-  final String Function(DateTime createdAt) timeAgoShort;
 }
