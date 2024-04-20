@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/comments/bloc/comments_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/comments/comment/comment.dart';
+import 'package:flutter_instagram_offline_first_clone/comments/comment/widgets/comment_input_controller.dart';
 import 'package:flutter_instagram_offline_first_clone/comments/comment/widgets/widgets.dart';
-import 'package:flutter_instagram_offline_first_clone/comments/provider/comments_provider.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:posts_repository/posts_repository.dart';
 import 'package:shared/shared.dart';
@@ -21,26 +21,54 @@ class CommentsPage extends StatefulWidget {
   final ScrollController scrollController;
   final DraggableScrollableController draggableScrollController;
 
+  static CommentInheritedWidget of(BuildContext context) {
+    final provider =
+        context.getInheritedWidgetOfExactType<CommentInheritedWidget>();
+    assert(provider != null, 'No CommentInheritedWidget found in context!');
+    return provider!;
+  }
+
   @override
   State<CommentsPage> createState() => _CommentsPageState();
 }
 
 class _CommentsPageState extends State<CommentsPage> {
-  late CommentsProvider _commentsController;
   late TextEditingController _commentTextController;
+  late FocusNode _commentFocusNode;
+
+  late CommentInputController _commentInputController;
 
   @override
   void initState() {
     super.initState();
-    _commentsController = CommentsProvider();
     _commentTextController = TextEditingController();
+    _commentFocusNode = FocusNode()..addListener(_commentFocusNodeListener);
 
-    _commentsController.commentTextController = _commentTextController;
+    _commentInputController = CommentInputController()
+      ..init(
+        commentFocusNode: _commentFocusNode,
+        commentTextController: _commentTextController,
+      );
+  }
+
+  void _commentFocusNodeListener() {
+    if (_commentFocusNode.hasFocus) {
+      if (!widget.draggableScrollController.isAttached) return;
+      if (widget.draggableScrollController.size == 1.0) return;
+      widget.draggableScrollController.animateTo(
+        1,
+        duration: 250.ms,
+        curve: Curves.ease,
+      );
+    }
   }
 
   @override
   void dispose() {
-    _commentsController.dispose();
+    _commentInputController
+      ..commentFocusNode
+      ..removeListener(_commentFocusNodeListener)
+      ..dispose();
     super.dispose();
   }
 
@@ -51,8 +79,8 @@ class _CommentsPageState extends State<CommentsPage> {
         postId: widget.post.id,
         postsRepository: context.read<PostsRepository>(),
       )..add(const CommentsSubscriptionRequested()),
-      child: RepositoryProvider.value(
-        value: _commentsController,
+      child: CommentInheritedWidget(
+        commentInputController: _commentInputController,
         child: CommentsView(
           post: widget.post,
           scrollController: widget.scrollController,

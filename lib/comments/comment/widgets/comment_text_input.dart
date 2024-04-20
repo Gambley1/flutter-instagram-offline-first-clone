@@ -5,7 +5,6 @@ import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/comments/comments.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
-import 'package:shared/shared.dart';
 
 class CommentTextField extends StatefulWidget {
   const CommentTextField({
@@ -22,44 +21,22 @@ class CommentTextField extends StatefulWidget {
 }
 
 class _CommentTextFieldState extends State<CommentTextField> {
-  late TextEditingController _commentTextController;
-  late FocusNode _focusNode;
-
-  @override
-  void initState() {
-    super.initState();
-    _commentTextController =
-        context.read<CommentsProvider>().commentTextController;
-
-    _focusNode = context.read<CommentsProvider>().commentFocusNode;
-    _focusNode.addListener(() {
-      if (_focusNode.hasFocus) {
-        if (!widget.controller.isAttached) return;
-        if (widget.controller.size == 1.0) return;
-        widget.controller.animateTo(
-          1,
-          duration: 250.ms,
-          curve: Curves.ease,
-        );
-      }
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final user = context.select((AppBloc b) => b.state.user);
-    final commentsController = context.read<CommentsProvider>();
+    final commentInputController =
+        CommentsPage.of(context).commentInputController;
 
     return Padding(
       padding: EdgeInsets.only(bottom: context.viewInsets.bottom),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          ValueListenableBuilder<bool>(
-            valueListenable: commentsController.isCommentReplyingTo,
-            builder: (context, isReplying, child) {
+          ListenableBuilder(
+            listenable: commentInputController,
+            builder: (context, child) {
               return Offstage(
-                offstage: !isReplying,
+                offstage: !commentInputController.isReplying,
                 child: ListTile(
                   tileColor: context.customReversedAdaptiveColor(
                     light: AppColors.brightGrey,
@@ -67,12 +44,12 @@ class _CommentTextFieldState extends State<CommentTextField> {
                   ),
                   title: Text(
                     context.l10n.replyToText(
-                      commentsController.commentReplyingToUsername ?? 'unknown',
+                      commentInputController.replyingUsername ?? 'unknown',
                     ),
                     style: context.bodyMedium?.apply(color: AppColors.grey),
                   ),
                   trailing: Tappable(
-                    onTap: commentsController.clearReplying,
+                    onTap: commentInputController.clear,
                     animationEffect: TappableAnimationEffect.none,
                     child: const Icon(Icons.cancel, color: AppColors.grey),
                   ),
@@ -93,16 +70,7 @@ class _CommentTextFieldState extends State<CommentTextField> {
                           child: FittedBox(
                             child: TextEmoji(
                               emoji: emoji,
-                              onEmojiTap: (emoji) {
-                                _commentTextController
-                                  ..text = _commentTextController.text + emoji
-                                  ..selection = TextSelection.fromPosition(
-                                    TextPosition(
-                                      offset:
-                                          _commentTextController.text.length,
-                                    ),
-                                  );
-                              },
+                              onEmojiTap: commentInputController.onEmojiTap,
                             ),
                           ),
                         ),
@@ -122,8 +90,9 @@ class _CommentTextFieldState extends State<CommentTextField> {
                       withShimmerPlaceholder: true,
                     ),
                     subtitle: AppTextField(
-                      textController: _commentTextController,
-                      focusNode: _focusNode,
+                      textController:
+                          commentInputController.commentTextController,
+                      focusNode: commentInputController.commentFocusNode,
                       contentPadding: EdgeInsets.zero,
                       hintText: context.l10n.addCommentText,
                       textInputType: TextInputType.text,
@@ -133,30 +102,31 @@ class _CommentTextFieldState extends State<CommentTextField> {
                         borderSide: BorderSide.none,
                       ),
                     ),
-                    trailing: AnimatedBuilder(
-                      animation: Listenable.merge([_commentTextController]),
-                      builder: (context, child) {
-                        if (_commentTextController.text.trim().isEmpty) {
+                    trailing: ListenableBuilder(
+                      listenable: commentInputController.commentTextController,
+                      builder: (context, _) {
+                        if (commentInputController.commentTextController.text
+                            .trim()
+                            .isEmpty) {
                           return const SizedBox.shrink();
                         }
                         return Tappable(
                           fadeStrength: FadeStrength.medium,
                           onTap: () {
-                            if (_commentTextController.value.text.isEmpty) {
+                            if (commentInputController
+                                .commentTextController.value.text.isEmpty) {
                               return;
                             }
                             context.read<CommentsBloc>().add(
                                   CommentsCommentCreateRequested(
                                     userId: user.id,
-                                    content: _commentTextController.value.text,
-                                    repliedToCommentId: commentsController
-                                        .commentReplyingToCommentId,
+                                    content: commentInputController
+                                        .commentTextController.value.text,
+                                    repliedToCommentId: commentInputController
+                                        .replyingCommentId,
                                   ),
                                 );
-                            if (commentsController.isReplying) {
-                              commentsController.clearReplying();
-                            }
-                            _commentTextController.clear();
+                            commentInputController.clear();
                           },
                           child: Text(
                             context.l10n.publishText,

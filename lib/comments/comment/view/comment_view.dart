@@ -61,6 +61,9 @@ class CommentGroup extends StatelessWidget {
         context.select((CommentBloc bloc) => bloc.state.isLikedByOwner);
     final likes = context.select((CommentBloc bloc) => bloc.state.likes);
 
+    final commentInputController =
+        CommentsPage.of(context).commentInputController;
+
     return Column(
       children: [
         UserComment(
@@ -80,12 +83,10 @@ class CommentGroup extends StatelessWidget {
             enableInactiveBorder: false,
             withAdaptiveBorder: false,
           ),
-          onReplyButtonTap: (username) => context
-              .read<CommentsProvider>()
-              .setReplyingTo(
-                commentId: isReplied ? comment.repliedToCommentId! : comment.id,
-                username: username,
-              ),
+          onReplyButtonTap: (username) => commentInputController.setReplyingTo(
+            commentId: isReplied ? comment.repliedToCommentId! : comment.id,
+            username: username,
+          ),
           likesCount: likes,
           isReplied: isReplied,
           isLiked: isLiked,
