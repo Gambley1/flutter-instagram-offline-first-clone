@@ -100,7 +100,9 @@ class _InlineVideoState extends State<InlineVideo>
 
   @override
   void dispose() {
-    _controller.dispose();
+    _controller
+        .pause()
+        .then((_) => Future<void>.delayed(1.seconds, _controller.dispose));
     super.dispose();
   }
 
