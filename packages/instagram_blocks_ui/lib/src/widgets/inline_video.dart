@@ -125,10 +125,6 @@ class _InlineVideoState extends State<InlineVideo>
       stackedWidget: videoSettings.stackedWidget,
     );
 
-    if (!videoSettings.withPlayerController && !videoSettings.withSoundButton) {
-      return inlineVideo;
-    }
-
     return AnimatedCrossFade(
       duration: 110.ms,
       alignment: Alignment.center,
