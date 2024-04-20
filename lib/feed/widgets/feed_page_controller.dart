@@ -65,7 +65,7 @@ class FeedPageController extends ChangeNotifier {
     StatefulNavigationShell.of(_context)
         .goBranch(navigateToReelPage ? 3 : 0, initialLocation: true);
     if (pickVideo) {
-      VideoPlayerInheritedWidget.of(_context).videoPlayerProvider.playReels();
+      VideoPlayerInheritedWidget.of(_context).videoPlayerState.playReels();
     }
 
     late final postId = uuid.v4();

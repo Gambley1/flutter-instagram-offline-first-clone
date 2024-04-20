@@ -6,8 +6,8 @@ import 'package:inview_notifier_list/inview_notifier_list.dart';
 
 enum VideoPlayerType { feed, timeline, reels }
 
-class VideoPlayerNotifierWidget extends StatefulWidget {
-  const VideoPlayerNotifierWidget({
+class VideoPlayerInViewNotifierWidget extends StatefulWidget {
+  const VideoPlayerInViewNotifierWidget({
     required this.type,
     required this.builder,
     this.id,
@@ -24,22 +24,22 @@ class VideoPlayerNotifierWidget extends StatefulWidget {
       builder;
 
   @override
-  State<VideoPlayerNotifierWidget> createState() => _VideoPlayerNotifierState();
+  State<VideoPlayerInViewNotifierWidget> createState() =>
+      _VideoPlayerNotifierState();
 }
 
-class _VideoPlayerNotifierState extends State<VideoPlayerNotifierWidget> {
-  late VideoPlayerProvider _videoPlayerProvider;
+class _VideoPlayerNotifierState extends State<VideoPlayerInViewNotifierWidget> {
+  late VideoPlayerState _videoPlayerState;
   late ValueNotifier<bool> _shouldPlayType;
 
   @override
   void initState() {
     super.initState();
-    _videoPlayerProvider =
-        VideoPlayerInheritedWidget.of(context).videoPlayerProvider;
+    _videoPlayerState = VideoPlayerInheritedWidget.of(context).videoPlayerState;
     _shouldPlayType = switch (widget.type) {
-      VideoPlayerType.feed => _videoPlayerProvider.shouldPlayFeed,
-      VideoPlayerType.reels => _videoPlayerProvider.shouldPlayReels,
-      VideoPlayerType.timeline => _videoPlayerProvider.shouldPlayTimeline,
+      VideoPlayerType.feed => _videoPlayerState.shouldPlayFeed,
+      VideoPlayerType.reels => _videoPlayerState.shouldPlayReels,
+      VideoPlayerType.timeline => _videoPlayerState.shouldPlayTimeline,
     };
   }
 

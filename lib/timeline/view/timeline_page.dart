@@ -8,7 +8,7 @@ import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:flutter_instagram_offline_first_clone/search/view/search_page.dart';
 import 'package:flutter_instagram_offline_first_clone/timeline/timeline.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
+import 'package:instagram_blocks_ui/instagram_blocks_ui.dart' hide VideoPlayer;
 import 'package:inview_notifier_list/inview_notifier_list.dart';
 import 'package:posts_repository/posts_repository.dart';
 import 'package:shared/shared.dart';
@@ -193,7 +193,7 @@ class _TimelineGridViewState extends State<TimelineGridView> {
             multiMedia: multiMedia,
             mediaUrl: _block.firstMediaUrl!,
             imageThumbnailBuilder: (_, url) => _block.isReel
-                ? VideoPlayerNotifierWidget(
+                ? VideoPlayerInViewNotifierWidget(
                     type: VideoPlayerType.timeline,
                     id: '$index',
                     checkIsInView: true,

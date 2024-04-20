@@ -1,2 +1,2 @@
-export 'provider/video_player_provider.dart';
-export 'view/video_player_notifier.dart';
+export 'view/video_player.dart';
+export 'widgets/widgets.dart';

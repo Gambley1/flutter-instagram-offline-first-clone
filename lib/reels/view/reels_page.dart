@@ -51,8 +51,8 @@ class _ReelsViewState extends State<ReelsView> {
 
   @override
   Widget build(BuildContext context) {
-    final videoPlayerProvider =
-        VideoPlayerInheritedWidget.of(context).videoPlayerProvider;
+    final videoPlayerState =
+        VideoPlayerInheritedWidget.of(context).videoPlayerState;
 
     return Stack(
       fit: StackFit.expand,
@@ -99,8 +99,8 @@ class _ReelsViewState extends State<ReelsView> {
                     return ListenableBuilder(
                       listenable: Listenable.merge(
                         [
-                          videoPlayerProvider.shouldPlayReels,
-                          videoPlayerProvider.withSound,
+                          videoPlayerState.shouldPlayReels,
+                          videoPlayerState.withSound,
                           _currentIndex,
                         ],
                       ),
@@ -111,8 +111,8 @@ class _ReelsViewState extends State<ReelsView> {
                           return ReelView(
                             key: ValueKey(block.id),
                             play: isCurrent &&
-                                videoPlayerProvider.shouldPlayReels.value,
-                            withSound: videoPlayerProvider.withSound.value,
+                                videoPlayerState.shouldPlayReels.value,
+                            withSound: videoPlayerState.withSound.value,
                             block: block,
                           );
                         }

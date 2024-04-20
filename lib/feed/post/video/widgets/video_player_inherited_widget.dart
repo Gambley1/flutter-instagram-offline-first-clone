@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class VideoPlayerProvider {
-  VideoPlayerProvider();
+class VideoPlayerState {
+  VideoPlayerState();
 
   final enablePageView = ValueNotifier(true);
   final shouldPlayFeed = ValueNotifier(true);
@@ -41,21 +41,21 @@ class VideoPlayerProvider {
 
 class VideoPlayerInheritedWidget extends InheritedWidget {
   const VideoPlayerInheritedWidget({
-    required this.videoPlayerProvider,
+    required this.videoPlayerState,
     required super.child,
     super.key,
   });
 
-  final VideoPlayerProvider videoPlayerProvider;
+  final VideoPlayerState videoPlayerState;
 
   @override
   bool updateShouldNotify(VideoPlayerInheritedWidget oldWidget) =>
-      videoPlayerProvider != oldWidget.videoPlayerProvider;
+      videoPlayerState != oldWidget.videoPlayerState;
 
   static VideoPlayerInheritedWidget of(BuildContext context) {
     final provider =
         context.getInheritedWidgetOfExactType<VideoPlayerInheritedWidget>();
-    assert(provider != null, 'No VideoPlayerProvider found in context!');
+    assert(provider != null, 'No VideoPlayerState found in context!');
     return provider!;
   }
 

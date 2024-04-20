@@ -55,7 +55,7 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  late VideoPlayerProvider _videoPlayerProvider;
+  late VideoPlayerState _videoPlayerState;
   late PageController _pageController;
 
   @override
@@ -64,7 +64,7 @@ class _HomeViewState extends State<HomeView> {
 
     _pageController = PageController(initialPage: 1)
       ..addListener(_onPageScroll);
-    _videoPlayerProvider = VideoPlayerProvider();
+    _videoPlayerState = VideoPlayerState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       HomeProvider().setPageController(_pageController);
@@ -85,17 +85,17 @@ class _HomeViewState extends State<HomeView> {
     final isReels = !isScrolling && mainPageView && navigationBarIndex == 3;
 
     if (isScrolling) {
-      _videoPlayerProvider.stopAll();
+      _videoPlayerState.stopAll();
     }
     switch ((isFeed, isTimeline, isReels)) {
       case (true, false, false):
-        _videoPlayerProvider.playFeed();
+        _videoPlayerState.playFeed();
       case (false, true, false):
-        _videoPlayerProvider.playTimeline();
+        _videoPlayerState.playTimeline();
       case (false, false, true):
-        _videoPlayerProvider.playReels();
+        _videoPlayerState.playReels();
       case _:
-        _videoPlayerProvider.stopAll();
+        _videoPlayerState.stopAll();
     }
   }
 
@@ -125,7 +125,7 @@ class _HomeViewState extends State<HomeView> {
             context.read<FirebaseRemoteConfigRepository>(),
       )..add(const CreateStoriesIsFeatureAvailableSubscriptionRequested()),
       child: VideoPlayerInheritedWidget(
-        videoPlayerProvider: _videoPlayerProvider,
+        videoPlayerState: _videoPlayerState,
         child: ListenableBuilder(
           listenable: HomeProvider(),
           builder: (context, child) {
