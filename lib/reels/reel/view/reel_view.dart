@@ -94,7 +94,9 @@ class _ReelState extends State<Reel> {
 
   @override
   void dispose() {
-    _videoController.dispose();
+    _videoController
+        .pause()
+        .then((_) => Future<void>.delayed(1.seconds, _videoController.dispose));
     _isPaused
       ..removeListener(_isPausedListener)
       ..dispose();
