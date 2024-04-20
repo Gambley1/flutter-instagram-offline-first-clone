@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/feed.dart';
+import 'package:flutter_instagram_offline_first_clone/feed/post/video/video.dart';
 import 'package:go_router/go_router.dart';
 import 'package:powersync_repository/powersync_repository.dart';
 import 'package:shared/shared.dart';
@@ -56,13 +57,16 @@ class FeedPageController extends ChangeNotifier {
     required List<SelectedByte> selectedFiles,
     required String postId,
     required String caption,
-    required bool isReel,
+    required bool pickVideo,
   }) async {
-    final navigateToReelPage = isReel ||
-        (selectedFiles.length == 1 &&
-            selectedFiles.every((e) => !e.isThatImage));
+    final isReel =
+        selectedFiles.length == 1 && selectedFiles.every((e) => !e.isThatImage);
+    final navigateToReelPage = isReel;
     StatefulNavigationShell.of(_context)
         .goBranch(navigateToReelPage ? 3 : 0, initialLocation: true);
+    if (pickVideo) {
+      VideoPlayerInheritedWidget.of(_context).videoPlayerProvider.playReels();
+    }
 
     late final postId = uuid.v4();
 

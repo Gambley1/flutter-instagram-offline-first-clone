@@ -16,6 +16,7 @@ class UserProfileCreatePost extends StatelessWidget {
   const UserProfileCreatePost({
     this.canPop = true,
     this.imagePickerKey,
+    this.pickVideo = false,
     this.onPopInvoked,
     this.onBackButtonTap,
     super.key,
@@ -23,11 +24,13 @@ class UserProfileCreatePost extends StatelessWidget {
 
   final bool canPop;
   final Key? imagePickerKey;
+  final bool pickVideo;
   final VoidCallback? onBackButtonTap;
   final VoidCallback? onPopInvoked;
 
   @override
   Widget build(BuildContext context) {
+    final pickerSource = pickVideo ? PickerSource.video : PickerSource.both;
     return PopScope(
       canPop: canPop,
       onPopInvoked: (didPop) {
@@ -38,10 +41,10 @@ class UserProfileCreatePost extends StatelessWidget {
         key: imagePickerKey,
         context: context,
         source: ImageSource.both,
-        pickerSource: PickerSource.both,
+        pickerSource: pickerSource,
         onMediaPicked: (details) => context.pushNamed(
           'publish_post',
-          extra: CreatePostProps(details: details),
+          extra: CreatePostProps(details: details, pickVideo: pickVideo),
         ),
         onBackButtonTap:
             onBackButtonTap != null ? () => onBackButtonTap?.call() : null,
@@ -53,11 +56,11 @@ class UserProfileCreatePost extends StatelessWidget {
 class CreatePostProps {
   const CreatePostProps({
     required this.details,
-    this.isReel = false,
+    this.pickVideo = false,
   });
 
   final SelectedImagesDetails details;
-  final bool isReel;
+  final bool pickVideo;
 }
 
 class CreatePostPage extends StatefulWidget {
@@ -96,11 +99,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
   Future<void> _onShareTap(String caption) async {
     void goHome() {
-      if (widget.props.isReel) {
-        context
-          ..pop()
-          ..pop();
-      } else {
+      if (!widget.props.pickVideo) {
         HomeProvider().animateToPage(1);
         FeedPageController().scrollToTop();
       }
@@ -115,7 +114,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
           postId: postId,
           selectedFiles: selectedFiles,
           caption: _captionController.text.trim(),
-          isReel: widget.props.isReel,
+          pickVideo: widget.props.pickVideo,
         ),
       );
       goHome.call();

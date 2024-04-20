@@ -21,24 +21,15 @@ class PostBloc extends HydratedBloc<PostEvent, PostState> {
         super(const PostState.initial()) {
     on<PostLikesCountSubscriptionRequested>(
       _onPostLikesCountSubscriptionRequested,
-      transformer: throttleDroppable(),
     );
     on<PostCommentsCountSubscriptionRequested>(
       _onPostCommentsCountSubscriptionRequested,
-      transformer: throttleDroppable(),
     );
-    on<PostIsLikedSubscriptionRequested>(
-      _onPostIsLikedSubscriptionRequested,
-      transformer: throttleDroppable(),
-    );
+    on<PostIsLikedSubscriptionRequested>(_onPostIsLikedSubscriptionRequested);
     on<PostAuthorFollowingStatusSubscriptionRequested>(
       _onPostAuthorFollowingStatusSubscriptionRequested,
-      transformer: throttleDroppable(),
     );
-    on<PostLikersPageRequested>(
-      _onPostLikersPageRequested,
-      transformer: throttleDroppable(),
-    );
+    on<PostLikersPageRequested>(_onPostLikersPageRequested);
     on<PostUpdateRequested>(_onPostUpdateRequested);
     on<PostLikeRequested>(_onPostLikeRequested);
     on<PostAuthorFollowRequested>(_onPostAuthorFollowRequested);
@@ -46,7 +37,6 @@ class PostBloc extends HydratedBloc<PostEvent, PostState> {
     on<PostShareRequested>(_onPostShareRequested);
     on<PostLikersInFollowingsFetchRequested>(
       _onPostLikersInFollowingsFetchRequested,
-      transformer: concurrent(),
     );
   }
 

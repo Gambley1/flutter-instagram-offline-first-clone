@@ -24,21 +24,22 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> with FeedBlocMixin {
   })  : _postsRepository = postsRepository,
         _firebaseRemoteConfigRepository = firebaseRemoteConfigRepository,
         super(const FeedState.initial()) {
-    on<FeedPageRequested>(
-      _onFeedPageRequested,
-      transformer: throttleDroppable(),
-    );
+    on<FeedPageRequested>(_onFeedPageRequested);
     on<FeedReelsPageRequested>(
       _onFeedReelsPageRequested,
-      transformer: throttleDroppable(),
+      transformer: sequential(),
     );
     on<FeedRefreshRequested>(
       _onFeedRefreshRequested,
       transformer: throttleDroppable(duration: 550.ms),
     );
+    on<FeedReelsRefreshRequested>(
+      _onFeedReelsRefreshRequested,
+      transformer: throttleDroppable(duration: 550.ms),
+    );
     on<FeedRecommendedPostsPageRequested>(
       _onFeedRecommendedPostsPageRequested,
-      transformer: throttleDroppable(),
+      transformer: sequential(),
     );
     on<FeedPostCreateRequested>(_onFeedPostCreateRequested);
     on<FeedUpdateRequested>(_onFeedUpdateRequested);
@@ -101,6 +102,32 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> with FeedBlocMixin {
           hasMore: hasMore,
           blocks: [...state.feed.reelsPage.blocks, ...blocks],
           totalBlocks: state.feed.reelsPage.totalBlocks + blocks.length,
+        ),
+      );
+      emit(state.populated(feed: feed));
+    } catch (error, stackTrace) {
+      addError(error, stackTrace);
+      emit(state.failure());
+    }
+  }
+
+  Future<void> _onFeedReelsRefreshRequested(
+    FeedReelsRefreshRequested event,
+    Emitter<FeedState> emit,
+  ) async {
+    emit(state.loading());
+    try {
+      final (:newPage, :hasMore, :blocks) = await fetchFeedPage(
+        withSponsoredBlocks: false,
+        mapper: postsToReelBlockMapper,
+      );
+
+      final feed = state.feed.copyWith(
+        reelsPage: ReelsPage(
+          page: newPage,
+          hasMore: hasMore,
+          blocks: blocks,
+          totalBlocks: blocks.length,
         ),
       );
       emit(state.populated(feed: feed));
@@ -217,7 +244,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> with FeedBlocMixin {
       }
       final updatedFeedBlocks = oldFeed.updateFeedPage(update: update);
       List<InstaBlock>? updatedReelsBlocks;
-      if (update.isUpdate && reel != null && update.canUpdateReel) {
+      if (update.canUpdateReel) {
         updatedReelsBlocks = oldFeed.updateReelsPage(update: update);
       }
 

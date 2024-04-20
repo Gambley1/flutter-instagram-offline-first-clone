@@ -17,7 +17,6 @@ class InlineVideo extends StatefulWidget {
 
 class _InlineVideoState extends State<InlineVideo>
     with AutomaticKeepAliveClientMixin, SafeSetStateMixin {
-  late VideoPlayerController? _videoPlayerController;
   late VideoPlayerController _controller;
 
   bool _playerWasSeen = false;
@@ -50,7 +49,7 @@ class _InlineVideoState extends State<InlineVideo>
     if (videoSettings.videoPlayerController != null) {
       _controller = videoSettings.videoPlayerController!;
     } else {
-      _videoPlayerController = videoSettings.videoFile != null
+      _controller = videoSettings.videoFile != null
           ? VideoPlayerController.file(
               videoSettings.videoFile!,
               videoPlayerOptions: videoSettings.videoPlayerOptions,
@@ -59,7 +58,6 @@ class _InlineVideoState extends State<InlineVideo>
               Uri.parse(videoSettings.videoUrl!),
               videoPlayerOptions: videoSettings.videoPlayerOptions,
             );
-      _controller = _videoPlayerController!;
     }
     _controller.initialize().then((_) async {
       safeSetState(() {});
@@ -102,9 +100,8 @@ class _InlineVideoState extends State<InlineVideo>
 
   @override
   void dispose() {
-    super.dispose();
-    _videoPlayerController?.dispose();
     _controller.dispose();
+    super.dispose();
   }
 
   @override

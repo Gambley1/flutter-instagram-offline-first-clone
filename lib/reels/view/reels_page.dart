@@ -8,7 +8,6 @@ import 'package:flutter_instagram_offline_first_clone/feed/feed.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/post/video/video.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:flutter_instagram_offline_first_clone/reels/reel/reel.dart';
-import 'package:flutter_instagram_offline_first_clone/user_profile/widgets/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:shared/shared.dart';
@@ -78,7 +77,9 @@ class _ReelsViewState extends State<ReelsView> {
               }
               return RefreshIndicator.adaptive(
                 onRefresh: () async {
-                  context.read<FeedBloc>().add(const FeedReelsPageRequested());
+                  context
+                      .read<FeedBloc>()
+                      .add(const FeedReelsRefreshRequested());
                   unawaited(
                     _pageController.animateToPage(
                       0,
@@ -130,16 +131,7 @@ class _ReelsViewState extends State<ReelsView> {
           right: AppSpacing.md,
           top: AppSpacing.md,
           child: Tappable(
-            onTap: () => PickImage().pickVideo(
-              context,
-              onMediaPicked: (_, details) => context.pushNamed(
-                'publish_post',
-                extra: CreatePostProps(
-                  details: details,
-                  isReel: true,
-                ),
-              ),
-            ),
+            onTap: () => context.pushNamed('create_post', extra: true),
             child: Icon(
               Icons.camera_alt_outlined,
               size: AppSize.iconSize,
