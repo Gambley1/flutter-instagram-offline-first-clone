@@ -1,7 +1,5 @@
 // ignore_for_file: public_member_api_docs
 
-import 'dart:convert';
-
 import 'package:equatable/equatable.dart';
 import 'package:flutter/widgets.dart';
 import 'package:meta/meta.dart';
@@ -15,16 +13,6 @@ enum StoryContentType {
   static StoryContentType fromJson(Map<String, dynamic> json) =>
       values.byName(json['content_type'] as String);
 }
-
-extension StoryContentTypeConverter on String {
-  StoryContentType get toStoryContentType =>
-      StoryContentType.values.byName(this);
-}
-
-List<Story> fromListJson(String json) =>
-    List<Map<String, dynamic>>.from(jsonDecode(json) as List)
-        .map(Story.fromJson)
-        .toList();
 
 /// {@template story}
 /// The representation of the Instagram user's `story` model.
@@ -46,7 +34,7 @@ class Story extends Equatable {
   /// Converts the `Map<String, dynamic>` into a [Story] instance.
   factory Story.fromJson(Map<String, dynamic> json) => Story(
         id: json['id'] as String,
-        contentType: (json['content_type'] as String).toStoryContentType,
+        contentType: StoryContentType.fromJson(json),
         contentUrl: json['content_url'] as String,
         author: json['user_id'] == null ? User.anonymous : User.fromJson(json),
         duration: json['duration'] as int?,

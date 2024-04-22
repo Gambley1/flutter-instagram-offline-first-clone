@@ -7,22 +7,16 @@ import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:flutter_instagram_offline_first_clone/stories/stories.dart';
 import 'package:go_router/go_router.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
+import 'package:palette_generator/palette_generator.dart';
 import 'package:shared/shared.dart';
 import 'package:stories_repository/stories_repository.dart';
 import 'package:story_view/story_view.dart';
 import 'package:user_repository/user_repository.dart';
 
 class StoriesPage extends StatelessWidget {
-  const StoriesPage({
-    required this.stories,
-    required this.author,
-    super.key,
-    this.onStorySeen,
-  });
+  const StoriesPage({required this.props, super.key});
 
-  final User author;
-  final List<Story> stories;
-  final void Function(int storyIndex, List<Story> stories)? onStorySeen;
+  final StoriesProps props;
 
   @override
   Widget build(BuildContext context) {
@@ -34,27 +28,16 @@ class StoriesPage extends StatelessWidget {
       child: AppScaffold(
         extendBody: true,
         extendBodyBehindAppBar: true,
-        body: StoriesView(
-          author: author,
-          stories: stories,
-          onStorySeen: onStorySeen,
-        ),
+        body: StoriesView(props: props),
       ),
     );
   }
 }
 
 class StoriesView extends StatefulWidget {
-  const StoriesView({
-    required this.author,
-    required this.stories,
-    required this.onStorySeen,
-    super.key,
-  });
+  const StoriesView({required this.props, super.key});
 
-  final User author;
-  final List<Story> stories;
-  final void Function(int storyIndex, List<Story> stories)? onStorySeen;
+  final StoriesProps props;
 
   @override
   State<StoriesView> createState() => _StoriesViewState();
@@ -70,42 +53,46 @@ class _StoriesViewState extends State<StoriesView> with SafeSetStateMixin {
   final _wasVisible = ValueNotifier<bool>(false);
 
   Color? _textColor;
+  Color? _iconColor;
+
+  StoriesProps get props => widget.props;
 
   @override
   void initState() {
     super.initState();
-    _storyItems.value = widget.stories.toStoryItems(_controller);
+    _storyItems.value = props.stories.toStoryItems(_controller);
     _showOverlay.addListener(_showOverlayListener);
   }
 
-  Future<void> _initTextColor() async {
-    final colorScheme = await ColorScheme.fromImageProvider(
-      provider: NetworkImage(_currentStory.value.contentUrl),
-    );
-    final dominantColor = colorScheme.surface;
-    setState(() {
-      _textColor = _getContrastingColor(dominantColor);
+  Future<void> _initColor() async {
+    final textColor =
+        await _useWhiteTextColor(region: Offset.zero & const Size(40, 40))
+            .then((isWhite) => isWhite ? AppColors.white : AppColors.black);
+
+    final iconColor = await _useWhiteTextColor(
+      region: const Offset(360, 360) & const Size(40, 40),
+    ).then((isWhite) => isWhite ? AppColors.white : AppColors.black);
+    safeSetState(() {
+      _textColor = textColor;
+      _iconColor = iconColor;
     });
   }
 
-  Color _getContrastingColor(Color color) {
-    const blackThreshold = 0.18;
-    const whiteThreshold = 0.95;
-    final luminance = color.computeLuminance();
-    if (luminance > whiteThreshold) {
-      return AppColors.black;
-    } else if (luminance < blackThreshold) {
-      return AppColors.white;
-    } else {
-      var hslColor = HSLColor.fromColor(color);
-      hslColor = hslColor.withLightness(
-        hslColor.lightness < 0.5
-            ? hslColor.lightness + 0.1
-            : hslColor.lightness - 0.1,
-      );
-      return hslColor.toColor();
-    }
+  Future<bool> _useWhiteTextColor({required Rect region}) async {
+    final paletteGenerator = await PaletteGenerator.fromImageProvider(
+      NetworkImage(_currentStory.value.contentUrl),
+      size: const Size(400, 400),
+      region: region,
+    );
+
+    final dominantColor = paletteGenerator.dominantColor?.color;
+    if (dominantColor == null) return false;
+
+    return _useWhiteForeground(dominantColor);
   }
+
+  bool _useWhiteForeground(Color backgroundColor) =>
+      1.05 / (backgroundColor.computeLuminance() + 0.05) > 4.5;
 
   void _showOverlayListener() {
     if (!_showOverlay.value) {
@@ -158,17 +145,17 @@ class _StoriesViewState extends State<StoriesView> with SafeSetStateMixin {
                   controller: _controller,
                   onStoryShow: (story, index) {
                     WidgetsBinding.instance.addPostFrameCallback((_) {
-                      _currentStory.value = widget.stories[index];
-                      _createdAt.value = widget.stories[index].createdAt;
-                      _initTextColor();
+                      _currentStory.value = props.stories[index];
+                      _createdAt.value = props.stories[index].createdAt;
+                      _initColor();
                     });
-                    if (widget.onStorySeen != null) {
-                      widget.onStorySeen!.call(index, widget.stories);
+                    if (props.onStorySeen != null) {
+                      props.onStorySeen!.call(index, props.stories);
                     }
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       context.read<StoriesBloc>().add(
                             StoriesStorySeen(
-                              widget.stories[index],
+                              props.stories[index],
                               user.id,
                             ),
                           );
@@ -190,7 +177,7 @@ class _StoriesViewState extends State<StoriesView> with SafeSetStateMixin {
               opacity: _showOverlay.value ? 1 : 0,
               duration: 200.ms,
               child: StoriesAuthorListTile(
-                author: widget.author,
+                author: props.author,
                 createdAt: _createdAt.value,
                 textColor: _textColor,
               ),
@@ -208,26 +195,21 @@ class _StoriesViewState extends State<StoriesView> with SafeSetStateMixin {
                 duration: 200.ms,
                 child: StoryOptions(
                   controller: _controller,
-                  author: widget.author,
+                  author: props.author,
                   currentStory: _currentStory.value,
-                  textColor: _textColor,
+                  iconColor: _iconColor,
                   onStoryDeleted: (story) {
-                    final storyIndex = widget.stories.indexOf(story);
+                    final storyIndex = props.stories.indexOf(story);
                     if (storyIndex == -1) return;
                     if (_storyItems.value.length == 1) {
-                      safeSetState(() {
-                        _storyItems.value
-                          ..addAll([Story.empty].toStoryItems(_controller))
-                          ..removeAt(storyIndex);
-                      });
+                      _storyItems.value
+                        ..addAll([Story.empty].toStoryItems(_controller))
+                        ..removeAt(storyIndex);
                       _currentStory.value = Story.empty;
                       if (context.canPop()) context.pop();
                     } else {
-                      safeSetState(
-                        () => _storyItems.value.removeAt(storyIndex),
-                      );
                       _controller.previous();
-                      _currentStory.value = widget.stories.first;
+                      _storyItems.value.removeAt(storyIndex);
                     }
                   },
                 ),
@@ -246,7 +228,7 @@ class StoryOptions extends StatelessWidget {
     required this.controller,
     required this.author,
     required this.onStoryDeleted,
-    this.textColor,
+    this.iconColor,
     super.key,
   });
 
@@ -254,7 +236,7 @@ class StoryOptions extends StatelessWidget {
   final StoryController controller;
   final User author;
   final ValueSetter<Story> onStoryDeleted;
-  final Color? textColor;
+  final Color? iconColor;
 
   @override
   Widget build(BuildContext context) {
@@ -309,12 +291,12 @@ class StoryOptions extends StatelessWidget {
             style: context.bodyMedium!.copyWith(
               fontWeight: AppFontWeight.bold,
               letterSpacing: 0.4,
-              color: textColor,
+              color: iconColor,
             ),
             overflow: TextOverflow.ellipsis,
             child: Column(
               children: [
-                Icon(Icons.more_vert_outlined, color: textColor),
+                Icon(Icons.more_vert_outlined, color: iconColor),
                 const Gap.v(AppSpacing.sm),
                 Text(context.l10n.moreText),
               ],

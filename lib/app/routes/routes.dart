@@ -151,12 +151,11 @@ GoRouter router(AppBloc appBloc) => GoRouter(
           name: 'stories',
           parentNavigatorKey: _rootNavigatorKey,
           pageBuilder: (context, state) {
-            final author = state.extra! as User;
-            final stories = fromListJson(state.uri.queryParameters['stories']!);
+            final props = state.extra! as StoriesProps;
 
             return CustomTransitionPage(
               key: state.pageKey,
-              child: StoriesPage(stories: stories, author: author),
+              child: StoriesPage(props: props),
               transitionsBuilder:
                   (context, animation, secondaryAnimation, child) {
                 return SharedAxisTransition(

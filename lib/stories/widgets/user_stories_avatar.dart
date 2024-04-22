@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -160,10 +158,7 @@ class ProfileAvatar extends StatelessWidget {
             context.pushNamed(
               'stories',
               pathParameters: {'user_id': author.id},
-              queryParameters: {
-                'stories': json.encode(stories.map((e) => e.toJson()).toList()),
-              },
-              extra: author,
+              extra: StoriesProps(stories: stories, author: author),
             );
           } else {
             if (onAvatarTap == null) {
