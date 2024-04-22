@@ -91,6 +91,21 @@ class PostLargeView extends StatelessWidget {
         extra: props,
       );
 
+  void _handleOnPostTap(BuildContext context, {required BlockAction action}) =>
+      action.when(
+        navigateToPostAuthor: (action) =>
+            _navigateToPostAuthor(context, id: action.authorId),
+        navigateToSponsoredPostAuthor: (action) => _navigateToPostAuthor(
+          context,
+          id: action.authorId,
+          props: UserProfileProps.build(
+            isSponsored: true,
+            promoBlockAction: action,
+            sponsoredPost: block as PostSponsoredBlock,
+          ),
+        ),
+      );
+
   @override
   Widget build(BuildContext context) {
     final bloc = context.read<PostBloc>();
@@ -156,19 +171,7 @@ class PostLargeView extends StatelessWidget {
         ),
       ),
       onUserTap: (userId) => _navigateToPostAuthor(context, id: userId),
-      onPressed: (action) => action?.when(
-        navigateToPostAuthor: (action) =>
-            _navigateToPostAuthor(context, id: action.authorId),
-        navigateToSponsoredPostAuthor: (action) => _navigateToPostAuthor(
-          context,
-          id: action.authorId,
-          props: UserProfileProps.build(
-            isSponsored: true,
-            promoBlockAction: action,
-            sponsoredPost: block as PostSponsoredBlock,
-          ),
-        ),
-      ),
+      onPressed: (action) => _handleOnPostTap(context, action: action),
       onPostShareTap: (postId, author) => context.showScrollableModal(
         pageBuilder: (scrollController, draggableScrollController) => SharePost(
           block: block,

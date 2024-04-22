@@ -5,6 +5,7 @@ library insta_blocks;
 export 'src/block_action.dart'
     show
         BlockAction,
+        BlockActionCallback,
         BlockActionX,
         NavigateToPostAuthorProfileAction,
         NavigateToSponsoredPostAuthorProfileAction,

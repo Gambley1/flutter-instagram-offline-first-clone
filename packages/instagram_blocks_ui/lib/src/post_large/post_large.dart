@@ -63,7 +63,7 @@ class PostLarge extends StatefulWidget {
   final int likesCount;
   final int commentsCount;
   final bool enableFollowButton;
-  final ValueSetter<BlockAction?> onPressed;
+  final BlockActionCallback onPressed;
   final ValueSetter<bool> onCommentsTap;
   final OnPostShareTap onPostShareTap;
   final ValueSetter<String> onUserTap;
@@ -96,6 +96,10 @@ class _PostLargeState extends State<PostLarge> {
 
   void _updateCurrentIndex(int index) => _indicatorValue.value = index;
 
+  void _onAvatarTap() => !widget.block.hasNavigationAction
+      ? null
+      : (_) => widget.onPressed(widget.block.action!);
+
   @override
   Widget build(BuildContext context) {
     final isSponsored = widget.block is PostSponsoredBlock;
@@ -120,9 +124,7 @@ class _PostLargeState extends State<PostLarge> {
           enableFollowButton: widget.enableFollowButton,
           postAuthorAvatarBuilder: widget.postAuthorAvatarBuilder,
           postOptionsSettings: widget.postOptionsSettings,
-          onAvatarTap: !widget.block.hasNavigationAction
-              ? null
-              : (_) => widget.onPressed(widget.block.action),
+          onAvatarTap: (_) => _onAvatarTap(),
         );
 
     return Column(
@@ -147,7 +149,7 @@ class _PostLargeState extends State<PostLarge> {
           likePost: widget.likePost,
           likesCount: widget.likesCount,
           commentsCount: widget.commentsCount,
-          onAvatarTap: (_) => widget.onPressed(widget.block.action),
+          onAvatarTap: (_) => _onAvatarTap(),
           onUserTap: widget.onUserTap,
           onCommentsTap: widget.onCommentsTap,
           onPostShareTap: widget.onPostShareTap,

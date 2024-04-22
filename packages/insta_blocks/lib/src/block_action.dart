@@ -1,9 +1,10 @@
-import 'dart:async';
-
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'block_action.g.dart';
+
+/// The signature for the callback that handles [BlockAction].
+typedef BlockActionCallback<T extends BlockAction> = void Function(T action);
 
 /// The different types of actions.
 enum BlockActionType {
@@ -17,22 +18,35 @@ enum BlockActionType {
 /// The extension on [BlockAction] which provides a method to execute the
 /// action.
 extension BlockActionX on BlockAction {
-  /// Executes the action.
-  FutureOr<void> when({
-    FutureOr<void> Function(NavigateToPostAuthorProfileAction)?
+  /// Executes the optional navigation function.
+  void maybeWhen({
+    BlockActionCallback<NavigateToPostAuthorProfileAction>?
         navigateToPostAuthor,
-    FutureOr<void> Function(NavigateToSponsoredPostAuthorProfileAction)?
+    BlockActionCallback<NavigateToSponsoredPostAuthorProfileAction>?
         navigateToSponsoredPostAuthor,
-    FutureOr<void> Function()? unknown,
-  }) =>
-      switch (type) {
-        NavigateToPostAuthorProfileAction.identifier =>
-          navigateToPostAuthor?.call(this as NavigateToPostAuthorProfileAction),
-        NavigateToSponsoredPostAuthorProfileAction.identifier =>
-          navigateToSponsoredPostAuthor
-              ?.call(this as NavigateToSponsoredPostAuthorProfileAction),
-        _ => unknown?.call(),
-      };
+  }) {
+    switch (type) {
+      case NavigateToPostAuthorProfileAction.identifier:
+        return navigateToPostAuthor
+            ?.call(this as NavigateToPostAuthorProfileAction);
+      case NavigateToSponsoredPostAuthorProfileAction.identifier:
+        return navigateToSponsoredPostAuthor
+            ?.call(this as NavigateToSponsoredPostAuthorProfileAction);
+      case _:
+        return;
+    }
+  }
+
+  /// Navigates to the profile of the post author.
+  void when({
+    required BlockActionCallback<NavigateToPostAuthorProfileAction>
+        navigateToPostAuthor,
+    required BlockActionCallback<NavigateToSponsoredPostAuthorProfileAction>
+        navigateToSponsoredPostAuthor,
+  }) => maybeWhen(
+    navigateToPostAuthor: navigateToPostAuthor,
+    navigateToSponsoredPostAuthor: navigateToSponsoredPostAuthor,
+  );
 }
 
 /// {@template block_action}
