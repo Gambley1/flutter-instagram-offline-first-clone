@@ -46,20 +46,29 @@ class StoriesView extends StatefulWidget {
 class _StoriesViewState extends State<StoriesView> with SafeSetStateMixin {
   final StoryController _controller = StoryController();
 
-  final _storyItems = ValueNotifier(<StoryItem>[]);
-  final _currentStory = ValueNotifier<Story>(Story.empty);
-  final _createdAt = ValueNotifier<DateTime?>(null);
-  final _showOverlay = ValueNotifier<bool>(true);
-  final _wasVisible = ValueNotifier<bool>(false);
+  late ValueNotifier<List<StoryItem>> _storyItems;
+  late ValueNotifier<Story> _currentStory;
+  late ValueNotifier<DateTime?> _createdAt;
+  late ValueNotifier<bool> _showOverlay;
+  late ValueNotifier<bool> _wasVisible;
 
   Color? _textColor;
   Color? _iconColor;
 
   StoriesProps get props => widget.props;
+  final _stories = <Story>[];
 
   @override
   void initState() {
     super.initState();
+    _storyItems = ValueNotifier(<StoryItem>[]);
+    _currentStory = ValueNotifier<Story>(Story.empty);
+    _createdAt = ValueNotifier<DateTime?>(null);
+    _showOverlay = ValueNotifier<bool>(true);
+    _wasVisible = ValueNotifier<bool>(false);
+
+    _stories.addAll(props.stories);
+
     _storyItems.value = props.stories.toStoryItems(_controller);
     _showOverlay.addListener(_showOverlayListener);
   }
@@ -145,20 +154,17 @@ class _StoriesViewState extends State<StoriesView> with SafeSetStateMixin {
                   controller: _controller,
                   onStoryShow: (story, index) {
                     WidgetsBinding.instance.addPostFrameCallback((_) {
-                      _currentStory.value = props.stories[index];
-                      _createdAt.value = props.stories[index].createdAt;
+                      _currentStory.value = _stories[index];
+                      _createdAt.value = _stories[index].createdAt;
                       _initColor();
                     });
                     if (props.onStorySeen != null) {
-                      props.onStorySeen!.call(index, props.stories);
+                      props.onStorySeen!.call(index, _stories);
                     }
                     WidgetsBinding.instance.addPostFrameCallback((_) {
-                      context.read<StoriesBloc>().add(
-                            StoriesStorySeen(
-                              props.stories[index],
-                              user.id,
-                            ),
-                          );
+                      context
+                          .read<StoriesBloc>()
+                          .add(StoriesStorySeen(_stories[index], user.id));
                     });
                   },
                   onVerticalSwipeComplete: (_) => context.pop(),
@@ -199,7 +205,7 @@ class _StoriesViewState extends State<StoriesView> with SafeSetStateMixin {
                   currentStory: _currentStory.value,
                   iconColor: _iconColor,
                   onStoryDeleted: (story) {
-                    final storyIndex = props.stories.indexOf(story);
+                    final storyIndex = _stories.indexOf(story);
                     if (storyIndex == -1) return;
                     if (_storyItems.value.length == 1) {
                       _storyItems.value
@@ -209,7 +215,14 @@ class _StoriesViewState extends State<StoriesView> with SafeSetStateMixin {
                       if (context.canPop()) context.pop();
                     } else {
                       _controller.previous();
+                      final prevCurrentStoryIndex =
+                          _stories.indexOf(_currentStory.value);
+                      _stories.removeAt(storyIndex);
                       _storyItems.value.removeAt(storyIndex);
+                      final nextStoryIndex = prevCurrentStoryIndex == 0
+                          ? 0
+                          : prevCurrentStoryIndex - 1;
+                      _currentStory.value = _stories.elementAt(nextStoryIndex);
                     }
                   },
                 ),
