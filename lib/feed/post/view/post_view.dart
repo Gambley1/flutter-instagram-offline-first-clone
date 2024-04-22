@@ -174,6 +174,9 @@ class PostLargeView extends StatelessWidget {
                             aspectRatio: aspectRatio,
                             blurHash: media.blurHash,
                             withSound: withSound,
+                            videoPlayerOptions: VideoPlayerOptions(
+                              mixWithOthers: true,
+                            ),
                             onSoundToggled: ({required enable}) {
                               videoPlayerState.withSound.value = enable;
                             },
@@ -277,6 +280,9 @@ class PostLargeView extends StatelessWidget {
                           aspectRatio: aspectRatio,
                           blurHash: media.blurHash,
                           withSound: withSound,
+                          videoPlayerOptions: VideoPlayerOptions(
+                            mixWithOthers: true,
+                          ),
                           onSoundToggled: ({required enable}) {
                             videoPlayerState.withSound.value = enable;
                           },
