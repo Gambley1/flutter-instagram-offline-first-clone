@@ -125,50 +125,51 @@ class _InlineVideoState extends State<InlineVideo>
       stackedWidget: videoSettings.stackedWidget,
     );
 
-    return AnimatedCrossFade(
-      duration: 110.ms,
-      alignment: Alignment.center,
-      firstChild: InlineVideoPlaceholder(
-        blurHash: videoSettings.blurHash,
-        aspectRatio: videoSettings.aspectRatio,
-        shouldExpand: videoSettings.shouldExpand,
-        loadingBuilder: videoSettings.loadingBuilder,
+    return AnimatedSwitcher(
+      transitionBuilder: (child, animation) => FadeTransition(
+        opacity: animation,
+        child: child,
       ),
-      secondChild: Stack(
-        children: [
-          if (videoSettings.withPlayerController)
-            ListenableBuilder(
-              listenable: _controller,
-              child: inlineVideo,
-              builder: (_, child) => InlineVideoPlayerController(
-                isPlaying: _controller.value.isPlaying,
-                togglePlayer: ({required enable}) =>
-                    enable ? _controller.play() : _controller.pause(),
-                child: child!,
-              ),
+      duration: 250.ms,
+      child: !_controller.value.isInitialized
+          ? InlineVideoPlaceholder(
+              blurHash: videoSettings.blurHash,
+              aspectRatio: videoSettings.aspectRatio,
+              shouldExpand: videoSettings.shouldExpand,
+              loadingBuilder: videoSettings.loadingBuilder,
             )
-          else
-            inlineVideo,
-          if (videoSettings.withSoundButton)
-            Positioned(
-              right: AppSpacing.md,
-              bottom: AppSpacing.md,
-              child: ListenableBuilder(
-                listenable: _controller,
-                builder: (_, __) => ToggleSoundButton(
-                  soundEnabled: _controller.value.volume == 1,
-                  onSoundToggled: ({required enable}) {
-                    videoSettings.onSoundToggled?.call(enable: enable);
-                    _controller.setVolume(enable ? 1 : 0);
-                  },
-                ),
-              ),
+          : Stack(
+              children: [
+                if (videoSettings.withPlayerController)
+                  ListenableBuilder(
+                    listenable: _controller,
+                    child: inlineVideo,
+                    builder: (_, child) => InlineVideoPlayerController(
+                      isPlaying: _controller.value.isPlaying,
+                      togglePlayer: ({required enable}) =>
+                          enable ? _controller.play() : _controller.pause(),
+                      child: child!,
+                    ),
+                  )
+                else
+                  inlineVideo,
+                if (videoSettings.withSoundButton)
+                  Positioned(
+                    right: AppSpacing.md,
+                    bottom: AppSpacing.md,
+                    child: ListenableBuilder(
+                      listenable: _controller,
+                      builder: (_, __) => ToggleSoundButton(
+                        soundEnabled: _controller.value.volume == 1,
+                        onSoundToggled: ({required enable}) {
+                          videoSettings.onSoundToggled?.call(enable: enable);
+                          _controller.setVolume(enable ? 1 : 0);
+                        },
+                      ),
+                    ),
+                  ),
+              ],
             ),
-        ],
-      ),
-      crossFadeState: _controller.value.isInitialized
-          ? CrossFadeState.showSecond
-          : CrossFadeState.showFirst,
     );
   }
 }
