@@ -693,25 +693,30 @@ class _DisplayVideoState extends State<_DisplayVideo> {
   void didUpdateWidget(covariant _DisplayVideo oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.selectedFile != widget.selectedFile) {
-      _initVideoController();
+      _controller
+          .pause()
+          .then((_) => _controller.dispose())
+          .whenComplete(() => _initVideoController());
     }
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _initVideoController();
   }
 
   void _initVideoController() {
     _controller = VideoPlayerController.file(widget.selectedFile);
-    _initializeVideoPlayerFuture = _controller.initialize();
+    _initializeVideoPlayerFuture =
+        _controller.initialize().then((_) => setState(() {}));
     _controller.setLooping(true);
+  }
+
+  void _onVideoUnseen() {
+    _controller
+      ..pause()
+      ..seekTo(Duration.zero);
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _controller.pause().then((_) =>
+        Future<void>.delayed(const Duration(seconds: 2), _controller.dispose));
     super.dispose();
   }
 
@@ -723,11 +728,8 @@ class _DisplayVideoState extends State<_DisplayVideo> {
         return VisibilityDetector(
           key: ValueKey(widget.selectedFile.path),
           onVisibilityChanged: (info) {
-            if (info.visibleBounds.isEmpty) {
-              _controller
-                ..pause()
-                ..seekTo(Duration.zero);
-            }
+            if (!info.visibleBounds.isEmpty) return;
+            return _onVideoUnseen();
           },
           child: AnimatedSwitcher(
             duration: const Duration(milliseconds: 350),
