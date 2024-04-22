@@ -80,6 +80,17 @@ class PostLargeView extends StatelessWidget {
   final bool withCustomVideoPlayer;
   final VideoPlayerType videoPlayerType;
 
+  void _navigateToPostAuthor(
+    BuildContext context, {
+    required String id,
+    UserProfileProps? props,
+  }) =>
+      context.pushNamed(
+        'user_profile',
+        pathParameters: {'user_id': id},
+        extra: props,
+      );
+
   @override
   Widget build(BuildContext context) {
     final bloc = context.read<PostBloc>();
@@ -144,19 +155,14 @@ class PostLargeView extends StatelessWidget {
           draggableScrollController: draggableScrollController,
         ),
       ),
-      onUserTap: (userId) => context.pushNamed(
-        'user_profile',
-        pathParameters: {'user_id': userId},
-      ),
+      onUserTap: (userId) => _navigateToPostAuthor(context, id: userId),
       onPressed: (action) => action?.when(
-        navigateToPostAuthor: (action) => context.pushNamed(
-          'user_profile',
-          pathParameters: {'user_id': action.authorId},
-        ),
-        navigateToSponsoredPostAuthor: (action) => context.pushNamed(
-          'user_profile',
-          pathParameters: {'user_id': action.authorId},
-          extra: UserProfileProps.build(
+        navigateToPostAuthor: (action) =>
+            _navigateToPostAuthor(context, id: action.authorId),
+        navigateToSponsoredPostAuthor: (action) => _navigateToPostAuthor(
+          context,
+          id: action.authorId,
+          props: UserProfileProps.build(
             isSponsored: true,
             promoBlockAction: action,
             sponsoredPost: block as PostSponsoredBlock,
@@ -172,38 +178,12 @@ class PostLargeView extends StatelessWidget {
       ),
       videoPlayerBuilder: !withCustomVideoPlayer
           ? null
-          : (_, media, aspectRatio, isInView) {
-              final videoPlayerState =
-                  VideoPlayerInheritedWidget.of(context).videoPlayerState;
-
-              return VideoPlayerInViewNotifierWidget(
-                type: videoPlayerType,
-                builder: (context, shouldPlay, child) {
-                  final play = shouldPlay && isInView;
-                  return ValueListenableBuilder(
-                    valueListenable: videoPlayerState.withSound,
-                    builder: (context, withSound, child) {
-                      return InlineVideo(
-                        key: ValueKey(media.id),
-                        videoSettings: VideoSettings.build(
-                          videoUrl: media.url,
-                          shouldPlay: play,
-                          aspectRatio: aspectRatio,
-                          blurHash: media.blurHash,
-                          withSound: withSound,
-                          videoPlayerOptions: VideoPlayerOptions(
-                            mixWithOthers: true,
-                          ),
-                          onSoundToggled: ({required enable}) {
-                            videoPlayerState.withSound.value = enable;
-                          },
-                        ),
-                      );
-                    },
-                  );
-                },
-              );
-            },
+          : (_, media, aspectRatio, isInView) => PostVideoPlayer(
+                videoPlayerType: videoPlayerType,
+                media: media,
+                aspectRatio: aspectRatio,
+                isInView: isInView,
+              ),
     );
   }
 }
