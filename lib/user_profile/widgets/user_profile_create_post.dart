@@ -42,6 +42,7 @@ class UserProfileCreatePost extends StatelessWidget {
         context: context,
         source: ImageSource.both,
         pickerSource: pickerSource,
+        multiSelection: !pickVideo,
         onMediaPicked: (details) => context.pushNamed(
           'publish_post',
           extra: CreatePostProps(details: details, pickVideo: pickVideo),
