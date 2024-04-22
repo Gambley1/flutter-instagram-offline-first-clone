@@ -22,7 +22,7 @@ void initUtilities(BuildContext context, Locale locale) {
       deletingText: l10n.deletingText,
       galleryText: l10n.galleryText,
       holdButtonText: l10n.holdButtonText,
-      noImagesFounded: l10n.noImagesFoundedText,
+      noMediaFound: l10n.noMediaFound,
       notFoundingCameraText: l10n.notFoundingCameraText,
       noCameraFoundText: l10n.noCameraFoundText,
       newPostText: l10n.newPostText,

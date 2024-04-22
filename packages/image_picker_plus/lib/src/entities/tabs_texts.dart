@@ -7,7 +7,7 @@ class TabsTexts {
   final String holdButtonText;
   final String clearImagesText;
   final String notFoundingCameraText;
-  final String noImagesFounded;
+  final String noMediaFound;
   final String acceptAllPermissions;
   final String noCameraFoundText;
   final String newPostText;
@@ -22,7 +22,7 @@ class TabsTexts {
     this.limitingText,
     this.notFoundingCameraText = "No secondary camera found",
     this.holdButtonText = "Press and hold to record",
-    this.noImagesFounded = "There is no images",
+    this.noMediaFound = "There is no media",
     this.acceptAllPermissions = "Failed! Accept all access permissions.",
     this.noCameraFoundText = 'No camera found!',
     this.newPostText = 'New post',

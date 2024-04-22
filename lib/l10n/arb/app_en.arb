@@ -346,7 +346,7 @@
   "deletingText": "DELETE",
   "notFoundingCameraText": "No secondary camera found",
   "holdButtonText": "Press and hold to record",
-  "noImagesFoundedText": "There is no images",
+  "noMediaFound": "There is no media",
   "acceptAllPermissionsText": "Failed! accept all access permissions.",
   "noLastMessagesText": "No last messages",
   "onlineText": "online",

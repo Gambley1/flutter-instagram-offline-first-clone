@@ -262,7 +262,7 @@ class _ImagesViewPageState extends State<ImagesViewPage>
               normalAppBar(withDoneButton: false, noImages: true),
               Align(
                 child: Text(
-                  widget.tabsTexts.noImagesFounded,
+                  widget.tabsTexts.noMediaFound,
                   style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,

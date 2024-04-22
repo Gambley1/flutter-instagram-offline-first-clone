@@ -250,7 +250,7 @@
   "deletingText": "УДАЛИТЬ",
   "notFoundingCameraText": "Дополнительная камера не найдена",
   "holdButtonText": "Нажмите и удерживайте, чтобы записать",
-  "noImagesFoundedText": "Нет изображений",
+  "noMediaFound": "Галерея пуста",
   "acceptAllPermissionsText": "Примите все необходимые разрешения!",
   "addMessageText": "Сообщение",
   "messageText": "Сообщение",
