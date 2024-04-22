@@ -86,6 +86,7 @@ class _PostPreviewDetailsState extends State<PostPreviewDetails> {
             const PostPreviewEmptyDetails()
           else
             PostView(
+              key: ValueKey(block!.id),
               block: block!,
               withCustomVideoPlayer: false,
               withInViewNotifier: false,
