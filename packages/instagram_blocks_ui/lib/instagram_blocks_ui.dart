@@ -22,7 +22,6 @@ export 'src/widgets/widgets.dart'
         InlineVideo,
         MediaCarousel,
         PoppingIconAnimationOverlay,
-        PostSponsored,
         PromoFloatingAction,
         RunningText,
         ShimmerPlaceholder,

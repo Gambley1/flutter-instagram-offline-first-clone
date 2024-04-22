@@ -5,7 +5,6 @@ export 'follow_button.dart';
 export 'inline_video.dart';
 export 'media_carousel.dart';
 export 'popping_icon_overlay.dart';
-export 'post_sponsored.dart';
 export 'promo_floating_action.dart';
 export 'running_text.dart';
 export 'shimmer_placeholder.dart';

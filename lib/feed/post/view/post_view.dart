@@ -93,103 +93,6 @@ class PostLargeView extends StatelessWidget {
     final likersInFollowings =
         context.select((PostBloc bloc) => bloc.state.likersInFollowings);
 
-    if (block is PostSponsoredBlock) {
-      return PostSponsored(
-        key: ValueKey(block.id),
-        block: block as PostSponsoredBlock,
-        isOwner: isOwner,
-        isLiked: isLiked,
-        likePost: () => bloc.add(const PostLikeRequested()),
-        likesCount: likesCount,
-        isFollowed: isOwner || (isFollowed ?? true),
-        follow: () =>
-            bloc.add(PostAuthorFollowRequested(authorId: block.author.id)),
-        enableFollowButton: true,
-        onCommentsTap: (showFullSized) => context.showScrollableModal(
-          showFullSized: showFullSized,
-          pageBuilder: (scrollController, draggableScrollController) =>
-              CommentsPage(
-            post: block,
-            scrollController: scrollController,
-            draggableScrollController: draggableScrollController,
-          ),
-        ),
-        postIndex: postIndex,
-        withInViewNotifier: withInViewNotifier,
-        commentsCount: commentsCount,
-        postAuthorAvatarBuilder: (context, author, onAvatarTap) {
-          return UserStoriesAvatar(
-            author: author.toUser,
-            onAvatarTap: onAvatarTap,
-            enableInactiveBorder: false,
-            withAdaptiveBorder: false,
-          );
-        },
-        postOptionsSettings: const PostOptionsSettings.viewer(),
-        onUserTap: (userId) => context.pushNamed(
-          'user_profile',
-          pathParameters: {'user_id': userId},
-        ),
-        onPressed: (action) => action?.when(
-          navigateToPostAuthor: (action) => context.pushNamed(
-            'user_profile',
-            pathParameters: {'user_id': action.authorId},
-          ),
-          navigateToSponsoredPostAuthor: (action) => context.pushNamed(
-            'user_profile',
-            pathParameters: {'user_id': action.authorId},
-            extra: UserProfileProps.build(
-              isSponsored: true,
-              promoBlockAction: action,
-              sponsoredPost: block as PostSponsoredBlock,
-            ),
-          ),
-        ),
-        onPostShareTap: (postId, author) => context.showScrollableModal(
-          pageBuilder: (scrollController, draggableScrollController) =>
-              SharePost(
-            block: block,
-            scrollController: scrollController,
-            draggableScrollController: draggableScrollController,
-          ),
-        ),
-        videoPlayerBuilder: !withCustomVideoPlayer
-            ? null
-            : (_, media, aspectRatio, isInView) {
-                final videoPlayerState =
-                    VideoPlayerInheritedWidget.of(context).videoPlayerState;
-
-                return VideoPlayerInViewNotifierWidget(
-                  type: videoPlayerType,
-                  builder: (context, shouldPlay, child) {
-                    final play = shouldPlay && isInView;
-                    return ValueListenableBuilder(
-                      valueListenable: videoPlayerState.withSound,
-                      builder: (context, withSound, child) {
-                        return InlineVideo(
-                          key: ValueKey(media.id),
-                          videoSettings: VideoSettings.build(
-                            videoUrl: media.url,
-                            shouldPlay: play,
-                            aspectRatio: aspectRatio,
-                            blurHash: media.blurHash,
-                            withSound: withSound,
-                            videoPlayerOptions: VideoPlayerOptions(
-                              mixWithOthers: true,
-                            ),
-                            onSoundToggled: ({required enable}) {
-                              videoPlayerState.withSound.value = enable;
-                            },
-                          ),
-                        );
-                      },
-                    );
-                  },
-                );
-              },
-      );
-    }
-
     return PostLarge(
       key: ValueKey(block.id),
       block: block,
@@ -250,6 +153,15 @@ class PostLargeView extends StatelessWidget {
         navigateToPostAuthor: (action) => context.pushNamed(
           'user_profile',
           pathParameters: {'user_id': action.authorId},
+        ),
+        navigateToSponsoredPostAuthor: (action) => context.pushNamed(
+          'user_profile',
+          pathParameters: {'user_id': action.authorId},
+          extra: UserProfileProps.build(
+            isSponsored: true,
+            promoBlockAction: action,
+            sponsoredPost: block as PostSponsoredBlock,
+          ),
         ),
       ),
       onPostShareTap: (postId, author) => context.showScrollableModal(
