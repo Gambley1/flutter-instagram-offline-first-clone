@@ -94,7 +94,6 @@ class PostLargeView extends StatelessWidget {
         context.select((PostBloc bloc) => bloc.state.likersInFollowings);
 
     return PostLarge(
-      key: ValueKey(block.id),
       block: block,
       isOwner: isOwner,
       isLiked: isLiked,
