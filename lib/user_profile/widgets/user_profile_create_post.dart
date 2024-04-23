@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:async';
 
 import 'package:app_ui/app_ui.dart';
@@ -31,12 +33,9 @@ class UserProfileCreatePost extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final pickerSource = pickVideo ? PickerSource.video : PickerSource.both;
-    return PopScope(
-      canPop: canPop,
-      onPopInvoked: (didPop) {
-        if (didPop) return;
-        onPopInvoked?.call();
-      },
+    return WillPopScope(
+      onWillPop: () =>
+          onPopInvoked == null ? Future.value(true) : Future.value(false),
       child: PickImage().customMediaPicker(
         key: imagePickerKey,
         context: context,

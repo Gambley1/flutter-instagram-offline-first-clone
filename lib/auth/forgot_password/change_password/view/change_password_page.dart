@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,37 +24,38 @@ class ChangePasswordView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppScaffold(
-      enablePopScope: true,
-      onPopInvoked: (didPop) {
-        if (didPop) return;
+    return WillPopScope(
+      onWillPop: () {
         _confirmGoBack(context);
+        return Future.value(false);
       },
-      appBar: AppBar(
-        title: Text(context.l10n.changePasswordText),
-        centerTitle: false,
-        leading: IconButton(
-          icon: Icon(Icons.adaptive.arrow_back),
-          onPressed: () => _confirmGoBack(context),
+      child: AppScaffold(
+        appBar: AppBar(
+          title: Text(context.l10n.changePasswordText),
+          centerTitle: false,
+          leading: IconButton(
+            icon: Icon(Icons.adaptive.arrow_back),
+            onPressed: () => _confirmGoBack(context),
+          ),
         ),
-      ),
-      releaseFocus: true,
-      resizeToAvoidBottomInset: true,
-      body: AppConstrainedScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xlg),
-        child: Column(
-          children: [
-            const Gap.v(AppSpacing.xxxlg * 3),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  const ChangePasswordForm(),
-                  const Align(child: ChangePasswordButton()),
-                ].spacerBetween(height: AppSpacing.md),
+        releaseFocus: true,
+        resizeToAvoidBottomInset: true,
+        body: AppConstrainedScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xlg),
+          child: Column(
+            children: [
+              const Gap.v(AppSpacing.xxxlg * 3),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    const ChangePasswordForm(),
+                    const Align(child: ChangePasswordButton()),
+                  ].spacerBetween(height: AppSpacing.md),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

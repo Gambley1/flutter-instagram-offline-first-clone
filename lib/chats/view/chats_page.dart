@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:app_ui/app_ui.dart';
 import 'package:chats_repository/chats_repository.dart';
 import 'package:flutter/material.dart';
@@ -30,14 +32,8 @@ class ChatsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppScaffold(
-      enablePopScope: true,
-      canPop: false,
-      onPopInvoked: (didPop) {
-        if (didPop) return;
-        HomeProvider().animateToPage(1);
-      },
-      body: const CustomScrollView(
+    return const AppScaffold(
+      body: CustomScrollView(
         slivers: [
           ChatsAppBar(),
           ChatsListView(),

@@ -36,7 +36,7 @@ dependencies:
   animated_text_kit: ^4.2.2
 
   flutter_screenutil: ^5.9.0
-  go_router: ^12.1.3
+  go_router: ^13.2.4
   flutter_image_compress: ^2.0.0
 
 dev_dependencies:

@@ -12,9 +12,6 @@ class AppScaffold extends StatelessWidget {
   const AppScaffold({
     required this.body,
     super.key,
-    this.enablePopScope = false,
-    this.onPopInvoked,
-    this.canPop = true,
     this.safeArea = true,
     this.top = true,
     this.bottom = true,
@@ -32,15 +29,6 @@ class AppScaffold extends StatelessWidget {
     this.bottomSheet,
     this.extendBodyBehindAppBar = false,
   });
-
-  /// Whether to wrap [Scaffold] with the [PopScope].
-  final bool enablePopScope;
-
-  /// Will pop callback. If null, will pop the navigator.
-  final void Function(bool)? onPopInvoked;
-
-  /// Whether the router can pop this scaffold.
-  final bool canPop;
 
   /// If true, will wrap the [body] with [SafeArea].
   final bool safeArea;
@@ -114,9 +102,6 @@ class AppScaffold extends StatelessWidget {
           appBar: appBar,
           drawer: drawer,
           bottomSheet: bottomSheet,
-          enablePopScope: enablePopScope,
-          onPopInvoked: onPopInvoked,
-          canPop: canPop,
           extendBody: extendBody,
           extendBodyBehindAppBar: extendBodyBehindAppBar,
         ),
@@ -136,9 +121,6 @@ class AppScaffold extends StatelessWidget {
       appBar: appBar,
       drawer: drawer,
       bottomSheet: bottomSheet,
-      enablePopScope: enablePopScope,
-      onPopInvoked: onPopInvoked,
-      canPop: canPop,
       extendBody: extendBody,
       extendBodyBehindAppBar: extendBodyBehindAppBar,
     );
@@ -157,8 +139,6 @@ class _MaterialScaffold extends StatelessWidget {
     required this.withSafeArea,
     required this.extendBody,
     required this.extendBodyBehindAppBar,
-    required this.canPop,
-    required this.enablePopScope,
     this.backgroundColor,
     this.floatingActionButton,
     this.floatingActionButtonLocation,
@@ -166,7 +146,6 @@ class _MaterialScaffold extends StatelessWidget {
     this.appBar,
     this.drawer,
     this.bottomSheet,
-    this.onPopInvoked,
   });
 
   final bool top;
@@ -195,19 +174,13 @@ class _MaterialScaffold extends StatelessWidget {
 
   final Widget? bottomSheet;
 
-  final bool enablePopScope;
-
-  final void Function(bool)? onPopInvoked;
-
-  final bool canPop;
-
   final bool extendBody;
 
   final bool extendBodyBehindAppBar;
 
   @override
   Widget build(BuildContext context) {
-    final scaffold = Scaffold(
+    return Scaffold(
       extendBody: extendBody,
       extendBodyBehindAppBar: extendBodyBehindAppBar,
       body: withSafeArea
@@ -227,21 +200,7 @@ class _MaterialScaffold extends StatelessWidget {
       drawer: drawer,
       bottomSheet: bottomSheet,
     ).withAdaptiveSystemTheme(context);
-    if (enablePopScope) {
-      return scaffold.popScope(onPopInvoked: onPopInvoked, canPop: canPop);
-    }
-    return scaffold;
   }
-}
-
-/// Will pop scope extension that wraps widget with [PopScope].
-extension WillPopScopeX on Widget {
-  /// Wraps widget with [PopScope].
-  Widget popScope({
-    void Function(bool)? onPopInvoked,
-    bool canPop = true,
-  }) =>
-      PopScope(onPopInvoked: onPopInvoked, canPop: canPop, child: this);
 }
 
 /// Extension used to respectively change the `systemNavigationBar` theme.
