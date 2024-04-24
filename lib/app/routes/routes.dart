@@ -9,7 +9,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/auth/auth.dart';
 import 'package:flutter_instagram_offline_first_clone/chats/chat/chat.dart';
-import 'package:flutter_instagram_offline_first_clone/chats/chats.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/feed.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/post/post.dart';
 import 'package:flutter_instagram_offline_first_clone/home/home.dart';
@@ -85,29 +84,6 @@ GoRouter router(AppBloc appBloc) => GoRouter(
                   animation: animation,
                   secondaryAnimation: secondaryAnimation,
                   transitionType: SharedAxisTransitionType.horizontal,
-                  child: child,
-                );
-              },
-            );
-          },
-        ),
-        GoRoute(
-          path: '/users/search',
-          name: 'search_users',
-          parentNavigatorKey: _rootNavigatorKey,
-          pageBuilder: (context, state) {
-            final returnUser = state.extra as bool?;
-
-            return CustomTransitionPage(
-              key: state.pageKey,
-              fullscreenDialog: true,
-              child: SearchUsers(returnUser: returnUser ?? false),
-              transitionsBuilder:
-                  (context, animation, secondaryAnimation, child) {
-                return SharedAxisTransition(
-                  animation: animation,
-                  secondaryAnimation: secondaryAnimation,
-                  transitionType: SharedAxisTransitionType.vertical,
                   child: child,
                 );
               },
