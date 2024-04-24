@@ -176,7 +176,6 @@ class MessageInputController extends ValueNotifier<Message> {
   Message? get replyingMessage => _replyingMessage;
 
   void setReplyingMessage(Message replyingMessage) {
-    logD((replyingMessageSender: replyingMessage.sender?.toJson()));
     clearEditingMessage();
     final alreadyReplied = replyingMessage.replyMessageId != null &&
         replyingMessage.attachments.isEmpty;
