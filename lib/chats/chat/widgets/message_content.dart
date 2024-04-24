@@ -58,7 +58,7 @@ class MessageBubbleContent extends StatelessWidget {
       (false, false) => AppColors.white,
     };
 
-    return BubbleBackground(
+    return MessageBubbleBackground(
       colors: [
         if (!isMine) ...[
           context.customReversedAdaptiveColor(
