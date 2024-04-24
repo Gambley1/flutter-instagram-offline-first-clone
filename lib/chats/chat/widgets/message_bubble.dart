@@ -8,13 +8,6 @@ import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:shared/shared.dart';
 
-typedef MessageTapCallback<T> = Future<T?> Function(
-  TapUpDetails details,
-  String messageId, {
-  required bool isMine,
-  required bool hasSharedPost,
-});
-
 class MessageBubble extends StatelessWidget {
   const MessageBubble({
     required this.message,
@@ -34,7 +27,7 @@ class MessageBubble extends StatelessWidget {
   final ValueSetter<Message>? onDeleteTap;
   final ValueSetter<String>? onRepliedMessageTap;
   final BorderRadiusGeometry Function({required bool isMine})? borderRadius;
-  final MessageTapCallback<MessageAction>? onMessageTap;
+  final OnMessageTap<MessageAction>? onMessageTap;
   final ValueListenable<String?>? highlightMessageId;
 
   @override
