@@ -160,7 +160,6 @@ class ChatMessagesListView extends StatefulWidget {
 }
 
 class _ChatMessagesListViewState extends State<ChatMessagesListView> {
-  final Map<String, int> _messagesIndex = {};
   late ValueNotifier<String?> _highlightMessageId;
   late ValueNotifier<bool> _showScrollToBottom;
 
@@ -176,20 +175,6 @@ class _ChatMessagesListViewState extends State<ChatMessagesListView> {
     _showScrollToBottom = ValueNotifier(false);
 
     didUpdateWidget(widget);
-  }
-
-  @override
-  void didUpdateWidget(covariant ChatMessagesListView oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.messages != widget.messages) {
-      _updateMessagesIndex(widget.messages);
-    }
-  }
-
-  void _updateMessagesIndex(List<Message> messages) {
-    for (var index = 0; index < messages.length; index++) {
-      _messagesIndex[messages[index].id] = index;
-    }
   }
 
   void _onRepliedMessageTap(String repliedMessageId, List<Message> messages) {
