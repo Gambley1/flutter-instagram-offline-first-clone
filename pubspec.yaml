@@ -24,7 +24,7 @@ dependencies:
     path: packages/env
   equatable: ^2.0.5
   fast_immutable_collections: ^10.2.2
-  firebase_core: ^2.29.0
+  firebase_core: ^2.30.1
   firebase_messaging: ^14.8.2
   firebase_notifications_client:
     path: packages/notifications_client/firebase_notifications_client
