@@ -11,4 +11,4 @@ export 'message_text_field_controller.dart' hide TextStyleBuilder;
 export 'parse_attachments.dart';
 export 'replied_message_bubble.dart';
 export 'swipeable_message.dart';
-export 'text_bubble.dart';
+export 'message_text_bubble.dart';

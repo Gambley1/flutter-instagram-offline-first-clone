@@ -151,7 +151,7 @@ class MessageContentView extends StatelessWidget {
                       : const EdgeInsets.only(
                           top: AppSpacing.xs,
                         ),
-                  child: TextBubble(
+                  child: MessageTextBubble(
                     message: message,
                     isMine: isMine,
                     isOnlyEmoji: message.message.isOnlyEmoji,

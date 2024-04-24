@@ -3,9 +3,9 @@ import 'package:flutter_instagram_offline_first_clone/chats/chat/widgets/widgets
 import 'package:shared/shared.dart';
 import 'package:user_repository/user_repository.dart';
 
-class TextBubble extends StatelessWidget {
+class MessageTextBubble extends StatelessWidget {
   /// {@macro textBubble}
-  const TextBubble({
+  const MessageTextBubble({
     required this.message,
     required this.isOnlyEmoji,
     required this.isMine,
@@ -21,11 +21,11 @@ class TextBubble extends StatelessWidget {
 
   final bool isMine;
 
-  final Widget Function(BuildContext, Message)? textBuilder;
+  final Widget Function(BuildContext context, Message message)? textBuilder;
 
-  final void Function(String)? onLinkTap;
+  final void Function(String url)? onLinkTap;
 
-  final void Function(User)? onMentionTap;
+  final void Function(User user)? onMentionTap;
 
   @override
   Widget build(BuildContext context) {
