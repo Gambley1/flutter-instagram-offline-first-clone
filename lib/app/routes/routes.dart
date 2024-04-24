@@ -73,11 +73,11 @@ GoRouter router(AppBloc appBloc) => GoRouter(
           parentNavigatorKey: _rootNavigatorKey,
           pageBuilder: (context, state) {
             final chatId = state.pathParameters['chat_id']!;
-            final chat = ChatInbox.fromJson(state.uri.queryParameters['chat']!);
+            final props = state.extra! as ChatProps;
 
             return CustomTransitionPage(
               key: state.pageKey,
-              child: ChatPage(chatId: chatId, chat: chat),
+              child: ChatPage(chatId: chatId, chat: props.chat),
               transitionsBuilder:
                   (context, animation, secondaryAnimation, child) {
                 return SharedAxisTransition(

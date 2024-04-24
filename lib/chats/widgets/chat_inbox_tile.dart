@@ -2,6 +2,7 @@ import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_instagram_offline_first_clone/app/app.dart';
+import 'package:flutter_instagram_offline_first_clone/chats/chat/chat.dart';
 import 'package:flutter_instagram_offline_first_clone/chats/chats.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:flutter_instagram_offline_first_clone/stories/stories.dart';
@@ -24,7 +25,7 @@ class ChatInboxTile extends StatelessWidget {
       onTap: () => context.pushNamed(
         'chat',
         pathParameters: {'chat_id': chat.id},
-        queryParameters: {'chat': chat.toJson()},
+        extra: ChatProps(chat: chat),
       ),
       onLongPress: () => context.confirmAction(
         title: context.l10n.deleteChatText,

@@ -1,6 +1,4 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:convert';
-
 import 'package:equatable/equatable.dart';
 import 'package:shared/shared.dart';
 import 'package:user_repository/user_repository.dart';
@@ -34,7 +32,7 @@ class ChatInbox extends Equatable {
   List<Object?> get props =>
       [id, participant, lastMessage, unreadMessagesCount];
 
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toJson() {
     return <String, dynamic>{
       'id': id,
       'last_message': lastMessage,
@@ -52,19 +50,14 @@ class ChatInbox extends Equatable {
     );
   }
 
-  String toJson() => json.encode(toMap());
-
-  factory ChatInbox.fromMap(Map<String, dynamic> map) {
+  factory ChatInbox.fromJson(Map<String, dynamic> json) {
     return ChatInbox(
-      id: map['id'] as String,
-      lastMessage: map['last_message'] as String?,
-      unreadMessagesCount: map['unread_messages_count'] as int? ?? 0,
-      participant: User.fromJson(map['participant'] as Map<String, dynamic>),
+      id: json['id'] as String,
+      lastMessage: json['last_message'] as String?,
+      unreadMessagesCount: json['unread_messages_count'] as int? ?? 0,
+      participant: User.fromJson(json['participant'] as Map<String, dynamic>),
     );
   }
-
-  factory ChatInbox.fromJson(String source) =>
-      ChatInbox.fromMap(json.decode(source) as Map<String, dynamic>);
 }
 
 enum ChatType {
