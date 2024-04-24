@@ -413,7 +413,7 @@ class _ChatMessagesListViewState extends State<ChatMessagesListView> {
           top: 0,
           left: 0,
           right: 0,
-          child: FloatingDateSeparator(
+          child: ChatFloatingDateSeparator(
             reverse: true,
             messages: messages,
             itemCount: messages.length,

@@ -1,5 +1,5 @@
 export 'message_bubble_background.dart';
-export 'floating_date_separator.dart';
+export 'chat_floating_date_separator.dart';
 export 'message_bubble.dart';
 export 'message_content.dart';
 export 'message_date_time_separator.dart';

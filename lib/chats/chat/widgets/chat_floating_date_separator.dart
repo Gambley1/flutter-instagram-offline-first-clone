@@ -7,9 +7,9 @@ import 'package:shared/shared.dart';
 /// {@template floating_date_separator}
 /// Not intended for use outside of [ChatMessagesListView].
 /// {@endtemplate}
-class FloatingDateSeparator extends StatelessWidget {
+class ChatFloatingDateSeparator extends StatelessWidget {
   /// {@macro floating_date_separator}
-  const FloatingDateSeparator({
+  const ChatFloatingDateSeparator({
     required this.itemPositionsListener,
     required this.reverse,
     required this.messages,
