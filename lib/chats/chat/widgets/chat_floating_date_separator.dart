@@ -26,7 +26,31 @@ class ChatFloatingDateSeparator extends StatelessWidget {
 
   final int itemCount;
 
-  final Widget Function(DateTime)? dateSeparatorBuilder;
+  final Widget Function(DateTime date)? dateSeparatorBuilder;
+
+  /// Gets the index of the top element in the viewport.
+  static int? _getTopElementIndex(Iterable<ItemPosition> values) {
+    final inView = values.where((position) => position.itemLeadingEdge < 1);
+    if (inView.isEmpty) return null;
+    return inView
+        .reduce(
+          (max, position) =>
+              position.itemLeadingEdge > max.itemLeadingEdge ? position : max,
+        )
+        .index;
+  }
+
+  /// Gets the index of the bottom element in the viewport.
+  static int? _getBottomElementIndex(Iterable<ItemPosition> values) {
+    final inView = values.where((position) => position.itemLeadingEdge < 1);
+    if (inView.isEmpty) return null;
+    return inView
+        .reduce(
+          (min, position) =>
+              position.itemLeadingEdge < min.itemLeadingEdge ? position : min,
+        )
+        .index;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,9 +63,9 @@ class ChatFloatingDateSeparator extends StatelessWidget {
 
         int? index;
         if (reverse) {
-          index = getTopElementIndex(positions);
+          index = _getTopElementIndex(positions);
         } else {
-          index = getBottomElementIndex(positions);
+          index = _getBottomElementIndex(positions);
         }
 
         if (index == null) return const SizedBox.shrink();
