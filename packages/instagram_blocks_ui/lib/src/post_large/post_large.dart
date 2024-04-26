@@ -96,9 +96,10 @@ class _PostLargeState extends State<PostLarge> {
 
   void _updateCurrentIndex(int index) => _indicatorValue.value = index;
 
-  void _onAvatarTap() => !widget.block.hasNavigationAction
-      ? null
-      : (_) => widget.onPressed(widget.block.action!);
+  void _onAvatarTap() {
+    if (!widget.block.hasNavigationAction) return;
+    widget.onPressed(widget.block.action!);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -124,7 +125,10 @@ class _PostLargeState extends State<PostLarge> {
           enableFollowButton: widget.enableFollowButton,
           postAuthorAvatarBuilder: widget.postAuthorAvatarBuilder,
           postOptionsSettings: widget.postOptionsSettings,
-          onAvatarTap: (_) => _onAvatarTap(),
+          onAvatarTap: (_) {
+            logI('Avatar tap');
+            _onAvatarTap.call();
+          },
         );
 
     return Column(
