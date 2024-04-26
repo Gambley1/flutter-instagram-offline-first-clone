@@ -55,6 +55,8 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> with FeedBlocMixin {
   final PostsRepository _postsRepository;
   final FirebaseRemoteConfigRepository _firebaseRemoteConfigRepository;
 
+  Future<void> getPageTest() => getTestPage();
+
   Future<void> _onFeedPageRequested(
     FeedPageRequested event,
     Emitter<FeedState> emit,

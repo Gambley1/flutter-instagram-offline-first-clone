@@ -32,9 +32,11 @@ const schema = Schema([
       Column.text('url'),
       Column.text('blur_hash'),
       Column.text('first_frame_url'),
+      Column.text('post_id'),
     ],
     indexes: [
       Index('user', [IndexedColumn('owner_id')]),
+      Index('post', [IndexedColumn('post_id')]),
     ],
   ),
   Table(
@@ -43,9 +45,11 @@ const schema = Schema([
       Column.text('owner_id'),
       Column.text('url'),
       Column.text('blur_hash'),
+      Column.text('post_id'),
     ],
     indexes: [
       Index('user', [IndexedColumn('owner_id')]),
+      Index('post', [IndexedColumn('post_id')]),
     ],
   ),
   Table(

@@ -126,6 +126,9 @@ abstract class PostsBaseRepository {
     bool onlyReels = false,
   });
 
+  /// The test function. Fetches for the list of [Post].
+  Future<List<Post>> getPageTest();
+
   /// Create a new post with provided details.
   Future<Post?> createPost({
     required String id,
@@ -290,6 +293,13 @@ class PowerSyncDatabaseClient extends DatabaseClient {
       : _powerSyncRepository = powerSyncRepository;
 
   final PowerSyncRepository _powerSyncRepository;
+
+  /// Fetches the page of posts from the [DatabaseClient]. It is test
+  /// implementation of this function.
+  @override
+  Future<List<Post>> getPageTest() async {
+    return [];
+  }
 
   @override
   String? get currentUserId =>

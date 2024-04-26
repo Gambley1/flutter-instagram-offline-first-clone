@@ -180,6 +180,10 @@ mixin FeedBlocMixin on Bloc<FeedEvent, FeedState> {
     return post?.toPostLargeBlock;
   }
 
+  Future<void> getTestPage() async{
+    await postsRepository.getPageTest();
+  }
+
   /// Fetches a paginated feed page.
   ///
   ///
