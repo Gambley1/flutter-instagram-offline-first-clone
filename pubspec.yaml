@@ -53,7 +53,7 @@ dependencies:
   intl: ">=0.18.0 <0.19.0"
   inview_notifier_list:
     git: https://github.com/Gambley1/inview_notifier_list
-  json_annotation: ^4.8.1
+  json_annotation: ^4.9.0
   lottie: ^3.1.0
   notifications_repository:
     path: packages/notifications_repository
