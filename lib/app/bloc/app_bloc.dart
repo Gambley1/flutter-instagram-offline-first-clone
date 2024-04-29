@@ -42,8 +42,8 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       emit(AppState.authenticated(user));
 
       try {
-        if (user.pushToken == null) {
-          final pushToken = await _notificationsRepository.fetchToken();
+        final pushToken = await _notificationsRepository.fetchToken();
+        if (user.pushToken == null || user.pushToken != pushToken) {
           await _userRepository.updateUser(pushToken: pushToken);
         }
 
