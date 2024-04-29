@@ -41,17 +41,21 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     Future<void> authenticate() async {
       emit(AppState.authenticated(user));
 
-      if (user.pushToken == null) {
-        final pushToken = await _notificationsRepository.fetchToken();
-        await _userRepository.updateUser(pushToken: pushToken);
+      try {
+        if (user.pushToken == null) {
+          final pushToken = await _notificationsRepository.fetchToken();
+          await _userRepository.updateUser(pushToken: pushToken);
+        }
+
+        _pushTokenSubscription ??=
+            _notificationsRepository.onTokenRefresh().listen((pushToken) async {
+          await _userRepository.updateUser(pushToken: pushToken);
+        });
+
+        await _notificationsRepository.requestPermission();
+      } catch (error, stackTrace) {
+        addError(error, stackTrace);
       }
-
-      _pushTokenSubscription ??=
-          _notificationsRepository.onTokenRefresh().listen((pushToken) async {
-        await _userRepository.updateUser(pushToken: pushToken);
-      });
-
-      await _notificationsRepository.requestPermission();
     }
 
     switch (state.status) {
