@@ -16,8 +16,8 @@ CommentState _$CommentStateFromJson(Map<String, dynamic> json) =>
         final val = CommentState(
           status: $checkedConvert(
               'status', (v) => $enumDecode(_$CommentStatusEnumMap, v)),
-          likes: $checkedConvert('likes', (v) => v as int),
-          comments: $checkedConvert('comments', (v) => v as int),
+          likes: $checkedConvert('likes', (v) => (v as num).toInt()),
+          comments: $checkedConvert('comments', (v) => (v as num).toInt()),
           isLiked: $checkedConvert('is_liked', (v) => v as bool),
           isOwner: $checkedConvert('is_owner', (v) => v as bool),
           isLikedByOwner:

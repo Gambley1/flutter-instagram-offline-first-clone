@@ -15,13 +15,14 @@ PostState _$PostStateFromJson(Map<String, dynamic> json) => $checkedCreate(
         final val = PostState(
           status: $checkedConvert(
               'status', (v) => $enumDecode(_$PostStatusEnumMap, v)),
-          likes: $checkedConvert('likes', (v) => v as int),
+          likes: $checkedConvert('likes', (v) => (v as num).toInt()),
           likers: $checkedConvert(
               'likers',
               (v) => (v as List<dynamic>)
                   .map((e) => User.fromJson(e as Map<String, dynamic>))
                   .toList()),
-          commentsCount: $checkedConvert('comments_count', (v) => v as int),
+          commentsCount:
+              $checkedConvert('comments_count', (v) => (v as num).toInt()),
           isLiked: $checkedConvert('is_liked', (v) => v as bool),
           isOwner: $checkedConvert('is_owner', (v) => v as bool),
           likersInFollowings: $checkedConvert(
