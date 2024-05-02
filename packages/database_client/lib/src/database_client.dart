@@ -298,6 +298,23 @@ class PowerSyncDatabaseClient extends DatabaseClient {
   /// implementation of this function.
   @override
   Future<List<Post>> getPageTest() async {
+    final result = await _powerSyncRepository.db().execute('''
+SELECT
+    p.id AS post_id,
+    p.user_id,
+    p.caption,
+    p.created_at,
+    m.id AS media_id,
+    m.media_type,
+    m.url,
+    m.blur_hash,
+    CASE WHEN m.media_type = 'video' THEN m.first_frame_url ELSE NULL END AS first_frame_url
+FROM posts p
+LEFT JOIN media m ON p.id = m.post_id
+ORDER BY p.created_at DESC, m.placed_at ASC
+''');
+    logI(result);
+
     return [];
   }
 
