@@ -69,7 +69,6 @@ class _FeedViewState extends State<FeedView> {
   void initState() {
     super.initState();
     context.read<FeedBloc>().add(const FeedPageRequested(page: 0));
-    context.read<FeedBloc>().getPageTest();
 
     _nestedScrollController = ScrollController();
     FeedPageController().init(

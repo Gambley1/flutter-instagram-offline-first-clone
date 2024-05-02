@@ -347,7 +347,4 @@ class PostsRepository implements PostsBaseRepository {
       caption: 'Hello world!',
     ),
   ].withNavigateToPostAuthorAction;
-
-  @override
-  Future<List<Post>> getPageTest() => _databaseClient.getPageTest();
 }

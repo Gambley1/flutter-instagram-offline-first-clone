@@ -126,9 +126,6 @@ abstract class PostsBaseRepository {
     bool onlyReels = false,
   });
 
-  /// The test function. Fetches for the list of [Post].
-  Future<List<Post>> getPageTest();
-
   /// Create a new post with provided details.
   Future<Post?> createPost({
     required String id,
@@ -294,30 +291,6 @@ class PowerSyncDatabaseClient extends DatabaseClient {
 
   final PowerSyncRepository _powerSyncRepository;
 
-  /// Fetches the page of posts from the [DatabaseClient]. It is test
-  /// implementation of this function.
-  @override
-  Future<List<Post>> getPageTest() async {
-    final result = await _powerSyncRepository.db().execute('''
-SELECT
-    p.id AS post_id,
-    p.user_id,
-    p.caption,
-    p.created_at,
-    m.id AS media_id,
-    m.media_type,
-    m.url,
-    m.blur_hash,
-    CASE WHEN m.media_type = 'video' THEN m.first_frame_url ELSE NULL END AS first_frame_url
-FROM posts p
-LEFT JOIN media m ON p.id = m.post_id
-ORDER BY p.created_at DESC, m.placed_at ASC
-''');
-    logI(result);
-
-    return [];
-  }
-
   @override
   String? get currentUserId =>
       _powerSyncRepository.supabase.auth.currentSession?.user.id;
@@ -465,8 +438,41 @@ ORDER BY created_at DESC
 //       }
 //       return posts;
 //     }
-    final result = await _powerSyncRepository.db().execute(
-      '''
+    final result = await _powerSyncRepository.db().getAll('''
+ SELECT
+    p.id,
+    p.user_id,
+    p.caption,
+    p.created_at,
+    pr.id as user_id,
+    pr.username,
+    pr.full_name,
+    json_group_array(json_object(
+        'media_id', m.id,
+        'type', m.media_type,
+        'url', m.url,
+        'blur_hash', m.blur_hash,
+        'first_frame_url', CASE WHEN m.media_type = 'video' THEN m.first_frame_url ELSE NULL END
+    )) AS media
+FROM posts p
+LEFT JOIN media m ON p.id = m.post_id
+INNER JOIN profiles pr on p.user_id = pr.id 
+GROUP BY p.id, p.user_id, p.caption, p.created_at
+ORDER BY p.created_at DESC
+''');
+    final posts = <Post>[];
+    for (final row in result) {
+      final json = Map<String, dynamic>.from(row);
+      final post = Post.fromJson(json);
+      posts.add(post);
+    }
+    logI(result);
+    return [];
+    final instaBlocks =
+        await _powerSyncRepository.db().computeWithDatabase<List<Post>>(
+      (db) async {
+        final result = db.select(
+          '''
 SELECT
   posts.*,
   p.id as user_id,
@@ -477,15 +483,17 @@ FROM
   posts
   inner join profiles p on posts.user_id = p.id 
 ORDER BY created_at DESC LIMIT ?1 OFFSET ?2
-    ''',
-      [limit, offset],
+''',
+          [limit, offset],
+        );
+        return result.map((row) {
+          final json = Map<String, dynamic>.from(row);
+          return Post.fromJson(json);
+        }).toList();
+      },
     );
 
-    final instaBlocks = result.map((row) {
-      final json = Map<String, dynamic>.from(row);
-      return Post.fromJson(json);
-    });
-    return instaBlocks.toList();
+    return instaBlocks;
   }
 
   @override
