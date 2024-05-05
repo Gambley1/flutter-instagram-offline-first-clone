@@ -69,6 +69,7 @@ class ChatFloatingDateSeparator extends StatelessWidget {
         }
 
         if (index == null) return const SizedBox.shrink();
+        if (index < 0) return const SizedBox.shrink();
 
         if (reverse) {
           if (index == messages.length) {

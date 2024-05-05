@@ -19,10 +19,10 @@ PODS:
   - Firebase/RemoteConfig (10.24.0):
     - Firebase/CoreOnly
     - FirebaseRemoteConfig (~> 10.24.0)
-  - firebase_core (2.30.0):
+  - firebase_core (2.30.1):
     - Firebase/CoreOnly (= 10.24.0)
     - Flutter
-  - firebase_messaging (14.8.2):
+  - firebase_messaging (14.9.1):
     - Firebase/Messaging (= 10.24.0)
     - firebase_core
     - Flutter
@@ -286,8 +286,8 @@ SPEC CHECKSUMS:
   blurhash: 7f29ee116e0c2674e0a765b5df1f9767239bc279
   camera_avfoundation: 759172d1a77ae7be0de08fc104cfb79738b8a59e
   Firebase: 91fefd38712feb9186ea8996af6cbdef41473442
-  firebase_core: 66b99b4fb4e5d7cc4e88d4c195fe986681f3466a
-  firebase_messaging: c836cceaddf52552da6f6e8963fb21d1d1a0f0cf
+  firebase_core: 7f1e1156934d0da3be260174812842df9420e4ab
+  firebase_messaging: 28b49260e70d10042fa2bea79f37e1edae48f1bd
   firebase_remote_config: d737b4cc631b1c9a32e6c55129eaf71c09c2f8ff
   FirebaseABTesting: 4431c2c56ac6e56f463b9cab05cc111078639f99
   FirebaseCore: 11dc8a16dfb7c5e3c3f45ba0e191a33ac4f50894
