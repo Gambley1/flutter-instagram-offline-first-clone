@@ -125,10 +125,7 @@ class _PostLargeState extends State<PostLarge> {
           enableFollowButton: widget.enableFollowButton,
           postAuthorAvatarBuilder: widget.postAuthorAvatarBuilder,
           postOptionsSettings: widget.postOptionsSettings,
-          onAvatarTap: (_) {
-            logI('Avatar tap');
-            _onAvatarTap.call();
-          },
+          onAvatarTap: (_) => _onAvatarTap.call(),
         );
 
     return Column(
