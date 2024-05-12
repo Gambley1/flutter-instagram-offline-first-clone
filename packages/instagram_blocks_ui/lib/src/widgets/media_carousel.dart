@@ -46,14 +46,14 @@ class _MediaCarouselState extends State<MediaCarousel> {
           final url = media.url;
           final blurHash = media.blurHash;
 
-          return switch ('') {
-            _ when media is ImageMedia => _MediaCarouselImage(
+          return switch (media) {
+            final ImageMedia media => _MediaCarouselImage(
                 blurHash: blurHash,
                 url: url,
                 media: media,
                 settings: widget.settings,
               ),
-            _ when media is VideoMedia => _MediaCarouselVideo(
+            final VideoMedia media => _MediaCarouselVideo(
                 currentIndex: _currentIndex,
                 settings: widget.settings,
                 media: media,
@@ -62,9 +62,9 @@ class _MediaCarouselState extends State<MediaCarousel> {
                 isInView: isInView,
                 realIndex: realIndex,
               ),
-            _ when media is MemoryImageMedia =>
+            final MemoryImageMedia media =>
               _MediaCarouselMemoryImage(media: media),
-            _ when media is MemoryVideoMedia => _MediaCarouselMemoryVideo(
+            final MemoryVideoMedia media => _MediaCarouselMemoryVideo(
                 currentIndex: _currentIndex,
                 realIndex: realIndex,
                 media: media,

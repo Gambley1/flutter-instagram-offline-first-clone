@@ -112,11 +112,9 @@ final class FeedPageUpdate extends PageUpdate {
   const FeedPageUpdate({required super.newPost, required super.type});
 
   @override
-  PostBlock onUpdate<T>(T block, PostBlock newBlock) => switch ('') {
-        _ when block is PostLargeBlock =>
-          block.copyWith(caption: newBlock.caption),
-        _ when block is PostReelBlock =>
-          block.copyWith(caption: newBlock.caption),
+  PostBlock onUpdate<T>(T block, PostBlock newBlock) => switch (block) {
+        final PostLargeBlock block => block.copyWith(caption: newBlock.caption),
+        final PostReelBlock block => block.copyWith(caption: newBlock.caption),
         _ => throw UnsupportedError('Unsupported block type: $block'),
       };
 }
@@ -396,10 +394,9 @@ extension on List<InstaBlock> {
     bool Function(PostBlock block)? test,
   }) =>
       firstWhereOrNull(
-        (block) => switch ('') {
-          _ when block is PostBlock =>
-            (other == null || other.id == block.id) &&
-                (test?.call(block) ?? true),
+        (block) => switch (block) {
+          final PostBlock block => (other == null || other.id == block.id) &&
+              (test?.call(block) ?? true),
           _ => false,
         },
       );
@@ -410,8 +407,8 @@ extension on List<PostBlock> {
     required PageUpdate update,
     bool isReels = false,
   }) =>
-      switch ('') {
-        _ when update is FeedPageUpdate => isReels
+      switch (update) {
+        final FeedPageUpdate update => isReels
             ? _update<PostReelBlock>(
                 update: update,
                 isReels: isReels,
@@ -420,7 +417,6 @@ extension on List<PostBlock> {
                 update: update,
                 isReels: isReels,
               ),
-        _ => this,
       };
 
   List<PostBlock> _update<T extends PostBlock>({
