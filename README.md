@@ -21,7 +21,7 @@ I know you always wanted to see a Flutter project, that will cover all-in-one: s
 
 I present for you Flutter **offline-first** Instagram clone, leveraging Flutter best practices!
 
-I am 100% sure this guide will impress you, regardless of your current experience…
+I am 100% sure this project and guide will impress you, regardless of your current experience…
 
 It's not just another Instagram clone... You will learn comprehensively everything and beyond to be a real-world app creator.
 
