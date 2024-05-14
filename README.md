@@ -15,7 +15,7 @@
 
  ## 💫 About The Project
 
-[Github-repository-preview.png](https://i.postimg.cc/52v6WG4V/Github-repository-preview.png)
+[![Github-repository-preview.png](https://i.postimg.cc/52v6WG4V/Github-repository-preview.png)](https://postimg.cc/FYr9jTkW)
 
 I know you always wanted to see a Flutter project, that will cover all-in-one: sleek UI with blazingly-fast backend. And, try to imagine, without a Firebase as a primary service…
 
@@ -53,7 +53,7 @@ Don't forget to give the project a star! Thanks again!
 3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
- ## 🪪 License
+ ## 📝 License
 
 Distributed under the MIT License. See [MIT License](https://opensource.org/licenses/MIT) for more information.
  ## 💭 Contact
@@ -67,16 +67,16 @@ This tutorial is highly inspired by a very popular Flutter News toolkit, make su
 
 And you can watch my blog on medium.
 
-Also, I would really appreciate any of your support! You can buy me a coffee and become a part of our beautiful community on my Patreon.
+- [flutter_news_toolkit](https://flutter.dev/news)
+- [medium blog](https://github.com/othneildrew/Best-README-Template)
+
+ ## ☕️ Support
+
+Also, I would really appreciate any of your support! You can buy me a coffee and become a part of our beautiful community on my [Patreon](http://patreon.com/EmilZulufov).
 
 Your donation will hugely help me and it will allow me to keep the next beautiful videos and tutorials high-quality and free!
 
-**Thanks!**
-
-
 - [Patreon](http://patreon.com/EmilZulufov)
-- [flutter_news_toolkit](https://flutter.dev/news)
-- [medium blog](https://github.com/othneildrew/Best-README-Template)
 
 
 [coverage_badge]: coverage_badge.svg
