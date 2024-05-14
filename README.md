@@ -72,11 +72,11 @@ And you can watch my blog on medium.
 
  ## ☕️ Support
 
-Also, I would really appreciate any of your support! You can buy me a coffee and become a part of our beautiful community on my [Patreon](http://patreon.com/EmilZulufov).
+Also, I would really appreciate any of your support! You can buy me a coffee and become a part of our beautiful community on my [Patreon](https://www.patreon.com/emilzulufov/membership).
 
 Your donation will hugely help me and it will allow me to keep the next beautiful videos and tutorials high-quality and free!
 
-- [Patreon](http://patreon.com/EmilZulufov)
+- [Patreon](https://www.patreon.com/emilzulufov/membership)
 
 
 [coverage_badge]: coverage_badge.svg
