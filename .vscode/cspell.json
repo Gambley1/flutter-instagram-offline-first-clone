@@ -202,7 +202,9 @@
     "ccon",
     "nodoc",
     "ChildLayouter",
-    "Paginated"
+    "Paginated",
+    "blazingly",
+    "Patreon"
   ],
   "ignorePaths": [
     ".github/workflows/**",
