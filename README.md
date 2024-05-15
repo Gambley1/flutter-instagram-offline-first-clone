@@ -5,9 +5,7 @@
 [![License: MIT][license_badge]][license_link]
  
 <div>
-<a href="[LINK TO TUTORIAL HERE]"><strong>Watch complete tutorial »</strong></a>
-<br/>
-<br/>  
+<h1><a href="https://youtu.be/xr56AjdGf-o"><strong>Watch complete tutorial »</strong></a></h1>
 <a href="https://github.com/Gambley1/flutter_instagram_offline_first_clone/issues/new?assignees=&labels=bug&projects=&template=bug_report.md&title=fix%3A+">Report Bug .</a>
 <a href="https://github.com/Gambley1/flutter_instagram_offline_first_clone/issues/new?assignees=&labels=enhancement%2C+feature&projects=&template=feature_request.md&title=feat%3A+">Request Feature</a>
 </p>
@@ -15,13 +13,13 @@
 
  ## 💫 About The Project
 
-[![Github-repository-preview.png](https://i.postimg.cc/52v6WG4V/Github-repository-preview.png)](https://postimg.cc/FYr9jTkW)
+[![Github-repository-preview.png](https://i.postimg.cc/52v6WG4V/Github-repository-preview.png)](https://youtu.be/xr56AjdGf-o)
 
-I know you always wanted to see a Flutter project, that will cover all-in-one: sleek UI with blazingly-fast backend. And, try to imagine, without a Firebase as a primary service…
+Most people always wanted to see a Flutter project, that will cover all-in-one: sleek UI with blazingly-fast backend. And, try to imagine, without a Firebase as a primary service…
 
 I present for you Flutter **offline-first** Instagram clone, leveraging Flutter best practices!
 
-I am 100% sure this project and guide will impress you, regardless of your current experience…
+I am 100% sure this project and guide will impress you, regardless of your current experience.
 
 It's not just another Instagram clone... You will learn comprehensively everything and beyond to be a real-world app creator.
 
@@ -38,9 +36,12 @@ Moreover, you are going to learn how to create a completely **offline-first** ap
 
  ## 🚀 Getting Started
 
-Watch my free complete tutorial on my channel: [LINK TO A TUTORIAL]
+Watch my free complete [**tutorial**](https://youtu.be/xr56AjdGf-o) on my channel!
 
 With a step-by-step explanation, ensuring very smooth watching experience, you will learn to build Flutter real-world applications with confidence and no fear!
+
+**Don't forget to give a video like and subscribe to the channel! Thanks!**
+
  ## ⭐️ Contributing
 
 Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
@@ -58,7 +59,8 @@ Don't forget to give the project a star! Thanks again!
 Distributed under the MIT License. See [MIT License](https://opensource.org/licenses/MIT) for more information.
  ## 💭 Contact
 
-Emil Zulufov - [@zulu_em](https://twitter.com/zulu_em) - emilzulufov.commercial@gmail.com
+- Twitter - [@Emil Zulufov (ezIT)](https://twitter.com/EmdyEmil)
+- Email - emilzulufov.commercial@gmail.com
 
 Project Link: [https://github.com/Gambley1/flutter_instagram_offline_first_clone](https://github.com/Gambley1/flutter_instagram_offline_first_clone)
  ## 🎯 Acknowledgments
@@ -68,7 +70,7 @@ This tutorial is highly inspired by a very popular Flutter News toolkit, make su
 And you can watch my blog on medium.
 
 - [flutter_news_toolkit](https://flutter.dev/news)
-- [medium blog](https://github.com/othneildrew/Best-README-Template)
+- [medium blog](https://medium.com/@emilzulufov566/become-flutter-successful-developer-in-days-1bb4ef47b305)
 
  ## ☕️ Support
 
@@ -84,4 +86,3 @@ Your donation will hugely help me and it will allow me to keep the next beautifu
 [license_link]: https://opensource.org/licenses/MIT
 [very_good_analysis_badge]: https://img.shields.io/badge/style-very_good_analysis-B22C89.svg
 [very_good_analysis_link]: https://pub.dev/packages/very_good_analysis
-[tutorial_link]: https://youtube.com/
