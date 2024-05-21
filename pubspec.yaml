@@ -50,7 +50,7 @@ dependencies:
     path: packages/insta_blocks
   instagram_blocks_ui:
     path: packages/instagram_blocks_ui
-  intl: ">=0.18.0 <0.19.0"
+  intl: ">=0.18.0 <=0.19.0"
   inview_notifier_list:
     git: https://github.com/Gambley1/inview_notifier_list
   json_annotation: ^4.9.0
