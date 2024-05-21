@@ -2308,4 +2308,4 @@ packages:
     version: "2.0.0"
 sdks:
   dart: ">=3.3.1 <4.0.0"
-  flutter: ">=3.19.3"
+  flutter: ">=3.22.0"
