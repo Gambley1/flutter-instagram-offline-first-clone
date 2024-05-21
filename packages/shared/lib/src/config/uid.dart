@@ -1,4 +1,4 @@
-// ignore: public_member_api_docs, override_on_non_overriding_member
+// ignore_for_file: public_member_api_docs, override_on_non_overriding_member
 
 import 'dart:math';
 import 'dart:typed_data';
