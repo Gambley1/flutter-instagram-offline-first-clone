@@ -13,7 +13,7 @@ dependencies:
     path: ../env
   flutter:
     sdk: flutter
-  jiffy: ">=6.2.1 <6.2.2"
+  jiffy: ">=6.2.1 <=6.2.2"
   powersync_repository:
     path: ../powersync_repository
   shared:
