@@ -92,6 +92,9 @@ dependencies:
   vector_math: ^2.1.4
   visibility_detector: ^0.4.0+2
 
+dependency_overrides:
+  fading_edge_scrollview: ^4.1.1
+
 dev_dependencies:
   bloc_test: ^9.1.7
   build_runner: ^2.4.9
