@@ -5,6 +5,7 @@ publish_to: none
 
 environment:
   sdk: ">=3.3.1 <4.0.0"
+  flutter: ^3.22.0
 
 dependencies:
   database_client:
