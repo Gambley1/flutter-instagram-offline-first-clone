@@ -244,7 +244,7 @@ class LikersInFollowings extends StatelessWidget {
                         padding: const EdgeInsets.all(AppSpacing.xxs),
                         child: CircleAvatar(
                           backgroundImage: imageProvider,
-                          backgroundColor: context.theme.colorScheme.background,
+                          backgroundColor: context.theme.colorScheme.surface,
                         ),
                       ),
                     ),
