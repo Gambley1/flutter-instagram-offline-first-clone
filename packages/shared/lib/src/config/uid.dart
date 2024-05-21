@@ -1,3 +1,5 @@
+// ignore_for_file: public_member_api_docs, override_on_non_overriding_member
+
 import 'dart:math';
 import 'dart:typed_data';
 
@@ -10,7 +12,9 @@ final uuid = UuidGenerator._();
 
 /// Unique user id generator
 class UuidGenerator {
+  /// {@macro uuid_generator}
   UuidGenerator._();
+
   final _uuid = Uuid(goptions: GlobalOptions(CryptoRNG._()));
 
   /// Generate random id based on [Uuid] library
@@ -22,6 +26,7 @@ class UuidGenerator {
 /// strong.
 /// {@endtemplate}
 class CryptoRNG extends RNG {
+  /// {@macro crypto_rng}
   CryptoRNG._({
     Random? secureRandom,
   }) : _secureRandom = secureRandom ?? Random.secure();

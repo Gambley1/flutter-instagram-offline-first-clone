@@ -5,7 +5,7 @@ publish_to: none
 
 environment:
   sdk: ">=3.3.1 <4.0.0"
-  flutter: ^3.19.3
+  flutter: ^3.22.0
 
 dependencies:
   dio: ^5.4.0
@@ -13,7 +13,7 @@ dependencies:
     path: ../env
   flutter:
     sdk: flutter
-  jiffy: ">=6.2.1 <6.2.2"
+  jiffy: ">=6.2.1 <=6.2.2"
   powersync_repository:
     path: ../powersync_repository
   shared:

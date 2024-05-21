@@ -76,7 +76,8 @@ class PostAuthor {
         id: shared['shared_post_author_id'] as String? ?? '',
         avatarUrl: shared['shared_post_author_avatar_url'] as String? ?? '',
         username: shared['shared_post_author_username'] as String? ??
-            shared['shared_post_author_full_name'] as String? ?? '',
+            shared['shared_post_author_full_name'] as String? ??
+            '',
       );
 
   /// The empty instance of the [PostAuthor].
