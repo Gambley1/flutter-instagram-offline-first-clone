@@ -43,10 +43,11 @@ extension BlockActionX on BlockAction {
         navigateToPostAuthor,
     required BlockActionCallback<NavigateToSponsoredPostAuthorProfileAction>
         navigateToSponsoredPostAuthor,
-  }) => maybeWhen(
-    navigateToPostAuthor: navigateToPostAuthor,
-    navigateToSponsoredPostAuthor: navigateToSponsoredPostAuthor,
-  );
+  }) =>
+      maybeWhen(
+        navigateToPostAuthor: navigateToPostAuthor,
+        navigateToSponsoredPostAuthor: navigateToSponsoredPostAuthor,
+      );
 }
 
 /// {@template block_action}
