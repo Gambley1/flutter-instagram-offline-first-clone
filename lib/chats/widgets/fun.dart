@@ -40,7 +40,7 @@ class FunView extends StatelessWidget {
                     ),
                     child: AppButton.outlined(
                       style: ButtonStyle(
-                        shape: MaterialStatePropertyAll(
+                        shape: WidgetStatePropertyAll(
                           RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),

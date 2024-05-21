@@ -11,8 +11,8 @@ class ChangePasswordButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final style = ButtonStyle(
-      backgroundColor: const MaterialStatePropertyAll(AppColors.blue),
-      shape: MaterialStatePropertyAll(
+      backgroundColor: const WidgetStatePropertyAll(AppColors.blue),
+      shape: WidgetStatePropertyAll(
         RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
       ),
     );
