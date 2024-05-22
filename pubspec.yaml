@@ -54,7 +54,7 @@ dependencies:
   inview_notifier_list:
     git: https://github.com/Gambley1/inview_notifier_list
   json_annotation: ^4.9.0
-  lottie: ^3.1.0
+  lottie: ^3.1.2
   notifications_repository:
     path: packages/notifications_repository
   ogp_data_extract: ^0.1.4
