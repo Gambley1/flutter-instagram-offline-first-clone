@@ -34,7 +34,7 @@ class CryptoRNG extends RNG {
   final Random _secureRandom;
 
   @override
-  Uint8List generateInternal() {
+  Uint8List generate() {
     final b = Uint8List(16);
 
     for (var i = 0; i < 16; i += 4) {

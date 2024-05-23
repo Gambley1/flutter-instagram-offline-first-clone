@@ -38,7 +38,7 @@ dependencies:
   stream_transform: ^2.1.0
   user_repository:
     path: ../user_repository
-  uuid: ^4.3.3
+  uuid: ^4.4.0
   video_compress: ^3.1.2
   video_thumbnail: ^0.5.3
 
