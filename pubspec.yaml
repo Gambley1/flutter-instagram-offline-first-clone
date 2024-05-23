@@ -23,9 +23,9 @@ dependencies:
   env:
     path: packages/env
   equatable: ^2.0.5
-  fast_immutable_collections: ^10.2.2
-  firebase_core: ^2.31.0
-  firebase_messaging: ^14.9.2
+  fast_immutable_collections: ^10.2.3
+  firebase_core: ^2.31.1
+  firebase_messaging: ^14.9.3
   firebase_notifications_client:
     path: packages/notifications_client/firebase_notifications_client
   firebase_remote_config_repository:
@@ -54,7 +54,7 @@ dependencies:
   inview_notifier_list:
     git: https://github.com/Gambley1/inview_notifier_list
   json_annotation: ^4.9.0
-  lottie: ^3.1.0
+  lottie: ^3.1.2
   notifications_repository:
     path: packages/notifications_repository
   ogp_data_extract: ^0.1.4
@@ -72,7 +72,7 @@ dependencies:
   shared:
     path: packages/shared
   shimmer: ^3.0.0
-  slang: ^3.30.2
+  slang: ^3.31.0
   slang_flutter: ^3.29.0
   sliver_tools: ^0.2.12
   sprung: ^3.0.1
@@ -97,13 +97,13 @@ dependency_overrides:
 
 dev_dependencies:
   bloc_test: ^9.1.7
-  build_runner: ^2.4.9
+  build_runner: ^2.4.10
   build_verify: ^3.1.0
   flutter_test:
     sdk: flutter
   json_serializable: ^6.8.0
   mocktail: ^1.0.3
-  slang_build_runner: ^3.30.0
+  slang_build_runner: ^3.31.0
   very_good_analysis: ^5.1.0
 
 flutter:
