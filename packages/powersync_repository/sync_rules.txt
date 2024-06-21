@@ -1,0 +1,33 @@
+# Sync-rule docs: https://docs.powersync.co/usage/sync-rules
+bucket_definitions:
+  global_media:
+    data:
+        - select * from images
+        - select * from videos
+  global_posts:
+    data:
+        - select * from posts
+        - select * from likes
+        - select * from comments
+  global_stories:
+    data:
+        - select * from stories
+  global_profiles:
+    data:
+        - select * from profiles
+  global_subscriptions:
+    data:
+        - select * from subscriptions
+  global_participants:
+    data:
+        - select * from participants
+  global_messages:
+    parameters: select id as message_id from messages
+    data:
+        - select * from messages where id = bucket.message_id
+        - select * from attachments where message_id = bucket.message_id
+  user_conversations:
+    parameters: select conversation_id from participants where user_id = token_parameters.user_id
+    data: 
+        - select * from conversations where id = bucket.conversation_id
+  
