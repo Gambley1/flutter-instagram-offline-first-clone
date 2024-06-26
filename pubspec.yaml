@@ -34,7 +34,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_animate: ^4.5.0
-  flutter_bloc: ^8.1.5
+  flutter_bloc: ^8.1.6
   flutter_localizations:
     sdk: flutter
   flutter_markdown: ^0.7.1
