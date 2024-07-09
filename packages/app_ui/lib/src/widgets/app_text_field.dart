@@ -361,6 +361,10 @@ class AppTextField extends StatelessWidget {
         prefix: prefix,
         suffixIcon: suffixIcon,
         filled: filled,
+        fillColor: context.customReversedAdaptiveColor(
+          dark: AppColors.darkGrey,
+          light: AppColors.brightGrey,
+        ),
         enabled: enabled,
         border: border,
         contentPadding: contentPadding,
