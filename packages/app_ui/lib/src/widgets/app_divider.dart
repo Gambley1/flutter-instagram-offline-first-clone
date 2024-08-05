@@ -8,62 +8,60 @@ class AppDivider extends StatelessWidget {
   /// {@macro app_divider}
   const AppDivider({
     super.key,
-    this.padding,
-    this.withText = false,
+    this.height,
+    this.indent,
+    this.endIndent,
+    this.color,
   });
 
-  /// The optional padding for the divider.
-  final double? padding;
+  /// The divider's height extent.
+  ///
+  /// The divider itself is always drawn as a horizontal line that is centered
+  /// within the height specified by this value.
+  ///
+  /// If this is null, then the [DividerThemeData.space] is used. If that is
+  /// also null, then this defaults to 16.0.
+  final double? height;
 
-  /// Whether the divider should divide with text, e.g `OR`.
-  final bool withText;
+  /// The amount of empty space to the leading edge of the divider.
+  ///
+  /// If this is null, then the [DividerThemeData.indent] is used. If that is
+  /// also null, then this defaults to 0.0.
+  final double? indent;
+
+  /// The amount of empty space to the trailing edge of the divider.
+  ///
+  /// If this is null, then the [DividerThemeData.endIndent] is used. If that is
+  /// also null, then this defaults to 0.0.
+  final double? endIndent;
+
+  /// The color to use when painting the line.
+  ///
+  /// If this is null, then the [DividerThemeData.color] is used. If that is
+  /// also null, then [ThemeData.dividerColor] is used.
+  ///
+  /// {@tool snippet}
+  ///
+  /// ```dart
+  /// const Divider(
+  ///   color: Colors.deepOrange,
+  /// )
+  /// ```
+  /// {@end-tool}
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
-    final dividerColor = context.customReversedAdaptiveColor(
+    final effectiveColor = context.customReversedAdaptiveColor(
       dark: AppColors.emphasizeDarkGrey,
       light: AppColors.brightGrey,
     );
 
-    if (!withText) {
-      return Container(
-        margin:
-            padding != null ? EdgeInsets.symmetric(horizontal: padding!) : null,
-        height: 1,
-        color: dividerColor,
-      );
-    }
-    return Row(
-      children: <Widget>[
-        Expanded(
-          child: Container(
-            margin: const EdgeInsets.only(
-              left: AppSpacing.md,
-              right: AppSpacing.sm,
-            ),
-            child: const Divider(
-              color: AppColors.white,
-              height: 36,
-            ),
-          ),
-        ),
-        Text(
-          'OR',
-          style: context.titleMedium,
-        ),
-        Expanded(
-          child: Container(
-            margin: const EdgeInsets.only(
-              left: AppSpacing.sm,
-              right: AppSpacing.md,
-            ),
-            child: const Divider(
-              color: AppColors.white,
-              height: 36,
-            ),
-          ),
-        ),
-      ],
+    return Divider(
+      height: height,
+      indent: indent,
+      endIndent: endIndent,
+      color: color ?? effectiveColor,
     );
   }
 }
@@ -75,20 +73,57 @@ class AppSliverDivider extends StatelessWidget {
   /// {@macro app_sliver_divider}
   const AppSliverDivider({
     super.key,
-    this.padding,
-    this.withText = false,
+    this.height,
+    this.indent,
+    this.endIndent,
+    this.color,
   });
 
-  /// The optional padding of the divider.
-  final double? padding;
+  /// The divider's height extent.
+  ///
+  /// The divider itself is always drawn as a horizontal line that is centered
+  /// within the height specified by this value.
+  ///
+  /// If this is null, then the [DividerThemeData.space] is used. If that is
+  /// also null, then this defaults to 16.0.
+  final double? height;
 
-  /// Whether should be displayed with dividing text.
-  final bool withText;
+  /// The amount of empty space to the leading edge of the divider.
+  ///
+  /// If this is null, then the [DividerThemeData.indent] is used. If that is
+  /// also null, then this defaults to 0.0.
+  final double? indent;
+
+  /// The amount of empty space to the trailing edge of the divider.
+  ///
+  /// If this is null, then the [DividerThemeData.endIndent] is used. If that is
+  /// also null, then this defaults to 0.0.
+  final double? endIndent;
+
+  /// The color to use when painting the line.
+  ///
+  /// If this is null, then the [DividerThemeData.color] is used. If that is
+  /// also null, then [ThemeData.dividerColor] is used.
+  ///
+  /// {@tool snippet}
+  ///
+  /// ```dart
+  /// const Divider(
+  ///   color: Colors.deepOrange,
+  /// )
+  /// ```
+  /// {@end-tool}
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
-      child: AppDivider(padding: padding, withText: withText),
+      child: AppDivider(
+        color: color,
+        endIndent: endIndent,
+        indent: indent,
+        height: height,
+      ),
     );
   }
 }

@@ -234,7 +234,12 @@ class FeedBody extends StatelessWidget {
       }
     }
     if (block is PostBlock) {
-      return PostView(key: ValueKey(block.id), block: block, postIndex: index);
+      return PostView(
+        key: ValueKey(block.id),
+        block: block,
+        postIndex: index,
+        withInViewNotifier: block.isReel,
+      );
     }
 
     return Text('Unknown block type: ${block.type}');

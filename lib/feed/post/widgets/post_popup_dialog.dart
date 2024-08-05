@@ -100,6 +100,7 @@ class PopupDialogHeader extends StatelessWidget {
       ),
       horizontalTitleGap: AppSpacing.sm,
       leading: UserProfileAvatar(
+        resizeHeight: 108,
         avatarUrl: block.author.avatarUrl,
         isLarge: false,
         enableBorder: false,
@@ -134,13 +135,7 @@ class PopupDialogBody extends StatelessWidget {
       alignment: Alignment.center,
       children: [
         if (block.firstMedia is ImageMedia)
-          AspectRatio(
-            aspectRatio: 1,
-            child: ImageAttachmentThumbnail(
-              image: Attachment(imageUrl: block.firstMediaUrl),
-              fit: BoxFit.cover,
-            ),
-          )
+          PostPopupImage(block: block)
         else
           InlineVideo(
             videoSettings: VideoSettings.build(
@@ -168,6 +163,32 @@ class PopupDialogBody extends StatelessWidget {
         ),
         LikeAnimatedIcon(controller: likeIconAnimationController),
       ],
+    );
+  }
+}
+
+class PostPopupImage extends StatelessWidget {
+  const PostPopupImage({
+    required this.block,
+    super.key,
+  });
+
+  final PostBlock block;
+
+  @override
+  Widget build(BuildContext context) {
+    final screenWidth = (context.screenWidth) - AppSpacing.md * 2;
+    final pixelRatio = context.devicePixelRatio;
+
+    final thumbnailWidth = (screenWidth * pixelRatio) ~/ 1;
+
+    return AspectRatio(
+      aspectRatio: 1,
+      child: ImageAttachmentThumbnail(
+        resizeWidth: thumbnailWidth,
+        image: Attachment(imageUrl: block.firstMediaUrl),
+        fit: BoxFit.cover,
+      ),
     );
   }
 }

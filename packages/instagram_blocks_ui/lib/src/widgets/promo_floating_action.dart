@@ -40,6 +40,7 @@ class PromoFloatingAction extends StatelessWidget {
         onTap: () => launchUrl(Uri.parse(url)),
         child: ListTile(
           leading: ImageAttachmentThumbnail(
+            resizeHeight: 126,
             image: Attachment(
               imageUrl:
                   'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Instagram_icon.png/600px-Instagram_icon.png',

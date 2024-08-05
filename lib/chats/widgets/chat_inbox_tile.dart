@@ -37,6 +37,7 @@ class ChatInboxTile extends StatelessWidget {
             .add(ChatsDeleteChatRequested(chatId: chat.id, userId: user.id)),
       ),
       leading: UserStoriesAvatar(
+        resizeHeight: 156,
         author: participant,
         enableInactiveBorder: false,
         withAdaptiveBorder: false,

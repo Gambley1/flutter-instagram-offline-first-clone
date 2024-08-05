@@ -73,6 +73,7 @@ class _UserProfileListTileState extends State<UserProfileListTile> {
         child: Row(
           children: [
             UserStoriesAvatar(
+              resizeHeight: 156,
               author: widget.user,
               withAdaptiveBorder: false,
               enableInactiveBorder: false,

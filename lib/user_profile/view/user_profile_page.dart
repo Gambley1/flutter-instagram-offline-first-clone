@@ -1,5 +1,7 @@
 // ignore_for_file: lines_longer_than_80_chars
 
+import 'dart:math';
+
 import 'package:app_ui/app_ui.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -214,7 +216,6 @@ class _PostsPageState extends State<PostsPage>
             return SliverGrid.builder(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
-                mainAxisExtent: 120,
                 mainAxisSpacing: 2,
                 crossAxisSpacing: 2,
               ),
@@ -232,10 +233,7 @@ class _PostsPageState extends State<PostsPage>
                     isReel: block.isReel,
                     multiMedia: multiMedia,
                     mediaUrl: block.firstMediaUrl!,
-                    imageThumbnailBuilder: (_, url) => ImageAttachmentThumbnail(
-                      image: Attachment(imageUrl: url),
-                      fit: BoxFit.cover,
-                    ),
+                    imageThumbnailBuilder: (_, url) => PostSmallImage(url: url),
                   ),
                 );
               },
@@ -243,6 +241,27 @@ class _PostsPageState extends State<PostsPage>
           },
         ),
       ],
+    );
+  }
+}
+
+class PostSmallImage extends StatelessWidget {
+  const PostSmallImage({required this.url, super.key});
+
+  final String url;
+
+  @override
+  Widget build(BuildContext context) {
+    /// AppSpacing.xxs is the padding of the image.
+    final screenWidth = (context.screenWidth - AppSpacing.xxs) / 3;
+    final pixelRatio = context.devicePixelRatio;
+
+    final size = min((screenWidth * pixelRatio) ~/ 1, 1920);
+    return ImageAttachmentThumbnail(
+      resizeHeight: size,
+      resizeWidth: size,
+      image: Attachment(imageUrl: url),
+      fit: BoxFit.cover,
     );
   }
 }

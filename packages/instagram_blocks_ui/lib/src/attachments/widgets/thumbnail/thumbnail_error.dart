@@ -7,6 +7,8 @@ typedef ThumbnailErrorBuilder = Widget Function(
   StackTrace? stackTrace, {
   double? height,
   double? width,
+  int? resizeWidth,
+  int? resizeHeight,
   double? borderRadius,
 });
 
@@ -21,6 +23,8 @@ class ThumbnailError extends StatelessWidget {
     this.stackTrace,
     this.width,
     this.height,
+    this.resizeWidth,
+    this.resizeHeight,
     this.borderRadius,
     this.fit,
   });
@@ -30,6 +34,12 @@ class ThumbnailError extends StatelessWidget {
 
   /// The height of the thumbnail.
   final double? height;
+
+  /// The resize width of the thumbnail.
+  final int? resizeWidth;
+
+  /// The resize height of the thumbnail.
+  final int? resizeHeight;
 
   /// The border radius of the thumbnail.
   final double? borderRadius;
@@ -45,13 +55,6 @@ class ThumbnailError extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (borderRadius == null) {
-      return Assets.images.placeholder.image(
-        width: width,
-        height: height,
-        fit: fit,
-      );
-    }
     return SizedBox(
       height: height,
       width: width,
@@ -63,7 +66,11 @@ class ThumbnailError extends StatelessWidget {
           image: DecorationImage(
             fit: fit,
             filterQuality: FilterQuality.high,
-            image: Assets.images.placeholder.provider(),
+            image: ResizeImage.resizeIfNeeded(
+              resizeWidth,
+              resizeHeight,
+              Assets.images.placeholder.provider(),
+            ),
           ),
         ),
       ),

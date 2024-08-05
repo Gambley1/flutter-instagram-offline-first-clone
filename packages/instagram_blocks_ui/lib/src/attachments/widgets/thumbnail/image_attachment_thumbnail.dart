@@ -23,6 +23,8 @@ class ImageAttachmentThumbnail extends StatelessWidget {
     this.height,
     this.memCacheHeight,
     this.memCacheWidth,
+    this.resizeHeight,
+    this.resizeWidth,
     this.fit,
     this.filterQuality = FilterQuality.low,
     this.withPlaceholder = true,
@@ -46,6 +48,12 @@ class ImageAttachmentThumbnail extends StatelessWidget {
 
   /// Memory height of the attachment image thumbnail.
   final int? memCacheHeight;
+
+  /// Resize width of the attachment image thumbnail.
+  final int? resizeWidth;
+
+  /// Resize height of the attachment image thumbnail.
+  final int? resizeHeight;
 
   /// The border radius of the image.
   final double? borderRadius;
@@ -75,6 +83,8 @@ class ImageAttachmentThumbnail extends StatelessWidget {
     StackTrace? stackTrace, {
     double? height,
     double? width,
+    int? resizeHeight,
+    int? resizeWidth,
     double? borderRadius,
   }) {
     return ThumbnailError(
@@ -82,6 +92,8 @@ class ImageAttachmentThumbnail extends StatelessWidget {
       stackTrace: stackTrace,
       height: height ?? double.infinity,
       width: width ?? double.infinity,
+      resizeWidth: resizeWidth,
+      resizeHeight: resizeHeight,
       borderRadius: borderRadius,
       fit: BoxFit.cover,
     );
@@ -99,6 +111,8 @@ class ImageAttachmentThumbnail extends StatelessWidget {
         file: file,
         width: width,
         height: height,
+        cacheWidth: memCacheWidth,
+        cacheHeight: memCacheHeight,
         borderRadius: borderRadius,
         withPlaceholder: withPlaceholder,
         withAdaptiveColors: withAdaptiveColors,
@@ -116,6 +130,8 @@ class ImageAttachmentThumbnail extends StatelessWidget {
         height: height,
         memCacheHeight: memCacheHeight,
         memCacheWidth: memCacheWidth,
+        resizeHeight: resizeHeight,
+        resizeWidth: resizeWidth,
         withPlaceholder: withPlaceholder,
         withAdaptiveColors: withAdaptiveColors,
         borderRadius: borderRadius,
@@ -130,8 +146,10 @@ class ImageAttachmentThumbnail extends StatelessWidget {
       context,
       'Image attachment is not valid',
       StackTrace.current,
-      height: height,
       width: width,
+      height: height,
+      resizeWidth: resizeWidth,
+      resizeHeight: resizeHeight,
       borderRadius: borderRadius,
     );
   }
@@ -143,6 +161,8 @@ class LocalImageAttachment extends StatelessWidget {
     required this.fit,
     this.width,
     this.height,
+    this.cacheWidth,
+    this.cacheHeight,
     this.borderRadius,
     this.withPlaceholder = true,
     this.file,
@@ -158,6 +178,8 @@ class LocalImageAttachment extends StatelessWidget {
   final File? imageFile;
   final double? width;
   final double? height;
+  final int? cacheWidth;
+  final int? cacheHeight;
   final double? borderRadius;
   final BoxFit? fit;
   final FilterQuality filterQuality;
@@ -175,8 +197,8 @@ class LocalImageAttachment extends StatelessWidget {
         bytes: bytes,
         height: height,
         width: width,
-        cacheHeight: height?.toInt(),
-        cacheWidth: width?.toInt(),
+        cacheHeight: cacheHeight,
+        cacheWidth: cacheWidth,
         errorBuilder: errorBuilder,
         filterQuality: filterQuality,
         placeholder: !withPlaceholder
@@ -227,6 +249,8 @@ class NetworkImageAttachment extends StatelessWidget {
     required this.fit,
     required this.memCacheWidth,
     required this.memCacheHeight,
+    required this.resizeHeight,
+    required this.resizeWidth,
     required this.filterQuality,
     super.key,
   });
@@ -236,6 +260,8 @@ class NetworkImageAttachment extends StatelessWidget {
   final double? height;
   final int? memCacheWidth;
   final int? memCacheHeight;
+  final int? resizeHeight;
+  final int? resizeWidth;
   final double? borderRadius;
   final BoxBorder? border;
   final BoxFit? fit;
@@ -249,8 +275,8 @@ class NetworkImageAttachment extends StatelessWidget {
     return CachedNetworkImage(
       imageUrl: url,
       cacheKey: url,
-      memCacheHeight: memCacheHeight ?? height?.toInt(),
-      memCacheWidth: memCacheWidth ?? width?.toInt(),
+      memCacheHeight: memCacheHeight,
+      memCacheWidth: memCacheWidth,
       imageBuilder: (context, imageProvider) {
         return Container(
           height: height,
@@ -261,7 +287,11 @@ class NetworkImageAttachment extends StatelessWidget {
                 ? null
                 : BorderRadius.all(Radius.circular(borderRadius!)),
             image: DecorationImage(
-              image: imageProvider,
+              image: ResizeImage.resizeIfNeeded(
+                resizeWidth,
+                resizeHeight,
+                imageProvider,
+              ),
               fit: fit,
               filterQuality: filterQuality,
             ),
@@ -271,8 +301,8 @@ class NetworkImageAttachment extends StatelessWidget {
       placeholder: !withPlaceholder
           ? null
           : (context, __) => ShimmerPlaceholder(
-                height: height,
                 width: width,
+                height: height,
                 withAdaptiveColors: withAdaptiveColors,
                 borderRadius: borderRadius,
               ),
@@ -283,6 +313,8 @@ class NetworkImageAttachment extends StatelessWidget {
           StackTrace.current,
           height: height,
           width: width,
+          resizeWidth: resizeWidth,
+          resizeHeight: resizeHeight,
           borderRadius: borderRadius,
         );
       },

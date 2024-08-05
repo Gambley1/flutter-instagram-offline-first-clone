@@ -35,29 +35,24 @@ class ShimmerPlaceholder extends StatelessWidget {
   final Widget? child;
   final PlaceholderImageBuilder? placeholderImageBuilder;
 
-  static Widget _defaultPlaceholderImage({
-    required double width,
-    required double height,
-  }) =>
+  Widget _defaultPlaceholderImage() =>
       Assets.images.placeholder.image(
-        width: width,
-        height: height,
+        width: width ?? double.infinity,
+        height: height ?? double.infinity,
         fit: BoxFit.cover,
       );
 
-  static Widget _defaultCircularPlaceholderImage(double radius) => CircleAvatar(
+  Widget _defaultCircularPlaceholderImage() => CircleAvatar(
         backgroundImage: Assets.images.placeholder.provider(),
         radius: radius,
       );
 
   @override
   Widget build(BuildContext context) {
-    final width = this.width ?? double.infinity;
-    final height = this.height ?? double.infinity;
     final image = placeholderImageBuilder?.call(width, height) ??
         (radius != null
-            ? _defaultCircularPlaceholderImage(radius!)
-            : _defaultPlaceholderImage(width: width, height: height));
+            ? _defaultCircularPlaceholderImage()
+            : _defaultPlaceholderImage());
     final baseColor = withAdaptiveColors
         ? context.customReversedAdaptiveColor(
             dark: this.baseColor,

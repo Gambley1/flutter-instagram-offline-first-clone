@@ -84,6 +84,7 @@ class PostHeader extends StatelessWidget {
                       onAvatarTap,
                     ) ??
                     UserProfileAvatar(
+                      resizeHeight: 108,
                       userId: author.id,
                       isLarge: false,
                       avatarUrl: author.avatarUrl,

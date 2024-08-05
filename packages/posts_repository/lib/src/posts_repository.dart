@@ -184,11 +184,10 @@ class PostsRepository implements PostsBaseRepository {
         ),
       ),
       media: [
-        VideoMedia(
+        ImageMedia(
           id: uuid.v4(),
-          firstFrameUrl: '',
           url:
-              'https://player.vimeo.com/progressive_redirect/playback/903856061/rendition/540p/file.mp4?loc=external&oauth2_token_id=1747418641&signature=1bf8c7fcb5788b45eb5b8b30519f1eb872eb5be562ef9b0e04191ee44d53acff',
+              'https://images.unsplash.com/photo-1722861315999-5de71ce7cdda?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHw0fHx8ZW58MHx8fHx8',
         ),
       ],
       caption: 'Hello world!',
@@ -299,11 +298,10 @@ class PostsRepository implements PostsBaseRepository {
         ),
       ),
       media: [
-        VideoMedia(
+        ImageMedia(
           id: uuid.v4(),
-          firstFrameUrl: '',
           url:
-              'https://player.vimeo.com/progressive_redirect/playback/899246570/rendition/540p/file.mp4?loc=external&oauth2_token_id=1747418641&signature=40dde4d43100a4ef1b77b713dee18a003757a7748ffab1cfbddce2818c818283',
+              'https://images.unsplash.com/photo-1722648404028-6454d2a93602?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwxMHx8fGVufDB8fHx8fA%3D%3D',
         ),
       ],
       caption: 'Hello world!',

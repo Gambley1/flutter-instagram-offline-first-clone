@@ -144,24 +144,9 @@ class MessageInputController extends ValueNotifier<Message> {
     attachments = [...attachments, attachment];
   }
 
-  /// Adds a new attachment at the specified [index].
-  void addAttachmentAt(int index, Attachment attachment) {
-    attachments = [...attachments]..insert(index, attachment);
-  }
-
   /// Removes the specified [attachment] from the message.
   void removeAttachment(Attachment attachment) {
     attachments = [...attachments]..remove(attachment);
-  }
-
-  /// Remove the attachment with the given [attachmentId].
-  void removeAttachmentById(String attachmentId) {
-    attachments = [...attachments]..removeWhere((it) => it.id == attachmentId);
-  }
-
-  /// Removes the attachment at the given [index].
-  void removeAttachmentAt(int index) {
-    attachments = [...attachments]..removeAt(index);
   }
 
   /// Clears the message attachments.
@@ -242,17 +227,12 @@ class MessageInputController extends ValueNotifier<Message> {
     if (attachments
         .map((e) => e.type.toAttachmentType)
         .contains(AttachmentType.urlPreview)) {
-      attachments.retainWhere(
-        (e) => e.type.toAttachmentType == AttachmentType.urlPreview,
-      );
-      attachments = [...attachments]
-        ..remove(attachment)
-        ..insert(0, attachment);
-    } else {
-      attachments = [...attachments]
-        ..remove(attachment)
-        ..insert(0, attachment);
+      attachments = attachments
+        ..removeWhere(
+          (e) => e.type.toAttachmentType == AttachmentType.urlPreview,
+        );
     }
+    addAttachment(attachment);
     _ogAttachment = attachment;
   }
 

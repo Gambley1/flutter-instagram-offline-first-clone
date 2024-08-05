@@ -236,13 +236,7 @@ class MessageSharedPost extends StatelessWidget {
               ),
               Stack(
                 children: [
-                  AspectRatio(
-                    aspectRatio: 1,
-                    child: ImageAttachmentThumbnail(
-                      image: Attachment(imageUrl: sharedPost.firstMediaUrl),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
+                  MessageSharedPostImage(sharedPost: sharedPost),
                   Positioned(
                     top: AppSpacing.sm,
                     right: AppSpacing.sm,
@@ -325,6 +319,31 @@ class MessageSharedPost extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class MessageSharedPostImage extends StatelessWidget {
+  const MessageSharedPostImage({
+    required this.sharedPost,
+    super.key,
+  });
+
+  final PostBlock sharedPost;
+
+  @override
+  Widget build(BuildContext context) {
+    final screenWidth = (context.screenWidth * .85) - AppSpacing.md * 2;
+    final pixelRatio = context.devicePixelRatio;
+
+    final thumbnailWidth = (screenWidth * pixelRatio) ~/ 1;
+    return AspectRatio(
+      aspectRatio: 1,
+      child: ImageAttachmentThumbnail(
+        resizeHeight: thumbnailWidth,
+        image: Attachment(imageUrl: sharedPost.firstMediaUrl),
+        fit: BoxFit.cover,
+      ),
     );
   }
 }

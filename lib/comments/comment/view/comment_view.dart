@@ -77,6 +77,7 @@ class CommentGroup extends StatelessWidget {
           ),
           avatarBuilder: (context, author, onAvatarTap, radius) =>
               UserStoriesAvatar(
+            resizeHeight: 108,
             author: author,
             onAvatarTap: onAvatarTap,
             radius: radius,

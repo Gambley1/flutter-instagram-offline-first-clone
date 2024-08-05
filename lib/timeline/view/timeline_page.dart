@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:app_ui/app_ui.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -215,13 +217,31 @@ class _TimelineGridViewState extends State<TimelineGridView> {
                       );
                     },
                   )
-                : ImageAttachmentThumbnail(
-                    image: Attachment(imageUrl: url),
-                    fit: BoxFit.cover,
-                  ),
+                : TimelinePostImage(url: url),
           ),
         );
       },
+    );
+  }
+}
+
+class TimelinePostImage extends StatelessWidget {
+  const TimelinePostImage({required this.url, super.key});
+
+  final String url;
+
+  @override
+  Widget build(BuildContext context) {
+    /// AppSpacing.xxs is the padding of the image.
+    final screenWidth = (context.screenWidth - AppSpacing.xxs) / 3;
+    final pixelRatio = context.devicePixelRatio;
+
+    final size = min((screenWidth * pixelRatio) ~/ 1, 1920);
+
+    return ImageAttachmentThumbnail(
+      resizeHeight: size,
+      image: Attachment(imageUrl: url),
+      fit: BoxFit.cover,
     );
   }
 }

@@ -56,11 +56,29 @@ class LoginView extends StatelessWidget {
                     ),
                   ),
                   const Align(child: SignInButton()),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(
-                      vertical: AppSpacing.md,
-                    ),
-                    child: AppDivider(withText: true),
+                  Row(
+                    children: <Widget>[
+                      const Expanded(
+                        child: AppDivider(
+                          endIndent: AppSpacing.sm,
+                          indent: AppSpacing.md,
+                          color: AppColors.white,
+                          height: 36,
+                        ),
+                      ),
+                      Text(
+                        'OR',
+                        style: context.titleMedium,
+                      ),
+                      const Expanded(
+                        child: AppDivider(
+                          color: AppColors.white,
+                          indent: AppSpacing.sm,
+                          endIndent: AppSpacing.md,
+                          height: 36,
+                        ),
+                      ),
+                    ],
                   ),
                   Align(
                     child: AuthProviderSignInButton(

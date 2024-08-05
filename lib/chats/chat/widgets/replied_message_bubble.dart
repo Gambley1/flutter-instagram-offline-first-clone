@@ -56,6 +56,7 @@ class RepliedMessageBubble extends StatelessWidget {
           children: [
             if (!repliedMessageSharedPostDeleted) ...[
               ImageAttachmentThumbnail(
+                resizeHeight: 138,
                 image: Attachment(imageUrl: replyMessageAttachmentUrl),
                 fit: BoxFit.cover,
                 borderRadius: 4,

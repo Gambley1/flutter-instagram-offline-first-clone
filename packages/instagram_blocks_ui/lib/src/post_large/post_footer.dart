@@ -58,7 +58,6 @@ class PostFooter extends StatelessWidget {
             imageUrl: block.firstMedia?.url,
             onTap: () => onAvatarTap.call(author.avatarUrl),
           ),
-        const AppDivider(padding: AppSpacing.md),
         const Gap.v(AppSpacing.sm),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
@@ -227,7 +226,10 @@ class LikersInFollowings extends StatelessWidget {
                     padding: const EdgeInsets.all(AppSpacing.xxs),
                     child: CircleAvatar(
                       backgroundColor: AppColors.white,
-                      foregroundImage: Assets.images.profilePhoto.provider(),
+                      foregroundImage: ResizeImage(
+                        Assets.images.profilePhoto.provider(),
+                        height: 72,
+                      ),
                     ),
                   ),
                 ),
@@ -243,7 +245,8 @@ class LikersInFollowings extends StatelessWidget {
                       child: Padding(
                         padding: const EdgeInsets.all(AppSpacing.xxs),
                         child: CircleAvatar(
-                          backgroundImage: imageProvider,
+                          backgroundImage:
+                              ResizeImage(imageProvider, height: 72),
                           backgroundColor: context.theme.colorScheme.surface,
                         ),
                       ),

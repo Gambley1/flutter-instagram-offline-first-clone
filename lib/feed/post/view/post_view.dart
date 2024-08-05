@@ -135,6 +135,7 @@ class PostLargeView extends StatelessWidget {
       likersInFollowings: likersInFollowings,
       postAuthorAvatarBuilder: (context, author, onAvatarTap) {
         return UserStoriesAvatar(
+          resizeHeight: 108,
           author: author.toUser,
           onAvatarTap: onAvatarTap,
           enableInactiveBorder: false,

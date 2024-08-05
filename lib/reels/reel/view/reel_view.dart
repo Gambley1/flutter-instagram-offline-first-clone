@@ -404,6 +404,7 @@ class ReelAuthorListTile extends StatelessWidget {
     return Row(
       children: <Widget>[
         UserStoriesAvatar(
+          resizeHeight: 108,
           author: author.toUser,
           withAdaptiveBorder: false,
           enableInactiveBorder: false,

@@ -62,8 +62,6 @@ class _PostThumbnailImage extends StatelessWidget {
     final thumbnailImage = imageThumbnailBuilder?.call(context, mediaUrl) ??
         ImageAttachmentThumbnail(
           image: Attachment(imageUrl: mediaUrl),
-          memCacheHeight: 225,
-          memCacheWidth: 225,
           fit: BoxFit.cover,
         );
 

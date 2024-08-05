@@ -83,18 +83,41 @@ class UrlAttachment extends StatelessWidget {
             ),
           Padding(
             padding: const EdgeInsets.only(top: AppSpacing.xxs),
-            child: AspectRatio(
-              aspectRatio: urlAttachment.aspectRatio,
-              child: ImageAttachmentThumbnail(
-                height: urlAttachment.originalHeight?.toDouble(),
-                width: urlAttachment.originalWidth?.toDouble(),
-                image: urlAttachment,
-                borderRadius: 4,
-                fit: BoxFit.cover,
-              ),
-            ),
+            child: UrlAttachmentImage(urlAttachment: urlAttachment),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class UrlAttachmentImage extends StatelessWidget {
+  const UrlAttachmentImage({
+    required this.urlAttachment,
+    super.key,
+  });
+
+  final Attachment urlAttachment;
+
+  @override
+  Widget build(BuildContext context) {
+    // AppSpacing.md * 5 and AppSpacing.lg is the overall padding on the left
+    // and right of the message content.
+    final screenWidth =
+        (context.screenWidth * .85) - (AppSpacing.md * 5) - AppSpacing.lg;
+    final pixelRatio = context.devicePixelRatio;
+
+    final thumbnailWidth = (screenWidth * pixelRatio) ~/ 1;
+    final thumbnailHeight = (thumbnailWidth * (9 / 16)).toInt();
+
+    return AspectRatio(
+      aspectRatio: 16 / 9,
+      child: ImageAttachmentThumbnail(
+        resizeWidth: thumbnailWidth,
+        resizeHeight: thumbnailHeight,
+        image: urlAttachment,
+        borderRadius: 4,
+        fit: BoxFit.cover,  
       ),
     );
   }

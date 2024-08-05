@@ -102,6 +102,7 @@ class StoriesListView extends StatelessWidget {
                         onLongPress,
                       ) {
                         return UserStoriesAvatar(
+                          resizeHeight: 252,
                           isLarge: true,
                           stories: stories,
                           author: author,

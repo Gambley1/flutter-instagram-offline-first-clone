@@ -99,6 +99,7 @@ class AvatarView extends StatelessWidget {
                   onLongPress,
                 ) ??
                 UserProfileAvatar(
+                  resizeHeight: 252,
                   withAddButton: isMine,
                   stories: state.stories,
                   onTap: onTap,

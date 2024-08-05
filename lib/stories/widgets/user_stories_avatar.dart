@@ -22,6 +22,8 @@ class UserStoriesAvatar extends StatelessWidget {
     this.showStories,
     this.showWhenSeen,
     this.isLarge = false,
+    this.resizeHeight,
+    this.resizeWidth,
     this.isImagePicker = false,
     this.enableInactiveBorder = true,
     this.withShimmerPlaceholder = false,
@@ -42,6 +44,8 @@ class UserStoriesAvatar extends StatelessWidget {
   final bool? showStories;
   final bool? showWhenSeen;
   final bool isLarge;
+  final int? resizeHeight;
+  final int? resizeWidth;
   final bool isImagePicker;
   final bool enableInactiveBorder;
   final bool withShimmerPlaceholder;
@@ -64,6 +68,8 @@ class UserStoriesAvatar extends StatelessWidget {
       showStories: showStories,
       showWhenSeen: showWhenSeen,
       isLarge: isLarge,
+      resizeHeight: resizeHeight,
+      resizeWidth: resizeWidth,
       onImagePick: onImagePick,
       enableInactiveBorder: enableInactiveBorder,
       withShimmerPlaceholder: withShimmerPlaceholder,
@@ -104,6 +110,8 @@ class ProfileAvatar extends StatelessWidget {
     required this.onImagePick,
     required this.onAddButtonTap,
     required this.withAdaptiveBorder,
+    required this.resizeHeight,
+    required this.resizeWidth,
     super.key,
   });
 
@@ -116,6 +124,8 @@ class ProfileAvatar extends StatelessWidget {
   final bool? showStories;
   final bool? showWhenSeen;
   final bool isLarge;
+  final int? resizeHeight;
+  final int? resizeWidth;
   final bool enableInactiveBorder;
   final bool withShimmerPlaceholder;
   final bool withAdaptiveBorder;
@@ -142,6 +152,8 @@ class ProfileAvatar extends StatelessWidget {
       showStories: this.showStories ?? showStories,
       avatarUrl: author.avatarUrl,
       isLarge: isLarge,
+      resizeHeight: resizeHeight,
+      resizeWidth: resizeWidth,
       onImagePick: onImagePick,
       withAddButton: withAddButton,
       onLongPress: onLongPress,

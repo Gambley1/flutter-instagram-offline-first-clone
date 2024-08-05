@@ -19,6 +19,8 @@ class UserProfileAvatar extends StatelessWidget {
     super.key,
     this.avatarUrl,
     this.radius,
+    this.resizeHeight,
+    this.resizeWidth,
     this.isLarge = true,
     this.onTapPickImage = false,
     this.strokeWidth,
@@ -42,6 +44,8 @@ class UserProfileAvatar extends StatelessWidget {
   final String? avatarUrl;
   final double? radius;
   final double? strokeWidth;
+  final int? resizeHeight;
+  final int? resizeWidth;
   final bool isLarge;
   final bool onTapPickImage;
   final bool withShimmerPlaceholder;
@@ -191,7 +195,11 @@ class UserProfileAvatar extends StatelessWidget {
       final circleAvatar = CircleAvatar(
         radius: radius,
         backgroundColor: AppColors.white,
-        foregroundImage: Assets.images.profilePhoto.provider(),
+        foregroundImage: ResizeImage.resizeIfNeeded(
+          resizeWidth,
+          resizeHeight,
+          Assets.images.profilePhoto.provider(),
+        ),
       );
       if (!withAdaptiveBorder) {
         avatar = GradientCircleContainer(
@@ -233,11 +241,19 @@ class UserProfileAvatar extends StatelessWidget {
         errorWidget: (_, __, ___) => CircleAvatar(
           backgroundColor: AppColors.white,
           radius: radius,
-          foregroundImage: Assets.images.profilePhoto.provider(),
+          foregroundImage: ResizeImage.resizeIfNeeded(
+            resizeWidth,
+            resizeHeight,
+            Assets.images.profilePhoto.provider(),
+          ),
         ),
         imageBuilder: (context, imageProvider) => CircleAvatar(
           radius: radius,
-          backgroundImage: imageProvider,
+          backgroundImage: ResizeImage.resizeIfNeeded(
+            resizeWidth,
+            resizeHeight,
+            imageProvider,
+          ),
         ),
       );
       if (!withAdaptiveBorder) {

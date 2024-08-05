@@ -180,6 +180,7 @@ class PublishPostButton extends StatelessWidget {
       elevation: 0,
       color: context.reversedAdaptiveColor,
       padding: EdgeInsets.zero,
+      height: 90,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

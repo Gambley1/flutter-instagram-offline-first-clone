@@ -71,6 +71,7 @@ class UserListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       leading: UserStoriesAvatar(
+        resizeHeight: 156,
         author: user,
         withAdaptiveBorder: false,
         enableInactiveBorder: false,

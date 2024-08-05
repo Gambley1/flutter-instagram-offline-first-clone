@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:app_ui/app_ui.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -202,14 +204,18 @@ class _MediaCarouselImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = (1080 * context.devicePixelRatio).round();
+    final screenWidth = context.screenWidth;
+    final pixelRatio = context.devicePixelRatio;
+
+    final thumbnailWidth = min((screenWidth * pixelRatio) ~/ 1, 1920);
+    final thumbnailHeight = min((thumbnailWidth * (16 / 9)).toInt(), 1080);
     return OctoImage.fromSet(
       key: ValueKey(media.id),
+      fit: settings.fit,
+      memCacheHeight: thumbnailHeight,
+      memCacheWidth: thumbnailWidth,
       image: CachedNetworkImageProvider(url, cacheKey: media.id),
       octoSet: OctoBlurHashPlaceholder(blurHash: blurHash, fit: settings.fit),
-      fit: settings.fit,
-      memCacheHeight: size,
-      memCacheWidth: size,
     );
   }
 }
