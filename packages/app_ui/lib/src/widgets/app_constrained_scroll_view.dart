@@ -12,6 +12,7 @@ class AppConstrainedScrollView extends StatelessWidget {
     this.padding,
     this.mainAxisAlignment = MainAxisAlignment.center,
     this.withScrollBar = false,
+    this.controller,
     super.key,
   });
 
@@ -19,7 +20,7 @@ class AppConstrainedScrollView extends StatelessWidget {
   final Widget child;
 
   /// The padding to apply to the scroll view.
-  final EdgeInsets? padding;
+  final EdgeInsetsGeometry? padding;
 
   /// The [MainAxisAlignment] to apply to the [Column] inside a scroll view.
   final MainAxisAlignment mainAxisAlignment;
@@ -27,14 +28,21 @@ class AppConstrainedScrollView extends StatelessWidget {
   /// Whether to wrap a scroll view with a [Scrollbar].
   final bool withScrollBar;
 
+  /// Optional [ScrollController] to use for the scroll view.
+  final ScrollController? controller;
+
   Widget _scrollView(BoxConstraints constraints) => SingleChildScrollView(
-        padding: padding,
+        controller: controller,
         child: ConstrainedBox(
           constraints: BoxConstraints(
             minWidth: constraints.maxWidth,
             minHeight: constraints.maxHeight,
           ),
-          child: IntrinsicHeight(child: child),
+          child: IntrinsicHeight(
+            child: padding == null
+                ? child
+                : Padding(padding: padding!, child: child),
+          ),
         ),
       );
 
