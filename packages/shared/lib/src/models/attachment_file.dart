@@ -30,7 +30,7 @@ class AttachmentFile {
 
   /// The absolute path for a cached copy of this file. It can be used to
   /// create a file instance with a descriptor for the given path.
-  /// ```
+  /// ```dart
   /// final File myFile = File(platformFile.path);
   /// ```
   final String? path;

@@ -3,7 +3,7 @@
 /// {@template num_duration_extension}
 /// Adds extensions to num (ie. int & double) to make creating durations simple:
 ///
-/// ```
+/// ```dart
 /// 200.ms // equivalent to Duration(milliseconds: 200)
 /// 3.seconds // equivalent to Duration(milliseconds: 3000)
 /// 1.5.days // equivalent to Duration(hours: 36)
