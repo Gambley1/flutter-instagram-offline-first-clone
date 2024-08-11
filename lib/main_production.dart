@@ -17,6 +17,7 @@ import 'package:user_repository/user_repository.dart';
 
 void main() {
   bootstrap(
+    appFlavor: AppFlavor.production(),
     (
       powerSyncRepository,
       firebaseMessaging,
@@ -32,8 +33,9 @@ void main() {
 
       final tokenStorage = InMemoryTokenStorage();
 
-      final iosClientId = getIt<AppFlavor>().getEnv(Env.iOSClientId);
-      final webClientId = getIt<AppFlavor>().getEnv(Env.webClientId);
+      final appFlavor = AppFlavor.production();
+      final iosClientId = appFlavor.getEnv(Env.iOSClientId);
+      final webClientId = appFlavor.getEnv(Env.webClientId);
       final googleSignIn =
           GoogleSignIn(clientId: iosClientId, serverClientId: webClientId);
 
@@ -78,6 +80,5 @@ void main() {
         user: await userRepository.user.first,
       );
     },
-    appFlavor: AppFlavor.production(),
   );
 }

@@ -12,6 +12,8 @@ class AppScaffold extends StatelessWidget {
   const AppScaffold({
     required this.body,
     super.key,
+    this.onPopInvoked,
+    this.canPop,
     this.safeArea = true,
     this.top = true,
     this.bottom = true,
@@ -76,6 +78,12 @@ class AppScaffold extends StatelessWidget {
   /// The bottom sheet of the scaffold.
   final Widget? bottomSheet;
 
+  /// Will pop callback. If null, will pop the navigator.
+  final void Function(bool)? onPopInvoked;
+
+  /// If true, will pop the navigator.
+  final bool? canPop;
+
   /// Wether to extend the body behind the bottom navigation bar.
   final bool extendBody;
 
@@ -86,7 +94,6 @@ class AppScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     if (releaseFocus) {
       return Tappable(
-        animationEffect: TappableAnimationEffect.none,
         onTap: () => _releaseFocus(context),
         child: _MaterialScaffold(
           top: top,
@@ -102,6 +109,8 @@ class AppScaffold extends StatelessWidget {
           appBar: appBar,
           drawer: drawer,
           bottomSheet: bottomSheet,
+          onPopInvoked: onPopInvoked,
+          canPop: canPop,
           extendBody: extendBody,
           extendBodyBehindAppBar: extendBodyBehindAppBar,
         ),
@@ -121,6 +130,8 @@ class AppScaffold extends StatelessWidget {
       appBar: appBar,
       drawer: drawer,
       bottomSheet: bottomSheet,
+      onPopInvoked: onPopInvoked,
+      canPop: canPop,
       extendBody: extendBody,
       extendBodyBehindAppBar: extendBodyBehindAppBar,
     );
@@ -139,6 +150,7 @@ class _MaterialScaffold extends StatelessWidget {
     required this.withSafeArea,
     required this.extendBody,
     required this.extendBodyBehindAppBar,
+    this.canPop,
     this.backgroundColor,
     this.floatingActionButton,
     this.floatingActionButtonLocation,
@@ -146,36 +158,25 @@ class _MaterialScaffold extends StatelessWidget {
     this.appBar,
     this.drawer,
     this.bottomSheet,
+    this.onPopInvoked,
   });
 
   final bool top;
-
   final bool bottom;
-
   final bool right;
-
   final bool left;
-
   final Widget body;
-
   final bool withSafeArea;
-
   final Color? backgroundColor;
-
   final Widget? floatingActionButton;
-
   final FloatingActionButtonLocation? floatingActionButtonLocation;
-
   final Widget? bottomNavigationBar;
-
   final PreferredSizeWidget? appBar;
-
   final Widget? drawer;
-
   final Widget? bottomSheet;
-
+  final void Function(bool)? onPopInvoked;
+  final bool? canPop;
   final bool extendBody;
-
   final bool extendBodyBehindAppBar;
 
   @override
@@ -199,8 +200,26 @@ class _MaterialScaffold extends StatelessWidget {
       appBar: appBar,
       drawer: drawer,
       bottomSheet: bottomSheet,
-    ).withAdaptiveSystemTheme(context);
+    )
+        .withPopScope(onPopInvoked, canPop: canPop)
+        .withAdaptiveSystemTheme(context);
   }
+}
+
+/// Pop scope extension that wraps widget with [PopScope].
+extension PopScopeX on Widget {
+  /// Wraps widget with [PopScope].
+  Widget withPopScope(
+    void Function(bool)? onPopInvoked, {
+    bool? canPop,
+  }) =>
+      onPopInvoked == null && canPop == null
+          ? this
+          : PopScope(
+              onPopInvoked: onPopInvoked,
+              canPop: canPop ?? true,
+              child: this,
+            );
 }
 
 /// Extension used to respectively change the `systemNavigationBar` theme.

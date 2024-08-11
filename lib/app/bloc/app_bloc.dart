@@ -52,7 +52,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
           await _userRepository.updateUser(pushToken: pushToken);
         });
 
-        await _notificationsRepository.requestPermission();
+        unawaited(_notificationsRepository.requestPermission());
       } catch (error, stackTrace) {
         addError(error, stackTrace);
       }
