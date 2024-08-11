@@ -117,7 +117,7 @@ class UrlAttachmentImage extends StatelessWidget {
         resizeHeight: thumbnailHeight,
         image: urlAttachment,
         borderRadius: 4,
-        fit: BoxFit.cover,  
+        fit: BoxFit.cover,
       ),
     );
   }

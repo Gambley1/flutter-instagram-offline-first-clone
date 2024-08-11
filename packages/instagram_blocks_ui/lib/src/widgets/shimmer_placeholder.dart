@@ -35,8 +35,7 @@ class ShimmerPlaceholder extends StatelessWidget {
   final Widget? child;
   final PlaceholderImageBuilder? placeholderImageBuilder;
 
-  Widget _defaultPlaceholderImage() =>
-      Assets.images.placeholder.image(
+  Widget _defaultPlaceholderImage() => Assets.images.placeholder.image(
         width: width ?? double.infinity,
         height: height ?? double.infinity,
         fit: BoxFit.cover,
