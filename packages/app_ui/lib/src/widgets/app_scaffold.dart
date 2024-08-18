@@ -12,7 +12,7 @@ class AppScaffold extends StatelessWidget {
   const AppScaffold({
     required this.body,
     super.key,
-    this.onPopInvoked,
+    this.onPopInvokedWithResult,
     this.canPop,
     this.safeArea = true,
     this.top = true,
@@ -79,7 +79,7 @@ class AppScaffold extends StatelessWidget {
   final Widget? bottomSheet;
 
   /// Will pop callback. If null, will pop the navigator.
-  final void Function(bool)? onPopInvoked;
+  final void Function(bool, dynamic)? onPopInvokedWithResult;
 
   /// If true, will pop the navigator.
   final bool? canPop;
@@ -109,7 +109,7 @@ class AppScaffold extends StatelessWidget {
           appBar: appBar,
           drawer: drawer,
           bottomSheet: bottomSheet,
-          onPopInvoked: onPopInvoked,
+          onPopInvokedWithResult: onPopInvokedWithResult,
           canPop: canPop,
           extendBody: extendBody,
           extendBodyBehindAppBar: extendBodyBehindAppBar,
@@ -130,7 +130,7 @@ class AppScaffold extends StatelessWidget {
       appBar: appBar,
       drawer: drawer,
       bottomSheet: bottomSheet,
-      onPopInvoked: onPopInvoked,
+      onPopInvokedWithResult: onPopInvokedWithResult,
       canPop: canPop,
       extendBody: extendBody,
       extendBodyBehindAppBar: extendBodyBehindAppBar,
@@ -158,7 +158,7 @@ class _MaterialScaffold extends StatelessWidget {
     this.appBar,
     this.drawer,
     this.bottomSheet,
-    this.onPopInvoked,
+    this.onPopInvokedWithResult,
   });
 
   final bool top;
@@ -174,7 +174,7 @@ class _MaterialScaffold extends StatelessWidget {
   final PreferredSizeWidget? appBar;
   final Widget? drawer;
   final Widget? bottomSheet;
-  final void Function(bool)? onPopInvoked;
+  final void Function(bool, dynamic)? onPopInvokedWithResult;
   final bool? canPop;
   final bool extendBody;
   final bool extendBodyBehindAppBar;
@@ -201,7 +201,7 @@ class _MaterialScaffold extends StatelessWidget {
       drawer: drawer,
       bottomSheet: bottomSheet,
     )
-        .withPopScope(onPopInvoked, canPop: canPop)
+        .withPopScope(onPopInvokedWithResult, canPop: canPop)
         .withAdaptiveSystemTheme(context);
   }
 }
@@ -210,13 +210,13 @@ class _MaterialScaffold extends StatelessWidget {
 extension PopScopeX on Widget {
   /// Wraps widget with [PopScope].
   Widget withPopScope(
-    void Function(bool)? onPopInvoked, {
+    void Function(bool, dynamic)? onPopInvokedWithResult, {
     bool? canPop,
   }) =>
-      onPopInvoked == null && canPop == null
+      onPopInvokedWithResult == null && canPop == null
           ? this
           : PopScope(
-              onPopInvoked: onPopInvoked,
+              onPopInvokedWithResult: onPopInvokedWithResult,
               canPop: canPop ?? true,
               child: this,
             );

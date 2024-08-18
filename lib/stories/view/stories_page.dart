@@ -296,7 +296,8 @@ class StoryOptions extends StatelessWidget {
                 controller.play();
                 return;
               }
-              option.onTap(context);
+              void onTap() => option.onTap(context);
+              onTap.call();
             });
           },
           child: AnimatedDefaultTextStyle(

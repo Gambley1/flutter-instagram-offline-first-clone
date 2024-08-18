@@ -288,20 +288,23 @@ class _SharePostButtonState extends State<SharePostButton> {
     toggleLoadingIndeterminate();
     final postShareFutures = widget.selectedUsers.map(
       (receiver) => Future.microtask(
-        () => context.read<PostBloc>().add(
-              PostShareRequested(
-                sender: user,
-                receiver: receiver,
-                postAuthor: widget.block.author,
-                sharedPostMessage: Message(sender: sender),
-                message: _messageController.text.trim().isEmpty
-                    ? null
-                    : Message(
-                        message: _messageController.text,
-                        sender: sender,
-                      ),
-              ),
-            ),
+        () {
+          void sharePost() => context.read<PostBloc>().add(
+                PostShareRequested(
+                  sender: user,
+                  receiver: receiver,
+                  postAuthor: widget.block.author,
+                  sharedPostMessage: Message(sender: sender),
+                  message: _messageController.text.trim().isEmpty
+                      ? null
+                      : Message(
+                          message: _messageController.text,
+                          sender: sender,
+                        ),
+                ),
+              );
+          sharePost();
+        },
       ),
     );
     try {

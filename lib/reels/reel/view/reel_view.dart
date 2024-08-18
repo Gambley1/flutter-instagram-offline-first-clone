@@ -361,7 +361,8 @@ class VerticalButtons extends StatelessWidget {
                         ],
                       ).then((option) {
                         if (option == null) return;
-                        option.onTap(context);
+                        void onTap() => option.onTap(context);
+                        onTap.call();
                       }),
               withStatistic: false,
             ),

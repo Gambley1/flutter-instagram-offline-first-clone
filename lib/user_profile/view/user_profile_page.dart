@@ -365,7 +365,8 @@ class UserProfileSettingsButton extends StatelessWidget {
         ],
       ).then((option) {
         if (option == null) return;
-        option.onTap(context);
+        void onTap() => option.onTap(context);
+        onTap.call();
       }),
       child: Assets.icons.setting.svg(
         height: AppSize.iconSize,
@@ -461,7 +462,8 @@ class UserProfileAddMediaButton extends StatelessWidget {
       )
           .then((option) {
         if (option == null) return;
-        option.onTap(context);
+        void onTap() => option.onTap(context);
+        onTap.call();
       }),
       child: const Icon(
         Icons.add_box_outlined,
