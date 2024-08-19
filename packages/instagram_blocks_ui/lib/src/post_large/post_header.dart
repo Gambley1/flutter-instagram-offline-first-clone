@@ -75,7 +75,6 @@ class PostHeader extends StatelessWidget {
         children: [
           Tappable(
             onTap: () => onAvatarTap?.call(author.avatarUrl),
-            animationEffect: TappableAnimationEffect.none,
             child: Row(
               children: [
                 postAuthorAvatarBuilder?.call(

@@ -9,7 +9,7 @@ class ForgotPasswordButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Tappable(
+    return Tappable.faded(
       throttle: true,
       throttleDuration: 650.ms,
       onTap: () {

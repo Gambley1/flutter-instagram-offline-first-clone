@@ -55,8 +55,8 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
         () => context.read<SignUpCubit>().onPasswordChanged(v),
       ),
       errorText: passwordError,
-      suffixIcon: Tappable(
-        color: AppColors.transparent,
+      suffixIcon: Tappable.faded(
+        backgroundColor: AppColors.transparent,
         onTap: isLoading
             ? null
             : context.read<SignUpCubit>().changePasswordVisibility,

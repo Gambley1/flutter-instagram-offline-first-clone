@@ -1,9 +1,8 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_instagram_offline_first_clone/app/bloc/app_bloc.dart';
+import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/comments/comment/comment.dart';
-import 'package:flutter_instagram_offline_first_clone/comments/comment/widgets/widgets.dart';
 import 'package:flutter_instagram_offline_first_clone/comments/comments.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:flutter_instagram_offline_first_clone/stories/stories.dart';
@@ -72,7 +71,7 @@ class CommentGroup extends StatelessWidget {
           post: post,
           currentUserId: user.id,
           onAvatarTap: () => context.pushNamed(
-            'user_profile',
+            AppRoutes.userProfile.name,
             pathParameters: {'user_id': comment.author.id},
           ),
           avatarBuilder: (context, author, onAvatarTap, radius) =>

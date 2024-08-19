@@ -18,9 +18,8 @@ class FeedAppBar extends StatelessWidget {
         floating: true,
         snap: true,
         actions: [
-          Tappable(
+          Tappable.scaled(
             onTap: () => HomeProvider().animateToPage(2),
-            animationEffect: TappableAnimationEffect.scale,
             child: Assets.icons.chatCircle.svg(
               height: AppSize.iconSize,
               width: AppSize.iconSize,

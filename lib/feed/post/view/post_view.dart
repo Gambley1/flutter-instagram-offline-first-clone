@@ -86,7 +86,7 @@ class PostLargeView extends StatelessWidget {
     UserProfileProps? props,
   }) =>
       context.pushNamed(
-        'user_profile',
+        AppRoutes.userProfile.name,
         pathParameters: {'user_id': id},
         extra: props,
       );
@@ -145,7 +145,7 @@ class PostLargeView extends StatelessWidget {
       postOptionsSettings: isOwner
           ? PostOptionsSettings.owner(
               onPostEdit: (block) => context.pushNamed(
-                'post_edit',
+                AppRoutes.postEdit.name,
                 pathParameters: {'post_id': block.id},
                 extra: block,
               ),

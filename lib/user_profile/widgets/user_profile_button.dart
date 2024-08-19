@@ -8,7 +8,7 @@ class UserProfileButton extends StatelessWidget {
     this.child,
     this.textStyle,
     this.padding,
-    this.fadeStrength = FadeStrength.small,
+    this.fadeStrength = FadeStrength.sm,
     this.color,
     this.onTap,
   });
@@ -37,11 +37,11 @@ class UserProfileButton extends StatelessWidget {
 
     return DefaultTextStyle(
       style: effectiveTextStyle!,
-      child: Tappable(
+      child: Tappable.faded(
         onTap: onTap,
         fadeStrength: fadeStrength,
-        borderRadius: 6,
-        color: effectiveColor,
+        borderRadius: BorderRadius.circular(6),
+        backgroundColor: effectiveColor,
         child: Padding(
           padding: effectivePadding,
           child: Align(

@@ -180,7 +180,6 @@ class OutlineGradientButton extends StatelessWidget {
         onTap: onTap,
         child: Tappable(
           onTap: onTap,
-          animationEffect: TappableAnimationEffect.none,
           child: Container(
             decoration: BoxDecoration(
               boxShadow: boxShadow,

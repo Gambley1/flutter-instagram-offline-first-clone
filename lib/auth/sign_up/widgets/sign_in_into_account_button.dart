@@ -14,7 +14,7 @@ class SignInIntoAccountButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<AuthCubit>();
-    return Tappable(
+    return Tappable.faded(
       onTap: () => cubit.changeAuth(showLogin: true),
       child: RichText(
         maxLines: 1,

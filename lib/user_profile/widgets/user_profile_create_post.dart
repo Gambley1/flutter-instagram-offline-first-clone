@@ -22,11 +22,13 @@ class UserProfileCreatePost extends StatelessWidget {
     this.onPopInvoked,
     this.onBackButtonTap,
     super.key,
+    this.wantKeepAlive = true,
   });
 
   final bool canPop;
   final Key? imagePickerKey;
   final bool pickVideo;
+  final bool wantKeepAlive;
   final VoidCallback? onBackButtonTap;
   final VoidCallback? onPopInvoked;
 
@@ -42,8 +44,9 @@ class UserProfileCreatePost extends StatelessWidget {
         source: ImageSource.both,
         pickerSource: pickerSource,
         multiSelection: !pickVideo,
+        wantKeepAlive: wantKeepAlive,
         onMediaPicked: (details) => context.pushNamed(
-          'publish_post',
+          AppRoutes.publisPost.name,
           extra: CreatePostProps(details: details, pickVideo: pickVideo),
         ),
         onBackButtonTap:
@@ -190,21 +193,17 @@ class PublishPostButton extends StatelessWidget {
               horizontal: AppSpacing.md,
               vertical: AppSpacing.md,
             ),
-            child: Tappable(
+            child: Tappable.faded(
               onTap: onShareTap,
-              borderRadius: 6,
-              color: AppColors.blue,
-              child: Align(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: AppSpacing.md,
-                    horizontal: AppSpacing.sm,
-                  ),
-                  child: Text(
-                    context.l10n.sharePostText,
-                    style: context.labelLarge,
-                  ),
-                ),
+              borderRadius: BorderRadius.circular(6),
+              backgroundColor: AppColors.blue,
+              padding: const EdgeInsets.symmetric(
+                vertical: AppSpacing.md,
+                horizontal: AppSpacing.sm,
+              ),
+              child: Text(
+                context.l10n.sharePostText,
+                style: context.labelLarge,
               ),
             ),
           ),

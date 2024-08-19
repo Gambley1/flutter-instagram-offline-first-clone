@@ -91,7 +91,7 @@ class UserProfilePostsAppBar extends StatelessWidget {
 
     late final followText = Padding(
       padding: const EdgeInsets.only(right: AppSpacing.lg),
-      child: Tappable(
+      child: Tappable.faded(
         onTap: () => bloc.add(const UserProfileFollowUserRequested()),
         child: Text(
           context.l10n.followUser,

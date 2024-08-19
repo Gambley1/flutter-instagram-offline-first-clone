@@ -27,11 +27,10 @@ class FollowButton extends StatelessWidget {
             light: AppColors.brightGrey,
             dark: AppColors.emphasizeDarkGrey,
           );
-    Widget button(String data) => Tappable(
+    Widget button(String data) => Tappable.faded(
           onTap: follow,
-          borderRadius: 6,
-          fadeStrength: FadeStrength.medium,
-          color: effectiveBackgroundColor,
+          borderRadius: BorderRadius.circular(6),
+          backgroundColor: effectiveBackgroundColor,
           child: Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.md,
@@ -47,10 +46,10 @@ class FollowButton extends StatelessWidget {
 
     return switch (_followingStatus) {
       null => const SizedBox.shrink(),
-      final String data => Tappable(
+      final String data => Tappable.faded(
           onTap: follow,
-          borderRadius: 6,
-          color: effectiveBackgroundColor,
+          borderRadius: BorderRadius.circular(6),
+          backgroundColor: effectiveBackgroundColor,
           child: switch (isOutlined) {
             true => DecoratedBox(
                 decoration: BoxDecoration(

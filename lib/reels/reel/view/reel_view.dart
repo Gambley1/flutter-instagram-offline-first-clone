@@ -4,6 +4,7 @@ import 'package:app_ui/app_ui.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/comments/comments.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/feed.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/post/post.dart';
@@ -366,9 +367,8 @@ class VerticalButtons extends StatelessWidget {
                       }),
               withStatistic: false,
             ),
-            Tappable(
+            Tappable.scaled(
               onTap: () {},
-              animationEffect: TappableAnimationEffect.scale,
               scaleStrength: ScaleStrength.xxs,
               child: ImageAttachmentThumbnail(
                 image: Attachment(
@@ -417,7 +417,7 @@ class ReelAuthorListTile extends StatelessWidget {
               text: author.username,
               recognizer: TapGestureRecognizer()
                 ..onTap = () => context.pushNamed(
-                      'user_profile',
+                      AppRoutes.userProfile.name,
                       pathParameters: {'user_id': author.id},
                     ),
             ),

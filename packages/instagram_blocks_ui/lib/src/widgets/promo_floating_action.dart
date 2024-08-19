@@ -34,9 +34,8 @@ class PromoFloatingAction extends StatelessWidget {
         vertical: AppSpacing.sm,
       ),
       child: Tappable(
-        color: AppColors.blue,
-        borderRadius: 4,
-        animationEffect: TappableAnimationEffect.none,
+        backgroundColor: AppColors.blue,
+        borderRadius: BorderRadius.circular(4),
         onTap: () => launchUrl(Uri.parse(url)),
         child: ListTile(
           leading: ImageAttachmentThumbnail(

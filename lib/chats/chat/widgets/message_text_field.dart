@@ -399,7 +399,7 @@ class ChatSendMessageButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Tappable(
+    return Tappable.faded(
       onTap: onSendMessage,
       child: const FittedBox(
         child: Padding(
@@ -483,7 +483,7 @@ class ReplyMessagePreview extends StatelessWidget {
                       color: AppColors.white,
                     ),
                   ),
-            trailing: Tappable(
+            trailing: Tappable.faded(
               onTap: onDismissPreviewPressed,
               child: const Icon(
                 Icons.close,
@@ -540,7 +540,7 @@ class EditingMessagePreview extends StatelessWidget {
           color: AppColors.white,
         ),
       ),
-      trailing: Tappable(
+      trailing: Tappable.faded(
         onTap: onDismissEditingMessage,
         child: const Icon(
           Icons.close,
@@ -599,7 +599,7 @@ class OGAttachmentPreview extends StatelessWidget {
               style: context.bodyMedium
                   ?.copyWith(fontWeight: AppFontWeight.regular),
             ),
-      trailing: Tappable(
+      trailing: Tappable.faded(
         onTap: onDismissPreviewPressed,
         child: const Icon(
           Icons.close,

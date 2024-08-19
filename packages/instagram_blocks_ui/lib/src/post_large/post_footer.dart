@@ -73,9 +73,8 @@ class PostFooter extends StatelessWidget {
                         isLiked: isLiked,
                         onLikedTap: likePost,
                       ),
-                      Tappable(
+                      Tappable.scaled(
                         onTap: () => onCommentsTap(true),
-                        animationEffect: TappableAnimationEffect.scale,
                         child: Transform.flip(
                           flipX: true,
                           child: Assets.icons.chatCircle.svg(
@@ -88,9 +87,8 @@ class PostFooter extends StatelessWidget {
                           ),
                         ),
                       ),
-                      Tappable(
+                      Tappable.scaled(
                         onTap: () => onPostShareTap(block.id, block.author),
-                        animationEffect: TappableAnimationEffect.scale,
                         child: const Icon(
                           Icons.near_me_outlined,
                           size: AppSize.iconSize,
@@ -113,8 +111,7 @@ class PostFooter extends StatelessWidget {
               Expanded(
                 child: Align(
                   alignment: Alignment.centerRight,
-                  child: Tappable(
-                    animationEffect: TappableAnimationEffect.scale,
+                  child: Tappable.scaled(
                     onTap: () {},
                     child: const Icon(
                       Icons.bookmark_outline_rounded,
@@ -293,9 +290,9 @@ class _SponsoredPostActionState extends State<SponsoredPostAction>
 
   @override
   Widget build(BuildContext context) {
-    return Tappable(
-      color: Colors.transparent,
-      fadeStrength: FadeStrength.small,
+    return Tappable.faded(
+      backgroundColor: Colors.transparent,
+      fadeStrength: FadeStrength.sm,
       onTap: widget.onTap,
       child: AnimatedContainer(
         duration: 1700.ms,

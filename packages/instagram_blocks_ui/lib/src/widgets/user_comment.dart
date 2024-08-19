@@ -77,7 +77,6 @@ class UserComment extends StatelessWidget {
         children: [
           Tappable(
             onTap: onAvatarTap,
-            animationEffect: TappableAnimationEffect.none,
             child: Text(
               '${comment.author.username} ',
               style: context.labelLarge,
@@ -95,9 +94,8 @@ class UserComment extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
             child: buildHighlightedText(comment, context),
           ),
-          Tappable(
+          Tappable.faded(
             onTap: () => onReplyButtonTap?.call(comment.author.username),
-            animationEffect: TappableAnimationEffect.none,
             child: Text(
               BlockSettings().commentTextDelegate.replyText,
               style: context.labelMedium?.copyWith(color: AppColors.grey),
@@ -114,7 +112,6 @@ class UserComment extends StatelessWidget {
             onLikedTap: onLikeComment,
             size: 22,
             color: AppColors.grey,
-            scaleStrength: ScaleStrength.md,
           ),
           RepaintBoundary(
             child: LikesCount(

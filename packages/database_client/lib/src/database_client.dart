@@ -438,8 +438,10 @@ ORDER BY created_at DESC
 //       }
 //       return posts;
 //     }
-    final result = await _powerSyncRepository.db().execute(
-      '''
+    final result = await _powerSyncRepository.db().computeWithDatabase(
+      (db) async {
+        final result = db.select(
+          '''
 SELECT
   posts.*,
   p.id as user_id,
@@ -451,14 +453,77 @@ FROM
   inner join profiles p on posts.user_id = p.id 
 ORDER BY created_at DESC LIMIT ?1 OFFSET ?2
     ''',
-      [limit, offset],
-    );
+          [limit, offset],
+        );
+        final jsonListMedia = result.map((row) {
+          final json = Map<String, dynamic>.from(row);
+          return json['media'] as String;
+        }).toList();
 
-    final instaBlocks = result.map((row) {
-      final json = Map<String, dynamic>.from(row);
-      return Post.fromJson(json);
-    });
-    return instaBlocks.toList();
+        final receivePort = ReceivePort();
+
+        void computeJsonListMedia(List<dynamic> args) {
+          final sendPort = args[0] as SendPort;
+          final jsonListMedia = args[1] as List<String>;
+          final listMedia = jsonListMedia
+              .map(
+                (jsonMedia) => (jsonDecode(jsonMedia) as List<dynamic>)
+                    .cast<Map<String, dynamic>>(),
+              )
+              .toList();
+
+          return sendPort.send(listMedia);
+        }
+
+        final isolate = await Isolate.spawn(
+          computeJsonListMedia,
+          [receivePort.sendPort, jsonListMedia],
+        );
+        isolate.kill(priority: Isolate.immediate);
+        final media =
+            await receivePort.first as List<List<Map<String, dynamic>>>;
+
+        final posts = <Post>[];
+        for (var i = 0; i < result.length; i++) {
+          final json = Map<String, dynamic>.from(result[i]);
+          final post = Post(
+            id: json['id'] as String,
+            createdAt: DateTime.parse(json['created_at'] as String),
+            author: User(
+              id: json['user_id'] as String,
+              avatarUrl: json['avatar_url'] as String?,
+              username: json['username'] as String?,
+              fullName: json['full_name'] as String?,
+            ),
+            caption: json['caption'] as String,
+            media: List<Media>.from(media[i].map(Media.fromJson).toList()),
+          );
+          posts.add(post);
+        }
+        return posts;
+      },
+    );
+// final result = await _powerSyncRepository.db().execute(
+//           '''
+// SELECT
+//   posts.*,
+//   p.id as user_id,
+//   p.avatar_url as avatar_url,
+//   p.username as username,
+//   p.full_name as full_name
+// FROM
+//   posts
+//   inner join profiles p on posts.user_id = p.id
+// ORDER BY created_at DESC LIMIT ?1 OFFSET ?2
+//     ''',
+//           [limit, offset],
+//         );
+
+//     final instaBlocks = result.map((row) {
+//       final json = Map<String, dynamic>.from(row);
+//       return Post.fromJson(json);
+//     }).toList();
+    return result;
   }
 
   @override
@@ -1230,7 +1295,7 @@ values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       });
 
   /// Sends notification in a background isolate.
-  static Future<void> sendBackgroundNotification(List<dynamic> args) async {
+  Future<void> sendBackgroundNotification(List<dynamic> args) async {
     await sendNotification(
       reciever: args[1] as User,
       sender: args[2] as User,
@@ -1242,7 +1307,7 @@ values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   }
 
   /// Sends notification using Google APIs to user.
-  static Future<void> sendNotification({
+  Future<void> sendNotification({
     required User reciever,
     required User sender,
     String? chatId,

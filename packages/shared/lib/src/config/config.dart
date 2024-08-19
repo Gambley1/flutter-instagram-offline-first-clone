@@ -8,7 +8,6 @@ export 'image_compress.dart';
 export 'image_picker.dart';
 export 'logger.dart';
 export 'stream_transformers.dart';
-export 'throttler.dart';
 export 'tld.dart';
 export 'uid.dart';
 export 'utilities/utilities.dart';

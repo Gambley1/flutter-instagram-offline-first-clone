@@ -93,7 +93,7 @@ class AppScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (releaseFocus) {
-      return Tappable(
+      return GestureDetector(
         onTap: () => _releaseFocus(context),
         child: _MaterialScaffold(
           top: top,

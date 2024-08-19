@@ -38,8 +38,7 @@ class MessageBubble extends StatelessWidget {
     final isMine = message.sender?.id == user.id;
     final messageAlignment = !isMine ? Alignment.topLeft : Alignment.topRight;
 
-    final messageWidget = Tappable(
-      animationEffect: TappableAnimationEffect.none,
+    final messageWidget = GestureDetector(
       onTapUp: (details) async {
         late final onDeleteTap = context.confirmAction(
           title: context.l10n.deleteMessageText,
@@ -55,12 +54,11 @@ class MessageBubble extends StatelessWidget {
           hasSharedPost: message.sharedPost != null,
         );
         if (option == null) return;
-        void action() => switch (option) {
-              MessageAction.delete => onDeleteTap,
-              MessageAction.edit => onEditTap?.call(message),
-              MessageAction.reply => onReplyTap?.call(message),
-            };
-        action();
+        return switch (option) {
+          MessageAction.delete => onDeleteTap,
+          MessageAction.edit => onEditTap?.call(message),
+          MessageAction.reply => onReplyTap?.call(message),
+        };
       },
       child: ValueListenableBuilder<String?>(
         valueListenable: highlightMessageId ?? ValueNotifier(''),

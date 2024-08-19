@@ -33,12 +33,11 @@ class RepliedMessageBubble extends StatelessWidget {
     const imageHeight = 46.0;
     const imageWidth = 46.0;
 
-    return Tappable(
+    return Tappable.scaled(
       onTap: message.replyMessageId == null
           ? null
           : () => onTap?.call(message.replyMessageId!),
-      animationEffect: TappableAnimationEffect.scale,
-      scaleStrength: ScaleStrength.xxxxs,
+      scaleStrength: ScaleStrength.xxxs,
       child: Container(
         padding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.md,

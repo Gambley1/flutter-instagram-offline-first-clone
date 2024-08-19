@@ -20,11 +20,11 @@ class ForgotButtonSendEmailButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final isLoading = context
         .select((ForgotPasswordCubit bloc) => bloc.state.status.isLoading);
-    final child = Tappable(
+    final child = Tappable.faded(
       throttle: true,
       throttleDuration: 650.ms,
-      color: AppColors.blue,
-      borderRadius: 4,
+      backgroundColor: AppColors.blue,
+      borderRadius: BorderRadius.circular(4),
       onTap: isLoading ? null : () => _onPressed(context),
       child: isLoading
           ? Center(child: AppCircularProgress(context.adaptiveColor))

@@ -57,7 +57,7 @@ class StoriesListView extends StatelessWidget {
                       onTap: (_) {
                         if (!canCreateStory) return;
                         context.pushNamed(
-                          'create_stories',
+                          AppRoutes.createStories.name,
                           extra: (String path) {
                             context.read<CreateStoriesBloc>().add(
                                   CreateStoriesStoryCreateRequested(
@@ -109,7 +109,7 @@ class StoriesListView extends StatelessWidget {
                           onAvatarTap: onAvatarTap,
                           withAddButton: isMine,
                           onLongPress: (_) => onLongPress?.call(),
-                          animationEffect: TappableAnimationEffect.scale,
+                          tappableVariant: TappableVariant.scaled,
                           showWhenSeen: true,
                           onAddButtonTap: () => onAvatarTap(''),
                         );

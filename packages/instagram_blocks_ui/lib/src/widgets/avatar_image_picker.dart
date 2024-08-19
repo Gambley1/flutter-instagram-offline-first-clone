@@ -57,7 +57,7 @@ class AvatarImagePicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Tappable(
+    return Tappable.faded(
       onTap: () => _pickImage.call(context),
       child: Stack(
         children: [

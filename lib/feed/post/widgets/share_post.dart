@@ -351,6 +351,7 @@ class _SharePostButtonState extends State<SharePostButton> {
                 textInputType: TextInputType.text,
                 textInputAction: TextInputAction.done,
                 textCapitalization: TextCapitalization.sentences,
+                hintStyle: context.bodyLarge?.copyWith(color: AppColors.grey),
                 hintText: context.l10n.sharePostCaptionHintText,
               ),
             ),
@@ -360,22 +361,20 @@ class _SharePostButtonState extends State<SharePostButton> {
                 right: AppSpacing.lg,
                 bottom: AppSpacing.md,
               ),
-              child: Tappable(
+              child: Tappable.faded(
                 onTap: _onPostShareTap,
-                color: AppColors.blue,
-                borderRadius: 6,
+                backgroundColor: AppColors.blue,
+                borderRadius: BorderRadius.circular(4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.md,
+                  vertical: AppSpacing.md,
+                ),
                 child: Align(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.md,
-                      vertical: AppSpacing.md,
-                    ),
-                    child: Text(
-                      widget.selectedUsers.length == 1
-                          ? context.l10n.sendText
-                          : context.l10n.sendSeparatelyText,
-                      style: context.labelLarge?.apply(color: AppColors.white),
-                    ),
+                  child: Text(
+                    widget.selectedUsers.length == 1
+                        ? context.l10n.sendText
+                        : context.l10n.sendSeparatelyText,
+                    style: context.labelLarge?.apply(color: AppColors.white),
                   ),
                 ),
               ),
@@ -465,7 +464,7 @@ class _UserSearchFieldState extends State<UserSearchField> {
           prefixIcon: Icon(Icons.search, color: _iconColor.value),
           suffixIcon: searchController.text.trim().isEmpty
               ? null
-              : Tappable(
+              : Tappable.faded(
                   onTap: () {
                     searchController.clear();
                     _noUsersFound();
@@ -522,7 +521,7 @@ class UsersListView extends StatelessWidget {
                     ),
                     itemBuilder: (context, index) {
                       final user = users[index];
-                      return Tappable(
+                      return Tappable.faded(
                         onTap: () => onUserSelected.call(user),
                         child: Column(
                           children: [

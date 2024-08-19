@@ -5,6 +5,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/comments/view/comments_page.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/post/post.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
@@ -183,10 +184,11 @@ class _PostPopupState extends State<PopupModal>
         child: widget.builder.call(context),
       ),
       builder: (context, isLiked, child) {
-        return Tappable(
+        return Tappable.faded(
           key: ValueKey(widget.block.id + widget.block.createdAt.toString()),
+          enableFeedback: false,
           onTap: () => context.pushNamed(
-            'user_posts',
+            AppRoutes.userPosts.name,
             queryParameters: {
               'user_id': widget.block.author.id,
               'index': widget.index.toString(),
@@ -308,7 +310,7 @@ class _PostPopupState extends State<PopupModal>
       );
     } else {
       await context.pushNamed(
-        'user_profile',
+        AppRoutes.userProfile.name,
         pathParameters: {'user_id': widget.block.author.id},
       );
     }

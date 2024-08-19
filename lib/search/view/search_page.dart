@@ -1,6 +1,7 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:flutter_instagram_offline_first_clone/stories/stories.dart';
 import 'package:go_router/go_router.dart';
@@ -89,7 +90,7 @@ class UserListTile extends StatelessWidget {
       onTap: () => withResult
           ? context.pop(user.id)
           : context.pushNamed(
-              'user_profile',
+              AppRoutes.userProfile.name,
               pathParameters: {'user_id': user.id},
             ),
     );
@@ -183,7 +184,7 @@ class SearchInputField extends StatelessWidget {
               onChanged?.call(query);
             },
       constraints: const BoxConstraints.tightFor(height: 40),
-      onTap: !readOnly ? null : () => context.pushNamed('search'),
+      onTap: !readOnly ? null : () => context.pushNamed(AppRoutes.search.name),
       hintText: context.l10n.searchText,
       prefixIcon:
           Icon(Icons.search, color: active ? activeColor : inactiveColor),

@@ -38,7 +38,8 @@ class _PoppingIconAnimationOverlayState
     super.dispose();
   }
 
-  void _handleDoubleTap({required bool isLiked}) {
+  void _handleDoubleTap() {
+    final isLiked = widget.isLiked ?? false;
     if (_controller.isAnimating) {
       _controller
         ..reset()
@@ -71,9 +72,7 @@ class _PoppingIconAnimationOverlayState
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: widget.isLiked != null ? null : _handleTap,
-      onDoubleTap: widget.isLiked == null
-          ? null
-          : () => _handleDoubleTap(isLiked: widget.isLiked ?? false),
+      onDoubleTap: widget.isLiked == null ? null : _handleDoubleTap,
       child: Stack(
         children: [
           widget.child,

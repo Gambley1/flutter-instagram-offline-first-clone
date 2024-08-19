@@ -23,7 +23,7 @@ class ChatInboxTile extends StatelessWidget {
       horizontalTitleGap: AppSpacing.md,
       contentPadding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
       onTap: () => context.pushNamed(
-        'chat',
+        AppRoutes.chat.name,
         pathParameters: {'chat_id': chat.id},
         extra: ChatProps(chat: chat),
       ),

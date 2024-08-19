@@ -59,10 +59,9 @@ class UrlAttachmentBuilder extends AttachmentWidgetBuilder {
         hostDisplayName = hostName.getWebsiteName ?? hostName.capitalize;
       }
 
-      return Tappable(
+      return Tappable.scaled(
         onTap: onTap,
-        animationEffect: TappableAnimationEffect.scale,
-        scaleStrength: ScaleStrength.xxxxs,
+        scaleStrength: ScaleStrength.xxxs,
         child: UrlAttachment(
           message: message,
           urlAttachment: urlPreview,

@@ -65,7 +65,7 @@ class ChatsAppBar extends StatelessWidget {
         style: context.titleLarge?.copyWith(fontWeight: AppFontWeight.bold),
       ),
       actions: [
-        Tappable(
+        Tappable.faded(
           onTap: () async {
             void createChat(String participantId) =>
                 context.read<ChatsBloc>().add(

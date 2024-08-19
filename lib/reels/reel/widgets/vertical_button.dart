@@ -20,9 +20,7 @@ class VerticalButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Tappable(
-      animationEffect: TappableAnimationEffect.scale,
-      scaleStrength: ScaleStrength.md,
+    return Tappable.scaled(
       onTap: onTap,
       child: child ??
           Icon(
@@ -70,7 +68,6 @@ class VerticalGroup extends StatelessWidget {
         if (withStatistic)
           Tappable(
             onTap: onTextTap,
-            animationEffect: TappableAnimationEffect.none,
             child: Text(
               statisticCount!.compactShort(context),
               style: context.bodySmall?.copyWith(

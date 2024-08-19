@@ -285,32 +285,30 @@ class TimelineError extends StatelessWidget {
             style: context.headlineSmall,
           ),
           FittedBox(
-            child: Tappable(
+            child: Tappable.faded(
               onTap: () => context
                   .read<TimelineBloc>()
                   .add(const TimelinePageRequested()),
               throttle: true,
               throttleDuration: 880.ms,
+              borderRadius: BorderRadius.circular(22),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.lg,
+                vertical: AppSpacing.sm,
+              ),
               child: DecoratedBox(
                 decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.all(Radius.circular(22)),
                   border: Border.all(color: context.adaptiveColor),
                 ),
                 child: Align(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.lg,
-                      vertical: AppSpacing.sm,
-                    ),
-                    child: Row(
-                      children: <Widget>[
-                        const Icon(Icons.refresh),
-                        Text(
-                          context.l10n.refreshText,
-                          style: context.labelLarge,
-                        ),
-                      ].spacerBetween(width: AppSpacing.md),
-                    ),
+                  child: Row(
+                    children: <Widget>[
+                      const Icon(Icons.refresh),
+                      Text(
+                        context.l10n.refreshText,
+                        style: context.labelLarge,
+                      ),
+                    ].spacerBetween(width: AppSpacing.md),
                   ),
                 ),
               ),

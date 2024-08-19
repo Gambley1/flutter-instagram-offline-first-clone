@@ -344,7 +344,7 @@ class UserProfileActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Tappable(
+    return Tappable.faded(
       onTap: () {},
       child: Icon(Icons.adaptive.more_outlined, size: AppSize.iconSize),
     );
@@ -356,7 +356,7 @@ class UserProfileSettingsButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Tappable(
+    return Tappable.faded(
       onTap: () => context.showListOptionsModal(
         options: [
           ModalOption(child: const LocaleModalOption()),
@@ -385,8 +385,7 @@ class LogoutModalOption extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Tappable(
-      animationEffect: TappableAnimationEffect.none,
+    return Tappable.faded(
       onTap: () => context.confirmAction(
         fn: () {
           context.pop();
@@ -418,7 +417,7 @@ class UserProfileAddMediaButton extends StatelessWidget {
     final enableStory =
         context.select((CreateStoriesBloc bloc) => bloc.state.isAvailable);
 
-    return Tappable(
+    return Tappable.faded(
       onTap: () => context
           .showListOptionsModal(
         title: l10n.createText,

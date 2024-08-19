@@ -1,7 +1,7 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_instagram_offline_first_clone/app/bloc/app_bloc.dart';
+import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/stories/stories.dart';
 import 'package:go_router/go_router.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
@@ -18,7 +18,7 @@ class UserStoriesAvatar extends StatelessWidget {
     this.onAvatarTap,
     this.withAddButton = false,
     this.onLongPress,
-    this.animationEffect = TappableAnimationEffect.none,
+    this.tappableVariant = TappableVariant.normal,
     this.showStories,
     this.showWhenSeen,
     this.isLarge = false,
@@ -28,7 +28,7 @@ class UserStoriesAvatar extends StatelessWidget {
     this.enableInactiveBorder = true,
     this.withShimmerPlaceholder = false,
     this.radius,
-    this.scaleStrength = ScaleStrength.xxs,
+    this.scaleStrength = ScaleStrength.xs,
     this.onImagePick,
     this.onAddButtonTap,
     this.withAdaptiveBorder = true,
@@ -40,7 +40,7 @@ class UserStoriesAvatar extends StatelessWidget {
   final OnAvatarTapCallback? onAvatarTap;
   final bool withAddButton;
   final ValueSetter<String?>? onLongPress;
-  final TappableAnimationEffect animationEffect;
+  final TappableVariant tappableVariant;
   final bool? showStories;
   final bool? showWhenSeen;
   final bool isLarge;
@@ -64,7 +64,7 @@ class UserStoriesAvatar extends StatelessWidget {
       stories: stories,
       onAvatarTap: onAvatarTap,
       withAddButton: withAddButton,
-      animationEffect: animationEffect,
+      tappableVariant: tappableVariant,
       showStories: showStories,
       showWhenSeen: showWhenSeen,
       isLarge: isLarge,
@@ -98,7 +98,7 @@ class ProfileAvatar extends StatelessWidget {
     required this.stories,
     required this.onAvatarTap,
     required this.withAddButton,
-    required this.animationEffect,
+    required this.tappableVariant,
     required this.isLarge,
     required this.enableInactiveBorder,
     required this.withShimmerPlaceholder,
@@ -120,7 +120,7 @@ class ProfileAvatar extends StatelessWidget {
   final OnAvatarTapCallback? onAvatarTap;
   final bool withAddButton;
   final ValueSetter<String?>? onLongPress;
-  final TappableAnimationEffect animationEffect;
+  final TappableVariant tappableVariant;
   final bool? showStories;
   final bool? showWhenSeen;
   final bool isLarge;
@@ -143,7 +143,7 @@ class ProfileAvatar extends StatelessWidget {
         context.select((UserStoriesBloc bloc) => bloc.state.showStories);
 
     void defaultRoute() => context.pushNamed(
-          'user_profile',
+          AppRoutes.userProfile.name,
           pathParameters: {'user_id': author.id},
         );
     return UserProfileAvatar(
@@ -158,7 +158,7 @@ class ProfileAvatar extends StatelessWidget {
       withAddButton: withAddButton,
       onLongPress: onLongPress,
       radius: radius,
-      animationEffect: animationEffect,
+      tappableVariant: tappableVariant,
       scaleStrength: scaleStrength,
       enableInactiveBorder: enableInactiveBorder,
       withShimmerPlaceholder: withShimmerPlaceholder,
@@ -168,7 +168,7 @@ class ProfileAvatar extends StatelessWidget {
         if (this.showStories ?? true && stories.isNotEmpty) {
           if (showStories || (!showStories && (showWhenSeen ?? false))) {
             context.pushNamed(
-              'stories',
+              AppRoutes.stories.name,
               pathParameters: {'user_id': author.id},
               extra: StoriesProps(stories: stories, author: author),
             );

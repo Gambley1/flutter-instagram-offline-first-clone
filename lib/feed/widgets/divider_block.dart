@@ -61,7 +61,6 @@ class _DividerBlockState extends State<DividerBlock>
     if (hasPlayedAnimation) return;
     Scrollable.ensureVisible(
       _dividerBlockKey.currentContext!,
-      alignment: .6,
       curve: Easing.legacyDecelerate,
       duration: 450.ms,
     );

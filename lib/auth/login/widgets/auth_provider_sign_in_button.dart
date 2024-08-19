@@ -40,11 +40,11 @@ class AuthProviderSignInButton extends StatelessWidget {
         },
       ),
       margin: const EdgeInsets.only(bottom: AppSpacing.md),
-      child: Tappable(
+      child: Tappable.faded(
         throttle: true,
         throttleDuration: 650.ms,
-        color: context.theme.focusColor,
-        borderRadius: 4,
+        backgroundColor: context.theme.focusColor,
+        borderRadius: BorderRadius.circular(4),
         onTap: isInProgress ? null : onPressed,
         child: isInProgress
             ? Center(child: AppCircularProgress(context.adaptiveColor))

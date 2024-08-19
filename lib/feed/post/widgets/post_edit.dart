@@ -88,7 +88,7 @@ class _PostEditViewState extends State<PostEditView> {
           AnimatedBuilder(
             animation: _captionController,
             builder: (context, _) {
-              return Tappable(
+              return Tappable.faded(
                 onTap: () => _onEditSubmitted(_captionController.text),
                 child: const Icon(
                   Icons.check,

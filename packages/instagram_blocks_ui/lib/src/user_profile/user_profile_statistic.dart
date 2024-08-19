@@ -16,8 +16,7 @@ class UserProfileStatistic extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Tappable(
-      animationEffect: TappableAnimationEffect.none,
+    return Tappable.faded(
       onTap: onTap,
       child: Column(
         mainAxisSize: MainAxisSize.min,

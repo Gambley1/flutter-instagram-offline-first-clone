@@ -14,7 +14,7 @@ class SignUpNewAccountButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<AuthCubit>();
-    return Tappable(
+    return Tappable.faded(
       onTap: () => cubit.changeAuth(showLogin: false),
       child: Text.rich(
         overflow: TextOverflow.visible,

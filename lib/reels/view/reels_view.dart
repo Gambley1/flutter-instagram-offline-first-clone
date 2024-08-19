@@ -4,6 +4,7 @@ import 'package:app_ui/app_ui.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/feed.dart';
 import 'package:flutter_instagram_offline_first_clone/feed/post/video/video.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
@@ -11,15 +12,6 @@ import 'package:flutter_instagram_offline_first_clone/reels/reel/reel.dart';
 import 'package:go_router/go_router.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:shared/shared.dart';
-
-class ReelsPage extends StatelessWidget {
-  const ReelsPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const ReelsView();
-  }
-}
 
 class ReelsView extends StatefulWidget {
   const ReelsView({super.key});
@@ -60,14 +52,11 @@ class _ReelsViewState extends State<ReelsView> {
         AppScaffold(
           body: BlocBuilder<FeedBloc, FeedState>(
             buildWhen: (previous, current) {
-              if (const ListEquality<InstaBlock>().equals(
-                previous.feed.reelsPage.blocks,
-                current.feed.reelsPage.blocks,
-              )) {
-                return false;
-              }
-              if (previous.status == current.status) return false;
-              return true;
+              return previous.status != current.status ||
+                  !const ListEquality<InstaBlock>().equals(
+                    previous.feed.reelsPage.blocks,
+                    current.feed.reelsPage.blocks,
+                  );
             },
             builder: (context, state) {
               final blocks = state.feed.reelsPage.blocks;
@@ -130,8 +119,9 @@ class _ReelsViewState extends State<ReelsView> {
         Positioned(
           right: AppSpacing.md,
           top: AppSpacing.md,
-          child: Tappable(
-            onTap: () => context.pushNamed('create_post', extra: true),
+          child: Tappable.faded(
+            onTap: () =>
+                context.pushNamed(AppRoutes.createPost.name, extra: true),
             child: Icon(
               Icons.camera_alt_outlined,
               size: AppSize.iconSize,
@@ -156,38 +146,28 @@ class NoReelsFound extends StatelessWidget {
           text: context.l10n.noReelsFoundText,
           icon: Icons.video_collection_outlined,
           child: FittedBox(
-            child: Tappable(
+            child: Tappable.faded(
               onTap: () =>
                   context.read<FeedBloc>().add(const FeedReelsPageRequested()),
               throttle: true,
               throttleDuration: 550.ms,
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.all(
-                    Radius.circular(22),
+              backgroundColor: context.customReversedAdaptiveColor(
+                light: context.theme.focusColor,
+                dark: context.theme.focusColor,
+              ),
+              borderRadius: BorderRadius.circular(22),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.lg,
+                vertical: AppSpacing.sm,
+              ),
+              child: Row(
+                children: <Widget>[
+                  const Icon(Icons.refresh),
+                  Text(
+                    context.l10n.refreshText,
+                    style: context.labelLarge,
                   ),
-                  color: context.customReversedAdaptiveColor(
-                    light: context.theme.focusColor,
-                    dark: context.theme.focusColor,
-                  ),
-                ),
-                child: Align(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.lg,
-                      vertical: AppSpacing.sm,
-                    ),
-                    child: Row(
-                      children: <Widget>[
-                        const Icon(Icons.refresh),
-                        Text(
-                          context.l10n.refreshText,
-                          style: context.labelLarge,
-                        ),
-                      ].spacerBetween(width: AppSpacing.md),
-                    ),
-                  ),
-                ),
+                ].spacerBetween(width: AppSpacing.md),
               ),
             ),
           ),

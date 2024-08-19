@@ -126,6 +126,7 @@ class PickImage {
     bool multiSelection = true,
     FilterOptionGroup? filterOption,
     VoidCallback? onBackButtonTap,
+    bool wantKeepAlive = true,
   }) =>
       CustomImagePicker(
         key: key,
@@ -136,6 +137,7 @@ class PickImage {
           appTheme: _appTheme(context),
           callbackFunction: (details) async => onMediaPicked.call(details),
         ),
+        wantKeepAlive: wantKeepAlive,
         multiSelection: multiSelection,
         pickerSource: pickerSource,
         source: source,

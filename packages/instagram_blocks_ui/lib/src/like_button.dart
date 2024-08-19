@@ -6,8 +6,7 @@ class LikeButton extends StatelessWidget {
     required this.isLiked,
     required this.onLikedTap,
     super.key,
-    this.tapEffect = TappableAnimationEffect.scale,
-    this.scaleStrength = ScaleStrength.xs,
+    this.scaleStrength = ScaleStrength.sm,
     this.color,
     this.size,
   });
@@ -15,8 +14,6 @@ class LikeButton extends StatelessWidget {
   final bool isLiked;
 
   final VoidCallback onLikedTap;
-
-  final TappableAnimationEffect tapEffect;
 
   final Color? color;
 
@@ -26,9 +23,8 @@ class LikeButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Tappable(
-      color: AppColors.transparent,
-      animationEffect: tapEffect,
+    return Tappable.scaled(
+      backgroundColor: AppColors.transparent,
       scaleStrength: scaleStrength,
       onTap: onLikedTap,
       child: Icon(

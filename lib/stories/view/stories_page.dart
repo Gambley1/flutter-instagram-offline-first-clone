@@ -260,7 +260,7 @@ class StoryOptions extends StatelessWidget {
 
     return Row(
       children: [
-        Tappable(
+        Tappable.faded(
           onTap: () async {
             controller.pause();
             await context.showListOptionsModal(
@@ -352,7 +352,7 @@ class StoriesAuthorListTile extends StatelessWidget {
         avatarUrl: author.avatarUrl,
         userId: author.id,
         onTap: (_) => context.pushNamed(
-          'user_profile',
+          AppRoutes.userProfile.name,
           pathParameters: {'user_id': author.id},
         ),
       ),
@@ -367,7 +367,7 @@ class StoriesAuthorListTile extends StatelessWidget {
                 text: author.displayUsername,
                 recognizer: TapGestureRecognizer()
                   ..onTap = () => context.pushNamed(
-                        'user_profile',
+                        AppRoutes.userProfile.name,
                         pathParameters: {'user_id': author.id},
                       ),
               ),

@@ -59,8 +59,8 @@ class _ChangePasswordFieldState extends State<ChangePasswordField> {
         () => context.read<ChangePasswordCubit>().onPasswordChanged(v),
       ),
       errorText: passwordError,
-      suffixIcon: Tappable(
-        color: AppColors.transparent,
+      suffixIcon: Tappable.faded(
+        backgroundColor: AppColors.transparent,
         onTap: context.read<ChangePasswordCubit>().changePasswordVisibility,
         child: Icon(
           !showPassword ? Icons.visibility : Icons.visibility_off,

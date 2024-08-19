@@ -35,7 +35,6 @@ class _CommentsCountState extends State<CommentsCount>
       isVisible: isVisible,
       curve: Sprung.criticallyDamped,
       child: Tappable(
-        animationEffect: TappableAnimationEffect.none,
         onTap: widget.onTap,
         child: Text(
           BlockSettings().commentTextDelegate.seeAllCommentsText(count),

@@ -16,12 +16,14 @@ class CustomImagePicker extends StatefulWidget {
   final PickerSource pickerSource;
   final FilterOptionGroup? filterOption;
   final VoidCallback? onBackButtonTap;
+  final bool wantKeepAlive;
 
   const CustomImagePicker({
     required this.source,
     required this.multiSelection,
     required this.galleryDisplaySettings,
     required this.pickerSource,
+    this.wantKeepAlive = true,
     this.onBackButtonTap,
     this.filterOption,
     super.key,
@@ -299,7 +301,7 @@ class CustomImagePickerState extends State<CustomImagePicker>
       blackColor: blackColor,
       showImagePreview: showImagePreview,
       tabsTexts: tabsNames,
-      multiSelectedImages: multiSelectedImages,
+      multiSelectedMedia: multiSelectedImages,
       whiteColor: whiteColor,
       cropImage: cropImage,
       multiSelection: widget.multiSelection,
@@ -309,6 +311,7 @@ class CustomImagePickerState extends State<CustomImagePicker>
       filterOption: widget.filterOption,
       onBackButtonTap: widget.onBackButtonTap,
       pickAvatar: imagePickerDisplay.pickAvatar,
+      wantKeepAlive: widget.wantKeepAlive,
     );
   }
 

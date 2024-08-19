@@ -27,7 +27,7 @@ class UserProfileAvatar extends StatelessWidget {
     this.onTap,
     this.onLongPress,
     this.onImagePick,
-    this.animationEffect = TappableAnimationEffect.none,
+    this.tappableVariant = TappableVariant.normal,
     this.scaleStrength = ScaleStrength.xs,
     this.withAddButton = false,
     this.enableBorder = true,
@@ -53,7 +53,7 @@ class UserProfileAvatar extends StatelessWidget {
   final ValueSetter<String?>? onLongPress;
   final VoidCallback? onAddButtonTap;
   final ValueSetter<String>? onImagePick;
-  final TappableAnimationEffect animationEffect;
+  final TappableVariant tappableVariant;
   final ScaleStrength scaleStrength;
   final bool withAddButton;
   final bool enableBorder;
@@ -289,9 +289,8 @@ class UserProfileAvatar extends StatelessWidget {
       final plusCircularIcon = Positioned(
         bottom: 0,
         right: 0,
-        child: Tappable(
+        child: Tappable.scaled(
           onTap: onAddButtonTap,
-          animationEffect: TappableAnimationEffect.scale,
           child: Container(
             width: isLarge ? 32 : 18,
             height: isLarge ? 32 : 18,
@@ -313,7 +312,8 @@ class UserProfileAvatar extends StatelessWidget {
       avatar = Stack(children: [avatar, plusCircularIcon]);
     }
 
-    return Tappable(
+    return Tappable.raw(
+      variant: tappableVariant,
       onTap: onTap == null
           ? !onTapPickImage
               ? null
@@ -321,7 +321,6 @@ class UserProfileAvatar extends StatelessWidget {
           : () => onTap?.call(avatarUrl),
       onLongPress:
           onLongPress == null ? null : () => onLongPress?.call(avatarUrl),
-      animationEffect: animationEffect,
       scaleStrength: scaleStrength,
       child: avatar,
     );

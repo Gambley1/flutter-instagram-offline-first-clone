@@ -11,7 +11,7 @@ class AppView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final routerConfig = router(context.read<AppBloc>());
+    final routerConfig = AppRouter(context.read<AppBloc>()).router;
 
     return BlocBuilder<LocaleBloc, Locale>(
       builder: (context, locale) {

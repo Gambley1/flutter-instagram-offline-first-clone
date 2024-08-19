@@ -48,9 +48,8 @@ class _CommentTextFieldState extends State<CommentTextField> {
                     ),
                     style: context.bodyMedium?.apply(color: AppColors.grey),
                   ),
-                  trailing: Tappable(
+                  trailing: Tappable.faded(
                     onTap: commentInputController.clear,
-                    animationEffect: TappableAnimationEffect.none,
                     child: const Icon(Icons.cancel, color: AppColors.grey),
                   ),
                 ),
@@ -110,8 +109,7 @@ class _CommentTextFieldState extends State<CommentTextField> {
                             .isEmpty) {
                           return const SizedBox.shrink();
                         }
-                        return Tappable(
-                          fadeStrength: FadeStrength.medium,
+                        return Tappable.faded(
                           onTap: () {
                             if (commentInputController
                                 .commentTextController.value.text.isEmpty) {
@@ -159,8 +157,7 @@ class TextEmoji extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Tappable(
-      animationEffect: TappableAnimationEffect.scale,
+    return Tappable.scaled(
       onTap: () => onEmojiTap(emoji),
       child: Padding(
         padding: const EdgeInsets.only(right: AppSpacing.xlg),

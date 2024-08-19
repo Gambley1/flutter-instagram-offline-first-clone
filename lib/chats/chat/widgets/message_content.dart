@@ -1,7 +1,7 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_instagram_offline_first_clone/app/bloc/app_bloc.dart';
+import 'package:flutter_instagram_offline_first_clone/app/app.dart';
 import 'package:flutter_instagram_offline_first_clone/chats/chat/widgets/widgets.dart';
 import 'package:flutter_instagram_offline_first_clone/l10n/l10n.dart';
 import 'package:go_router/go_router.dart';
@@ -208,9 +208,8 @@ class MessageSharedPost extends StatelessWidget {
     return Stack(
       children: [
         Tappable(
-          animationEffect: TappableAnimationEffect.none,
           onTap: () => context.pushNamed(
-            'post',
+            AppRoutes.post.name,
             pathParameters: {'id': sharedPost.id},
           ),
           child: Column(
@@ -367,9 +366,8 @@ class MessageSharedReel extends StatelessWidget {
     return Stack(
       children: [
         Tappable(
-          animationEffect: TappableAnimationEffect.none,
           onTap: () => context.pushNamed(
-            'post',
+            AppRoutes.post.name,
             pathParameters: {'id': sharedPost.id},
           ),
           child: Stack(

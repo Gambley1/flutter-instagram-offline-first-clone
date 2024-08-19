@@ -69,7 +69,7 @@ class _UserProfileEditViewState extends State<UserProfileEditView> {
               UserProfileAvatar(
                 avatarUrl: user.avatarUrl,
                 onTapPickImage: true,
-                animationEffect: TappableAnimationEffect.scale,
+                tappableVariant: TappableVariant.scaled,
                 scaleStrength: ScaleStrength.xxs,
                 onImagePick: (imageUrl) {
                   context.read<UserProfileBloc>().add(
@@ -193,7 +193,7 @@ class _ProfileInfoInputState extends State<ProfileInfoInput> {
       onTap: !widget.readOnly
           ? null
           : () => context.pushNamed(
-                'edit_profile_info',
+                AppRoutes.editProfileInfo.name,
                 pathParameters: {'label': widget.label},
                 queryParameters: {
                   'title': widget.label,

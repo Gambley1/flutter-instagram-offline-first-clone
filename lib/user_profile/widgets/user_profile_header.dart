@@ -22,7 +22,7 @@ class UserProfileHeader extends StatelessWidget {
 
   void _pushToUserStatistics(BuildContext context, {required int tabIndex}) =>
       context.pushNamed(
-        'user_statistics',
+        AppRoutes.userStatistics.name,
         extra: tabIndex,
         queryParameters: {'user_id': userId},
       );
@@ -61,7 +61,7 @@ class UserProfileHeader extends StatelessWidget {
                     if (isOwner) {
                       if (!canCreateStories) return;
                       context.pushNamed(
-                        'create_stories',
+                        AppRoutes.createStories.name,
                         extra: (String path) {
                           context.read<CreateStoriesBloc>().add(
                                 CreateStoriesStoryCreateRequested(
@@ -98,7 +98,7 @@ class UserProfileHeader extends StatelessWidget {
                     }
                   },
                   isLarge: true,
-                  animationEffect: TappableAnimationEffect.scale,
+                  tappableVariant: TappableVariant.scaled,
                   showWhenSeen: true,
                 ),
                 const Gap.h(AppSpacing.md),
@@ -196,7 +196,7 @@ class EditProfileButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return UserProfileButton(
       label: context.l10n.editProfileText,
-      onTap: () => context.pushNamed('edit_profile'),
+      onTap: () => context.pushNamed(AppRoutes.editProfile.name),
     );
   }
 }
