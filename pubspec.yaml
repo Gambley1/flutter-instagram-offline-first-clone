@@ -13,7 +13,7 @@ dependencies:
   async: ^2.11.0
   bloc: ^8.1.4
   cached_memory_image: ^1.5.0
-  cached_network_image: ^3.3.1
+  cached_network_image: ^3.4.0
   carousel_slider: ^5.0.0
   chats_repository:
     path: packages/chats_repository
