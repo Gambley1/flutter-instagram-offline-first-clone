@@ -533,10 +533,11 @@ ORDER BY created_at DESC LIMIT ?1 OFFSET ?2
 UPDATE posts
 SET
   caption = ?2
+  updated_at = ?3
 WHERE id = ?1
 RETURNING *
 ''',
-      [id, caption],
+      [id, caption, DateTime.timestamp().toIso8601String()],
     );
     if (row.isEmpty) return null;
     final json = Map<String, dynamic>.from(row.first);
