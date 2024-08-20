@@ -201,9 +201,11 @@ class PublishPostButton extends StatelessWidget {
                 vertical: AppSpacing.md,
                 horizontal: AppSpacing.sm,
               ),
-              child: Text(
-                context.l10n.sharePostText,
-                style: context.labelLarge,
+              child: Align(
+                child: Text(
+                  context.l10n.sharePostText,
+                  style: context.labelLarge,
+                ),
               ),
             ),
           ),

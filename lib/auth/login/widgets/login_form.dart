@@ -39,8 +39,7 @@ class _LoginFormState extends State<LoginForm> {
             SnackbarMessage.error(
               title: loginSubmissionStatusMessage[state.status]!.title,
               description:
-                  loginSubmissionStatusMessage[state.status]?.description ??
-                      state.message,
+                  loginSubmissionStatusMessage[state.status]?.description,
             ),
             clearIfQueue: true,
           );

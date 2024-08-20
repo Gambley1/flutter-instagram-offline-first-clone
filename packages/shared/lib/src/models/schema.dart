@@ -26,20 +26,6 @@ const schema = Schema([
     ],
   ),
   Table(
-    'media',
-    [
-      Column.text('post_id'),
-      Column.text('media_type'),
-      Column.text('url'),
-      Column.text('blur_hash'),
-      Column.text('first_frame_url'),
-      Column.integer('placed_at'),
-    ],
-    indexes: [
-      Index('post', [IndexedColumn('post_id')]),
-    ],
-  ),
-  Table(
     'videos',
     [
       Column.text('owner_id'),

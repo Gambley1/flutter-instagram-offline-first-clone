@@ -429,9 +429,7 @@ class AppSnackbarState extends State<AppSnackbar>
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 3,
                                     ),
-                                    if (currentMessage?.description == null)
-                                      const SizedBox.shrink()
-                                    else
+                                    if (currentMessage?.description != null)
                                       Text(
                                         currentMessage?.description ?? '',
                                         style: context.titleSmall,
