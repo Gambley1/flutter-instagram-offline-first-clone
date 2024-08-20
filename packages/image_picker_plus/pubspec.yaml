@@ -16,7 +16,7 @@ dependencies:
   image: ^4.0.17
   video_player: ^2.7.0
   image_picker: ^1.0.1
-  insta_assets_crop: ^0.0.2
+  insta_assets_crop: ^0.0.3
   cached_memory_image: ^1.5.0
   intl: any
   visibility_detector: ^0.4.0+2
