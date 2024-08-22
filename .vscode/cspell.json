@@ -204,7 +204,8 @@
     "ChildLayouter",
     "Paginated",
     "blazingly",
-    "Patreon"
+    "Patreon",
+    "PayPal"
   ],
   "ignorePaths": [
     ".github/workflows/**",
