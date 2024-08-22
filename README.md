@@ -79,7 +79,7 @@ Also, I would really appreciate any of your support! You can buy me a coffee and
 Your donation will hugely help me and it will allow me to keep the next beautiful videos and tutorials high-quality and free!
 
 - [Ko-fi](https://kofi.com/emilzulufov)
-- [Paypal](https://paypal.me/emilzulufov)
+- [PayPal](https://paypal.me/emilzulufov)
 
 
 [coverage_badge]: coverage_badge.svg
