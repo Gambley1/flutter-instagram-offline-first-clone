@@ -15,7 +15,7 @@
 
 [![Github-repository-preview.png](https://i.postimg.cc/52v6WG4V/Github-repository-preview.png)](https://youtu.be/xr56AjdGf-o)
 
-Most people always wanted to see a Flutter project, that will cover all-in-one: sleek UI with blazingly-fast backend. And, try to imagine, without a Firebase as a primary service…
+Most people always wanted to see a Flutter project that is not just a clone but a real-world app with a real-world architecture, that will cover all-in-one: sleek UI with blazingly-fast backend. And, try to imagine, without a Firebase as a primary service…
 
 I present for you Flutter **offline-first** Instagram clone, leveraging Flutter best practices!
 
