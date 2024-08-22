@@ -11,7 +11,7 @@ enum AppRoutes {
   createStories('/create-stories'),
   userStatistics('/user-statistics'),
   editProfileInfo('/edit-profile-info', path: 'edit/:label'),
-  publisPost('/publis-post'),
+  publishPost('/publish-post'),
   search('/search'),
   createPost('/create-post'),
   userPosts('/user-posts'),

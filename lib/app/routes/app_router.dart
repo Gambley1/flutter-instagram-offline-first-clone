@@ -303,8 +303,8 @@ class AppRouter {
                         },
                         routes: [
                           GoRoute(
-                            name: AppRoutes.publisPost.name,
-                            path: AppRoutes.publisPost.name,
+                            name: AppRoutes.publishPost.name,
+                            path: AppRoutes.publishPost.name,
                             parentNavigatorKey: _rootNavigatorKey,
                             pageBuilder: (context, state) {
                               final props = state.extra! as CreatePostProps;

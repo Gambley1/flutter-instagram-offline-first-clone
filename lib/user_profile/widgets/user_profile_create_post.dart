@@ -46,7 +46,7 @@ class UserProfileCreatePost extends StatelessWidget {
         multiSelection: !pickVideo,
         wantKeepAlive: wantKeepAlive,
         onMediaPicked: (details) => context.pushNamed(
-          AppRoutes.publisPost.name,
+          AppRoutes.publishPost.name,
           extra: CreatePostProps(details: details, pickVideo: pickVideo),
         ),
         onBackButtonTap:
