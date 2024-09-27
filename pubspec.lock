@@ -736,10 +736,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_markdown
-      sha256: "9921f9deda326f8a885e202b1e35237eadfc1345239a0f6f0f1ff287e047547f"
+      sha256: e17575ca576a34b46c58c91f9948891117a1bd97815d2e661813c7f90c647a78
       url: "https://pub.dev"
     source: hosted
-    version: "0.7.1"
+    version: "0.7.3+2"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -2214,10 +2214,10 @@ packages:
     dependency: transitive
     description:
       name: vm_service
-      sha256: f652077d0bdf60abe4c1f6377448e8655008eef28f128bc023f7b5e8dfeb48fc
+      sha256: "5c5f338a667b4c644744b661f309fb8080bb94b18a7e91ef1dbd343bed00ed6d"
       url: "https://pub.dev"
     source: hosted
-    version: "14.2.4"
+    version: "14.2.5"
   watcher:
     dependency: transitive
     description:
