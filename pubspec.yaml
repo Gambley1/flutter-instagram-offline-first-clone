@@ -96,7 +96,7 @@ dependency_overrides:
 
 dev_dependencies:
   bloc_test: ^9.1.7
-  build_runner: ^2.4.11
+  build_runner: ^2.4.13
   build_verify: ^3.1.0
   flutter_test:
     sdk: flutter
